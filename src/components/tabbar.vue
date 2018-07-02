@@ -6,9 +6,9 @@
 <script>
   import mTabbarItem from './tabbar-item';
   export default {
-    props: ['value'],
+    props: [],
     computed: {
-      val() {
+      value() {
         console.log(this.$route.matched[0].name);
         return this.$route.matched[0].name
       }
@@ -18,7 +18,6 @@
 </script>
 <style lang="less">
   /*导入颜色变量*/
-  
   @import "../assets/less/var.less";
   .m-tabbar {
     display: flex;

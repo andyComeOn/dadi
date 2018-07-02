@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Index from '../pages/Index/Index'
 import Broadcast from '../pages/Broadcast/Broadcast'
+import HotelDetail from '../pages/HotelDetail/HotelDetail'
 import Nearby from '../pages/Nearby/Nearby'
 import Demo from '../pages/Demo/Demo'
 import AudioBook from '../pages/AudioBook/AudioBook'
@@ -30,6 +31,11 @@ export default new Router({
       path: '/audioBook',
       name: 'AudioBook',
       component: AudioBook
+    },
+    {
+      path: '/hotelDetail',
+      name: 'HotelDetail',
+      component: HotelDetail
     },
     {
       path: '/nearby',

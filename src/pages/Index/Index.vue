@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- <header class="m-header is-fixed is-bg top-search">
+    <header class="m-header is-fixed is-bg top-search">
       <div class="search-wrap">
         <img src="../../assets/images/ic_search_gray.png" alt="">
         <span class="placeholder">影视 图书 唱片 小组 舞台剧等</span>
@@ -9,11 +9,11 @@
       <div class="m-header-button is-right" style="text-align: center;width: 50px;">
         <a href="javascript:;"><img class="m-icon-img" src="../../assets/images/ic_chat_white.png" /></a>
       </div>
-    </header> -->
+    </header>
     <div class="page-content">
       <m-swipe swipeid="swipe01" :autoplay="1000" paginationDirection="right">
         <div class="swiper-slide " slot="swiper-con">
-          <router-link to="/demo">
+          <router-link to="/hotelDetail">
             <img src="../../assets/images/banner/01.jpg" alt="">
           </router-link>
         </div>
@@ -90,10 +90,8 @@
               hot.push(data[i]);
             }
           }
-
           this.recommendData = recommend;
           this.hotData = hot;
-
         })
       }
     }
