@@ -19,8 +19,8 @@
                 </div>
                 <div class="rg">
                     <div class="price">
-                        <span class="price-now">&yen;856</span>
-                        <span class="price-hty">&yen;399</span>
+                        <div class="price-now">&yen;856856</div>
+                        <div class="price-hty">&yen;399</div>
                     </div>
                     <div class="book">预订</div>
                 </div>
@@ -57,7 +57,7 @@
         padding: 0 15px;
         li {
             padding: 10px 0 5px 0;
-            height: 140px;
+            height: 88px;
             position: relative;
             display: flex;
             flex-direction: row;
@@ -113,20 +113,31 @@
                 height: 73px;
                 display: flex;
                 flex-direction: row;
-                align-items:center;
+                align-items: center;
                 .price {
                     flex: 1;
                     height: 73px;
+                    /* display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center; */
+                    padding-right: 10px;
                     .price-now {
+                        width: 100%;
                         height: 19px;
                         line-height: 19px;
+                        margin: 22px 0 0 0;
                         color: #FFBA56;
-                        letter-spacing: 0;
+                        font-size: 12px;
+                        text-align: right;
+
                     }
                     .price-hty {
-                        color: #FFBA56;
-                        letter-spacing: 0;
+                        color: #cccccc;
+                        font-size: 10px;
+                        line-height: 14px;
                         text-decoration: line-through;
+                        text-align: right;
                     }
                 }
                 .book {

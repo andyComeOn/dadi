@@ -68,7 +68,6 @@
 				width: 28px;
 				height: 28px;
 			}
-
 		}
 		.m-tabbar-item-text {
 			display: block;

@@ -21,29 +21,31 @@
 
 <style lang="less" scoped>
 	@import "../assets/less/var.less";
-	.detail{
+	.detail {
 		padding: 10px 15px;
 		position: relative;
 		&:after {
-      content: '';
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      height: 1px;
-      background: @hotelLocation;
-      transform: scaleY(0.5);
-    }
+			content: '';
+			position: absolute;
+			left: 0;
+			bottom: 0;
+			right: 0;
+			height: 1px;
+			background: @hotelLocation;
+			transform: scaleY(0.5);
+		}
 	}
-	.name{
+
+	.name {
 		height: 22px;
 		line-height: 22px;
 		font-size: 16px;
 		color: #333333;
 		letter-spacing: 0;
 	}
+
 	.location-wrapper {
 		width: 100%;
-		padding-left: px; 
+		padding-left: px;
 	}
 </style>
