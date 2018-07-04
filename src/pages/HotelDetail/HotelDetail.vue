@@ -16,21 +16,20 @@
 </template>
 
 <script>
-  import mSwipe from '../../components/swipe'
-  import mHotelLocation from '../../components/hotel-location'
-  import membershipRights from '../../components/membership-rights'
-  import reserveItem from '../../components/reserve-item'
-  export default {
-    name: 'nearby',
-    components: {
-      mSwipe,
-      mHotelLocation,
-      membershipRights,
-      reserveItem
-    }
+import mSwipe from "../../components/swipe";
+import mHotelLocation from "../../components/hotel-location";
+import membershipRights from "../../components/membership-rights";
+import reserveItem from "../../components/reserve-item";
+export default {
+  name: "nearby",
+  components: {
+    mSwipe,
+    mHotelLocation,
+    membershipRights,
+    reserveItem
   }
+};
 </script>
 
 <style lang="less">
-
 </style>

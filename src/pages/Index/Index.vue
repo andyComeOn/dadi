@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="index-page">
 		<header class="m-header is-fixed is-bg top-search">
 			<div class="search-wrap">
 				<img src="../../assets/images/ic_search_gray.png" alt="">
@@ -77,6 +77,7 @@
 								<br> 我的位置
 							</span>
 						</div>
+						
 					</div>
 					<!-- 入住时间 -->
 					<div class="time">
@@ -84,12 +85,7 @@
 							<span class="instr">入住</span>
 							<br>
 							<span class="date" v-model="orderForm.startDate" @click="startDateDialogShow">{{orderForm.startDate}}</span>
-
-
-							
-
-							
-
+							<!-- 入住时间 -->
 							<mu-container>
 								<mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="dateVisible">
 									<mu-appbar color="#30B097" title="请选择日期">
@@ -101,7 +97,7 @@
 										<mu-container>
 											<mu-flex justify-content="center" align-items="center" wrap="wrap">
 												<mu-paper :z-depth="1" class="demo-date-picker">
-													<mu-date-picker :date.sync="dateStartVal" @change="triggerDate" display-color="#30B097" color="#30B097"></mu-date-picker>
+													<mu-date-picker :date.sync="dateStartVal" @change="triggerStartDate" display-color="#30B097" color="#30B097"></mu-date-picker>
 												</mu-paper>
 											</mu-flex>
 										</mu-container>
@@ -116,16 +112,34 @@
 						<div class="rg">
 							<span class="instr">离店</span>
 							<br>
-							<span class="date" v-model="orderForm.endDate">{{orderForm.endDate}}</span>
+							<span class="date" v-model="orderForm.endDate" @click="endDateDialogShow">{{orderForm.endDate}}</span>
+							<!-- 离开时间 -->
+							<mu-container>
+								<mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="dateVisible">
+									<mu-appbar color="#30B097" title="请选择日期">
+										<mu-button slot="right" flat  @click="endDateDialogHide">
+											关闭
+										</mu-button>
+									</mu-appbar>
+									<div style="padding: 24px 10px 0 10px;">
+										<mu-container>
+											<mu-flex justify-content="center" align-items="center" wrap="wrap">
+												<mu-paper :z-depth="1" class="demo-date-picker">
+													<mu-date-picker :date.sync="dateEndVal" @change="triggerEndDate" display-color="#30B097" color="#30B097"></mu-date-picker>
+												</mu-paper>
+											</mu-flex>
+										</mu-container>
+									</div>
+								</mu-dialog>
+							</mu-container>
 						</div>
 					</div>
 					<!-- 关键词搜索 -->
 					<div class="search">
 						<input type="text" class="txt" placeholder="请输入关键词／地址／商圈">
 					</div>
-
 					<!-- 提交按钮 -->
-					<div class="submit">
+					<div class="submit" @click="submitFun">
 						酒店预订
 					</div>
 				</div>
@@ -142,12 +156,7 @@
 	// import mCell from '../../components/cell'
 	// import mCellMedia from '../../components/cell-media'
 	export default {
-		
 		props: {
-			// dateStartVal: {
-			// 	type: Date,
-			// 	default: dateStartVal
-			// }
 			
 		},
 		name: 'index',
@@ -159,7 +168,7 @@
 			// mCellMedia
 		},
 		data() {
-			// var d = new Date();
+			
 			return {
 				recommendData: [],
 				hotData: [],
@@ -168,13 +177,13 @@
 					endDate: '7-33'
 				},
 				dateVisible: false,
-				dateStartVal: new Date()
-
-
+				dateStartVal: new Date(),
+				dateEndVal: new Date(),
+				
 			}
 		},
 		created() {
-			this.fetchData();
+			// this.fetchData();
 		},
 		methods: {
 			fetchData() {
@@ -193,20 +202,39 @@
 					this.hotData = hot;
 				})
 			},
+			// 
 			startDateDialogShow() {
 				this.dateVisible = true;
 			},
 			startDateDialogHide() {
 				this.dateVisible = false;
 			},
-			triggerDate(date) {
+			// 触发入住
+			triggerStartDate(date) {
 				this.dateVisible = false;
 				var d = date;
 				var mm = d.getMonth() + 1;
 				var dd = d.getDate();
 				this.orderForm.startDate = mm + '-' + dd;
+			},
+			endDateDialogShow(){
+				this.dateVisible = true;
+			},
+			endDateDialogHide() {
+				this.dateVisible = false;
+			},
+			// 触发离开
+			triggerEndDate(date) {
+				this.dateVisible = false;
+				var d = date;
+				var mm = d.getMonth() + 1;
+				var dd = d.getDate();
+				this.orderForm.endDate = mm + '-' + dd;
+			},
+			// 提交搜索
+			submitFun(){
+				this.$router.push('/searchResult');
 			}
-			// <mu-date-input v-model="value1" label="选择日期" label-float full-width></mu-date-input>
 		}
 	}
 
@@ -215,13 +243,22 @@
 <style lang="less" scoped>
 	@import "../../assets/less/var.less";
 
+	.index-page {
+		height: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+	}
 	header.m-header {
 		padding: 0 0 0 10px;
 	}
 
-	.is-fixed~.page-content {
+	.is-fixed ~ .page-content {
 		padding-top: 44px;
 		padding-bottom: 50px;
+		height: 100%;
 	}
 
 	.top-search {
@@ -259,7 +296,7 @@
 		padding: 10px;
 		.reserve-wrap {
 			background: #ffffff;
-			padding: 0 12px 0 12px;
+			padding: 0 12px 12px 12px;
 			/* 选择位置 */
 			.select-location {
 				height: 67px;
@@ -427,6 +464,5 @@
 				color: rgba(255, 255, 255, 1);
 			}
 		}
-
 	}
 </style>

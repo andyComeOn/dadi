@@ -1,7 +1,7 @@
 {
 "vsicons.presets.angular": false,
   "files.associations": {
-    "*.vue": "html"
+    "*.vue": "vue"
   },
   "emmet.syntaxProfiles": {
     "vue-html": "html"

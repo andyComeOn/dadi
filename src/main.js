@@ -6,15 +6,16 @@ import router from './router'
 import Loading from './components/loading'
 import store from './store/store'
 import axios from 'axios'
-import VueAxios from 'vue-axios'
+Vue.prototype.$http = axios
+// import VueAxios from 'vue-axios'
 import MuseUI from 'muse-ui';
 import 'muse-ui/dist/muse-ui.css';
-
 import './assets/less/app.less'
 
-Vue.use(VueAxios, axios)
+// Vue.use(VueAxios, axios)
 Vue.use(Loading)
 Vue.use(MuseUI);
+
 
 new Vue({
 	el: '#app',

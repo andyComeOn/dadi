@@ -74,7 +74,6 @@
             .lf {
                 width: 83px;
                 height: 73px;
-                float: left;
                 margin-right: 10px;
                 img {
                     width: 83px;
