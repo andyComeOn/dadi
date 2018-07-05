@@ -1,10 +1,12 @@
 {
-"vsicons.presets.angular": false,
+  "vsicons.presets.angular": false,
   "files.associations": {
     "*.vue": "vue"
   },
   "emmet.syntaxProfiles": {
     "vue-html": "html"
-  }
+  },
+  "vetur.format.defaultFormatter.html": "prettier",
+  "prettier.tabWidth": 4
 
 }

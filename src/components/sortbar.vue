@@ -84,7 +84,7 @@
 	}
 
 </script>
-<style lang="less">
+<style>
 	@import '../assets/lib/swiper/css/swiper.css';
 
 	.swiper-container img {

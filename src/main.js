@@ -11,6 +11,9 @@ Vue.prototype.$http = axios
 import MuseUI from 'muse-ui';
 import 'muse-ui/dist/muse-ui.css';
 import './assets/less/app.less'
+import { Field } from 'mint-ui';
+import 'mint-ui/lib/style.css'
+Vue.component(Field.name, Field);
 
 // Vue.use(VueAxios, axios)
 Vue.use(Loading)

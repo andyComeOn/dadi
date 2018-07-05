@@ -27,7 +27,6 @@
 				</div>
 			</m-swipe>
 
-
 			<!-- <m-cell title="提醒" icon>
 				<img src="../../assets/images/ic_mine_notification.png" slot="icon">
 				<a href="javascript:;" slot="cell-right"><img src="../../assets/images/ic_arrow_gray_small.png" alt=""></a>
@@ -58,6 +57,7 @@
 					<span slot="describe">{{item.target.desc}}</span>
 				</m-cell-media>
 			</div> -->
+
 			<!-- 预定 -->
 			<div class="reserve-form">
 				<div class="reserve-wrap">
@@ -77,7 +77,6 @@
 								<br> 我的位置
 							</span>
 						</div>
-						
 					</div>
 					<!-- 入住时间 -->
 					<div class="time">
@@ -168,7 +167,6 @@
 			// mCellMedia
 		},
 		data() {
-			
 			return {
 				recommendData: [],
 				hotData: [],
@@ -179,7 +177,6 @@
 				dateVisible: false,
 				dateStartVal: new Date(),
 				dateEndVal: new Date(),
-				
 			}
 		},
 		created() {
@@ -242,7 +239,7 @@
 
 <style lang="less" scoped>
 	@import "../../assets/less/var.less";
-
+	// 最外层容器
 	.index-page {
 		height: 100%;
 		position: absolute;

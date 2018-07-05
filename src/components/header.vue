@@ -4,7 +4,7 @@
 			<slot name="left"></slot>
 		</div>
 		<h1 class="m-header-title" v-text="title"></h1>
-		<div class="m-header-button is-right">
+		<div class="m-header-button is-right" v-show="rightShow">
 			<slot name="right"></slot>
 		</div>
 	</header>
@@ -38,6 +38,10 @@
 			leftShow: {
 				type: Boolean,
 				default: true
+			},
+			rightShow: {
+				type: Boolean,
+				default: false
 			}
 		}
 	}
