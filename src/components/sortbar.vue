@@ -1,23 +1,11 @@
 <template>
-	<div class="calendar-container">
-		<mu-container>
-			<mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="isVisible">
-				<mu-appbar color="#30B097" title="请选择日期">
-					<mu-button slot="right" flat  @click="dialogHide">
-						关闭
-					</mu-button>
-				</mu-appbar>
-				<div style="padding: 24px 10px 0 10px;">
-					<mu-container>
-						<mu-flex justify-content="center" align-items="center" wrap="wrap">
-							<mu-paper :z-depth="1" class="demo-date-picker">
-								<mu-date-picker :date.sync="selectVal" @change="triggerChange" display-color="#30B097" color="#30B097"></mu-date-picker>
-							</mu-paper>
-						</mu-flex>
-					</mu-container>
-				</div>
-			</mu-dialog>
-		</mu-container>
+	<div class="sortbar-container">
+		<ul class="sortbar-wrapper">
+			<li class="normal" @click="sort(0)" :class="{active:active===0}">默认</li>
+			<li class="price" @click="sort(1)" :class="{active:active===1}">价格</li>
+			<li class="near" @click="sort(2)" :class="{active:active===2}">距离最近</li>
+		</ul>
+		
 	</div>
 </template>
 <script>
@@ -28,70 +16,48 @@
 				type: String,
 				default: ''
 			},
-			transition: {
-				type: String,
-				default: 'slide-bottom'
-			},
-			dialogHide: {
-				type: Function
-				
-			},
-			isVisible: {
-				type: Boolean,
-				default: false
-			},
-			autoplay: {
-				type: Number,
-				default: 5000,
-			},
-			paginationType: {
-				type: String,
-				default: 'bullets'
-			},
-			pagination: {
-				type: Boolean,
-				default: true
-			},
-			paginationDirection: {
-				type: String,
-				default: 'center'
-			}
+			
 		},
 		data (){
 			return {
-
+				active:0
 			}
 		},
-		mounted() {
-			var That = this;
-			new Swiper('.' + That.swipeid, {
-				//循环
-				loop: That.loop,
-				//分页器
-				pagination: '.swiper-pagination',
-				//分页类型
-				paginationType: That.paginationType, //fraction,progress,bullets
-				//自动播放
-				autoplay: That.autoplay,
-				//方向
-				direction: That.direction,
-				//特效
-				effect: That.effect, //slide,fade,coverflow,cube
-				//用户操作swiper之后，是否禁止autoplay
-				autoplayDisableOnInteraction: false,
-			})
+		mounted () {
+			
+		},
+		methods: {
+			// 排序筛选
+			sort(ind){
+				this.active = ind;
+			}
 		}
 	}
 
 </script>
-<style>
+<style lang="less" scoped>
+
 	@import '../assets/lib/swiper/css/swiper.css';
 
-	.swiper-container img {
-		width: 100%
+	.sortbar-container {
+		height: 40px;
+		padding: 10px 0;
+		.sortbar-wrapper {
+			height: 20px;
+			li {
+				width: 33.33%;
+				float: left;
+				height: 20px;
+				line-height: 20px;
+				text-align: center;
+				color: #666666;
+				&.active{
+					color: #30B097;
+				}
+			}
+			
+		}
 	}
 
-	.swiper-pagination-bullet-active {
-		background: #fff;
-	}
+	
 </style>

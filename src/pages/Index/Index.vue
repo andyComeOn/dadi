@@ -2,13 +2,13 @@
 	<div class="index-page">
 		<header class="m-header is-fixed is-bg top-search">
 			<div class="search-wrap">
-				<img src="../../assets/images/ic_search_gray.png" alt="">
+				<img src="../../assets/images/bak/ic_search_gray.png" alt="">
 				<span class="placeholder">影视 图书 唱片 小组 舞台剧等</span>
-				<img src="../../assets/images/ic_scan_gray.png" alt="">
+				<img src="../../assets/images/bak/ic_scan_gray.png" alt="">
 			</div>
 			<div class="m-header-button is-right" style="text-align: center;width: 50px;">
 				<a href="javascript:;">
-					<img class="m-icon-img" src="../../assets/images/ic_chat_white.png" />
+					<img class="m-icon-img" src="../../assets/images/bak/ic_chat_white.png" />
 				</a>
 			</div>
 		</header>
@@ -70,10 +70,10 @@
 						</div>
 						<div class="rg">
 							<span class="more">
-								<img src="../../assets/images/ic_arrow_gray_small.png" alt="">
+								<!-- <img src="../../assets/images/ic_arrow_gray_small.png" alt=""> -->
 							</span>
 							<span class="my-location">
-								<img src="../../assets/images/img/home_location.png" alt="">
+								<!-- <img src="../../assets/images/img/home_location.png" alt=""> -->
 								<br> 我的位置
 							</span>
 						</div>
@@ -150,7 +150,7 @@
 
 <script>
 	import mTabbarFa from '../../components/tabbarfa'
-	import mHeader from '../../components/header'
+	// import mHeader from '../../components/header'
 	import mSwipe from '../../components/swipe'
 	// import mCell from '../../components/cell'
 	// import mCellMedia from '../../components/cell-media'
@@ -161,7 +161,7 @@
 		name: 'index',
 		components: {
 			mTabbarFa,
-			mHeader,
+			// mHeader,
 			mSwipe
 			// mCell,
 			// mCellMedia

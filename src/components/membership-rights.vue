@@ -5,7 +5,7 @@
 				秋果会员权益
 			</div>
 			<div class="is-right" v-show="rightShow">
-				<img src="../assets/images/ic_seti_arrow_right_gray.png" alt="">
+				<img src="../assets/images/bak/ic_seti_arrow_right_gray.png" alt="">
 			</div>
 		</div>
 	</div>

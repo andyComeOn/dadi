@@ -41,14 +41,14 @@
 		},
 		computed: {
 			isActive() {
-				if (this.$parent.value === this.id) {
+				if (this.$parent.val === this.id) {
 					return true;
 				}
 			}
 		},
 		methods: {
 			goToRouter() {
-				this.$parent.$emit('input', this.id)
+				//this.$parent.$emit('input', this.id)
 				if (this.isRouter) {
 					this.$router.push(this.id)
 				}
@@ -63,16 +63,16 @@
 		text-align: center;
 		.m-tabbar-item-icon {
 			display: block;
-			padding-top: 2px;
+			padding-top: 5px;
 			img {
-				width: 28px;
-				height: 28px;
+				width: 24px;
+				height: 24px;
 			}
 		}
 		.m-tabbar-item-text {
 			display: block;
 			font-size: 10px;
-			color: #949494;
+			color: #999999;
 		}
 		&.is-active {
 			.m-tabbar-item-text {

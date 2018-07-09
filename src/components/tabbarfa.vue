@@ -1,18 +1,20 @@
 <template>
-	<m-tabbar v-model="select">
-		<m-tabbar-item id='Index' isRouter>
-			<img src="../assets/images/ic_tab_home_normal.png" alt="" slot="icon-normal">
-			<img src="../assets/images/ic_tab_home_active.png" alt="" slot="icon-active"> 首页
-		</m-tabbar-item>
-		<m-tabbar-item id='Nearby' isRouter>
-			<img src="../assets/images/ic_tab_subject_normal.png" alt="" slot="icon-normal">
-			<img src="../assets/images/ic_tab_subject_active.png" alt="" slot="icon-active"> 附近的酒店
-		</m-tabbar-item>
-		<m-tabbar-item id='Mine' isRouter>
-			<img src="../assets/images/ic_tab_profile_normal.png" alt="" slot="icon-normal">
-			<img src="../assets/images/ic_tab_profile_active.png" alt="" slot="icon-active"> 我的
-		</m-tabbar-item>
-	</m-tabbar>
+	<div class="tabbarfa">
+		<m-tabbar v-model="select">
+			<m-tabbar-item id='index' isRouter>
+				<img src="../assets/images/tabbar/ic_tab_home_normal.png" alt="" slot="icon-normal">
+				<img src="../assets/images/tabbar/ic_tab_home_active.png" alt="" slot="icon-active"> 首页
+			</m-tabbar-item>
+			<m-tabbar-item id='nearby' isRouter>
+				<img src="../assets/images/tabbar/ic_tab_nearby_normal.png" alt="" slot="icon-normal">
+				<img src="../assets/images/tabbar/ic_tab_nearby_active.png" alt="" slot="icon-active"> 附近的酒店
+			</m-tabbar-item>
+			<m-tabbar-item id='mine' isRouter>
+				<img src="../assets/images/tabbar/ic_tab_mine_normal.png" alt="" slot="icon-normal">
+				<img src="../assets/images/tabbar/ic_tab_mine_active.png" alt="" slot="icon-active"> 我的
+			</m-tabbar-item>
+		</m-tabbar>
+	</div>
 
 </template>
 
@@ -27,7 +29,7 @@
 		},
 		data() {
 			return {
-				select: "Index"
+				select: ""
 			}
 		}
 	}

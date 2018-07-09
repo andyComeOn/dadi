@@ -2,27 +2,57 @@
     <div class="room-wrapper">
         <ul class="list">
             <li>
+                <!-- 左边图片展示 -->
                 <div class="lf">
                     <img src="../assets/images/img/room.png" alt="">
                 </div>
 
+                <!-- 中间 -->
                 <div class="md">
+                    <!-- 大标题 -->
                     <p class="name m-ellipsis">明星商务间</p>
-                    <div class="label">
+                    <!-- 酒店设施集合 -->
+                    <div class="labels">
                         <span>18平</span>
                         <span>大床房</span>
                         <span>大浴缸</span>
                     </div>
-                    <p class="collection">
-                        <span>收藏</span>
-                    </p>
-                </div>
-                <div class="rg">
+                    <!-- 价格（新、旧） -->
                     <div class="price">
-                        <div class="price-now">&yen;856856</div>
-                        <div class="price-hty">&yen;399</div>
+                        <span class="price-new">&yen;856856</span>
+                        <span class="price-old">&yen;399</span>
                     </div>
-                    <div class="book">预订</div>
+                </div>
+                <!-- 右侧预定按钮 -->
+                <div class="rg">
+                    <span class="book" @click="book">预订</span>
+                </div>
+            </li>
+            <li>
+                <!-- 左边图片展示 -->
+                <div class="lf">
+                    <img src="../assets/images/img/room.png" alt="">
+                </div>
+
+                <!-- 中间 -->
+                <div class="md">
+                    <!-- 大标题 -->
+                    <p class="name m-ellipsis">明星商务间</p>
+                    <!-- 酒店设施集合 -->
+                    <div class="labels">
+                        <span>18平</span>
+                        <span>大床房</span>
+                        <span>大浴缸</span>
+                    </div>
+                    <!-- 价格（新、旧） -->
+                    <div class="price">
+                        <span class="price-new">&yen;856856</span>
+                        <span class="price-old">&yen;399</span>
+                    </div>
+                </div>
+                <!-- 右侧预定按钮 -->
+                <div class="rg">
+                    <span class="book" @click="book">预订</span>
                 </div>
             </li>
         </ul>
@@ -44,10 +74,14 @@
         },
         data() {
             return {
-                // list : [{},{},{}]
+                
+            }
+        },
+        methods:{
+            book(){
+                this.$router.push('/order')
             }
         }
-
     }
 </script>
 
@@ -71,6 +105,7 @@
                 background: @tabbarBorderColor;
                 transform: scaleY(0.5);
             }
+            // 左边图片展示 
             .lf {
                 width: 83px;
                 height: 73px;
@@ -79,67 +114,52 @@
                     width: 83px;
                     height: 73px;
                 }
-
             }
+            // 中间
             .md {
                 flex: 1;
                 height: 73px;
                 padding: 8px 0 0 0;
-                font-family: PingFangSC-Regular;
                 color: rgba(153, 153, 153, 1);
+                // 酒店名称
                 .name {
                     height: 20px;
                     font-size: 14px;
                     color: rgba(51, 51, 51, 1);
                     line-height: 20px;
                 }
-                .label {
+                // 酒店房间标签
+                .labels {
                     height: 16px;
-                    font-size: 12px;
                     line-height: 16px;
+                    font-size: 12px;
                     margin-bottom: 6px;
                 }
-                .collection {
-                    padding-left: 20px;
-                    height: 17px;
-                    font-size: 12px;
-                    line-height: 17px;
-                    /* background: url() no-repeat left center; */
-                }
-            }
-            .rg {
-                width: 110px;
-                height: 73px;
-                display: flex;
-                flex-direction: row;
-                align-items: center;
+                // 价格
                 .price {
-                    flex: 1;
-                    height: 73px;
-                    /* display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center; */
-                    padding-right: 10px;
-                    .price-now {
-                        width: 100%;
-                        height: 19px;
+                    height: 19px;
+                    vertical-align: bottom;
+                    .price-new {
                         line-height: 19px;
-                        margin: 22px 0 0 0;
+                        margin-right: 5px;
                         color: #FFBA56;
                         font-size: 12px;
-                        text-align: right;
-
                     }
-                    .price-hty {
+                    .price-old {
                         color: #cccccc;
                         font-size: 10px;
                         line-height: 14px;
                         text-decoration: line-through;
-                        text-align: right;
                     }
                 }
+            }
+            // 右侧预定按钮
+            .rg {
+                width: 44px;
+                height: 73px;
+                line-height: 73px;
                 .book {
+                    display: inline-block;
                     width: 44px;
                     height: 27px;
                     line-height: 27px;
@@ -149,10 +169,7 @@
                     background: rgba(48, 176, 151, 1);
                     border-radius: 5px;
                 }
-
             }
         }
-
-
     }
 </style>

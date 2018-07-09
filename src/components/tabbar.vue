@@ -4,12 +4,22 @@
 	</div>
 </template>
 <script>
-	import mTabbarItem from './tabbar-item';
+	// import mTabbarItem from './tabbar-item';
 	export default {
 		props: [],
+		components :{
+			
+		},
+		data(){
+			return {
+				
+			}
+		},
+		created() {
+			
+		},
 		computed: {
-			value() {
-				console.log(this.$route.matched[0].name);
+			val() {
 				return this.$route.matched[0].name
 			}
 		}
