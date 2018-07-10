@@ -17,7 +17,7 @@
             </div>
 
             <!-- dialog -->
-            
+
             <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="isCityDialogShow">
                 <mu-appbar color="#30B097" title="请选择日期">
                     <mu-button slot="right" flat>
@@ -25,15 +25,15 @@
                     </mu-button>
                 </mu-appbar>
                 <div style="padding: 24px 10px 0 10px;">
-                    
+
                     <div style="height：20px;line-height:20px;margin-bottom:8px;" @click="citySelect('上海')">上海</div>
                     <div style="height：20px;line-height:20px;margin-bottom:8px;" @click="citySelect('苏州')">苏州</div>
                     <div style="height：20px;line-height:20px;margin-bottom:8px;" @click="citySelect('天津')">天津</div>
                     <div style="height：20px;line-height:20px;margin-bottom:8px;" @click="citySelect('郑州')">郑州</div>
-                    
+
                 </div>
             </mu-dialog>
-			
+
         </div>
     </div>
 </template>
@@ -43,22 +43,19 @@ export default {
     props: [],
     data() {
         return {
-            isCityDialogShow:false,
-            city:'北京'
-
+            isCityDialogShow: false,
+            city: "北京"
         };
     },
-    created() {
-        
-    },
+    created() {},
     mounted() {},
     methods: {
-        cityToast(){
+        cityToast() {
             this.isCityDialogShow = true;
         },
-        citySelect(val){
+        citySelect(val) {
             this.city = val;
-            this.$emit('citySelectVal',val);
+            this.$emit("citySelectVal", val);
             this.isCityDialogShow = false;
         }
     }

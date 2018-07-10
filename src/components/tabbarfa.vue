@@ -29,7 +29,7 @@
 		},
 		data() {
 			return {
-				select: ""
+				select: "index"
 			}
 		}
 	}

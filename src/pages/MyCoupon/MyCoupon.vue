@@ -1,6 +1,7 @@
 <template>
 	<div class="my-coupon-page m-position-ab" >
-		<mCoupon :post="list"></mCoupon>
+		<mCoupon @nowUseEmit="nowUseFun" :list="posts"></mCoupon>
+		<div>{{type}}</div>
 	</div>
 
 </template>
@@ -14,27 +15,36 @@ export default {
 	},
 	data(){
 		return {
-			list:[
+			posts:[
 				{
 					name:'秋果酒店代金券',
 					dateArea:'有效期：2018.07.08 至 2018.07.20',
 					desc:'满500可用',
-					price:399
+					price:399,
+					type:0
 				},
 				{
 					name:'秋果酒店代金券',
 					dateArea:'有效期：2018.07.08 至 2018.07.20',
 					desc:'满500可用',
-					price:399
+					price:399,
+					type:1
 				},
 				{
 					name:'秋果酒店代金券',
 					dateArea:'有效期：2018.07.08 至 2018.07.20',
 					desc:'满500可用',
-					price:399
+					price:399,
+					type:2
 				},
-
-			]
+			],
+			type:0
+		}
+	},
+	methods:{
+		nowUseFun(val){
+			console.log(val);
+			this.type = val;
 		}
 	}
 };

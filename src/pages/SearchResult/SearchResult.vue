@@ -1,6 +1,6 @@
 <template>
 	<div class="search-result">
-		<searchbar @citySelectVal="citySelectValFun($event)"></searchbar>
+		<searchbar v-bind:citySelectVal="citySelectValFun($event)"></searchbar>
 		<sortbar></sortbar>
 		<div @click="watchObj.flag=!watchObj.flag">btn</div>
 		<refreshbar></refreshbar>

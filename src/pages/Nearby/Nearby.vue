@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<m-header title="附近的酒店" fixed leftShow rightShow >
+		<m-header title="附近的酒店" fixed leftShow rightShow>
 			<a href="javascript:;" slot="left">
 				<img class="m-icon-img margin-right-10" src="../../assets/images/bak/ic_actionbar_search_icon.png" />
 			</a>

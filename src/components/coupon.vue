@@ -1,17 +1,6 @@
 <template>
 	<div class="coupon">
-		
-		<div class="item" v-for="(item,index) in post" :key="index">
-			<!-- <div class="lf">
-				<div class="name">秋果酒店代金券</div>
-				<div class="date-area"></div>
-				<div class="desc"></div>
-			</div>
-			<div class="rg">
-				<div class="price"> <span>&yen;</span>50</div>
-				<div class="now-use">立即使用</div>
-			</div> -->
-
+		<div class="item" v-for="(item,index) in list" :key="index">
 			<div class="lf">
 				<div class="name">{{item.name}}</div>
 				<div class="date-area">{{item.dateArea}}</div>
@@ -19,14 +8,21 @@
 			</div>
 			<div class="rg">
 				<div class="price"> <span>&yen;</span>{{item.price}}</div>
-				<div class="now-use">立即使用</div>
+				<div class="now-use" @click="nowUse(item.type)">立即使用</div>
 			</div>
 		</div>
 	</div>
 </template>
 <script>
 	export default {
-		props:['post'],
+		props:{
+			list: {
+				type: Array,
+				default: function(){
+					return []
+				}
+			},
+		}, 
 
 		data (){
 			return {
@@ -37,7 +33,10 @@
 			
 		},
 		methods: {
-			
+			nowUse(type){
+				// console.log(type);
+				this.$emit('nowUseEmit',type);
+			}
 		}
 	}
 
@@ -99,6 +98,4 @@
 			}
 		}
 	}
-
-	
 </style>
