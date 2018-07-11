@@ -40,7 +40,7 @@ export default {
     data() {
         return {
             urlGetInfo:{
-                city:decodeURI(getUrlParam("city")),
+                city:getUrlParam("city"),
                 startDate: getUrlParam("startDate"),
                 endDate:getUrlParam("endDate"),
                 word:getUrlParam("word")
@@ -62,7 +62,7 @@ export default {
     },
     mounted() {
         // this.roomList = data.list;
-        console.log(this.urlGetInfo.city);
+        console.log(this.urlGetInfo);
     },
     methods: {
         fu() {

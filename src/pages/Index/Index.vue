@@ -194,7 +194,7 @@
 				dateEndInitVal : formateTomorrow(),
 				dateStartVal: new Date(),
 				dateEndVal: new Date(),
-				city:'北京'
+				city:'bj'
 				
 			}
 		},
@@ -235,7 +235,7 @@
 				this.$router.push({
 					path: '/searchResult',
 					query: {
-						city: encodeURI(this.city),
+						city: this.city,
 						startDate:this.dateStartInitVal,
 						endDate:this.dateEndInitVal
 					}
