@@ -1,6 +1,5 @@
 ﻿# 大地阳光微店
 
-
 用 vue2.0 实现，将用到 vue-router+webpack+axios+vuex
 
 ## Build Setup
