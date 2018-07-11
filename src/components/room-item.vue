@@ -47,6 +47,8 @@
 </template>
 
 <script>
+
+import {store_list} from '../api/api';
 export default {
     name: "room-wrapper",
     props: ["condition"],
@@ -110,23 +112,20 @@ export default {
     created() {
         var param = { cpid: 1 };
         this.fetchData(param);
+        
     },
     mounted() {},
     methods: {
         fetchData(param) {
             this.$http({
                 method: "POST",
-                url: "/api/Store/store_list",
+                url: store_list,
                 data: param
             }).then(res => {
                 console.log(res);
             });
 
-            // this.$http({
-            // 	method: "post",
-            // 	url: "/api/Store/store_list",
-            // 	data: param,
-            // }).
+            
         }
     }
 };

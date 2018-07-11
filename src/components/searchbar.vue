@@ -5,11 +5,10 @@
             <span class="stick">|</span>
             <div class="date-wrapper">
                 <div class="date-area">
-                    <span class="start">02-26</span><br>
-                    <span class="end">02-27</span>
+                    <span class="start">{{startDate}}</span><br>
+                    <span class="end">{{startDate}}</span>
                 </div>
-                <div class="date-instro">
-                    <span>1</span>晚</div>
+                <div class="date-instro"><span>1</span>晚</div>
             </div>
             <span class="stick">|</span>
             <div class="search">
@@ -25,12 +24,10 @@
                     </mu-button>
                 </mu-appbar>
                 <div style="padding: 24px 10px 0 10px;">
-
                     <div style="height：20px;line-height:20px;margin-bottom:8px;" @click="citySelect('上海')">上海</div>
                     <div style="height：20px;line-height:20px;margin-bottom:8px;" @click="citySelect('苏州')">苏州</div>
                     <div style="height：20px;line-height:20px;margin-bottom:8px;" @click="citySelect('天津')">天津</div>
                     <div style="height：20px;line-height:20px;margin-bottom:8px;" @click="citySelect('郑州')">郑州</div>
-
                 </div>
             </mu-dialog>
 
@@ -40,11 +37,16 @@
 <script>
 // import '../assets/lib/swiper/js/swiper.js'
 export default {
-    props: [],
+    props: [
+        'city',
+        'startDate',
+        'endDate',
+        'word'
+    ],
     data() {
         return {
             isCityDialogShow: false,
-            city: "北京"
+            
         };
     },
     created() {},

@@ -72,3 +72,4 @@ export function view() {
     h: document.documentElement.clientHeight
   };
 }
+

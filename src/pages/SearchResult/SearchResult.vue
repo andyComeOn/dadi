@@ -1,8 +1,13 @@
 <template>
 	<div class="search-result">
-		<searchbar v-bind:citySelectVal="citySelectValFun"></searchbar>
+		<searchbar 
+            v-bind:citySelectVal="citySelectValFun" 
+            :city="urlGetInfo.city" 
+            :startDate="urlGetInfo.startDate"
+            :endDate="urlGetInfo.endDate"
+            :word="urlGetInfo.word"></searchbar>
 		<sortbar></sortbar>
-		<div @click="watchObj.flag=!watchObj.flag">btn</div>
+		<!-- <div @click="watchObj.flag=!watchObj.flag">btn</div> -->
 		<refreshbar></refreshbar>
 		<div class="">
 			<noSearchResult></noSearchResult>
@@ -18,6 +23,7 @@ import searchbar from "../../components/searchbar";
 import sortbar from "../../components/sortbar";
 import refreshbar from "../../components/refresh-bar";
 import noSearchResult from "../../components/no-search-result";
+import {getUrlParam} from "../../utils/util";
 
 export default {
     name: "search-result",
@@ -28,8 +34,17 @@ export default {
         refreshbar,
         noSearchResult
     },
+    props:{
+
+    },
     data() {
         return {
+            urlGetInfo:{
+                city:decodeURI(getUrlParam("city")),
+                startDate: getUrlParam("startDate"),
+                endDate:getUrlParam("endDate"),
+                word:getUrlParam("word")
+            },
             watchObj: {
                 flag: true,
 				searchForm:{city:''},
@@ -42,8 +57,12 @@ export default {
 			// Object.assign();
         };
     },
+    created() {
+        
+    },
     mounted() {
         // this.roomList = data.list;
+        console.log(this.urlGetInfo.city);
     },
     methods: {
         fu() {

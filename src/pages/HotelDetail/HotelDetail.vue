@@ -80,7 +80,6 @@ export default {
 						padding-right: 14px; 		
 						background: url('../../assets/images/arrows/ic-arrow_10_18.png') no-repeat right center;
 						background-size: 5px 9px;	
-								
 					}
 				}
 			}

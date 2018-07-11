@@ -9,11 +9,14 @@ import store from './store/store'
 import axios from 'axios'
 Vue.prototype.$http = axios
 
+// 引入muse-ui
 import MuseUI from 'muse-ui';
 import 'muse-ui/dist/muse-ui.css';
 
+// 引入一些公共的样式
 import './assets/less/app.less'
 
+// 引入饿了么移动端mint-ui
 import { Field } from 'mint-ui';
 import 'mint-ui/lib/style.css'
 
@@ -30,6 +33,19 @@ Vue.use(Loading)
 
 Vue.use(MuseUI);
 
+
+// router.beforeEach((to, from, next) => {
+// 	//NProgress.start();
+// 	if (to.path == '/login') {
+// 	  sessionStorage.removeItem('user');
+// 	}
+// 	let user = JSON.parse(sessionStorage.getItem('user'));
+// 	if (!user && to.path != '/login') {
+// 	  next({ path: '/login' })
+// 	} else {
+// 	  next()
+// 	}
+// })
 
 new Vue({
 	el: '#app',

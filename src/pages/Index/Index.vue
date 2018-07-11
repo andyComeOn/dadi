@@ -64,16 +64,18 @@
 					<!-- 位置选择 -->
 					<div class="select-location">
 						<div class="lf">
-							<span class="dest">目的地</span>
-							<br>
-							<span class="city">北京</span>
+							<div class="dest-city">
+								<span class="dest">目的地</span>
+									<br>
+								<span class="city">{{city}}</span>
+							</div>
+							<div class="dest-city-more">
+								<img src="../../assets/images/arrows/ic-arrow_10_18.png" alt="">
+							</div>
 						</div>
 						<div class="rg">
-							<span class="more">
-								<!-- <img src="../../assets/images/ic_arrow_gray_small.png" alt=""> -->
-							</span>
 							<span class="my-location">
-								<!-- <img src="../../assets/images/img/home_location.png" alt=""> -->
+								<img src="../../assets/images/home_location.png" alt="">
 								<br> 我的位置
 							</span>
 						</div>
@@ -83,54 +85,46 @@
 						<div class="lf">
 							<span class="instr">入住</span>
 							<br>
-							<span class="date" v-model="orderForm.startDate" @click="startDateDialogShow">{{orderForm.startDate}}</span>
+							<span class="date" @click="startDateDialogShow">{{dateStartInitVal}}</span>
 							<!-- 入住时间 -->
-							<mu-container>
-								<mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="dateVisible">
-									<mu-appbar color="#30B097" title="请选择日期">
-										<mu-button slot="right" flat  @click="startDateDialogHide">
-											关闭
-										</mu-button>
-									</mu-appbar>
-									<div style="padding: 24px 10px 0 10px;">
-										<mu-container>
-											<mu-flex justify-content="center" align-items="center" wrap="wrap">
-												<mu-paper :z-depth="1" class="demo-date-picker">
-													<mu-date-picker :date.sync="dateStartVal" @change="triggerStartDate" display-color="#30B097" color="#30B097"></mu-date-picker>
-												</mu-paper>
-											</mu-flex>
-										</mu-container>
-									</div>
-								</mu-dialog>
-							</mu-container>
+							<mu-dialog width="360" transition="slide-right" fullscreen :open.sync="calendarVisible">
+								<mu-appbar color="#30B097" title="请选择日期">
+									<mu-button slot="right" flat  @click="startDateDialogHide">
+										关闭
+									</mu-button>
+								</mu-appbar>
+								<div style="padding: 24px 10px 0 10px;">
+									<mu-flex justify-content="center" align-items="center" wrap="wrap">
+										<mu-paper :z-depth="1" class="demo-date-picker">
+											<mu-date-picker :date.sync="dateStartVal" @change="triggerStartDate" display-color="#30B097" color="#30B097"></mu-date-picker>
+										</mu-paper>
+									</mu-flex>
+								</div>
+							</mu-dialog>
 						</div>
 						<div class="md">
-							共
-							<span class="num" id="num">1</span>晚
+							共1晚
 						</div>
 						<div class="rg">
 							<span class="instr">离店</span>
 							<br>
-							<span class="date" v-model="orderForm.endDate" @click="endDateDialogShow">{{orderForm.endDate}}</span>
+							<span class="date" @click="endDateDialogShow">{{dateEndInitVal}}</span>
 							<!-- 离开时间 -->
-							<mu-container>
-								<mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="dateVisible">
-									<mu-appbar color="#30B097" title="请选择日期">
-										<mu-button slot="right" flat  @click="endDateDialogHide">
-											关闭
-										</mu-button>
-									</mu-appbar>
-									<div style="padding: 24px 10px 0 10px;">
-										<mu-container>
-											<mu-flex justify-content="center" align-items="center" wrap="wrap">
-												<mu-paper :z-depth="1" class="demo-date-picker">
-													<mu-date-picker :date.sync="dateEndVal" @change="triggerEndDate" display-color="#30B097" color="#30B097"></mu-date-picker>
-												</mu-paper>
-											</mu-flex>
-										</mu-container>
-									</div>
-								</mu-dialog>
-							</mu-container>
+							<mu-dialog width="360" transition="slide-right" fullscreen :open.sync="calendarVisible">
+								<mu-appbar color="#30B097" title="请选择日期">
+									<mu-button slot="right" flat  @click="endDateDialogHide">
+										关闭
+									</mu-button>
+								</mu-appbar>
+								<div style="padding: 24px 10px 0 10px;">
+									
+									<mu-flex justify-content="center" align-items="center" wrap="wrap">
+										<mu-paper :z-depth="1" class="demo-date-picker">
+											<mu-date-picker :date.sync="dateEndVal" @change="triggerEndDate" display-color="#30B097" color="#30B097"></mu-date-picker>
+										</mu-paper>
+									</mu-flex>
+								</div>
+							</mu-dialog>
 						</div>
 					</div>
 					<!-- 关键词搜索 -->
@@ -149,22 +143,42 @@
 </template>
 
 <script>
+	
+	import {formateToday,formateTomorrow,formatePara} from '../../utils/date';
 	import mTabbarFa from '../../components/tabbarfa'
 	// import mHeader from '../../components/header'
 	import mSwipe from '../../components/swipe'
-	// import mCell from '../../components/cell'
-	// import mCellMedia from '../../components/cell-media'
 	export default {
 		props: {
-			
+			// dateStartVal:{
+			// 	type: Date,
+			// 	default: function(){
+			// 		// var d = new Date();
+			// 		// var mm = (d.getMonth() + 1 < 10) ? '0' + (d.getMonth() + 1): (d.getMonth() + 1) ;
+			// 		// var dd = d.getDate();
+			// 		// return mm + '-' + dd
+			// 		return new Date()
+			// 	}
+			// },
+
+			// dateEndVal:{
+			// 	type: Date,
+			// 	default: function(){
+			// 		// var d = new Date();
+			// 		// var mm = (d.getMonth() + 1 < 10) ? '0' + (d.getMonth() + 1): (d.getMonth() + 1) ;
+			// 		// var dd = d.getDate();
+			// 		// return mm + '-' + dd
+
+			// 		return new Date()
+			// 	}
+			// }
+
 		},
 		name: 'index',
 		components: {
 			mTabbarFa,
 			// mHeader,
 			mSwipe
-			// mCell,
-			// mCellMedia
 		},
 		data() {
 			return {
@@ -174,9 +188,14 @@
 					startDate: '7-22',
 					endDate: '7-33'
 				},
-				dateVisible: false,
+				calendarVisible: false,
+
+				dateStartInitVal : formateToday(),
+				dateEndInitVal : formateTomorrow(),
 				dateStartVal: new Date(),
 				dateEndVal: new Date(),
+				city:'北京'
+				
 			}
 		},
 		created() {
@@ -184,53 +203,43 @@
 		},
 		methods: {
 			fetchData() {
-				this.axios.get('/api/homeData').then((response) => {
-					let data = response.data.data.recommend_feeds;
-					let recommend = [];
-					let hot = [];
-					for (var i in data) {
-						if (data[i].card && data[i].card.name == '为你推荐') {
-							recommend.push(data[i]);
-						} else {
-							hot.push(data[i]);
-						}
-					}
-					this.recommendData = recommend;
-					this.hotData = hot;
-				})
+				
 			},
 			// 
 			startDateDialogShow() {
-				this.dateVisible = true;
+				this.calendarVisible = true;
 			},
 			startDateDialogHide() {
-				this.dateVisible = false;
+				this.calendarVisible = false;
 			},
 			// 触发入住
 			triggerStartDate(date) {
-				this.dateVisible = false;
-				var d = date;
-				var mm = d.getMonth() + 1;
-				var dd = d.getDate();
-				this.orderForm.startDate = mm + '-' + dd;
+				this.calendarVisible = false;
+				this.dateStartInitVal = formatePara(date);
 			},
 			endDateDialogShow(){
-				this.dateVisible = true;
+				this.calendarVisible = true;
 			},
 			endDateDialogHide() {
-				this.dateVisible = false;
+				this.calendarVisible = false;
 			},
 			// 触发离开
 			triggerEndDate(date) {
-				this.dateVisible = false;
-				var d = date;
-				var mm = d.getMonth() + 1;
-				var dd = d.getDate();
-				this.orderForm.endDate = mm + '-' + dd;
+				this.calendarVisible = false;
+				this.dateEndInitVal = formatePara(date);
+				
 			},
 			// 提交搜索
+			// this.$route.query.id
 			submitFun(){
-				this.$router.push('/searchResult');
+				this.$router.push({
+					path: '/searchResult',
+					query: {
+						city: encodeURI(this.city),
+						startDate:this.dateStartInitVal,
+						endDate:this.dateEndInitVal
+					}
+				});
 			}
 		}
 	}
@@ -298,30 +307,49 @@
 			.select-location {
 				height: 67px;
 				padding: 12px 0;
-				position: relative;
+				display: flex;
+				flex-direction: row;
+
 				.lf {
-					width: 120px;
+					flex: 1;
 					height: 43px;
-					float: left;
-					.dest {
-						display: inline-block;
-						line-height: 16px;
-						margin-bottom: 5px;
-						font-size: 12px;
-						color: #999999;
+					position: relative;
+					.dest-city{
+						position: relative;
+						.dest {
+							padding: 0 10px;
+							display: inline-block;
+							line-height: 16px;
+							margin-bottom: 4px;
+							font-size: 12px;
+							color: #999999;
+						}
+						.city {
+							padding: 0 15px;
+							display: inline-block;
+							line-height: 22px;
+							font-size: 16px;
+							color: #333333;
+						}
 					}
-					.city {
-						display: inline-block;
-						line-height: 22px;
-						font-size: 16px;
-						color: #333333;
+					.dest-city-more{
+						width: 10px;
+						height: 18px;
+						position: absolute;
+						top: 50%;
+						margin-top:-9px; 
+						right: -2px;
+						img{
+							width: 10px;
+							height: 18px;
+						}
 					}
+					
 				}
 				.rg {
-					width: 120px;
+					width: 70px;
 					height: 43px;
 					padding-right: 12px;
-					float: right;
 					text-align: right;
 					.more {
 						width: 20px;
@@ -335,10 +363,10 @@
 						}
 					}
 					.my-location {
-						display: inline-block;
 						height: 43px;
 						vertical-align: top;
 						text-align: center;
+						float:right;
 						img {
 							width: 20px;
 							height: 20px;
@@ -367,13 +395,16 @@
 					height: 43px;
 					float: left;
 					.instr {
+						padding: 0 10px;
 						line-height: 16px;
 						margin-bottom: 5px;
 						font-size: 12px;
 						color: #999999;
 					}
 					.date {
+						padding: 0 15px;
 						display: inline-block;
+						height: 22px;
 						line-height: 22px;
 						font-size: 16px;
 						color: #333333;
@@ -400,6 +431,7 @@
 					float: right;
 					text-align: right;
 					.instr {
+						padding-right:0px; 
 						display: inline-block;
 						line-height: 16px;
 						margin-bottom: 5px;
@@ -407,7 +439,9 @@
 						color: #999999;
 					}
 					.date {
+						padding-right:15px; 
 						display: inline-block;
+						height: 22px;
 						line-height: 22px;
 						font-size: 16px;
 						color: #333333;
