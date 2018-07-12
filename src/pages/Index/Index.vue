@@ -12,7 +12,11 @@
 				</a>
 			</div>
 		</header>
+
+		<!-- 主内容-->
 		<div class="page-content">
+
+			<!-- 轮播 -->
 			<m-swipe swipeid="swipe01" :autoplay="1000" paginationDirection="right">
 				<div class="swiper-slide " slot="swiper-con">
 					<router-link to="/hotelDetail">
@@ -27,46 +31,15 @@
 				</div>
 			</m-swipe>
 
-			<!-- <m-cell title="提醒" icon>
-				<img src="../../assets/images/ic_mine_notification.png" slot="icon">
-				<a href="javascript:;" slot="cell-right"><img src="../../assets/images/ic_arrow_gray_small.png" alt=""></a>
-      		</m-cell> -->
-			<!-- <m-cell title="设置">
-        		<a href="javascript:;" slot="cell-right"><img src="../../assets/images/ic_arrow_gray_small.png" alt=""></a>
-			</m-cell> -->
-
-			<!--热门-->
-			<!-- <div class="hot-wrap">
-				<m-cell title="热门" label="hot">
-					<a href="javascript:;" slot="cell-right">更多
-						<img src="../../assets/images/ic_arrow_gray_small.png" alt="">
-					</a>
-				</m-cell>
-				<m-cell-media :author="item.target.author.name" :column="item.source_cn" :img="item.target.cover_url" v-for="(item,index) in hotData"
-				 :key="item.id">
-					<span slot="title">{{item.title}}</span>
-					<span slot="describe">{{item.target.desc}}</span>
-				</m-cell-media>
-			</div> -->
-
-			<!--推荐-->
-			<!-- <div class="recommend-wrap">
-				<m-cell title="推荐" label="recommend"></m-cell>
-				<m-cell-media  :author="item.target.author.name" :column="item.source_cn" :bg="item.target.cover_url" v-for="(item,index) in recommendData" :key="item.id">
-					<span slot="title">{{item.title}}</span>
-					<span slot="describe">{{item.target.desc}}</span>
-				</m-cell-media>
-			</div> -->
-
-			<!-- 预定 -->
+			<!-- 用户预定区 -->
 			<div class="reserve-form">
 				<div class="reserve-wrap">
+
 					<!-- 位置选择 -->
 					<div class="select-location">
 						<div class="lf">
 							<div class="dest-city">
-								<span class="dest">目的地</span>
-									<br>
+								<span class="dest">目的地</span><br>
 								<span class="city">{{city}}</span>
 							</div>
 							<div class="dest-city-more">
@@ -75,18 +48,18 @@
 						</div>
 						<div class="rg">
 							<span class="my-location">
-								<img src="../../assets/images/home_location.png" alt="">
-								<br> 我的位置
+								<img src="../../assets/images/home_location.png" alt=""><br> 我的位置
 							</span>
 						</div>
 					</div>
-					<!-- 入住时间 -->
+
+					<!-- 入住和离店 -->
 					<div class="time">
+						<!-- 入住模块 -->
 						<div class="lf">
-							<span class="instr">入住</span>
-							<br>
+							<span class="instr">入住</span><br>
 							<span class="date" @click="startDateDialogShow">{{dateStartInitVal}}</span>
-							<!-- 入住时间 -->
+							<!-- 入住日历弹框 -->
 							<mu-dialog width="360" transition="slide-right" fullscreen :open.sync="calendarVisible">
 								<mu-appbar color="#30B097" title="请选择日期">
 									<mu-button slot="right" flat  @click="startDateDialogHide">
@@ -102,22 +75,22 @@
 								</div>
 							</mu-dialog>
 						</div>
-						<div class="md">
-							共1晚
-						</div>
+
+						<!-- 入住几晚 -->
+						<div class="md">共1晚</div>
+
+						<!-- 离店模块 -->
 						<div class="rg">
-							<span class="instr">离店</span>
-							<br>
+							<span class="instr">离店</span><br>
 							<span class="date" @click="endDateDialogShow">{{dateEndInitVal}}</span>
-							<!-- 离开时间 -->
-							<mu-dialog width="360" transition="slide-right" fullscreen :open.sync="calendarVisible">
+							<!-- 离店日历弹框 -->
+							<mu-dialog width="360" transition="slide-right" fullscreen :open.sync="calendarVisible1">
 								<mu-appbar color="#30B097" title="请选择日期">
 									<mu-button slot="right" flat  @click="endDateDialogHide">
 										关闭
 									</mu-button>
 								</mu-appbar>
 								<div style="padding: 24px 10px 0 10px;">
-									
 									<mu-flex justify-content="center" align-items="center" wrap="wrap">
 										<mu-paper :z-depth="1" class="demo-date-picker">
 											<mu-date-picker :date.sync="dateEndVal" @change="triggerEndDate" display-color="#30B097" color="#30B097"></mu-date-picker>
@@ -127,10 +100,12 @@
 							</mu-dialog>
 						</div>
 					</div>
+
 					<!-- 关键词搜索 -->
 					<div class="search">
-						<input type="text" class="txt" placeholder="请输入关键词／地址／商圈">
+						<input type="text" class="txt" v-model="searchWord" placeholder="请输入关键词／地址／商圈">
 					</div>
+
 					<!-- 提交按钮 -->
 					<div class="submit" @click="submitFun">
 						酒店预订
@@ -143,36 +118,16 @@
 </template>
 
 <script>
-	
+	// 引入api
+	import {slt_location} from '../../api/api'
+	// 引入日期封装
 	import {formateToday,formateTomorrow,formatePara} from '../../utils/date';
-	import mTabbarFa from '../../components/tabbarfa'
+	import mTabbarFa from '../../components/tabbarfa';
 	// import mHeader from '../../components/header'
-	import mSwipe from '../../components/swipe'
+	import mSwipe from '../../components/swipe';
 	export default {
 		props: {
-			// dateStartVal:{
-			// 	type: Date,
-			// 	default: function(){
-			// 		// var d = new Date();
-			// 		// var mm = (d.getMonth() + 1 < 10) ? '0' + (d.getMonth() + 1): (d.getMonth() + 1) ;
-			// 		// var dd = d.getDate();
-			// 		// return mm + '-' + dd
-			// 		return new Date()
-			// 	}
-			// },
-
-			// dateEndVal:{
-			// 	type: Date,
-			// 	default: function(){
-			// 		// var d = new Date();
-			// 		// var mm = (d.getMonth() + 1 < 10) ? '0' + (d.getMonth() + 1): (d.getMonth() + 1) ;
-			// 		// var dd = d.getDate();
-			// 		// return mm + '-' + dd
-
-			// 		return new Date()
-			// 	}
-			// }
-
+		
 		},
 		name: 'index',
 		components: {
@@ -182,62 +137,88 @@
 		},
 		data() {
 			return {
-				recommendData: [],
-				hotData: [],
-				orderForm: {
-					startDate: '7-22',
-					endDate: '7-33'
-				},
+				// 城市和搜索关键字
+				city:'北京',
+				searchWord:'',
+				
+				//入住、离店日历dialog的标志
 				calendarVisible: false,
+				calendarVisible1:false,
 
+				// 入住、离店初始化时间
 				dateStartInitVal : formateToday(),
 				dateEndInitVal : formateTomorrow(),
+
+				// 日历插件的绑定默认值
 				dateStartVal: new Date(),
 				dateEndVal: new Date(),
-				city:'bj'
+
+				
+				
 				
 			}
 		},
 		created() {
-			// this.fetchData();
+			// this.getLocation();
 		},
 		methods: {
-			fetchData() {
-				
+			// 获取当前位置
+
+			
+			getLocation(){
+				// var param = {cpid:1};
+				this.$http({
+					method: "GET",
+					url: 'http://pv.sohu.com/cityjson?ie=utf-8',
+					data: {}
+				}).then(res => {
+					console.log(res);
+				});
 			},
-			// 
+
+			// 入住日历弹框控制
 			startDateDialogShow() {
 				this.calendarVisible = true;
 			},
+
+			// 入住日历弹框中的关闭
 			startDateDialogHide() {
 				this.calendarVisible = false;
 			},
-			// 触发入住
+
+			// 入住日历-触发
 			triggerStartDate(date) {
 				this.calendarVisible = false;
 				this.dateStartInitVal = formatePara(date);
 			},
+
+			//离店日历弹框控制
 			endDateDialogShow(){
-				this.calendarVisible = true;
+				this.calendarVisible1 = true;
 			},
+
+			//离店日历弹框中的关闭
 			endDateDialogHide() {
-				this.calendarVisible = false;
+				this.calendarVisible1 = false;
 			},
-			// 触发离开
+
+			// 离店日历-触发
 			triggerEndDate(date) {
-				this.calendarVisible = false;
+				this.calendarVisible1 = false;
 				this.dateEndInitVal = formatePara(date);
-				
 			},
-			// 提交搜索
-			// this.$route.query.id
+
+			// 提交
 			submitFun(){
+				var that = this;
 				this.$router.push({
 					path: '/searchResult',
 					query: {
 						city: this.city,
-						startDate:this.dateStartInitVal,
-						endDate:this.dateEndInitVal
+						startDate: this.dateStartInitVal,
+						endDate: this.dateEndInitVal,
+						word: this.searchWord,
+
 					}
 				});
 			}

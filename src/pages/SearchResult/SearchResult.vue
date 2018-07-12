@@ -1,17 +1,17 @@
 <template>
 	<div class="search-result">
 		<searchbar 
-            v-bind:citySelectVal="citySelectValFun" 
+            v-bind:citySelectEmit="citySelectValFun" 
             :city="urlGetInfo.city" 
             :startDate="urlGetInfo.startDate"
             :endDate="urlGetInfo.endDate"
-            :word="urlGetInfo.word"></searchbar>
+            :word="urlGetInfo.word">
+        </searchbar>
 		<sortbar></sortbar>
-		<!-- <div @click="watchObj.flag=!watchObj.flag">btn</div> -->
 		<refreshbar></refreshbar>
-		<div class="">
-			<noSearchResult></noSearchResult>
-		</div>
+		
+		<noSearchResult v-show="true"></noSearchResult>
+		
 		<roomItem :condition="watchObj"></roomItem>
 	</div>
 </template>
@@ -23,7 +23,7 @@ import searchbar from "../../components/searchbar";
 import sortbar from "../../components/sortbar";
 import refreshbar from "../../components/refresh-bar";
 import noSearchResult from "../../components/no-search-result";
-import {getUrlParam} from "../../utils/util";
+import {store_list} from '../../api/api';
 
 export default {
     name: "search-result",
@@ -39,21 +39,34 @@ export default {
     },
     data() {
         return {
+            // 获取路由的参数
             urlGetInfo:{
-                city:getUrlParam("city"),
-                startDate: getUrlParam("startDate"),
-                endDate:getUrlParam("endDate"),
-                word:getUrlParam("word")
+                city:this.$route.query.city,
+                startDate:this.$route.query.startDate,
+                endDate:this.$route.query.endDate,
+                word:this.$route.query.word,
             },
+
+
             watchObj: {
-                flag: true,
-				searchForm:{city:''},
-				sortForm:{},
-				refreshForm:{}
+                cpid:'1',
+                //正序、降序排列
+                type:'',
+                // 经度
+                longitude:'',
+                //维度
+                latitude:'',
+                //城市
+				city:'',
+				//排序（价格，距离）
+                px_rule:'',
+                //门店名称
+                name:'',
+               
 
 
             },
-			roomList: [{}, {}]
+			
 			// Object.assign();
         };
     },
@@ -62,15 +75,29 @@ export default {
     },
     mounted() {
         // this.roomList = data.list;
-        console.log(this.urlGetInfo);
+        // console.log(this.urlGetInfo);
+        var param = {
+            cpid:1,
+        }
+        this.fetchData(param);
     },
     methods: {
-        fu() {
-            alert(0);
-		},
+        
+        // 加载数据
+        fetchData(param) {
+            this.$http({
+                method: "POST",
+                url: store_list,
+                data: param
+            }).then(res => {
+                console.log(res);
+            });
+        },
+
+        // 子组件emit的方法-城市选择
 		citySelectValFun(val){
-			this.watchObj.searchForm.city = val;
-			console.log(val);
+			this.watchObj.city = val;
+			
 		}
     }
 };

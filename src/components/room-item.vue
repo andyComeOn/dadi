@@ -30,12 +30,8 @@
 					<p class="info m-ellipsis-2">
 						{{item.info}}
 					</p>
-					<p class="location">{{item.name}}</p>
+					<p class="location">{{item.location}}</p>
 					<div class="price-wrap">
-						<div class="label">
-							<span class="full">返</span>
-							<span class="minus">减</span>
-						</div>
 						<div class="price">&yen;
 							<span>{{item.price}}</span>起
 						</div>
@@ -82,39 +78,21 @@ export default {
                     location: "北京市－顺义区 距离您3.5km",
                     price: 999
                 },
-                {
-                    type: 2,
-                    imgSrc: require("../assets/images/img/room.png"),
-                    name: "海淀店",
-                    info: "不错,不错不错不错不错不错不错不错不错不错不错",
-                    location: "北京市－海淀区 距离您1.5km",
-                    price: 345
-                },
-                {
-                    type: 1,
-                    imgSrc: require("../assets/images/img/room.png"),
-                    name: "海淀店",
-                    info: "不错,不错不错不错不错不错不错不错不错不错不错",
-                    location: "北京市－海淀区 距离您1.5km",
-                    price: 345
-                },
-                {
-                    type: 4,
-                    imgSrc: require("../assets/images/img/room.png"),
-                    name: "海淀店",
-                    info: "不错,不错不错不错不错不错不错不错不错不错不错",
-                    location: "北京市－海淀区 距离您1.5km",
-                    price: 345
-                }
+                
             ]
         };
     },
     created() {
-        var param = { cpid: 1 };
-        this.fetchData(param);
+        // var param = this.condition;
+        // console.log(param);
+        // this.fetchData(param);
         
     },
-    mounted() {},
+    mounted() {
+        var param = this.condition;
+        console.log(param);
+        this.fetchData(param);
+    },
     methods: {
         fetchData(param) {
             this.$http({
@@ -124,8 +102,6 @@ export default {
             }).then(res => {
                 console.log(res);
             });
-
-            
         }
     }
 };
@@ -183,34 +159,13 @@ export default {
             }
             .price-wrap {
                 height: 20px;
-                .label {
-                    float: left;
-                    height: 20px;
-                    span {
-                        display: inline-block;
-                        padding: 0 2px;
-                        line-height: 14px;
-                        margin-right: 2px;
-                        font-size: 10px;
-                        border-radius: 1px;
-                        &.full {
-                            color: #5ac4fe;
-                            border: 1px solid #5ac4fe;
-                        }
-                        &.minus {
-                            color: #ffba56;
-                            border: 1px solid #ffba56;
-                        }
-                    }
-                }
                 .price {
-                    float: right;
                     height: 20px;
                     vertical-align: bottom;
-                    font-size: 10px;
+                    font-size: 8px;
                     color: #666;
                     span {
-                        font-size: 12px;
+                        font-size: 16px;
                         color: #ffba56;
                     }
                 }
