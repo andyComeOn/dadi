@@ -1,7 +1,7 @@
 <template>
 	<div class="search-result">
 		<searchbar 
-            v-bind:citySelectEmit="citySelectValFun" 
+            v-on:citySelectEmit="citySelectValFun" 
             :city="urlGetInfo.city" 
             :startDate="urlGetInfo.startDate"
             :endDate="urlGetInfo.endDate"
@@ -12,7 +12,7 @@
 		
 		<noSearchResult v-show="true"></noSearchResult>
 		
-		<roomItem :condition="watchObj"></roomItem>
+		<roomItem v-bind:condition="this.watchObj"></roomItem>
 	</div>
 </template>
 
@@ -51,21 +51,34 @@ export default {
             watchObj: {
                 cpid:'1',
                 //正序、降序排列
-                type:'',
+                //type:'',
                 // 经度
-                longitude:'',
+                //longitude:'',
                 //维度
-                latitude:'',
+                //latitude:'',
                 //城市
-				city:'',
+				city: '1',
 				//排序（价格，距离）
-                px_rule:'',
+                //px_rule:'',
                 //门店名称
-                name:'',
-               
-
-
+                //name: '',
             },
+
+            cpid:'1',
+            //正序、降序排列
+            type:'',
+            // 经度
+            longitude:'',
+            //维度
+            latitude:'',
+            //城市
+            city: '1',
+            //排序（价格，距离）
+            px_rule:'',
+            //门店名称
+            name: this.$route.query.word,
+
+            resData:''
 			
 			// Object.assign();
         };
@@ -73,13 +86,13 @@ export default {
     created() {
         
     },
+    watch:{
+        
+    },
     mounted() {
-        // this.roomList = data.list;
-        // console.log(this.urlGetInfo);
-        var param = {
-            cpid:1,
-        }
-        this.fetchData(param);
+        var param = this.watchObj;
+        // this.fetchData(param);
+        
     },
     methods: {
         
@@ -88,16 +101,16 @@ export default {
             this.$http({
                 method: "POST",
                 url: store_list,
-                data: param
+                data:param
             }).then(res => {
-                console.log(res);
+                this.resData = res.data;
             });
         },
 
         // 子组件emit的方法-城市选择
-		citySelectValFun(val){
-			this.watchObj.city = val;
-			
+		citySelectValFun(id, name){
+            console.log(id, name);
+            this.watchObj.city = id;
 		}
     }
 };

@@ -41,9 +41,12 @@
 		},
 		computed: {
 			isActive() {
+				
 				if (this.$parent.val === this.id) {
+
 					return true;
 				}
+
 			}
 		},
 		methods: {
@@ -51,6 +54,9 @@
 				//this.$parent.$emit('input', this.id)
 				if (this.isRouter) {
 					this.$router.push(this.id)
+					// if(this.id == 'mine'){
+						
+					// }
 				}
 			}
 		}

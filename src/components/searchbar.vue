@@ -21,10 +21,7 @@
                     <mu-button flat slot="left" @click="close">关闭</mu-button>
                 </mu-appbar>
                 <div style="padding: 24px 10px 0 10px;">
-                    <div style="height：20px;line-height:20px;margin-bottom:8px;" @click="citySelect('上海')">上海</div>
-                    <div style="height：20px;line-height:20px;margin-bottom:8px;" @click="citySelect('苏州')">苏州</div>
-                    <div style="height：20px;line-height:20px;margin-bottom:8px;" @click="citySelect('天津')">天津</div>
-                    <div style="height：20px;line-height:20px;margin-bottom:8px;" @click="citySelect('郑州')">郑州</div>
+                    <div style="height：20px;line-height:20px;margin-bottom:8px;" v-for="(item, index) in cityList" :key="index" @click="citySelect(item.id,item.name)">{{item.name}}</div>
                 </div>
             </mu-dialog>
 
@@ -65,6 +62,8 @@
 </template>
 <script>
 import {formatePara} from '../utils/date';
+import {getStorecity} from '../api/api';
+
 export default {
     props: [
         'city',
@@ -87,21 +86,42 @@ export default {
 
             //入住、离店接收父组件
             startDateInit:this.startDate,
-            endDateInit:this.endDate
+            endDateInit:this.endDate,
+
+            //有效city列表
+            cityList:[
+                // {id:1,name:'北京'},
+                // {id:21,name:'天津'},
+                // {id:3,name:'深圳'}
+            ]
         };
     },
-    created() {},
+    created() {
+        this.fetchCityId()
+    },
     mounted() {},
     methods: {
+        //获取有效城市id
+        fetchCityId(){
+            var param = {cpid:1}
+            this.$http({
+                method: "POST",
+                url: getStorecity,
+                data:param
+            }).then(res => {
+                this.cityList = res.data.data;
+            });
+        },
+
         //城市dialog控制
         cityToast() {
             this.isCityDialogShow = true;
         },
 
         // 选取城市
-        citySelect(val) {
-            this.whichCity = val;
-            this.$emit("citySelectEmit", val);
+        citySelect(id,name) {
+            this.whichCity = name;
+            this.$emit("citySelectEmit", id, name);
             this.isCityDialogShow = false;
         },
 

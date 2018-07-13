@@ -21,20 +21,16 @@
 					</div>
 				</div>
 			</li> -->
-			<li v-for="(item,index) in list" :key="index">
+			<li v-for="(item,index) in dataList" :key="index">
 				<div class="lf">
-					<img :src="item.imgSrc" alt="">
+					<img :src="item.img_logo" alt="">
 				</div>
 				<div class="rg">
 					<p class="name m-ellipsis">{{item.name}}</p>
-					<p class="info m-ellipsis-2">
-						{{item.info}}
-					</p>
-					<p class="location">{{item.location}}</p>
+					<p class="info m-ellipsis-2">{{item.introduce}}</p>
+					<p class="location">{{item.area}}</p>
 					<div class="price-wrap">
-						<div class="price">&yen;
-							<span>{{item.price}}</span>起
-						</div>
+						<div class="price">&yen;<span>{{item.price}}</span>起</div>
 					</div>
 				</div>
 			</li>
@@ -51,10 +47,10 @@ export default {
     watch: {
         condition: {
             handler(newValue, oldValue) {
-                console.log(newValue);
-				console.log(oldValue);
+                this.fetchData(newValue)
             },
-            deep: true
+            deep: true,
+            immediate: true
         }
     },
     data() {
@@ -78,20 +74,18 @@ export default {
                     location: "北京市－顺义区 距离您3.5km",
                     price: 999
                 },
-                
-            ]
+            ],
+            dataList:''
+
+
+
         };
     },
     created() {
-        // var param = this.condition;
-        // console.log(param);
-        // this.fetchData(param);
-        
+     
     },
     mounted() {
-        var param = this.condition;
-        console.log(param);
-        this.fetchData(param);
+        
     },
     methods: {
         fetchData(param) {
@@ -100,7 +94,7 @@ export default {
                 url: store_list,
                 data: param
             }).then(res => {
-                console.log(res);
+                this.dataList = res.data.data;
             });
         }
     }
