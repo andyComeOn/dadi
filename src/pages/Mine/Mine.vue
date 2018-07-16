@@ -1,22 +1,33 @@
 <template>
-	<div class="mine">
-		<div class="weui-panel">
-			<div class="weui-panel__bd">
-				<router-link to="/personalCenter" class="weui-media-box weui-media-box_appmsg">
-					<div class="weui-media-box__hd">
-						<img class="weui-media-box__thumb" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAMAAAAOusbgAAAAeFBMVEUAwAD///+U5ZTc9twOww7G8MYwzDCH4YcfyR9x23Hw+/DY9dhm2WZG0kbT9NP0/PTL8sux7LFe115T1VM+zz7i+OIXxhes6qxr2mvA8MCe6J6M4oz6/frr+us5zjn2/fa67rqB4IF13XWn6ad83nxa1loqyirn+eccHxx4AAAC/klEQVRo3u2W2ZKiQBBF8wpCNSCyLwri7v//4bRIFVXoTBBB+DAReV5sG6lTXDITiGEYhmEYhmEYhmEYhmEY5v9i5fsZGRx9PyGDne8f6K9cfd+mKXe1yNG/0CcqYE86AkBMBh66f20deBc7wA/1WFiTwvSEpBMA2JJOBsSLxe/4QEEaJRrASP8EVF8Q74GbmevKg0saa0B8QbwBdjRyADYxIhqxAZ++IKYtciPXLQVG+imw+oo4Bu56rjEJ4GYsvPmKOAB+xlz7L5aevqUXuePWVhvWJ4eWiwUQ67mK51qPj4dFDMlRLBZTqF3SDvmr4BwtkECu5gHWPkmDfQh02WLxXuvbvC8ku8F57GsI5e0CmUwLz1kq3kD17R1In5816rGvQ5VMk5FEtIiWislTffuDpl/k/PzscdQsv8r9qWq4LRWX6tQYtTxvI3XyrwdyQxChXioOngH3dLgOFjk0all56XRi/wDFQrGQU3Os5t0wJu1GNtNKHdPqYaGYQuRDfbfDf26AGLYSyGS3ZAK4S8XuoAlxGSdYMKwqZKM9XJMtyqXi7HX/CiAZS6d8bSVUz5J36mEMFDTlAFQzxOT1dzLRljjB6+++ejFqka+mXIe6F59mw22OuOw1F4T6lg/9VjL1rLDoI9Xzl1MSYDNHnPQnt3D1EE7PrXjye/3pVpr1Z45hMUdcACc5NVQI0bOdS1WA0wuz73e7/5TNqBPhQXPEFGJNV2zNqWI7QKBd2Gn6AiBko02zuAOXeWIXjV0jNqdKegaE/kJQ6Bfs4aju04lMLkA2T5wBSYPKDGF3RKhFYEa6A1L1LG2yacmsaZ6YPOSAMKNsO+N5dNTfkc5Aqe26uxHpx7ZirvgCwJpWq/lmX1hA7LyabQ34tt5RiJKXSwQ+0KU0V5xg+hZrd4Bn1n4EID+WkQdgLfRNtvil9SPfwy+WQ7PFBWQz6dGWZBLkeJFXZGCfLUjCgGgqXo5TuSu3cugdcTv/HjqnBTEMwzAMwzAMwzAMwzAMw/zf/AFbXiOA6frlMAAAAABJRU5ErkJggg==" alt="">
+	<div class="mine m-position-ab">
+		<div class="weui-panel mine-info">
+			<div class="weui-panel__bd mine-info-panel__bd">
+				<router-link to="/personalCenter" class="weui-media-box mine-info-media-box weui-media-box_appmsg">
+					<div class="weui-media-box__hd mine-info-media-box__hd">
+						<img class="weui-media-box__thumb mine-info-media-box__thumb" src="../../assets/images/166_146_3.png" alt="">
 					</div>
-					<div class="weui-media-box__bd">
-						<h4 class="weui-media-box__title">乘风破浪</h4>
-						<p class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>
+					<div class="weui-media-box__bd mine-info-media-box__bd ">
+						<h4 class="weui-media-box__title mine-info-media-box__title">乘风破浪</h4>
+						<p class="weui-media-box__desc mine-info-media-box__desc">Lv1 普通会员卡</p>
 					</div>
 					<span class="weui-cell__ft"></span>
 				</router-link>
 			</div>
 		</div>
 
-		<div style="height:20px;background:#30B097;"></div>
-
+		<!-- 进行中订单、已完成订单 -->
+		<div class="order-ing-ed clearflex">
+			<div class="lf">
+				<div class="icon"><img src="../../assets/images/my/my_jinxingzhong.png" alt=""></div>
+				<span>进行中订单</span>
+			</div>
+			<div class="rg"> 
+				<div class="icon"><img src="../../assets/images/my/my_yiwancheng.png" alt=""></div>
+				<span>已完成订单</span>
+			</div>
+		</div>
+		
+		<!-- 我的问题的list -->
 		<div class="weui-panel">
 			<div class="weui-panel__bd">
 				<div class="weui-media-box weui-media-box_small-appmsg">
@@ -24,7 +35,7 @@
 						<!-- 推荐好友拿奖金 -->
 						
 						<router-link to="/recommendF" class="weui-cell weui-cell_access">
-							<div class="weui-cell__hd"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAMAAABgZ9sFAAAAVFBMVEXx8fHMzMzr6+vn5+fv7+/t7e3d3d2+vr7W1tbHx8eysrKdnZ3p6enk5OTR0dG7u7u3t7ejo6PY2Njh4eHf39/T09PExMSvr6+goKCqqqqnp6e4uLgcLY/OAAAAnklEQVRIx+3RSRLDIAxE0QYhAbGZPNu5/z0zrXHiqiz5W72FqhqtVuuXAl3iOV7iPV/iSsAqZa9BS7YOmMXnNNX4TWGxRMn3R6SxRNgy0bzXOW8EBO8SAClsPdB3psqlvG+Lw7ONXg/pTld52BjgSSkA3PV2OOemjIDcZQWgVvONw60q7sIpR38EnHPSMDQ4MjDjLPozhAkGrVbr/z0ANjAF4AcbXmYAAAAASUVORK5CYII=" alt="" style="width:20px;margin-right:5px;display:block"></div>
+							<div class="weui-cell__hd"><img src="../../assets/images/my/my_tuijian.png" alt="" style="width:22px;margin-right:5px;display:block"></div>
 							<div class="weui-cell__bd weui-cell_primary">
 								<p>推荐好友拿奖金</p>
 							</div>
@@ -34,7 +45,7 @@
 						<!-- 我的优惠券 -->
 						<router-link to="/myCoupon" class="weui-cell weui-cell_access">
 						
-							<div class="weui-cell__hd"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAMAAABgZ9sFAAAAVFBMVEXx8fHMzMzr6+vn5+fv7+/t7e3d3d2+vr7W1tbHx8eysrKdnZ3p6enk5OTR0dG7u7u3t7ejo6PY2Njh4eHf39/T09PExMSvr6+goKCqqqqnp6e4uLgcLY/OAAAAnklEQVRIx+3RSRLDIAxE0QYhAbGZPNu5/z0zrXHiqiz5W72FqhqtVuuXAl3iOV7iPV/iSsAqZa9BS7YOmMXnNNX4TWGxRMn3R6SxRNgy0bzXOW8EBO8SAClsPdB3psqlvG+Lw7ONXg/pTld52BjgSSkA3PV2OOemjIDcZQWgVvONw60q7sIpR38EnHPSMDQ4MjDjLPozhAkGrVbr/z0ANjAF4AcbXmYAAAAASUVORK5CYII=" alt="" style="width:20px;margin-right:5px;display:block"></div>
+							<div class="weui-cell__hd"><img src="../../assets/images/my/my_youhuiquan.png" alt="" style="width:22px;margin-right:5px;display:block"></div>
 							<div class="weui-cell__bd weui-cell_primary">
 								<p>我的优惠券</p>
 							</div>
@@ -44,7 +55,7 @@
 						<!-- 我的积分 -->
 						<router-link to="/myPoint" class="weui-cell weui-cell_access">
 						
-							<div class="weui-cell__hd"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAMAAABgZ9sFAAAAVFBMVEXx8fHMzMzr6+vn5+fv7+/t7e3d3d2+vr7W1tbHx8eysrKdnZ3p6enk5OTR0dG7u7u3t7ejo6PY2Njh4eHf39/T09PExMSvr6+goKCqqqqnp6e4uLgcLY/OAAAAnklEQVRIx+3RSRLDIAxE0QYhAbGZPNu5/z0zrXHiqiz5W72FqhqtVuuXAl3iOV7iPV/iSsAqZa9BS7YOmMXnNNX4TWGxRMn3R6SxRNgy0bzXOW8EBO8SAClsPdB3psqlvG+Lw7ONXg/pTld52BjgSSkA3PV2OOemjIDcZQWgVvONw60q7sIpR38EnHPSMDQ4MjDjLPozhAkGrVbr/z0ANjAF4AcbXmYAAAAASUVORK5CYII=" alt="" style="width:20px;margin-right:5px;display:block"></div>
+							<div class="weui-cell__hd"><img src="../../assets/images/my/my_mycomment.png" alt="" style="width:22px;margin-right:5px;display:block"></div>
 							<div class="weui-cell__bd weui-cell_primary">
 								<p>我的积分</p>
 							</div>
@@ -52,7 +63,7 @@
 						</router-link>
 						<!-- 我的收藏 -->
 						<router-link to="/myCollect" class="weui-cell weui-cell_access">
-							<div class="weui-cell__hd"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAMAAABgZ9sFAAAAVFBMVEXx8fHMzMzr6+vn5+fv7+/t7e3d3d2+vr7W1tbHx8eysrKdnZ3p6enk5OTR0dG7u7u3t7ejo6PY2Njh4eHf39/T09PExMSvr6+goKCqqqqnp6e4uLgcLY/OAAAAnklEQVRIx+3RSRLDIAxE0QYhAbGZPNu5/z0zrXHiqiz5W72FqhqtVuuXAl3iOV7iPV/iSsAqZa9BS7YOmMXnNNX4TWGxRMn3R6SxRNgy0bzXOW8EBO8SAClsPdB3psqlvG+Lw7ONXg/pTld52BjgSSkA3PV2OOemjIDcZQWgVvONw60q7sIpR38EnHPSMDQ4MjDjLPozhAkGrVbr/z0ANjAF4AcbXmYAAAAASUVORK5CYII=" alt="" style="width:20px;margin-right:5px;display:block"></div>
+							<div class="weui-cell__hd"><img src="../../assets/images/my/my_shoucang.png" alt="" style="width:22px;margin-right:5px;display:block"></div>
 							<div class="weui-cell__bd weui-cell_primary">
 								<p>我的收藏</p>
 							</div>
@@ -60,7 +71,7 @@
 						</router-link>
 						<!-- 会员特权 -->
 						<router-link to="/vip" class="weui-cell weui-cell_access">
-							<div class="weui-cell__hd"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAMAAABgZ9sFAAAAVFBMVEXx8fHMzMzr6+vn5+fv7+/t7e3d3d2+vr7W1tbHx8eysrKdnZ3p6enk5OTR0dG7u7u3t7ejo6PY2Njh4eHf39/T09PExMSvr6+goKCqqqqnp6e4uLgcLY/OAAAAnklEQVRIx+3RSRLDIAxE0QYhAbGZPNu5/z0zrXHiqiz5W72FqhqtVuuXAl3iOV7iPV/iSsAqZa9BS7YOmMXnNNX4TWGxRMn3R6SxRNgy0bzXOW8EBO8SAClsPdB3psqlvG+Lw7ONXg/pTld52BjgSSkA3PV2OOemjIDcZQWgVvONw60q7sIpR38EnHPSMDQ4MjDjLPozhAkGrVbr/z0ANjAF4AcbXmYAAAAASUVORK5CYII=" alt="" style="width:20px;margin-right:5px;display:block"></div>
+							<div class="weui-cell__hd"><img src="../../assets/images/my/my_vip.png" alt="" style="width:22px;margin-right:5px;display:block"></div>
 							<div class="weui-cell__bd weui-cell_primary">
 								<p>会员特权</p>
 							</div>
@@ -68,7 +79,7 @@
 						</router-link>
 						<!-- 帮助中心 -->
 						<router-link to="/helpCenter" class="weui-cell weui-cell_access">
-							<div class="weui-cell__hd"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAMAAABgZ9sFAAAAVFBMVEXx8fHMzMzr6+vn5+fv7+/t7e3d3d2+vr7W1tbHx8eysrKdnZ3p6enk5OTR0dG7u7u3t7ejo6PY2Njh4eHf39/T09PExMSvr6+goKCqqqqnp6e4uLgcLY/OAAAAnklEQVRIx+3RSRLDIAxE0QYhAbGZPNu5/z0zrXHiqiz5W72FqhqtVuuXAl3iOV7iPV/iSsAqZa9BS7YOmMXnNNX4TWGxRMn3R6SxRNgy0bzXOW8EBO8SAClsPdB3psqlvG+Lw7ONXg/pTld52BjgSSkA3PV2OOemjIDcZQWgVvONw60q7sIpR38EnHPSMDQ4MjDjLPozhAkGrVbr/z0ANjAF4AcbXmYAAAAASUVORK5CYII=" alt="" style="width:20px;margin-right:5px;display:block"></div>
+							<div class="weui-cell__hd"><img src="../../assets/images/my/my_help.png" alt="" style="width:22px;margin-right:5px;display:block"></div>
 							<div class="weui-cell__bd weui-cell_primary">
 								<p>帮助中心</p>
 							</div>
@@ -118,6 +129,73 @@ export default {
 				top: 50%;
 				margin-top: -4px;
 				right: 2px;
+			}
+		}
+	}
+
+	// 我的上面的个人icon的样式
+	.mine-info-media-box {
+		padding: 33px 15px;
+		color: #fff;
+		background: url('../../assets/images/bg/bg_my.jpg') no-repeat center center;
+		background-size: 100% 100%; 
+		.mine-info-media-box__hd {
+			width: 44px;
+			height: 44px;
+			border-radius: 50%; 
+			margin-right: 10px;
+			img{
+				width: 100%;
+				height: 100%;
+			}
+		}
+		.mine-info-media-box__bd {
+			.mine-info-media-box__title{
+				font-size: 16px;
+				line-height: 22px;
+				margin-bottom: 4px;
+			}
+			.mine-info-media-box__desc{
+				line-height: 16px;
+				font-size: 12px;
+				color: #fff;
+			}
+		}
+
+
+		
+
+	}
+
+
+	
+	// 订单进行中和完成
+	.order-ing-ed{
+		padding: 17px 0;
+		margin-bottom: 10px; 
+		background: #ffffff;
+		.lf , .rg{
+			width: 50%;
+			height: 26px;
+			float: left;
+			display: flex;
+			flex-direction: row;
+			justify-content: center; 
+			align-items: center;
+			.icon {
+				width: 26px;
+				height: 26px;
+				margin-right: 10px;
+				img{
+					width: 26px;
+					height: 26px;
+				}
+			}
+			span{
+				height: 26px;
+				line-height: 26px;
+				color: #666;
+				font-size: 12px;
 			}
 		}
 	}

@@ -15,7 +15,6 @@
 
 		<!-- 主内容-->
 		<div class="page-content">
-
 			<!-- 轮播 -->
 			<m-swipe swipeid="swipe01" :autoplay="1000" paginationDirection="right">
 				<div class="swiper-slide " slot="swiper-con">

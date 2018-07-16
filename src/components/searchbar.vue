@@ -209,14 +209,13 @@ export default {
             height: 28px;
             padding: 2px 0;
             .txt {
-                // display: block;
                 width: 100%;
                 height: 24px;
                 outline: none;
                 border: none;
                 background: #f4f4f4;
                 padding-left: 9px;
-                color: #999999;
+                color: #333;
             }
         }
     }

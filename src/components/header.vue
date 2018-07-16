@@ -37,7 +37,7 @@
 			},
 			leftShow: {
 				type: Boolean,
-				default: true
+				default: false
 			},
 			rightShow: {
 				type: Boolean,

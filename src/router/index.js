@@ -27,6 +27,17 @@ import Vip from '../pages/Vip/Vip'
 // 帮助中心
 import HelpCenter from '../pages/HelpCenter/HelpCenter'
 
+// 推荐好友-规则
+import Rule from '../pages/Rule/Rule'
+// 推荐好友-点我推广
+import QSPush from '../pages/QSPush/QSPush'
+// 推荐好友-奖励明细
+import Praise from '../pages/Praise/Praise'
+// 推荐好友-提现明细
+import PickCash from '../pages/PickCash/PickCash'
+// 推荐好友-我的下线
+import MyNextline from '../pages/MyNextline/MyNextline'
+
 
 Vue.use(Router)
 
@@ -110,7 +121,39 @@ export default new Router({
 			name: 'helpCenter',
 			component: HelpCenter
 		},
+		// 推荐好友-规则
+		{
+			path: '/rule',
+			name: 'rule',
+			component: Rule
+		},
 
+		// 推荐好友-点我推广
+		{
+			path: '/qsPush',
+			name: 'qsPush',
+			component: QSPush
+		},
+
+		// 推荐好友-奖励明细
+		{
+			path: '/praise',
+			name: 'praise',
+			component: Praise
+		},
+
+		// 推荐好友-规则
+		{
+			path: '/myNextline',
+			name: 'myNextline',
+			component: MyNextline
+		},
+		// 推荐好友-提现明细
+		{
+			path: '/pickCash',
+			name: 'pickCash',
+			component: PickCash
+		},
 
 
 		// 更改原手机号
