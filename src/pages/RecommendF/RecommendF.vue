@@ -46,24 +46,37 @@
 			<!-- 四宫格 -->
 			<div class="square-box">
 				<ul class="square clearflex">
-					<li>
-						<img src="../../assets/images/distribution/jiangli.png" alt="">
-						<p>奖励明细</p>
-					</li>
-					<li>
-						<img src="../../assets/images/distribution/jiangli.png" alt="">
-						<p>提现明细</p>
-					</li>
-					
-					<li>
-						<img src="../../assets/images/distribution/tuiguang.png" alt="">
-						<p>点我推广</p>
-					</li>
-					<li>
-						<img src="../../assets/images/distribution/xiaxian.png" alt="">
-						<p>我的下线</p>
-					</li>
+					<!-- 跳到奖励明细 -->
+					<router-link to="/praise">
+						<li>
+							<img src="../../assets/images/distribution/jiangli.png" alt="">
+							<p>奖励明细</p>
+						</li>
+					</router-link>
 
+					<!-- 跳到提现明细 -->
+					<router-link to="pickCash">
+						<li>
+							<img src="../../assets/images/distribution/jiangli.png" alt="">
+							<p>提现明细</p>
+						</li>
+					</router-link>
+
+					<!-- 跳到二维码 -->
+					<router-link to="qsPush">
+						<li>
+							<img src="../../assets/images/distribution/tuiguang.png" alt="">
+							<p>点我推广</p>
+						</li>
+					</router-link>
+
+					<!-- 助力好友 -->
+					<router-link to="helpFriend">
+						<li>
+							<img src="../../assets/images/distribution/xiaxian.png" alt="">
+							<p>助力好友</p>
+						</li>
+					</router-link>
 				</ul>
 			</div>
 		</div>

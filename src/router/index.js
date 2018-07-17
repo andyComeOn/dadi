@@ -1,7 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Index from '../pages/Index/Index'
+
+// 酒店详情
 import HotelDetail from '../pages/HotelDetail/HotelDetail'
+// 酒店详情-查看酒店更多标签
+import HotelLabel from '../pages/HotelLabel/HotelLabel'
+
 import Nearby from '../pages/Nearby/Nearby'
 import SearchResult from '../pages/SearchResult/SearchResult'
 import Order from '../pages/Order/Order'
@@ -36,7 +41,7 @@ import Praise from '../pages/Praise/Praise'
 // 推荐好友-提现明细
 import PickCash from '../pages/PickCash/PickCash'
 // 推荐好友-我的下线
-import MyNextline from '../pages/MyNextline/MyNextline'
+import HelpFriend from '../pages/HelpFriend/HelpFriend'
 
 
 Vue.use(Router)
@@ -60,6 +65,12 @@ export default new Router({
 			path: '/hotelDetail',
 			name: 'hotelDetail',
 			component: HotelDetail
+		},
+		// 酒店详情页-查看更多酒店标签
+		{
+			path: '/hotelLabel',
+			name: 'hotelLabel',
+			component: HotelLabel
 		},
 		// 附近的酒店
 		{
@@ -142,11 +153,11 @@ export default new Router({
 			component: Praise
 		},
 
-		// 推荐好友-规则
+		// 推荐好友-助力好友
 		{
-			path: '/myNextline',
-			name: 'myNextline',
-			component: MyNextline
+			path: '/helpFriend',
+			name: 'helpFriend',
+			component: HelpFriend
 		},
 		// 推荐好友-提现明细
 		{

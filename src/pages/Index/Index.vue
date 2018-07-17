@@ -289,7 +289,6 @@
 				padding: 12px 0;
 				display: flex;
 				flex-direction: row;
-
 				.lf {
 					flex: 1;
 					height: 43px;
