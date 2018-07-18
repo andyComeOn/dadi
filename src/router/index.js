@@ -9,7 +9,16 @@ import HotelLabel from '../pages/HotelLabel/HotelLabel'
 
 import Nearby from '../pages/Nearby/Nearby'
 import SearchResult from '../pages/SearchResult/SearchResult'
+// 订单
 import Order from '../pages/Order/Order'
+
+// 订单列表
+import OrderList from '../pages/OrderList/OrderList'
+
+// 订单列表中每条订单的详情页
+import OrderDetail from '../pages/OrderDetail/OrderDetail'
+
+
 import Login from '../pages/Login/Login'
 import OldPhoneNum from '../pages/OldPhoneNum/OldPhoneNum'
 import NewPhoneNum from '../pages/NewPhoneNum/NewPhoneNum'
@@ -83,6 +92,19 @@ export default new Router({
 			path: '/order',
 			name: 'order',
 			component: Order
+		},
+		// 订单的列表页
+		{
+			path: '/orderList',
+			name: 'orderList',
+			component: OrderList
+		},
+
+		// 订单的列表页中每条订单的详情页
+		{
+			path: '/orderDetail',
+			name: 'orderDetail',
+			component: OrderDetail
 		},
 		// 我的
 		{

@@ -24,7 +24,7 @@ import 'mint-ui/lib/style.css'
 import 'weui/dist/style/weui.min.css';
 
 // 引入zepto
-import $ from 'zepto';
+// import $ from 'zepto';
 
 
 Vue.component(Field.name, Field);

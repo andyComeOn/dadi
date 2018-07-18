@@ -17,10 +17,12 @@
 
 		<!-- 进行中订单、已完成订单 -->
 		<div class="order-ing-ed clearflex">
-			<div class="lf">
-				<div class="icon"><img src="../../assets/images/my/my_jinxingzhong.png" alt=""></div>
-				<span>进行中订单</span>
-			</div>
+			<router-link to="orderList">
+				<div class="lf">
+					<div class="icon"><img src="../../assets/images/my/my_jinxingzhong.png" alt=""></div>
+					<span>进行中订单</span>
+				</div>
+			</router-link>
 			<div class="rg"> 
 				<div class="icon"><img src="../../assets/images/my/my_yiwancheng.png" alt=""></div>
 				<span>已完成订单</span>

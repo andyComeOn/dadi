@@ -5,7 +5,7 @@
 				<!-- 酒店名字 -->
 				<div class="name m-ellipsis">秋果酒店交通大学店</div>
 				<!-- 酒店标签 -->
-				<div class="label">
+				<div class="labels">
 					<span>特价标准大床房</span>
 					<span>免费有线</span>
 					<span>不含早</span>
@@ -19,14 +19,13 @@
 					<span class="date">1晚</span>
 				</div>
 			</div>
-
 		</div>
 
 		<!-- 用户信息操作区 -->
 		<ul class="info">
 			<!-- 房间数 -->
 			<li class="room">
-				<label>房间数</label>
+				<label class="label">房间数</label>
 				<div class="room-info">
 					<span class="span-minus"><img src="../../assets/images/order-plus-reduce/ic_order_reduce_disabled.png" alt=""></span>
 					<span class="span-input">
@@ -37,7 +36,7 @@
 			</li>
 			<!-- 入住人姓名 -->
 			<li class="name">
-				<label>入住人姓名</label>
+				<label class="label">入住人姓名</label>
 				<div class="item-rg">
 					<div class="name-div">
 						<input type="text" class="number" id="name" placeholder="请输入姓名">
@@ -47,7 +46,7 @@
 
 			<!-- 手机号 -->
 			<li class="tel">
-				<label>手机号</label>
+				<label class="label">手机号</label>
 				<div class="item-rg">
 					<div class="tel-div">
 						<input type="tel" class="number" id="tel" placeholder="请输入手机号">
@@ -60,7 +59,7 @@
 
 			<!-- 优惠券 -->
 			<li class="coupon">
-				<label>优惠券</label>
+				<label class="label">优惠券</label>
 				<div class="item-rg">
 					<div class="coupon-div" @click="showCouponMask">
 						2张可用
@@ -71,7 +70,7 @@
 
 			<!-- 发票 -->
 			<li class="ticket">
-				<label>发票</label>
+				<label class="label">发票</label>
 				<div class="item-rg" style="color:#666;font-size:14px;line-height:50px;font-family:PingFangSC-Regular;">
 					酒店开具
 				</div>
@@ -89,7 +88,7 @@
 		<div class="paybar">
 			<div class="lf">
 				<div class="money">&yen;386</div>
-				<div class="arrow"><img src="../../assets/images/arrows/ic_pay_arrow.png" alt=""></div>
+				<div class="arrow" @click="showDealDetailMask"><img src="../../assets/images/arrows/ic_pay_arrow.png" alt=""></div>
 			</div>
 			<div class="rg">支付</div>
 		</div>
@@ -98,29 +97,100 @@
 		<div class="coupon-mask-box">
 			<div class="weui-mask zb-weui-mask" id="couponMask" @click="hideCouponMask" :class="[{'weui-actionsheet_no_toggle_active':isCouponMask},{'weui-actionsheet_no_toggle':!isCouponMask}]"></div>
 			<div class="weui-actionsheet zb-weui-actionsheet" id="weui-actionsheet" :class="[{'weui-actionsheet_toggle':isCouponMask}]">
-				<div class="weui-actionsheet__title zb-weui-actionsheet__title">
+				
+                <!-- 弹框的title -->
+                <div class="weui-actionsheet__title zb-weui-actionsheet__title">
 					<p class="weui-actionsheet__title-text zb-weui-actionsheet__title-text">优惠券</p>
 				</div>
-				<div class="weui-actionsheet__menu zb-weui-actionsheet__menu">
-					<div class="weui-cells zb-weui-cells weui-cells_checkbox">
-						<label class="weui-cell weui-check__label" for="s11">
-							<div class="weui-cell__hd">
-								<p>standard is dealt for u</p>
-							</div>
-							<div class="weui-cell__bd">
-								<input type="checkbox" class="weui-check" name="checkbox1" id="s11" checked="checked">
-								<i class="weui-icon-checked"></i>
-							</div>
-						</label>
-					</div>
 
-				
-				</div>
-				<div class="weui-actionsheet__action">
-					<div class="weui-actionsheet__cell" id="actionsheet_cancel" @click="hideCouponMask">取消</div>
+                <!-- 弹框的内容 -->
+                <div class="weui-actionsheet__menu">
+
+                    <!-- 循环下面的整体 -->
+                    <div class="zb-actionsheet__bd">
+                        <div class="weui-cells zb-weui-cells weui-cells_checkbox">
+                            <label class="weui-cell zb-weui-cell weui-check__label " for="coupon1">
+                                <div class="weui-cell__bd div zb-weui-cell__hd">
+                                    <h4>满550元减199元</h4>
+                                    <p>截止日期：2018-03-25</p>
+                                </div>
+                                <div class="weui-cell__hd div">
+                                    &yen;55
+                                    <input type="checkbox" class="weui-check" name="checkbox1" id="coupon1" >
+                                    <!-- checked="checked" -->
+                                    <i class="weui-icon-checked"></i>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>          
+                <!-- 弹框的取消 -->
+				<div class="weui-actionsheet__action" style="background:#fff;">
+					<div class="weui-actionsheet__cell" id="coupon_actionsheet_cancel" style="font-size:16px;" @click="hideCouponMask">取消</div>
 				</div>
 			</div>
 		</div>
+
+        <!-- 交易明细弹框 -->
+
+        <div class="deal-detail-mask-box">
+			<div class="weui-mask zb-weui-mask" id="dealDetailMask" @click="hideDealDetailMask" :class="[{'weui-actionsheet_no_toggle_active':isDealDetailMask},{'weui-actionsheet_no_toggle':!isDealDetailMask}]"></div>
+			<div class="weui-actionsheet zb-weui-actionsheet" id="weui-actionsheet" :class="[{'weui-actionsheet_toggle':isDealDetailMask}]">
+				
+                <!-- 弹框的title -->
+                <div class="weui-actionsheet__title zb-weui-actionsheet__title">
+					<p class="weui-actionsheet__title-text zb-weui-actionsheet__title-text">费用明细</p>
+				</div>
+
+                <!-- 弹框的内容 -->
+                <div class="weui-actionsheet__menu">
+
+                    <!-- 循环下面的整体 -->
+                    <div class="zb-actionsheet__bd">
+                        <div class="weui-cells zb-weui-cells weui-cells_checkbox">
+                            <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
+                                <div class="weui-cell__bd div zb-weui-cell__hd">
+                                    <h4>入住两天房价</h4>
+                                </div>
+                                <div class="weui-cell__hd div">
+                                   &yen;1100
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="zb-actionsheet__bd">
+                        <div class="weui-cells zb-weui-cells weui-cells_checkbox">
+                            <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
+                                <div class="weui-cell__bd div zb-weui-cell__hd">
+                                    <h4>2018-07-18</h4>
+                                </div>
+                                <div class="weui-cell__hd div">
+                                    <span style="color:#666;">1间 </span>   &yen;550
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="zb-actionsheet__bd">
+                        <div class="weui-cells zb-weui-cells weui-cells_checkbox">
+                            <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
+                                <div class="weui-cell__bd div zb-weui-cell__hd">
+                                    <h4>总计</h4>
+                                </div>
+                                <div class="weui-cell__hd div">
+                                    <span style="color:#666;">实付</span>  &yen;2340
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>          
+                <!-- 弹框的取消 -->
+				<div class="weui-actionsheet__action" style="background:#fff;">
+					<div class="weui-actionsheet__cell" id="deal_detail_actionsheet_cancel" style="font-size:16px;" @click="hideDealDetailMask">取消</div>
+				</div>
+			</div>
+		</div>
+
 	</div>
 </template>
 
@@ -130,18 +200,29 @@ export default {
     components: {},
     data() {
         return {
-            isCouponMask: false
+            isCouponMask: false,
+            isDealDetailMask : false
         };
     },
     methods: {
-        // 优惠券mask
+        // 展示优惠券遮罩
         showCouponMask() {
             this.isCouponMask = true;
         },
 
-        // hideCouponMask
+        // 隐藏优惠券遮罩
         hideCouponMask() {
             this.isCouponMask = false;
+        },
+
+        // 展示交易明细遮罩
+        showDealDetailMask() {
+            this.isDealDetailMask = true;
+        },
+
+        // 隐藏交易明细遮罩
+        hideDealDetailMask() {
+            this.isDealDetailMask = false;
         }
     }
 };
@@ -162,27 +243,64 @@ export default {
 .weui-actionsheet_no_toggle_active {
     opacity: 1;
 }
+
+// 这是弹框的title
 .zb-weui-actionsheet__title {
 	height: auto;
-	background: #fff;
-
+    background: #fff;
+    .zb-weui-actionsheet__title-text {
+        height: 22px;
+        line-height: 22px;
+        margin: 12px 0;
+        color: #333;
+        font-size: 16px;
+    }
 }
-.zb-weui-actionsheet__title-text {
-    height: 22px;
-    line-height: 22px;
-    margin: 12px 0;
-    color: #333;
-    font-size: 16px;
-}
 
-.zb-weui-cells {
-	margin-top: 0;
+// 这是弹框的内容
+.zb-actionsheet__bd{
+    height: 55px;
+    padding: 0 15px;
+    background: #fff;
+    .zb-weui-cells {
+        margin-top: 0;
+        .zb-weui-cell {
+            height: 55px;
+            padding: 0;
+            .div {
+                height: 55px;
+                &.weui-cell__bd{
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    h4 {
+                        line-height: 20px;
+                        color: #666;
+                        font-size: 14px; 
+                        font-weight: normal; 
+                        margin-bottom: 4px;
+                    }
+                    p {
+                        line-height: 16px;
+                        color: #999;
+                        font-size: 12px; 
+                    }
+                }
+                &.weui-cell__hd{
+                    padding-right: 0; 
+                    line-height: 55px;
+                    color: #ffba56;
+                    font-size: 14px;
+                }
+            }
+        }
+    }
 }
 
 // order页的样式
 .order {
     // 相同的样式提取
-    label {
+    .label {
         float: left;
         height: 50px;
         line-height: 50px;
@@ -208,7 +326,7 @@ export default {
         background: #eff1f0;
         .detail-wrapper {
             padding: 15px;
-            background: #fff;
+            background: url('../../assets/images/bg/bg_order_page.png') repeat-x center;
             .name {
                 font-size: 16px;
                 color: #666;
@@ -216,7 +334,7 @@ export default {
                 line-height: 22px;
                 margin-bottom: 5px;
             }
-            .label {
+            .labels {
                 line-height: 16px;
                 font-size: 12px;
                 margin-bottom: 8px;
@@ -389,7 +507,7 @@ export default {
         font-size: 14px;
         .lf {
             flex: 1;
-            padding: 0 15px;
+            padding-left: 15px;
             .money {
                 color: #ffba56;
                 height: 49px;
@@ -397,11 +515,12 @@ export default {
                 float: left;
             }
             .arrow {
-                width: 13px;
+                width: 33px;
                 height: 49px;
                 line-height: 49px;
                 text-align: center;
                 float: right;
+                padding: 0 10px;
                 img {
                     display: inline-block;
                     width: 13px;

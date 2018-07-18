@@ -46,6 +46,8 @@
 
 	.location-wrapper {
 		width: 100%;
-		padding-left: px;
+		padding-left: 22px;
+		background: url('../assets/images/hotel-label/ic_dingwei.png') no-repeat 3px 3px;
+		background-size: 13px 15px;
 	}
 </style>

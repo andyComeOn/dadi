@@ -116,7 +116,6 @@ export default {
 		background: #e5e5e5; 
 		.come-go{
 			height: 65px;
-			
 			text-align: center;
 			background: #fff;
 			padding: 0 15px;
@@ -149,10 +148,7 @@ export default {
 				top: 50%;
 				left: 50%;
 				margin: -11px 0 0 -40px;
-
 			}
-
 		}
 	}
-	
 </style>
