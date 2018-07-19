@@ -13,8 +13,7 @@
 	export default {
 		name: 'nearby',
 		components: {
-			// mHeader,
-			// mSwipe
+			
 		}
 	}
 </script>

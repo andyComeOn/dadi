@@ -20,8 +20,8 @@ function f(para){
 }
 
 export function formateToday() {
-
-	return f(new Date()).mm + '-' + f(new Date()).dd
+	let d = new Date();
+	return f(d).mm + '-' + f(d).dd
 }
 
 export function formatePara(para) {
