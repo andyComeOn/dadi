@@ -1,23 +1,20 @@
 <template>
-	<div class="personal-center-page">
-		
-		推荐好友
+	<div class="my-collect-page">
+		<City></City>
 	</div>
 
 </template>
 
 <script>
-
+import City from "@/components/city/city.vue";
 export default {
-    name: "mine",
+    name: "my-collect",
     components: {
-        
+        City
     }
 };
 </script>
 
 
-<style lang="less" scoped>
-	@import "../../assets/less/var.less";
-	
+<style>
 </style>

@@ -17,17 +17,19 @@ import 'muse-ui/dist/muse-ui.css';
 import './assets/less/app.less'
 
 // 引入饿了么移动端mint-ui
-import { Field } from 'mint-ui';
+import { Field, Search } from 'mint-ui';
+Vue.component(Field.name, Field);
+Vue.component(Search.name, Search);
 import 'mint-ui/lib/style.css'
 
 // 引入weui
 import 'weui/dist/style/weui.min.css';
 
-// 引入zepto
+// 引入zepto（当前项目无用） 
 // import $ from 'zepto';
 
 
-Vue.component(Field.name, Field);
+
 
 Vue.use(Loading)
 
