@@ -214,9 +214,9 @@ export default new Router({
 			path: '/',
 			redirect: '/index'
 		},
-		{
-			path: '*',
-			redirect: '/'
-		},
+		// {
+		// 	path: '*',
+		// 	redirect: '/'
+		// },
 	]
 })

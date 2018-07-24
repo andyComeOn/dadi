@@ -1,11 +1,34 @@
-<style>
-	
+<style lang='less'>
 	.wh_container {
-		
+		position: absolute;
+		width: 100%;
+		top: 0;
+		bottom: 0;
+		overflow: auto;
+		padding-top: 84px;
 	}
 
+	.wh_title {
+		position: fixed;
+		width: 100%;
+		top: 0;
+		z-index: 2;
+		padding: 0 15px;
+		height: 44px;
+		line-height: 44px;
+		text-align: center;
+		background: #ccc;
+		.lf {
+			float: left;
+		}
+	}
 	.wh_content_head {
 		background: #f4f4f4;
+		position: fixed;
+		top: 44px;
+		left: 0;
+		width: 100%;
+		z-index: 2;
 	}
 
 	.wh_top_changge {
@@ -68,6 +91,14 @@
 		margin-bottom: 0;
 	}
 
+	.wh_content_item .wh_weekend {
+		color: #FFBA56;
+	}
+
+	.wh_content_item .wh_not_click {
+		color: #999;
+	}
+
 	.wh_content .selectDay {
 		background-color: #30B097;
 		opacity: 0.5;
@@ -76,6 +107,7 @@
 	.wh_content .selectB {
 		background-color: #30B097;
 		opacity: 0.5;
+		color: #fff;
 	}
 
 	.wh_content .selectA {
@@ -134,28 +166,18 @@
 		transform: rotate(45deg);
 	}
 
-	.wh_content_item > .wh_isMark {
-		margin: auto;
-		border-radius: 100px;
-		background: blue;
-		z-index: 2;
-	}
 
-	.wh_content_item .wh_other_dayhide {
-		color: #FFBA56;
-	}
 
-	.wh_content_item .wh_want_dayhide {
-		color: #999;
-	}
-
-	.wh_content_item .wh_chose_day {
-		background: green;
-		border-radius: 100px;
-	}
+	
 </style>
 <template>
 	<section class="wh_container">
+		<!-- 日历组件 -->
+		<div class="wh_title">
+			<!-- <div class="calendar-components-head"> -->
+				<div class="lf" @click="wh_title_back_fun">返回</div>请选择时间
+			<!-- </div> -->
+		</div>
 		<!-- 星期几区域 -->
 		<div class="wh_content_head">
 			<div class="wh_content">
@@ -174,9 +196,9 @@
 			<div class="wh_content">
 				<div class="wh_content_wrap">
 					<div class="wh_content_item" v-for="(item,index) in itemt.arry" :key="index" @click="clickDay(item,index)" v-bind:class="[{ selectDay: item.isSelected},{ selectB: item.isLeave},{ selectA: item.isHome}]">
-						<div class="wh_item_date" v-bind:class="[{ wh_isMark: item.isMark},{wh_other_dayhide:item.isWeekDay},{wh_want_dayhide:item.isTodayBefore},{wh_chose_day:item.chooseDay}]">
-							{{(item.isToday)?"今天":item.id}}
-							<br> {{(item.isHome)?"入住":(item.isLeave?"离店":'')}}
+						<div class="wh_item_date" v-bind:class="[{wh_weekend:item.isWeekDay},{wh_not_click:item.isBeforeTodayAndAfterBigDayDate}]">
+							{{(item.isToday)?"今天":item.id}} <br>
+							{{(item.isHome)?"入住":(item.isLeave?"离店":'')}}
 						</div>
 					</div>
 				</div>
@@ -207,11 +229,12 @@
 			this.myDate = new Date();
 		},
 		methods: {
+			// 用户选取入住、离店的点击函数
 			clickDay: function (item, index) {
 				if (this.date1 && this.date2) {
 					return;
 				}
-				if (item.isTodayBefore) {
+				if (item.isBeforeTodayAndAfterBigDayDate) {
 					return;
 				}
 
@@ -235,12 +258,18 @@
 				}, 500)
 			},
 
-			// 从当前的日期获取其后四个月（）的
+			// 从当前的日期所在月获取其后四个月（包含当前日期所在月）
 			getList: function (date, pam1, pam2) {
-				let arr = timeUtil.getMonthList(date, pam1, pam2);
-				console.log(arr);
+				let arr = timeUtil.getMonthListNoOther(date, pam1, pam2);
 				this.list = arr;
+			},
+
+			// 日历组件的title-若用户不选取日历，点击返回使日历弹窗消失
+			wh_title_back_fun(){
+				this.$emit('titleBackEmit');
 			}
+			
+			
 		},
 		mounted() {
 			this.getList(this.myDate, this.markDateMore[0].date, this.markDateMore[1].date);

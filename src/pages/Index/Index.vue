@@ -118,7 +118,7 @@
 
 <script>
 	// 引入api
-	import {slt_location} from '../../api/api'
+	import {slt_location, oauth, getCompanyInfo} from '../../api/api'
 	// 引入日期封装
 	import {formateToday,formateTomorrow,formatePara} from '../../utils/date';
 	import mTabbarFa from '../../components/tabbarfa';
@@ -152,18 +152,20 @@
 				dateStartVal: new Date(),
 				dateEndVal: new Date(),
 
-				
-				
-				
+				// appid
+				appid: ''
 			}
 		},
 		created() {
+			// 获取地理位置接口
 			// this.getLocation();
+
+			var param = {cpid:1};
+			// this.Oauth({cpid:1,form: 'http://m.test.zhaojin9.com:6677/#/index?cpid=1'});
+			
 		},
 		methods: {
 			// 获取当前位置
-
-			
 			getLocation(){
 				// var param = {cpid:1};
 				this.$http({
@@ -173,6 +175,32 @@
 				}).then(res => {
 					console.log(res);
 				});
+			},
+
+			// 授权
+			Oauth(param){
+				this.$http({
+					method: "POST",
+					url: oauth,
+					data: param
+				}).then(res => {
+					console.log(res.data.data);
+					// debugger
+					if (res.data.data!=''){
+						window.location.href = res.data.data;
+					}
+					
+				});
+			},
+
+			// 前端拉去微信code
+			fetchAppid(param){
+				
+			},
+
+			// 拉取微信授权toast
+			fetchWXToast(){
+				
 			},
 
 			// 入住日历弹框控制

@@ -19,9 +19,17 @@ function f(para){
 	return o
 }
 
+
 export function formateToday() {
 	let d = new Date();
 	return f(d).mm + '-' + f(d).dd
+}
+
+
+// 年月日输出：yyyy-mm-dd
+export function YTDkebab() {
+	let d = new Date();
+	return f(d).yyyy + '-' + f(d).mm + '-' + f(d).dd
 }
 
 export function formatePara(para) {
@@ -29,9 +37,20 @@ export function formatePara(para) {
 	return f(a).mm + '-' + f(a).dd
 }
 
+export function formateParaNum(para) {
+	// var a = para;
+	return f(para).yyyy + f(para).mm + f(para).dd
+}
+
 export function formateTomorrow() {
 	var now = new Date();
 	now.setDate(now.getDate()+1); 
 	return f(now).mm + '-' + f(now).dd
+}
+
+export function formateTomorrowNum() {
+	var now = new Date();
+	now.setDate(now.getDate()+1); 
+	return f(now).yyyy + '/' + f(now).mm + '/' + f(now).dd
 }
 

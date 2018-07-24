@@ -4,7 +4,7 @@
 			<div class="weui-panel__bd mine-info-panel__bd">
 				<router-link to="/personalCenter" class="weui-media-box mine-info-media-box weui-media-box_appmsg">
 					<div class="weui-media-box__hd mine-info-media-box__hd">
-						<img class="weui-media-box__thumb mine-info-media-box__thumb" src="../../assets/images/166_146_3.png" alt="">
+						<img class="weui-media-box__thumb mine-info-media-box__thumb" src="../../assets/images/avatar.png" alt="">
 					</div>
 					<div class="weui-media-box__bd mine-info-media-box__bd ">
 						<h4 class="weui-media-box__title mine-info-media-box__title">乘风破浪</h4>

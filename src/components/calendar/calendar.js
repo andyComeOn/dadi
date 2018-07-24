@@ -17,8 +17,7 @@ export default {
 		let month = date.getMonth();
 		for (let i = 1; i < 5; i++) {
 			let dateFirstOne = new Date(year + '/' + (month + i) + '/1');
-			console.log(dateFirstOne.getDay());
-			arr.push(dateFirstOne.getDay() == 0 ? 0 : dateFirstOne.getDay());
+			arr.push(dateFirstOne.getDay());
 		}
 		return arr;
 	},
@@ -28,6 +27,7 @@ export default {
 		return date.getFullYear() + '/' + (date.getMonth() + 1) + '/'
 			+ date.getDate();
 	},
+	// 时间格式处理函数
 	timeChange: function (pa1) {
 		let arr = pa1.split('/');
 		if (arr[1].length < 2) {
@@ -37,7 +37,6 @@ export default {
 			arr[2] = "0" + arr[2];
 		}
 		let str = arr.join("");
-		// console.log(Number(str));
 		return Number(str);
 	},
 	//获取某月的列表不包括上月和下月
@@ -45,6 +44,8 @@ export default {
 		// 转换格式如2018/07/19 --> 20180719
 		let opa1 = this.timeChange(pa1);
 		let opa2 = this.timeChange(pa2);
+		// let opa1 = Number(pa1);
+		// let opa2 = Number(pa2);
 
 		// 获取某年中某月有多少天
 		//（例如平年2月是28天,闰年二月是29天,一三五七月等30天,四六九等31天），抛出数组
@@ -58,17 +59,19 @@ export default {
 		// 获取参数的月份
 		const month = date.getMonth();
 
-		// 获取当前时间
-		let toDay = this.dateFormat(new Date());
+		// 获取当前日期
+		let toDay = this.dateFormat(date);
 
-		// 获取当前时间并且转换格式如2018/07/19 --> 20180719
+		// 把当前日期并且转换格式如2018/07/19 --> 20180719
 		let todayDate = this.timeChange(toDay);
 
 		// 初始化4个月的数组的字段
 		let arr = [{ dateTop: '', arry: [] }, { dateTop: '', arry: [] }, { dateTop: '', arry: [] }, { dateTop: '', arry: [] }];
 		
-
-		let bigDay = new Date().getFullYear() + '/' + (new Date().getMonth() + 4) + '/' + (30 - (num[0] - new Date().getDate() + 1));
+		// 获取当前月有效的天数， 用 30天作为参考， 在最后一个月中，不能点击天数的标识天（30减去当天日期之后的）
+		// 例如今天是7月20， 那么日历展示的最后一个月就是10月，7月的可选日期是20号-31号，共计是12天，
+		// 那么10月份就是从10月18号之后（不包含改天）的天数 不能点击   
+		let bigDay = date.getFullYear() + '/' + (date.getMonth() + 4) + '/' + (30 - (num[0] - date.getDate() + 1));
 		let bigDayDate = this.timeChange(bigDay); //20181029
 		for (let n = 0; n < 4; n++) {
 			arr[n].dateTop = `${date.getFullYear()}年${(date.getMonth() + (n + 1)) < 10 ? '0' + (date.getMonth() + (n + 1)) : date.getMonth() + (n + 1)}月`;
@@ -78,7 +81,7 @@ export default {
 					date: '1',
 					isToday: false,
 					isWeekDay: false,
-					isTodayBefore: true,
+					isBeforeTodayAndAfterBigDayDate: true,
 					isSelected: false,
 					isHome: false,
 					isLeave: false,
@@ -86,15 +89,15 @@ export default {
 				})
 			}
 			for (let i = 0; i < num[n]; i++) {
-				const nowTime = year + '/' + (month + n + 1) + '/' + (i + 1);
+				const nowTime = year + '/' + ((month + n + 1) < 10 ? '0' + (month + n + 1) : (month + n + 1)) + '/' + ((i + 1) < 10 ? '0' + (i + 1) : (i + 1));
 				let nT = this.timeChange(nowTime);
 				arr[n].arry.push({
 					id: i + 1,
 					date: nowTime,
 					isToday: (toDay === nowTime),
 					isWeekDay: (new Date(nowTime).getDay() == 6 || new Date(nowTime).getDay() == 0),
-					isTodayBefore: (nT < todayDate || nT > bigDayDate),
-					isSelected: ((opa1 <= nT) && (nT <= opa2)),
+					isBeforeTodayAndAfterBigDayDate: (nT < todayDate || nT > bigDayDate),
+					isSelected: ((opa1 <= nT) && (nT <= opa2)),  // 入店-离店
 					isHome: (opa1 === nT),
 					isLeave: (opa2 === nT),
 					otherMonth: `nowMonth`
@@ -103,8 +106,5 @@ export default {
 		}
 		return arr;
 	},
-	//获取某月的列表 用于渲染
-	getMonthList: function (date, pa1, pa2) {
-		return this.getMonthListNoOther(date, pa1, pa2);
-	}
+	
 }
