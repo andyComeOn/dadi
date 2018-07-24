@@ -1,117 +1,128 @@
 <template>
 	<div class="vip-page">
 		<div class="demo">
-			<span @click="triggerCalendar">{{zbInitDate[0].date}}</span>
-			<span @click="triggerCalendar">{{zbInitDate[1].date}}</span>
+			<span @click="triggerCalendar">{{zbInitCalendar.start.mm}}月{{zbInitCalendar.start.dd}}日</span>
+			<span @click="triggerCalendar">{{zbInitCalendar.end.mm}}月{{zbInitCalendar.end.dd}}日</span>
+			<span>共{{howManyNight}}晚</span>
 		</div>
-		
 
 		<mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCalendarVisible">
-			
-			<!-- <div class="calendar-components-head">
-				<div class="lf" @click="zbCalendarVisible = false">返回</div>请选择时间
-			</div> -->
-
-			<!-- <div class="calendar-components-body"> -->
-				<Calendar ref="Calendar" :markDateMore="zbInitDate" v-on:isToday="clickToday" v-on:titleBackEmit="titleBackFun"></Calendar>
-			<!-- </div> -->
-        </mu-dialog>
-		
-		
+			<Calendar ref="Calendar" :markDateMore="zbInitCalendar" v-on:isToday="clickToday" v-on:titleBackEmit="titleBackFun"></Calendar>
+		</mu-dialog>
 	</div>
-
 </template>
 
 <script>
-import Calendar  from '@/components/calendar/calendar.vue';
-import {formateToday, formateTomorrow,YTDkebab}  from '@/utils/date';
+import Calendar from "@/components/calendar/calendar.vue";
+import { YTD, f, YTDRg, dateEndMinusStart } from "@/utils/date";
 export default {
     name: "vip",
     components: {
-		Calendar
-	},
-	data (){
-		return {
-			zbCalendarVisible : false,
-			date: '',
-			zbInitDate: [
-				{
-					date: "",
-					className: "mark1"
-				},
-				{
-					date: "",
-					className: "mark2"
-				}
-			]
-		}
-	},
-	created() {
-		this.date = new Date();
-		this.zbInitDate[0].date = 
-			this.date.getFullYear() +
-			"/" +
-			(this.date.getMonth() + 1) +
-			"/" +
-			this.date.getDate();
-		
-		this.zbInitDate[1].date = 
-			this.date.getFullYear() +
-			"/" +
-			(this.date.getMonth() + 1) +
-			"/" +
-			(this.date.getDate() + 1);
-		// this.zbInitDate[0].date = formateToday();
-		// this.zbInitDate[1].date = formateTomorrow();
-	},
-	methods : {
-		// 出发日历显示
-		triggerCalendar (){
-			this.zbCalendarVisible = true;
-		},
-		
-		// 日历的选取
-		clickToday(data) {
-			this.zbCalendarVisible = false;
-			this.zbInitDate[0].date = data[0];
-			this.zbInitDate[1].date = data[1];
-		},
-		// 日历组件的title-若用户不选取日历，点击返回使日历弹窗消失
-		titleBackFun(){
-			this.zbCalendarVisible = false;
-		}
-	}
+        Calendar
+    },
+    data() {
+        return {
+            zbCalendarVisible: false,
+            demo: "",
+			date: "",
+			howManyNight: '',
+            // zbInitDate: [
+            // 	{
+            // 		date: "",
+            // 		className: "mark1"
+            // 	},
+            // 	{
+            // 		date: "",
+            // 		className: "mark2"
+            // 	}
+            // ]
+
+            zbInitCalendar: {
+                start: {
+                    yyyy: "",
+                    mm: "",
+                    dd: ""
+                },
+                end: {
+                    yyyy: "",
+                    mm: "",
+                    dd: ""
+                }
+            }
+        };
+    },
+    created() {
+        var d = new Date();
+        var dd = new Date();
+        dd.setDate(dd.getDate() + 1);
+
+        // this.zbInitDate[0].date =
+        // 	this.date.getFullYear() +
+        // 	"/" +
+        // 	(this.date.getMonth() + 1) +
+        // 	"/" +
+        // 	this.date.getDate();
+
+        // this.zbInitDate[1].date =
+        // 	this.date.getFullYear() +
+        // 	"/" +
+        // 	(this.date.getMonth() + 1) +
+        // 	"/" +
+        // 	(this.date.getDate() + 1);
+
+        // this.zbInitDate[0].date = YTD().lfRule;
+        // this.zbInitDate[1].date = YTDRg().lfRule;
+
+
+		this.howManyNight = dateEndMinusStart(d,dd);
+        this.zbInitCalendar.start.yyyy = f(d).yyyy;
+        this.zbInitCalendar.start.mm = f(d).mm;
+        this.zbInitCalendar.start.dd = f(d).dd;
+        this.zbInitCalendar.end.yyyy = f(dd).yyyy;
+        this.zbInitCalendar.end.mm = f(dd).mm;
+        this.zbInitCalendar.end.dd = f(dd).dd;
+    },
+    methods: {
+        // 出发日历显示
+        triggerCalendar() {
+            this.zbCalendarVisible = true;
+        },
+
+        // 日历的选取
+        clickToday(value) {
+            this.zbCalendarVisible = false;
+            // this.zbInitDate[0].date = data[0];
+            // this.zbInitDate[1].date = data[1];
+
+            // 入住时间
+            this.zbInitCalendar.start.yyyy = value[0].split("/")[0];
+            this.zbInitCalendar.start.mm = value[0].split("/")[1];
+            this.zbInitCalendar.start.dd = value[0].split("/")[2];
+
+            // 离店时间
+            this.zbInitCalendar.end.yyyy = value[1].split("/")[0];
+            this.zbInitCalendar.end.mm = value[1].split("/")[1];
+			this.zbInitCalendar.end.dd = value[1].split("/")[2];
+			
+			//共几晚
+			this.howManyNight = dateEndMinusStart(value[0], value[1]);
+        },
+        // 日历组件的title-若用户不选取日历，点击返回使日历弹窗消失
+        titleBackFun() {
+            this.zbCalendarVisible = false;
+        }
+    }
 };
 </script>
 
-
 <style lang="less" scoped>
 .demo {
-	height:30px;
-	line-height: 30px;
-	background: palevioletred; 
-	span {
-		margin-right:20px; 
-		background: tan;
-	}
-} 
-
-.calendar-components-head {
-	background: #ccc;
-	padding: 0 15px;
-	line-height: 44px;
-	text-align: center;
-	.lf {
-		float: left;
-	}
-} 
-
-.calendar-components-body {
-	position: absolute;
-	width: 100%;
-	top: 44px;
-	bottom: 0;
-	overflow: auto;
+    height: 30px;
+    line-height: 30px;
+    background: palevioletred;
+    span {
+        margin-right: 20px;
+        background: tan;
+    }
 }
-
 </style>

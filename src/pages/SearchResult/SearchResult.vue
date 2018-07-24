@@ -1,5 +1,6 @@
 <template>
 	<div class="search-result">
+        <!-- 搜索条 -->
 		<searchbar 
             v-on:citySelectEmit="citySelectValFun" 
             :city="urlGetInfo.city" 

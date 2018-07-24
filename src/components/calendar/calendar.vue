@@ -215,14 +215,14 @@
 				myDate: [],
 				list: [],
 				dateTop: '',
-				date1: '',
-				date2: ''
+				startDate: '',
+				endDate: ''
 			};
 		},
 		props: {
 			markDateMore: {
-				type: Array,
-				default: () => []
+				type: Object,
+				default: () => {}
 			}
 		},
 		created() {
@@ -231,30 +231,30 @@
 		methods: {
 			// 用户选取入住、离店的点击函数
 			clickDay: function (item, index) {
-				if (this.date1 && this.date2) {
+				if (this.startDate && this.endDate) {
 					return;
 				}
 				if (item.isBeforeTodayAndAfterBigDayDate) {
 					return;
 				}
 
-				if (!this.date1) {
-					this.date1 = item.date;
+				if (!this.startDate) {
+					this.startDate = item.date;
 					this.getList(this.myDate, item.date, item.date);
 					return;
 				}
-				if (timeUtil.timeChange(item.date) <= timeUtil.timeChange(this.date1)) {
-					this.date1 = item.date;
+				if (timeUtil.timeChange(item.date) <= timeUtil.timeChange(this.startDate)) {
+					this.startDate = item.date;
 					this.getList(this.myDate, item.date, item.date);
 					return;
 				}
-				if (!this.date2) {
-					this.date2 = item.date;
-					this.getList(this.myDate, this.date1, this.date2);
+				if (!this.endDate) {
+					this.endDate = item.date;
+					this.getList(this.myDate, this.startDate, this.endDate);
 				}
 				var that = this;
 				setTimeout(function () {
-					that.$emit('isToday', [that.date1, that.date2]);
+					that.$emit('isToday', [that.startDate, that.endDate]);
 				}, 500)
 			},
 
@@ -268,18 +268,19 @@
 			wh_title_back_fun(){
 				this.$emit('titleBackEmit');
 			}
-			
-			
 		},
 		mounted() {
-			this.getList(this.myDate, this.markDateMore[0].date, this.markDateMore[1].date);
+			// this.getList(this.myDate, this.markDateMore[0].date, this.markDateMore[1].date);
+			// this.getList(this.myDate, this.markDateMore[0].date, this.markDateMore[1].date);
+			this.getList(this.myDate, this.markDateMore.start.yyyy + '/' + this.markDateMore.start.mm + '/' + this.markDateMore.start.dd , this.markDateMore.end.yyyy + '/' + this.markDateMore.end.mm + '/' + this.markDateMore.end.dd);
+		
 		},
 		watch: {
 			markDateMore: {
 				handler: function () {
-					this.date1 = '';
-					this.date2 = '';
-					this.getList(this.myDate, this.markDateMore[0].date, this.markDateMore[1].date);
+					this.startDate = '';
+					this.endDate = '';
+					this.getList(this.myDate, this.markDateMore.start.yyyy + '/' + this.markDateMore.start.mm + '/' + this.markDateMore.start.dd , this.markDateMore.end.yyyy + '/' + this.markDateMore.end.mm + '/' + this.markDateMore.end.dd);
 				},
 				deep: true   
 			}

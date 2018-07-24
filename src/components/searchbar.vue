@@ -1,7 +1,7 @@
 <template>
     <div class="search-container">
         <div class="search-wrapper">
-            <div class="city" @click="cityToast">{{whichCity}}</div>
+            <div class="city" @click="triggerCityDialog">{{whichCity}}</div>
             <span class="stick">|</span>
             <div class="date-wrapper">
                 <div class="date-area">
@@ -16,7 +16,7 @@
             </div>
 
             <!-- 城市dialog -->
-            <mu-dialog width="360" transition="slide-right" fullscreen :open.sync="isCityDialogShow">
+            <mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCityVisible">
                 <mu-appbar color="#30B097" title="请选择城市" class="city-dialog-hd">
                     <mu-button flat slot="left" @click="close">关闭</mu-button>
                 </mu-appbar>
@@ -73,7 +73,7 @@ export default {
     ],
     data() {
         return {
-            isCityDialogShow: false,
+            zbCityVisible: false,
             whichCity:this.city,
 
             //入住、离店日历dialog的标志
@@ -114,20 +114,20 @@ export default {
         },
 
         //城市dialog控制
-        cityToast() {
-            this.isCityDialogShow = true;
+        triggerCityDialog() {
+            this.zbCityVisible = true;
         },
 
         // 选取城市
         citySelect(id,name) {
             this.whichCity = name;
             this.$emit("citySelectEmit", id, name);
-            this.isCityDialogShow = false;
+            this.zbCityVisible = false;
         },
 
         // 关闭城市dialog按钮
         close(){
-            this.isCityDialogShow = false;
+            this.zbCityVisible = false;
         },
 
         // 入住日历弹框控制

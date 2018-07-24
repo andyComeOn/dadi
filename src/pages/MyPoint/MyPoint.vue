@@ -1,7 +1,8 @@
 <template>
 	<div class="my-point-page">
 		
-		<myCoupon @nowUseEmit="fun" :list="posts"></myCoupon>
+		<!-- <myCoupon @nowUseEmit="fun" :list="posts"></myCoupon> -->
+		<mt-search v-model="value"></mt-search>
 		
 	</div>
 
@@ -33,7 +34,9 @@ export default {
 					price:699,
 					type:11
 				}
-			]
+			],
+			value : ''
+
 		}
 	},
 	methods:{
