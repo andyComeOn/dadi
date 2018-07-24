@@ -17,6 +17,8 @@
 
             <!-- 城市dialog -->
             <mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCityVisible">
+
+
                 <mu-appbar color="#30B097" title="请选择城市" class="city-dialog-hd">
                     <mu-button flat slot="left" @click="close">关闭</mu-button>
                 </mu-appbar>
@@ -43,11 +45,11 @@
 
             <!-- 离店日历弹框 -->
             <mu-dialog width="360" transition="slide-right" fullscreen :open.sync="calendarVisible1">
-                <mu-appbar color="#30B097" title="请选择日期">
+                <!-- <mu-appbar color="#30B097" title="请选择日期">
                     <mu-button slot="right" flat  @click="endDateDialogHide">
                         关闭
                     </mu-button>
-                </mu-appbar>
+                </mu-appbar> -->
                 <div style="padding: 24px 10px 0 10px;">
                     <mu-flex justify-content="center" align-items="center" wrap="wrap">
                         <mu-paper :z-depth="1" class="demo-date-picker">
@@ -97,7 +99,7 @@ export default {
         };
     },
     created() {
-        this.fetchCityId()
+        this.fetchCityId();
     },
     mounted() {},
     methods: {
@@ -115,19 +117,20 @@ export default {
 
         //城市dialog控制
         triggerCityDialog() {
-            this.zbCityVisible = true;
+            this.$emit("triggerCityDialogEmit");
+            // this.zbCityVisible = true;
         },
 
         // 选取城市
-        citySelect(id,name) {
-            this.whichCity = name;
-            this.$emit("citySelectEmit", id, name);
-            this.zbCityVisible = false;
-        },
+        // citySelect(id,name) {
+        //     this.whichCity = name;
+        //     this.$emit("citySelectEmit", id, name);
+        //     this.zbCityVisible = false;
+        // },
 
         // 关闭城市dialog按钮
         close(){
-            this.zbCityVisible = false;
+            // this.zbCityVisible = false;
         },
 
         // 入住日历弹框控制

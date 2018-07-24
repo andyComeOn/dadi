@@ -3,6 +3,7 @@
         <!-- 搜索条 -->
 		<searchbar 
             v-on:citySelectEmit="citySelectValFun" 
+            v-on:triggerCityDialogEmit="triggerCityDialogFun"
             :city="urlGetInfo.city" 
             :startDate="urlGetInfo.startDate"
             :endDate="urlGetInfo.endDate"
@@ -14,17 +15,27 @@
 		<noSearchResult v-show="true"></noSearchResult>
 		
 		<roomItem v-bind:condition="this.watchObj"></roomItem>
-	</div>
+
+        <!-- 城市dialog -->
+        <mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCityVisible">
+            <!-- <div>9090909</div> -->
+
+            <City v-on:cityTitleBackEmit="cityTitleBackEmitFun"></City>
+        </mu-dialog>
+
+    </div>
 </template>
 
 <script>
+
 import mHotelLocation from "../../components/hotel-location";
 import roomItem from "../../components/room-item";
 import searchbar from "../../components/searchbar";
 import sortbar from "../../components/sortbar";
 import refreshbar from "../../components/refresh-bar";
 import noSearchResult from "../../components/no-search-result";
-import {store_list} from '../../api/api';
+import {store_list} from '../../api/api';  
+import City from '@/components/city/city.vue';
 
 export default {
     name: "search-result",
@@ -33,14 +44,15 @@ export default {
         searchbar,
         sortbar,
         refreshbar,
-        noSearchResult
+        noSearchResult,
+        City
     },
     props:{
 
     },
     data() {
         return {
-            // 获取路由的参数
+            // 获取路由传过来的参数
             urlGetInfo:{
                 city:this.$route.query.city,
                 startDate:this.$route.query.startDate,
@@ -48,7 +60,7 @@ export default {
                 word:this.$route.query.word,
             },
 
-
+            // 监听数据的变化，用来筛选满足条件的酒店列表
             watchObj: {
                 cpid:'1',
                 //正序、降序排列
@@ -79,9 +91,10 @@ export default {
             //门店名称
             name: this.$route.query.word,
 
-            resData:''
-			
+            resData:'',
 			// Object.assign();
+            // 日历组件是否显示
+            zbCityVisible: false
         };
     },
     created() {
@@ -96,7 +109,6 @@ export default {
         
     },
     methods: {
-        
         // 加载数据
         fetchData(param) {
             this.$http({
@@ -112,7 +124,18 @@ export default {
 		citySelectValFun(id, name){
             console.log(id, name);
             this.watchObj.city = id;
-		}
+        },
+        
+        // 搜索条中城市选择逻辑，子组件emit之后，执行的方法
+        triggerCityDialogFun(){
+            this.zbCityVisible = true;
+        },
+
+        // 日期组件的title通过emit执行的方法
+        cityTitleBackEmitFun(){
+            this.zbCityVisible = false;
+        }
+
     }
 };
 </script>
