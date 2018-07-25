@@ -1,7 +1,6 @@
 
 <template>
 	<div class="city-wendor m-position-ab">
-		<!-- <mt-search v-model="value"></mt-search> -->
 		<div class="city-title"><div class="lf" @click="cityTitleBackfun">返回</div>请选择城市</div>
 		<div class="city-content">
 			<div class="city-head">搜索条</div>
@@ -14,24 +13,19 @@
 					</ul>
 					<ul class="hot">
 						<h4>热门城市</h4>
-						<li><span>北京</span><span>天津</span></li>
+						<li>
+							<span @click="cityItem('北京', '1')">北京</span>
+							<span @click="cityItem('天津', '21')">天津</span>
+						</li>
 					</ul>
 				</div>
 				
 				<!-- 城市列表 -->
 				<ul class="list">
-					<li>北京</li>
-					<li>天津</li>
-					<li>北京</li>
-					<li>天津</li>
-					<li>北京</li>
-					<li>天津</li>
-					<li>北京</li>
-					<li>天津</li>
+					<li v-for="(item, index) in cityList" :key="index" @click="cityItem(item.name, item.id)">{{item.name}}</li>
 				</ul>
 			</div>
 		</div>
-
 	</div>
 </template>
 <script>
@@ -40,7 +34,7 @@ export default {
     data() {
         return {
 			value: '',
-			cityList: []  //拉去城市的信息
+			cityList: []  //拉取城市的信息
         };
     },
     props: {},
@@ -53,8 +47,7 @@ export default {
 			this.$emit('cityTitleBackEmit');
 		},
 
-		// 
-		//获取有效的城市详情
+		//获取有效的城市列表
         fetchCityInfo(){
             var param = {cpid:1}
             this.$http({
@@ -62,11 +55,14 @@ export default {
                 url: getStorecity,
                 data:param
             }).then(res => {
-                this.cityList = res.data.data;
+				this.cityList = res.data.data;
             });
-        },
-
-
+		},
+		
+		// 点击城市item
+		cityItem(name, id){
+			this.$emit('cityItemEmit', name, id);
+		}
 	},
     mounted() {},
     watch: {}

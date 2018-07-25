@@ -1,6 +1,6 @@
 <template>
 	<div class="my-collect-page">
-		<City></City>
+		我的收藏
 	</div>
 
 </template>

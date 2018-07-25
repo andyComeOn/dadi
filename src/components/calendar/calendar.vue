@@ -266,7 +266,7 @@
 
 			// 日历组件的title-若用户不选取日历，点击返回使日历弹窗消失
 			wh_title_back_fun(){
-				this.$emit('titleBackEmit');
+				this.$emit('calendarTitleBackEmit');
 			}
 		},
 		mounted() {

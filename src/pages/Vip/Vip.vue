@@ -7,7 +7,11 @@
 		</div>
 
 		<mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCalendarVisible">
-			<Calendar ref="Calendar" :markDateMore="zbInitCalendar" v-on:isToday="clickToday" v-on:titleBackEmit="titleBackFun"></Calendar>
+			<Calendar ref="Calendar" 
+                :markDateMore="zbInitCalendar" 
+                @isToday="clickToday" 
+                @titleBackEmit="calendarTitleBackFun">
+            </Calendar>
 		</mu-dialog>
 	</div>
 </template>
@@ -52,6 +56,7 @@ export default {
         };
     },
     created() {
+        // 初始化日历日期赋值
         var d = new Date();
         var dd = new Date();
         dd.setDate(dd.getDate() + 1);
@@ -83,12 +88,12 @@ export default {
         this.zbInitCalendar.end.dd = f(dd).dd;
     },
     methods: {
-        // 出发日历显示
+        // 触发日历dialog显示
         triggerCalendar() {
             this.zbCalendarVisible = true;
         },
 
-        // 日历的选取
+        // 入住-离店
         clickToday(value) {
             this.zbCalendarVisible = false;
             // this.zbInitDate[0].date = data[0];
@@ -107,8 +112,9 @@ export default {
 			//共几晚
 			this.howManyNight = dateEndMinusStart(value[0], value[1]);
         },
+
         // 日历组件的title-若用户不选取日历，点击返回使日历弹窗消失
-        titleBackFun() {
+        calendarTitleBackFun() {
             this.zbCalendarVisible = false;
         }
     }
