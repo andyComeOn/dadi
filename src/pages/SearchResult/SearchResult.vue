@@ -4,6 +4,8 @@
 		<searchbar 
             @triggerCityDialogEmit="triggerCityDialogEmitFun"
             @triggerCalendarDialogEmit="triggerCalendarDialogEmitFun"
+            @triggerInputFocusEmit="triggerInputFocusEmitFun"
+            
             :searchbarObj="toSearchbarObj">
         </searchbar>
 
@@ -35,7 +37,12 @@
             </Calendar>
 		</mu-dialog>
 
-
+        <!-- 日历组件dialog -->
+        <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbSearchVisible">
+			<Search 
+                @cancelSearchEmit="cancelSearchEmitFun">
+            </Search>
+		</mu-dialog>
 
     </div>
 </template>
@@ -51,6 +58,7 @@ import noSearchResult from "../../components/no-search-result";
 import {store_list} from '../../api/api';  
 import City from "@/components/city/city.vue"; // 引入城市组件
 import Calendar from "@/components/calendar/calendar.vue"; // 引入日历组件
+import Search from "@/components/search/search.vue"; // 引入搜索弹层组件
 export default {
     name: "search-result",
     components: {
@@ -60,7 +68,8 @@ export default {
         refreshbar,
         noSearchResult,
         City,
-        Calendar
+        Calendar,
+        Search
     },
     props:{
 
@@ -72,19 +81,15 @@ export default {
 
             // 监听数据的变化，用来筛选满足条件的酒店列表
             watchObj: {
-                cpid:'1',
-                //正序、降序排列
-                //type:'',
-                // 经度
-                //longitude:'',
-                //维度
-                //latitude:'',
-                //城市
-				city: '1',
-				//排序（价格，距离）
-                //px_rule:'',
-                //门店名称
-                //name: '',
+                cpid:'1',  // 公司id
+                type:'',   //正序、降序排列
+                longitude:'',  // 经度
+                latitude:'',//维度
+                city: '1', //城市id
+				px_rule:'',  //排序（价格，距离）
+                name: '', //门店名称
+                begin:'', // 入住时间
+                finish:'' // 离店时间
             },
 
             // 城市组件是否显示
@@ -92,6 +97,9 @@ export default {
 
             // 日历组件是否显示
             zbCalendarVisible: false,
+
+            // 搜索组件是否显示
+            zbSearchVisible: false,
 
             // 初始化日历日期
             zbInitCalendar: {
@@ -205,6 +213,16 @@ export default {
             this.toSearchbarObj.liveoutMM = value[1].split("/")[1];
             this.toSearchbarObj.liveoutDD = value[1].split("/")[2];           
         },
+
+        // searchbar中输入框获焦的emit的函数
+        triggerInputFocusEmitFun(){
+            this.zbSearchVisible = true;
+        },
+
+        // 搜索组件（不是搜索条组件）右侧的取消按钮
+        cancelSearchEmitFun(){
+            this.zbSearchVisible = false;
+        }
 
     }
 };

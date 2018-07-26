@@ -25,19 +25,46 @@ import 'mint-ui/lib/style.css'
 // 引入weui
 import 'weui/dist/style/weui.min.css';
 
+// 引入cookie的方法
+import {getCookie} from '@/utils/util';
+
+// 引入api
+import { login_test, userInfo } from "@/api/api";
+
 // 引入zepto（当前项目无用） 
 // import $ from 'zepto';
 
-
-
-
 Vue.use(Loading)
-
 Vue.use(MuseUI);
 
+// 获取cookie
+let mycookie = getCookie('auth_user_1');
+console.log(mycookie);
 
+// cookie为空，调取登陆接口
+if (!mycookie){
+	var param = { cpid: 1 };
+	this.$http({
+		method: "POST",
+		url: login_test,
+		data: param
+	}).then(res => {
+		
+	});
+}
+
+// 判断是否为绑定手机号
+function isBindPhone(){
+
+} 
+
+
+// 在点击预定时候判断有没有绑定手机号
+// 若没有绑定，使用路由监听跳到绑定手机号（登陆）页面
+// console.log(sessionStorage);
 // router.beforeEach((to, from, next) => {
-// 	//NProgress.start();
+// 	NProgress.start();
+// 	console.log(sessionStorage);
 // 	if (to.path == '/login') {
 // 	  sessionStorage.removeItem('user');
 // 	}
@@ -48,6 +75,8 @@ Vue.use(MuseUI);
 // 	  next()
 // 	}
 // })
+
+
 
 new Vue({
 	el: '#app',

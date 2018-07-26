@@ -11,11 +11,9 @@ export function getUrlParam(name) {
 	return null;
 }
 
-// export function getUrlParam(name) { 
+// 获取cookie
 
-// 	// debugger;
-// 	var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
-//     var r = window.location.hash.substr(1).match(reg); 
-//     if (r != null) return unescape(r[2]); 
-//     return null; 
-// } 
+export function getCookie(name) {
+    var v = window.document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+    return v ? v[2] : null;
+}

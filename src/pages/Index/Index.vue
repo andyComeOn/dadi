@@ -5,9 +5,9 @@
 			<!-- 轮播 -->
 			<m-swipe swipeid="swipe01" :autoplay="1000" paginationDirection="right">
 				<div class="swiper-slide " slot="swiper-con">
-					<router-link to="/hotelDetail">
+					<!-- <router-link to="/hotelDetail"> -->
 						<img src="../../assets/images/banner/01.jpg" alt="">
-					</router-link>
+					<!-- </router-link> -->
 				</div>
 				<div class="swiper-slide " slot="swiper-con">
 					<img src="../../assets/images/banner/02.jpg" alt="">
@@ -301,6 +301,7 @@ export default {
             padding: 12px 0;
             display: flex;
             flex-direction: row;
+            position: relative;
             .lf {
                 flex: 1;
                 height: 43px;
@@ -357,7 +358,7 @@ export default {
                     }
                 }
             }
-            &:after {
+            &::after {
                 content: "";
                 position: absolute;
                 left: 0;

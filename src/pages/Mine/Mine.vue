@@ -113,7 +113,7 @@ export default {
 		};
     },
     created() {
-		this.getLoginTest();
+		// this.getLoginTest();
 	 	this.getUserInfo();
     },
     methods: {
@@ -125,7 +125,8 @@ export default {
                 url: login_test,
                 data: param
             }).then(res => {
-                // console.log(res.data);
+				// console.log(res.data);
+				this.getUserInfo();
             });
 		},
 		

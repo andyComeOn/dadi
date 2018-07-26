@@ -1,27 +1,7 @@
 <template>
 	<div class="room-wrapper">
 		<ul class="list">
-			<!-- <li>
-				<div class="lf">
-					<img src="../assets/images/img/room.png" alt="">
-				</div>
-				<div class="rg">
-					<p class="name m-ellipsis">秋果酒店机场店</p>
-					<p class="info m-ellipsis-2">
-						秋果都市里的世外桃源，秋果都市里的世外桃源,秋果都市里的世外桃源，秋果都市里的世外桃源,秋果都市里的世外桃源，秋果都市里的世外桃源秋果都市里的世外桃源，秋果都市里的世外桃源。
-					</p>
-					<p class="location">北京市－朝阳区 距离您2.5km</p>
-					<div class="price-wrap">
-						<div class="label">
-							<span class="full">返</span>
-							<span class="minus">减</span>
-						</div>
-						<div class="price">&yen;
-							<span>686</span>起</div>
-					</div>
-				</div>
-			</li> -->
-			<li v-for="(item,index) in dataList" :key="index">
+			<li v-for="(item,index) in dataList" :key="index" @click="storeDetail(item.id)">
 				<div class="lf">
 					<img :src="item.img_logo" alt="">
 				</div>
@@ -64,17 +44,9 @@ export default {
                         "秋果都市里的世外桃源,秋果都市里的世外桃源秋果都市里的世外桃源秋果都市里的世外桃源。",
                     location: "北京市－朝阳区 距离您2.5km",
                     price: 686
-                },
-                {
-                    type: 3,
-                    imgSrc: require("../assets/images/img/room.png"),
-                    name: "顺义店",
-                    info:
-                        "好酒店,好酒店好酒店好酒店好酒店好酒店好酒店好酒店好酒店好酒店好酒店好酒店。",
-                    location: "北京市－顺义区 距离您3.5km",
-                    price: 999
-                },
+                }
             ],
+            // 门店list
             dataList:''
 
 
@@ -88,6 +60,7 @@ export default {
         
     },
     methods: {
+        // 拉取门店item
         fetchData(param) {
             this.$http({
                 method: "POST",
@@ -95,6 +68,18 @@ export default {
                 data: param
             }).then(res => {
                 this.dataList = res.data.data;
+            });
+        },
+
+        // 门店item的点击事件
+        storeDetail(id,city,area,province){
+            this.$router.push({
+                path: "/hotelDetail",
+                query: {
+                    storeid: id,
+                    storecity: city,
+
+				}
             });
         }
     }

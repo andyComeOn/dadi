@@ -12,7 +12,13 @@
             </div>
             <span class="stick">|</span>
             <div class="search">
-                <input type="text" class="txt" v-model="o.abstract" placeholder="酒店位置/商圈">
+                <input 
+                    type="text" 
+                    class="txt" 
+                    v-model="o.abstract" 
+                    placeholder="酒店位置/商圈"
+                    @focus="triggerInputFocus"
+                >
             </div>
         </div>
     </div>
@@ -74,6 +80,11 @@ export default {
         // 触发日历dialog显示
         triggerCalendarDialog() {
             this.$emit("triggerCalendarDialogEmit");
+        },
+
+        // 搜素框出发焦点事件
+        triggerInputFocus(){
+            this.$emit("triggerInputFocusEmit");
         }
 
     }
