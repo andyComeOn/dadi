@@ -18,8 +18,7 @@
     </div>
 </template>
 <script>
-import { formatePara } from "../utils/date";
-import { getStorecity } from "../api/api";
+import { getStorecity } from "@/api/api";
 import { f, dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
 
 export default {
@@ -27,7 +26,7 @@ export default {
     watch: {
         searchbarObj: {
             handler(newValue, oldValue) {
-                console.log(newValue);
+                // console.log(newValue);
                 this.o = newValue;
                 this.howManyNight = dateEndMinusStart(
                     newValue.liveinYYYY +

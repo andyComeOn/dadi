@@ -24,24 +24,39 @@
 
 			<!-- 酒店组件 -->
 			<roomItem :condition="watchObj"></roomItem>
-			
 		</div>
 		
 		<!-- tabbar -->
 		<mTabbarFa></mTabbarFa>
+
+        <!-- 城市组件dialog -->
+        <mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCityVisible">
+            <City v-on:cityTitleBackEmit="cityTitleBackEmitFun"
+                v-on:cityItemEmit="cityItemEmitFun">
+            </City>
+        </mu-dialog>
+
+        <!-- 日历组件dialog -->
+        <mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCalendarVisible">
+			<Calendar ref="Calendar" 
+                :markDateMore="zbInitCalendar" 
+                @isToday="clickToday"
+                @calendarTitleBackEmit="calendarTitleBackEmitFun">
+            </Calendar>
+		</mu-dialog>
 	</div>
 </template>
 
 <script>
 import mTabbarFa from "@/components/tabbarfa";
 import mHeader from "@/components/header";
-import mHotelLocation from "../../components/hotel-location";
-import roomItem from "../../components/room-item";
-import searchbar from "../../components/searchbar";
-import sortbar from "../../components/sortbar";
-import refreshbar from "../../components/refresh-bar";
-import noSearchResult from "../../components/no-search-result";
-import {store_list} from '../../api/api';  
+import mHotelLocation from "@/components/hotel-location";
+import roomItem from "@/components/room-item";
+import searchbar from "@/components/searchbar";
+import sortbar from "@/components/sortbar";
+import refreshbar from "@/components/refresh-bar";
+import noSearchResult from "@/components/no-search-result";
+import { f, dateEndMinusStart } from "@/utils/date";  // 引入封装时间函数
 import City from "@/components/city/city.vue"; // 引入城市组件
 import Calendar from "@/components/calendar/calendar.vue"; // 引入日历组件
 
@@ -63,8 +78,15 @@ export default {
 		return {
 			// 最终传给searchbar的对象
             toSearchbarObj:{
-                
-
+                cityname:'北京',
+                cityid:'1',
+                liveinYYYY:this.$route.query.liveinYYYY,
+                liveinMM:this.$route.query.liveinMM,
+                liveinDD:this.$route.query.liveinDD,
+                liveoutYYYY:this.$route.query.liveoutYYYY,
+                liveoutMM:this.$route.query.liveoutMM,
+                liveoutDD:this.$route.query.liveoutDD,
+                abstract:''
             },
 
             // 监听数据的变化，用来筛选满足条件的酒店列表
@@ -106,27 +128,26 @@ export default {
 		}
 	},
 	created() {
-		var urlPara =  {
-            cityname:this.$route.query.cityname,
-            cityid:this.$route.query.cityid,
-            liveinYYYY:this.$route.query.liveinYYYY,
-            liveinMM:this.$route.query.liveinMM,
-            liveinDD:this.$route.query.liveinDD,
-            liveoutYYYY:this.$route.query.liveoutYYYY,
-            liveoutMM:this.$route.query.liveoutMM,
-            liveoutDD:this.$route.query.liveoutDD,
-            abstract:this.$route.query.abstract
-        }
-        // 将路由获得的一系列参数赋值给data()中的一个变量-getUrlPara
-        this.toSearchbarObj = urlPara;
-
         // 日历初始赋值
-        this.zbInitCalendar.start.yyyy = urlPara.liveinYYYY;
-        this.zbInitCalendar.start.mm = urlPara.liveinMM;
-        this.zbInitCalendar.start.dd = urlPara.liveinDD;
-        this.zbInitCalendar.end.yyyy = urlPara.liveoutYYYY;
-        this.zbInitCalendar.end.mm = urlPara.liveoutMM;
-        this.zbInitCalendar.end.dd = urlPara.liveoutDD;
+		var d = new Date();
+        var dd = new Date();
+        dd.setDate(dd.getDate() + 1);
+        this.zbInitCalendar.start.yyyy = f(d).yyyy;
+        this.zbInitCalendar.start.mm = f(d).mm;
+        this.zbInitCalendar.start.dd = f(d).dd;
+        this.zbInitCalendar.end.yyyy = f(dd).yyyy;
+        this.zbInitCalendar.end.mm = f(dd).mm;
+        this.zbInitCalendar.end.dd = f(dd).dd;
+
+        // 附近酒店页-给searchbar赋值（默认是今天-明天）
+        // 今天
+        this.toSearchbarObj.liveinYYYY= f(d).yyyy;
+        this.toSearchbarObj.liveinMM= f(d).mm;
+        this.toSearchbarObj.liveinDD= f(d).dd;
+        // 明天
+        this.toSearchbarObj.liveoutYYYY= f(dd).yyyy;
+        this.toSearchbarObj.liveoutMM= f(dd).mm;
+        this.toSearchbarObj.liveoutDD= f(dd).dd;
 	},
 	mounted() {
 		
@@ -137,7 +158,7 @@ export default {
             this.zbCityVisible = true;
         },
 
-        // 日期组件的title通过emit执行的方法
+        // 城市组件的title通过emit执行的方法
         cityTitleBackEmitFun(){
             this.zbCityVisible = false;
         },

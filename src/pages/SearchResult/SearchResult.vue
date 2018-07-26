@@ -68,10 +68,7 @@ export default {
     data() {
         return {
             // 最终传给searchbar的对象
-            toSearchbarObj:{
-                
-
-            },
+            toSearchbarObj:{},
 
             // 监听数据的变化，用来筛选满足条件的酒店列表
             watchObj: {
@@ -161,7 +158,7 @@ export default {
             this.zbCityVisible = true;
         },
 
-        // 日期组件的title通过emit执行的方法
+        // 城市组件的title通过emit执行的方法
         cityTitleBackEmitFun(){
             this.zbCityVisible = false;
         },
