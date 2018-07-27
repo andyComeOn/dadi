@@ -1,7 +1,7 @@
 <template>
 	<div class="my-coupon-page m-position-ab" >
 		<mCoupon @nowUseEmit="nowUseFun" :list="posts"></mCoupon>
-		<div>{{type}}</div>
+		<!-- <div>{{type}}</div> -->
 	</div>
 
 </template>

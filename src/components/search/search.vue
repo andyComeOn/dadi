@@ -3,12 +3,15 @@
 	<div class="search-wendor">
 		<div class="search-input-box">
 			<div class="input-box">
-				<input type="text" class="txt" placeholder="请输入区域／商圈／位置">
+				<input type="text" class="txt" 
+					
+					v-model="searchInputVal"
+					placeholder="请输入区域／商圈／位置">
 			</div>
 			<div class="cancel" @click="cancelSearch">取消</div>
 		</div>
 		<div class="search-content">
-			
+			{{searchInputVal}}
 		</div>
 	</div>
 </template>
@@ -17,7 +20,7 @@ import {getStorecity} from '@/api/api';
 export default {
     data() {
         return {
-			
+			searchInputVal:''
         };
     },
     props: {},

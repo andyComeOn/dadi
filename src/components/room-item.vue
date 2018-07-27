@@ -1,33 +1,41 @@
 <template>
-	<div class="room-wrapper">
-		<ul class="list">
-			<li v-for="(item,index) in dataList" :key="index" @click="storeDetail(item.id)">
-				<div class="lf">
-					<img :src="item.img_logo" alt="">
-				</div>
-				<div class="rg">
-					<p class="name m-ellipsis">{{item.name}}</p>
-					<p class="info m-ellipsis-2">{{item.introduce}}</p>
-					<p class="location">{{item.area}}</p>
-					<div class="price-wrap">
-						<div class="price">&yen;<span>{{item.price}}</span>起</div>
-					</div>
-				</div>
-			</li>
-		</ul>
-	</div>
+    <div class="room-wrapper">
+        <!-- 判断是否搜索到筛选条件的酒店 -->
+        <div class="no-search-result-wrapper" v-show="isShow">
+            <div class="img-wrapper">
+                <img src="../assets/images/404/404_no hotel.pn.png" alt="">
+            </div>
+            <p>暂无符合您要求的酒店</p>
+        </div>
+
+        <ul class="list">
+            <li v-for="(item,index) in dataList" :key="index" @click="storeDetail(item.id,item.begin,item.finish)">
+                <div class="lf">
+                    <img :src="item.img_logo" alt="">
+                </div>
+                <div class="rg">
+                    <p class="name m-ellipsis">{{item.name}}</p>
+                    <p class="info m-ellipsis-2">{{item.introduce}}</p>
+                    <p class="location">{{item.area}}</p>
+                    <div class="price-wrap">
+                        <div class="price">&yen;
+                            <span>{{item.price}}</span>起</div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
 </template>
 
 <script>
-
-import {store_list} from '../api/api';
+import { store_list } from "@/api/api";
 export default {
     name: "room-wrapper",
     props: ["condition"],
     watch: {
         condition: {
             handler(newValue, oldValue) {
-                this.fetchData(newValue)
+                this.fetchData(newValue);
             },
             deep: true,
             immediate: true
@@ -35,6 +43,7 @@ export default {
     },
     data() {
         return {
+            isShow: false,
             list: [
                 {
                     type: 0,
@@ -47,18 +56,11 @@ export default {
                 }
             ],
             // 门店list
-            dataList:''
-
-
-
+            dataList: ""
         };
     },
-    created() {
-     
-    },
-    mounted() {
-        
-    },
+    created() {},
+    mounted() {},
     methods: {
         // 拉取门店item
         fetchData(param) {
@@ -67,19 +69,24 @@ export default {
                 url: store_list,
                 data: param
             }).then(res => {
-                this.dataList = res.data.data;
+                if (res.data.status == 1) {
+                    this.dataList = res.data.data;
+                } else {
+                    this.isShow = true;
+                }
             });
         },
 
         // 门店item的点击事件
-        storeDetail(id,city,area,province){
+        storeDetail(id, begin, finish) {
+            console.lo;
             this.$router.push({
                 path: "/hotelDetail",
                 query: {
-                    storeid: id,
-                    storecity: city,
-
-				}
+                    store_id: id,
+                    begin: begin,
+                    finish: finish
+                }
             });
         }
     }
@@ -88,6 +95,30 @@ export default {
 
 <style lang="less" scoped>
 @import "../assets/less/var.less";
+
+.no-search-result-wrapper {
+    padding-top: 15px;
+    background: #eff1f0;
+    .no-search-result-wrapper {
+        .img-wrapper {
+            font-size: 0;
+            text-align: center;
+            img {
+                display: inline-block;
+                width: 152px;
+                height: 108px;
+            }
+        }
+        p {
+            padding: 18px 0;
+            line-height: 20px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+    }
+}
+
 .list {
     padding: 8px 15px 0;
     li {

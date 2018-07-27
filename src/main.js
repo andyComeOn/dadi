@@ -25,8 +25,8 @@ import 'mint-ui/lib/style.css'
 // 引入weui
 import 'weui/dist/style/weui.min.css';
 
-// 引入cookie的方法
-import {getCookie} from '@/utils/util';
+// 引入cookie、获取url参数的接口
+import { getCookie, getUrlParam } from '@/utils/util';
 
 // 引入api
 import { login_test, userInfo } from "@/api/api";
@@ -41,39 +41,60 @@ Vue.use(MuseUI);
 let mycookie = getCookie('auth_user_1');
 console.log(mycookie);
 
+// 获取参数的cpid
+let CPID = getUrlParam('cpid');
+// console.log(CPID);
+
+
+// sessionStorage.setItem('CPID', CPID);
+// console.log(sessionStorage.getItem('CPID'));
+// console.log(JSON.parse(sessionStorage.getItem('CPID')));
+// console.log(sessionStorage.getItem('CPID'));
+
+
 // cookie为空，调取登陆接口
-if (!mycookie){
+if (!mycookie) {
 	var param = { cpid: 1 };
 	this.$http({
 		method: "POST",
 		url: login_test,
 		data: param
 	}).then(res => {
-		
+
 	});
 }
 
 // 判断是否为绑定手机号
-function isBindPhone(){
+function isBindPhone() {
 
-} 
+}
 
 
 // 在点击预定时候判断有没有绑定手机号
 // 若没有绑定，使用路由监听跳到绑定手机号（登陆）页面
 // console.log(sessionStorage);
 // router.beforeEach((to, from, next) => {
-// 	NProgress.start();
-// 	console.log(sessionStorage);
-// 	if (to.path == '/login') {
-// 	  sessionStorage.removeItem('user');
-// 	}
-// 	let user = JSON.parse(sessionStorage.getItem('user'));
-// 	if (!user && to.path != '/login') {
-// 	  next({ path: '/login' })
-// 	} else {
-// 	  next()
-// 	}
+	// NProgress.start();
+	// console.log(sessionStorage);
+	// if (to.path == '/login') {
+	//   sessionStorage.removeItem('user');
+	// }
+
+	// let user = JSON.parse(sessionStorage.getItem('CPID'));
+	// if (!user && to.path != '/login') {
+	//   next({ path: '/login' })
+	// } else {
+	//   next()
+	// }
+
+	// let INFO = sessionStorage.getItem('CPID');
+	// if (!INFO) {
+	// 	// next({ path: '/error' })
+	// 	debugger;
+	// 	this.$router.push({path:'/error'});
+	// } else {
+	// 	next()
+	// }
 // })
 
 

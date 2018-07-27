@@ -1,61 +1,47 @@
 <template>
-	<div class="search-result">
+    <div class="search-result">
         <!-- 搜索条 -->
-		<searchbar 
-            @triggerCityDialogEmit="triggerCityDialogEmitFun"
-            @triggerCalendarDialogEmit="triggerCalendarDialogEmitFun"
-            @triggerInputFocusEmit="triggerInputFocusEmitFun"
-            
-            :searchbarObj="toSearchbarObj">
+        <searchbar @triggerCityDialogEmit="triggerCityDialogEmitFun" @triggerCalendarDialogEmit="triggerCalendarDialogEmitFun" @triggerSearchbarInputFocusEmit="triggerSearchbarInputFocusEmitFun" :searchbarObj="toSearchbarObj">
         </searchbar>
 
         <!-- 排序 -->
-		<sortbar></sortbar>
+        <sortbar @sortbarEmit="sortbarEmitFun">
+        </sortbar>
 
         <!-- 刷新用户所在地理位置 -->
-		<refreshbar></refreshbar>
-		
-        <!-- 判断是否搜索到筛选条件的酒店 -->
-		<noSearchResult v-show="true"></noSearchResult>
-		
+        <refreshbar></refreshbar>
+
         <!-- 酒店组件 -->
-		<roomItem :condition="watchObj"></roomItem>
+        <roomItem :condition="watchObj"></roomItem>
 
         <!-- 城市组件dialog -->
         <mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCityVisible">
-            <City v-on:cityTitleBackEmit="cityTitleBackEmitFun"
-                v-on:cityItemEmit="cityItemEmitFun">
+            <City v-on:cityTitleBackEmit="cityTitleBackEmitFun" v-on:cityItemEmit="cityItemEmitFun">
             </City>
         </mu-dialog>
 
         <!-- 日历组件dialog -->
         <mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCalendarVisible">
-			<Calendar ref="Calendar" 
-                :markDateMore="zbInitCalendar" 
-                @isToday="clickToday"
-                @calendarTitleBackEmit="calendarTitleBackEmitFun">
+            <Calendar ref="Calendar" :markDateMore="zbInitCalendar" @isToday="clickToday" @calendarTitleBackEmit="calendarTitleBackEmitFun">
             </Calendar>
-		</mu-dialog>
+        </mu-dialog>
 
         <!-- 日历组件dialog -->
         <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbSearchVisible">
-			<Search 
-                @cancelSearchEmit="cancelSearchEmitFun">
+            <Search @cancelSearchEmit="cancelSearchEmitFun">
             </Search>
-		</mu-dialog>
+        </mu-dialog>
 
     </div>
 </template>
 
 <script>
-
 import mHotelLocation from "../../components/hotel-location";
 import roomItem from "../../components/room-item";
 import searchbar from "../../components/searchbar";
 import sortbar from "../../components/sortbar";
 import refreshbar from "../../components/refresh-bar";
-import noSearchResult from "../../components/no-search-result";
-import {store_list} from '../../api/api';  
+import { store_list } from "../../api/api";
 import City from "@/components/city/city.vue"; // 引入城市组件
 import Calendar from "@/components/calendar/calendar.vue"; // 引入日历组件
 import Search from "@/components/search/search.vue"; // 引入搜索弹层组件
@@ -66,30 +52,27 @@ export default {
         searchbar,
         sortbar,
         refreshbar,
-        noSearchResult,
         City,
         Calendar,
         Search
     },
-    props:{
-
-    },
+    props: {},
     data() {
         return {
             // 最终传给searchbar的对象
-            toSearchbarObj:{},
+            toSearchbarObj: {},
 
             // 监听数据的变化，用来筛选满足条件的酒店列表
             watchObj: {
-                cpid:'1',  // 公司id
-                type:'',   //正序、降序排列
-                longitude:'',  // 经度
-                latitude:'',//维度
-                city: '1', //城市id
-				px_rule:'',  //排序（价格，距离）
-                name: '', //门店名称
-                begin:'', // 入住时间
-                finish:'' // 离店时间
+                cpid: "1", // 公司id
+                type: "", //正序、降序排列
+                longitude: "", // 经度
+                latitude: "", //维度
+                city: "1", //城市id
+                px_rule: "", //排序（价格，距离）
+                name: "", //门店名称
+                begin: "", // 入住时间
+                finish: "" // 离店时间
             },
 
             // 城市组件是否显示
@@ -113,22 +96,21 @@ export default {
                     mm: "",
                     dd: ""
                 }
-            },
- 
+            }
         };
     },
     created() {
-        var urlPara =  {
-            cityname:this.$route.query.cityname,
-            cityid:this.$route.query.cityid,
-            liveinYYYY:this.$route.query.liveinYYYY,
-            liveinMM:this.$route.query.liveinMM,
-            liveinDD:this.$route.query.liveinDD,
-            liveoutYYYY:this.$route.query.liveoutYYYY,
-            liveoutMM:this.$route.query.liveoutMM,
-            liveoutDD:this.$route.query.liveoutDD,
-            abstract:this.$route.query.abstract
-        }
+        var urlPara = {
+            cityname: this.$route.query.cityname,
+            cityid: this.$route.query.cityid,
+            liveinYYYY: this.$route.query.liveinYYYY,
+            liveinMM: this.$route.query.liveinMM,
+            liveinDD: this.$route.query.liveinDD,
+            liveoutYYYY: this.$route.query.liveoutYYYY,
+            liveoutMM: this.$route.query.liveoutMM,
+            liveoutDD: this.$route.query.liveoutDD,
+            abstract: this.$route.query.abstract
+        };
         // 将路由获得的一系列参数赋值给data()中的一个变量-getUrlPara
         this.toSearchbarObj = urlPara;
 
@@ -139,15 +121,25 @@ export default {
         this.zbInitCalendar.end.yyyy = urlPara.liveoutYYYY;
         this.zbInitCalendar.end.mm = urlPara.liveoutMM;
         this.zbInitCalendar.end.dd = urlPara.liveoutDD;
-        
+
+        // 把路由带过来的入店-离店的时间info赋值给watchObj
+        this.watchObj.begin =
+            urlPara.liveinYYYY +
+            "-" +
+            urlPara.liveinMM +
+            "-" +
+            urlPara.liveinDD;
+        this.watchObj.finish =
+            urlPara.liveoutYYYY +
+            "-" +
+            urlPara.liveoutMM +
+            "-" +
+            urlPara.liveoutDD;
     },
-    watch:{
-        
-    },
+    watch: {},
     mounted() {
         var param = this.watchObj;
         // this.fetchData(param);
-        
     },
     methods: {
         // 加载数据
@@ -155,25 +147,24 @@ export default {
             this.$http({
                 method: "POST",
                 url: store_list,
-                data:param
+                data: param
             }).then(res => {
                 this.resData = res.data;
             });
         },
-        
+
         // 搜索条组件中城市选择逻辑，子组件emit之后，执行的方法
-        triggerCityDialogEmitFun(){
+        triggerCityDialogEmitFun() {
             this.zbCityVisible = true;
         },
 
         // 城市组件的title通过emit执行的方法
-        cityTitleBackEmitFun(){
+        cityTitleBackEmitFun() {
             this.zbCityVisible = false;
         },
 
-        // 城市item被点击之后通过emit传过来执行的方法 
-        cityItemEmitFun(name, id){
-            console.log(name+'-'+id);
+        // 城市item被点击之后通过emit传过来执行的方法
+        cityItemEmitFun(name, id) {
             this.zbCityVisible = false;
             // 更新监听对象（查询门店列表）中的值
             this.watchObj.city = id;
@@ -182,7 +173,7 @@ export default {
         },
 
         // 此页面中的searchbar组件的子组件emit之后执行的方法
-        triggerCalendarDialogEmitFun(){
+        triggerCalendarDialogEmitFun() {
             this.zbCalendarVisible = true;
         },
 
@@ -211,23 +202,40 @@ export default {
             this.toSearchbarObj.liveinDD = value[0].split("/")[2];
             this.toSearchbarObj.liveoutYYYY = value[1].split("/")[0];
             this.toSearchbarObj.liveoutMM = value[1].split("/")[1];
-            this.toSearchbarObj.liveoutDD = value[1].split("/")[2];           
+            this.toSearchbarObj.liveoutDD = value[1].split("/")[2];
+
+            // 给监听的watchObj，重新赋值
+            this.watchObj.begin =
+                value[0].split("/")[0] +
+                "-" +
+                value[0].split("/")[1] +
+                "-" +
+                value[0].split("/")[2];
+            this.watchObj.finish =
+                value[1].split("/")[0] +
+                "-" +
+                value[1].split("/")[1] +
+                "-" +
+                value[1].split("/")[2];
         },
 
         // searchbar中输入框获焦的emit的函数
-        triggerInputFocusEmitFun(){
+        triggerSearchbarInputFocusEmitFun() {
             this.zbSearchVisible = true;
         },
 
         // 搜索组件（不是搜索条组件）右侧的取消按钮
-        cancelSearchEmitFun(){
+        cancelSearchEmitFun() {
             this.zbSearchVisible = false;
-        }
+        },
 
+        //排序sortbar组件emit之后执行的函数
+        sortbarEmitFun(val) {
+            this.watchObj.px_rule = val;
+        }
     }
 };
 </script>
 
 <style lang="less" scoped>
-
 </style>

@@ -1,11 +1,10 @@
 <template>
 	<div class="sortbar-container">
 		<ul class="sortbar-wrapper">
-			<li class="normal" @click="sort(0)" :class="{active:active===0}">默认</li>
-			<li class="price" @click="sort(1)" :class="{active:active===1}">价格</li>
-			<li class="near" @click="sort(2)" :class="{active:active===2}">距离最近</li>
+			<li class="normal" @click="sort('sort',0)" :class="{active:isActive===0}">默认</li>
+			<li class="price" @click="sort('price',1)" :class="{active:isActive===1}">价格</li>
+			<li class="near" @click="sort('distance',2)" :class="{active:isActive===2}">距离最近</li>
 		</ul>
-		
 	</div>
 </template>
 <script>
@@ -20,7 +19,7 @@
 		},
 		data (){
 			return {
-				active:0
+				isActive:0
 			}
 		},
 		mounted () {
@@ -28,8 +27,9 @@
 		},
 		methods: {
 			// 排序筛选
-			sort(ind){
-				this.active = ind;
+			sort(val,ind){
+				this.isActive = ind;
+				this.$emit("sortbarEmit",val);
 			}
 		}
 	}

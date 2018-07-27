@@ -2,6 +2,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Index from '../pages/Index/Index'
 
+
+// Error
+import Error from '../pages/Error/Error'
+
 // 酒店详情
 import HotelDetail from '../pages/HotelDetail/HotelDetail'
 // 酒店详情-查看酒店更多标签
@@ -208,15 +212,21 @@ export default new Router({
 			name: 'login',
 			component: Login
 		},
-		
+		{
+			path: '/error',
+			name: 'error',
+			component: Error
+		},
 		// 根
 		{
 			path: '/',
 			redirect: '/index'
 		},
-		// {
-		// 	path: '*',
-		// 	redirect: '/'
-		// },
+		{
+			path: '*',
+			redirect: '/'
+		},
+		
+		
 	]
 })

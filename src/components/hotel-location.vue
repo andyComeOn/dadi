@@ -9,44 +9,41 @@
 </template>
 
 <script>
-
-	export default {
-		name: 'nearby',
-		components: {
-			
-		}
-	}
+export default {
+    name: "nearby",
+    components: {}
+};
 </script>
 
 <style lang="less" scoped>
-	@import "../assets/less/var.less";
-	.detail {
-		padding: 10px 15px;
-		position: relative;
-		&:after {
-			content: '';
-			position: absolute;
-			left: 0;
-			bottom: 0;
-			right: 0;
-			height: 1px;
-			background: @hotelLocation;
-			transform: scaleY(0.5);
-		}
-	}
+.detail {
+    padding: 10px 15px;
+    position: relative;
+    &:after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        height: 1px;
+        background: #e5e5e5;
+        transform: scaleY(0.5);
+    }
 
-	.name {
-		height: 22px;
-		line-height: 22px;
-		font-size: 16px;
-		color: #333333;
-		letter-spacing: 0;
-	}
+    .name {
+        height: 22px;
+        line-height: 22px;
+        font-size: 16px;
+        color: #333333;
+        letter-spacing: 0;
+    }
 
-	.location-wrapper {
-		width: 100%;
-		padding-left: 22px;
-		background: url('../assets/images/hotel-label/ic_dingwei.png') no-repeat 3px 3px;
-		background-size: 13px 15px;
-	}
+    .location-wrapper {
+        width: 100%;
+        padding-left: 22px;
+        background: url("../assets/images/hotel-label/ic_dingwei.png") no-repeat
+            3px 3px;
+        background-size: 13px 15px;
+    }
+}
 </style>

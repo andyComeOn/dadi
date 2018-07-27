@@ -17,7 +17,7 @@
                     class="txt" 
                     v-model="o.abstract" 
                     placeholder="酒店位置/商圈"
-                    @focus="triggerInputFocus"
+                    @focus="triggerSearchbarInputFocus"
                 >
             </div>
         </div>
@@ -83,8 +83,8 @@ export default {
         },
 
         // 搜素框出发焦点事件
-        triggerInputFocus(){
-            this.$emit("triggerInputFocusEmit");
+        triggerSearchbarInputFocus(){
+            this.$emit("triggerSearchbarInputFocusEmit");
         }
 
     }
@@ -148,11 +148,5 @@ export default {
     }
 }
 
-.city-dialog-hd {
-    height: 44px !important;
-    .mu-appbar-title {
-        line-height: 44px;
-        font-size: 14px;
-    }
-}
+
 </style>
