@@ -79,7 +79,6 @@ export default {
 
         // 门店item的点击事件
         storeDetail(id, begin, finish) {
-            console.lo;
             this.$router.push({
                 path: "/hotelDetail",
                 query: {

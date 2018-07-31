@@ -31,15 +31,21 @@ import { getCookie, getUrlParam } from '@/utils/util';
 // 引入api
 import { login_test, userInfo } from "@/api/api";
 
+// 引入swiper插件
+import VueAwesomeSwiper from 'vue-awesome-swiper';
+Vue.use(VueAwesomeSwiper);
+import 'swiper/dist/css/swiper.css';
+
+
 // 引入zepto（当前项目无用） 
 // import $ from 'zepto';
 
-Vue.use(Loading)
+Vue.use(Loading);
 Vue.use(MuseUI);
 
 // 获取cookie
 let mycookie = getCookie('auth_user_1');
-console.log(mycookie);
+// console.log(mycookie);
 
 // 获取参数的cpid
 let CPID = getUrlParam('cpid');
@@ -55,14 +61,14 @@ let CPID = getUrlParam('cpid');
 // cookie为空，调取登陆接口
 if (!mycookie) {
 	var param = { cpid: 1 };
-	this.$http({
-		method: "POST",
-		url: login_test,
-		data: param
-	}).then(res => {
-
-	});
+	axios.post(login_test,param).then(res => {
+		console.log(res);
+	}).catch(function(err){console.log(err)});
 }
+
+// axios.post(login_test,{cpid: 1}).then(res => {
+	
+// }).catch(function(err){console.log(err)});
 
 // 判断是否为绑定手机号
 function isBindPhone() {

@@ -1,19 +1,18 @@
 <template>
 	<div class="recommend-f-page">
 		<!-- 头部 -->
-		<m-header title="推荐好友" fixed class="is-fixed" leftShow>
+		<!-- <m-header title="推荐好友" fixed class="is-fixed" leftShow>
 			<a href="javascript:;" slot="left">
 				<img class="m-icon-img margin-right-10" src="../../assets/images/bak/ic_actionbar_search_icon.png" />
 			</a>
 			<a href="javascript:;" slot="right">
 				<img class="m-icon-img" src="../../assets/images/bak/ic_chat_green.png" />
 			</a>
-		</m-header>
-
+		</m-header> -->
 		<!-- 主内容区 -->
 		<div class="page-content">
 			<!-- 个人info -->
-			<div class="weui-panel mine-info">
+			<div class="mine-info">
 				<div class="weui-panel__bd mine-info-panel__bd">
 					<div class="weui-media-box mine-info-media-box weui-media-box_appmsg">
 						<div class="weui-media-box__hd mine-info-media-box__hd">
@@ -39,7 +38,12 @@
 						累计奖励 40
 						<li class="tixian-lock">已冻结 34</li>
 					</ul>
-					<span class="tixian-btn">提现 ></span>
+					<router-link to="/extractMoney">
+						<p class="tixian-btn">
+							<span>提现</span>
+							<img src="../../assets/images/arrows/ic_pay_arrow.png" alt="">
+						</p>
+					</router-link>
 				</div>
 			</div>
 
@@ -48,7 +52,7 @@
 				<ul class="square clearflex">
 					<!-- 跳到奖励明细 -->
 					<router-link to="/praise">
-						<li>
+						<li class="praise">
 							<img src="../../assets/images/distribution/jiangli.png" alt="">
 							<p>奖励明细</p>
 						</li>
@@ -56,7 +60,7 @@
 
 					<!-- 跳到提现明细 -->
 					<router-link to="pickCash">
-						<li>
+						<li class="pickCash">
 							<img src="../../assets/images/distribution/jiangli.png" alt="">
 							<p>提现明细</p>
 						</li>
@@ -64,7 +68,7 @@
 
 					<!-- 跳到二维码 -->
 					<router-link to="qsPush">
-						<li>
+						<li class="qsPush">
 							<img src="../../assets/images/distribution/tuiguang.png" alt="">
 							<p>点我推广</p>
 						</li>
@@ -72,7 +76,7 @@
 
 					<!-- 助力好友 -->
 					<router-link to="helpFriend">
-						<li>
+						<li class="helpFriend">
 							<img src="../../assets/images/distribution/xiaxian.png" alt="">
 							<p>助力好友</p>
 						</li>
@@ -85,11 +89,10 @@
 </template>
 
 <script>
-import mHeader from "@/components/header";  //引入头
 export default {
     name: "recommend-f",
     components: {
-        mHeader
+
     }
 };
 </script>
@@ -99,8 +102,9 @@ export default {
 	.weui-media-box {
 		.weui-cell__ft {
 			padding-right: 15px;
+			font-size: 12px;
 			position: relative;
-			color: #333333;
+			color: #333;
 			&:after {
 				content: " ";
 				display: inline-block;
@@ -130,6 +134,7 @@ export default {
 			img{
 				width: 100%;
 				height: 100%;
+				border-radius: 50%;
 			}
 		}
 		.mine-info-media-box__bd{
@@ -187,10 +192,24 @@ export default {
 				line-height:22px;
 				background:linear-gradient(-93.8deg,rgba(255,208,139,1),rgba(255,255,255,0.37));
 				border-radius:11px 0px 0px 11px;
-				text-align: center;
+				// text-align: center;
+				padding-left: 10px;
 				font-size: 10px;
-
+				img{
+					width: 5px;
+					height: 10px;
+					display: block;
+					position: absolute;
+					top: 50%;
+					transform: translateY(-50%);
+					right: 10px;
+				}
+				span{
+					font-size: 12px;
+					color: #fff;
+				}
 			}
+
 		}
 
 	}
@@ -218,22 +237,23 @@ export default {
 					color: #666;
 					font-size: 12px;
 				}
-				&:nth-child(1){
-					border-right: 1px solid #e5e5e5; 
-					border-bottom: 1px solid #e5e5e5; 
-				}
-				&:nth-child(2){
-					border-bottom: 1px solid #e5e5e5; 
-				}
-				&:nth-child(3){
-					border-right: 1px solid #e5e5e5; 
-					
-				}
-				&:nth-child(4){
-					
-				}
 			}
 			
+			
 		}
+	}
+
+	.praise{
+		border-right: 1px solid #e5e5e5; 
+		border-bottom: 1px solid #e5e5e5; 
+	}
+	.pickCash{
+		border-bottom: 1px solid #e5e5e5; 
+	}
+	.qsPush{
+		border-right: 1px solid #e5e5e5; 
+	}
+	.helpFriend{
+		border:0;
 	}
 </style>

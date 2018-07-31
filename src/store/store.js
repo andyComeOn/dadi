@@ -1,27 +1,27 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import {SHOW_LOADING,HIDE_LOADING} from './type';
+import { SHOW_LOADING, HIDE_LOADING } from './type';
 Vue.use(Vuex);
 
-const state={
-	loading:false
+const state = {
+	loading: false
 }
 
-const mutations={
-	[SHOW_LOADING](state){
-		state.loading=true;
+const mutations = {
+	[SHOW_LOADING](state) {
+		state.loading = true;
 	},
-	[HIDE_LOADING](state){
-		state.loading=false;
+	[HIDE_LOADING](state) {
+		state.loading = false;
 	}
 }
 
-const getters={
-	
+const getters = {
+
 }
 
-const actions={
-	
+const actions = {
+
 }
 
 
@@ -30,5 +30,5 @@ export default new Vuex.Store({
 	mutations,
 	getters,
 	actions
-	
+
 })

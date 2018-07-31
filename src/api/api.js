@@ -1,3 +1,6 @@
+//cpid
+// global.GlobalCpid = sessionStorage.getItem(CPID);
+global.GlobalCpid = 1;
 
 // Stroe-酒店
 export const store_list = '/api/Store/store_list'  // 门店列表（查询酒店）   
@@ -19,7 +22,7 @@ export const oauth = '/api/Index/oauth'       //授权
 
 export const getCompanyInfo = '/api/Index/getCompanyInfo'     //
 
-export const login_test = '/api/login/login_test'   // 模拟登陆
+export const login_test = '/api/login/login_test?cpid=' + GlobalCpid;   // 模拟登陆
 
 
 // Public-公共
@@ -67,6 +70,16 @@ export const my_comment = '/api/Comment/my_comment' // 我的点评（二期）
 
 
 // 分销相关
-export const awardLists = '/api/Distribution/reward_list';    //奖励明细
+export const awardLists = '/api/Distribution/reward_list?cpid=' + GlobalCpid;    //奖励明细
 
-export const withdrawMoney = '/api/Distribution/withdraw_detail';   //提现明细
+export const withdrawMoney = '/api/Distribution/withdraw_detail?cpid=' + GlobalCpid;   //提现明细
+
+export const showQsCode = '/api/Distribution/getEWM?cpid=' + GlobalCpid;               //二维码接口
+
+
+// Order-订单
+export const order_form = '/api/Order/order_form?cpid=' + GlobalCpid;    //订单预览页面
+
+export const increase_room_num = '/api/Order/increase_room_num?cpid=' + GlobalCpid;    //订单预览页面
+
+export const helpFriend = '/api/Distribution/subordinate?cpid=' + GlobalCpid;       //助力好友

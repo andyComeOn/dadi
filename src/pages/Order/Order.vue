@@ -1,148 +1,146 @@
 <template>
-	<div class="order m-position-ab">
-		<div class="detail-container">
-			<div class="detail-wrapper">
-				<!-- 酒店名字 -->
-				<div class="name m-ellipsis">秋果酒店交通大学店</div>
-				<!-- 酒店标签 -->
-				<div class="labels">
-					<span>特价标准大床房</span>
-					<span>免费有线</span>
-					<span>不含早</span>
-					<span>不可取消</span>
-				</div>
-				<div class="area">
-					<span class="instro">入住</span>
-					<span class="date">02月26日</span>
-					<span class="instro">离店</span>
-					<span class="date">02月27日</span>
-					<span class="date">1晚</span>
-				</div>
-			</div>
-		</div>
+    <div class="order m-position-ab">
+        <div class="detail-container">
+            <div class="detail-wrapper" v-if="details">
+                <!-- 酒店名字 -->
+                <div class="name m-ellipsis">{{details.store_name}}</div>
 
-		<!-- 用户信息操作区 -->
-		<ul class="info">
-			<!-- 房间数 -->
-			<li class="room">
-				<label class="label">房间数</label>
-				<div class="room-info">
-					<span class="span-minus"><img src="../../assets/images/order-plus-reduce/ic_order_reduce_disabled.png" alt=""></span>
-					<span class="span-input">
-						<input type="number" class="txt" id="roomNum">
-					</span>
-					<span class="span-plus"><img src="../../assets/images/order-plus-reduce/ic_order_plus.png" alt=""></span>
-				</div>
-			</li>
-			<!-- 入住人姓名 -->
-			<li class="name">
-				<label class="label">入住人姓名</label>
-				<div class="item-rg">
-					<div class="name-div">
-						<input type="text" class="number" id="name" placeholder="请输入姓名">
-					</div>
-				</div>
-			</li>
+                <!-- 酒店标签 -->
+                <div class="labels">
+                    <span>{{details.name}}</span>
+                    <span>{{details.introduce}}</span>
+                </div>
+                <div class="area">
+                    <span class="instro">入住</span>
+                    <span class="date">{{beginM}}月{{beginD}}日</span>
+                    <span class="instro">离店</span>
+                    <span class="date">{{finishM}}月{{finishD}}日</span>
+                    <span class="date">{{howManyNight}}晚</span>
+                </div>
+            </div>
+        </div>
 
-			<!-- 手机号 -->
-			<li class="tel">
-				<label class="label">手机号</label>
-				<div class="item-rg">
-					<div class="tel-div">
-						<input type="tel" class="number" id="tel" placeholder="请输入手机号">
-					</div>
-				</div>
-			</li>
+        <!-- 用户信息操作区 -->
+        <ul class="info">
+            <!-- 房间数 -->
+            <li class="room">
+                <label class="label">房间数</label>
+                <div class="room-info">
+                    <span class="span-minus" @click="minusRoomNum"><img :src="imgSrcMinus" alt=""></span>
+                    <span class="span-input">
+                        <input type="number" class="txt" id="roomNum" v-model="roomNum">
+                    </span>
+                    <span class="span-plus" @click="plusRoomNum"><img :src="imgSrcPlus" alt=""></span>
+                </div>
+            </li>
+            <!-- 入住人姓名 -->
+            <li class="name">
+                <label class="label">入住人姓名</label>
+                <div class="item-rg">
+                    <div class="name-div">
+                        <input type="text" class="input-name" id="name" placeholder="请输入姓名" v-model="orderName">
+                    </div>
+                </div>
+            </li>
 
-			<!-- 分割bar -->
-			<div class="divivid-bar"></div>
+            <!-- 手机号 -->
+            <li class="tel">
+                <label class="label">手机号</label>
+                <div class="item-rg">
+                    <div class="tel-div">
+                        <input type="tel" class="input-tel" id="tel" placeholder="请输入手机号" v-model="orderTel">
+                    </div>
+                </div>
+            </li>
 
-			<!-- 优惠券 -->
-			<li class="coupon">
-				<label class="label">优惠券</label>
-				<div class="item-rg">
-					<div class="coupon-div" @click="showCouponMask">
-						2张可用
-						<img src="../../assets/images/arrows/ic-arrow_10_18.png" alt="">
-					</div>
-				</div>
-			</li>
+            <!-- 分割bar -->
+            <div class="divivid-bar"></div>
 
-			<!-- 发票 -->
-			<li class="ticket">
-				<label class="label">发票</label>
-				<div class="item-rg" style="color:#666;font-size:14px;line-height:50px;font-family:PingFangSC-Regular;">
-					酒店开具
-				</div>
-			</li>
-		</ul>
+            <!-- 优惠券 -->
+            <li class="coupon" v-if="coupon">
+                <label class="label">优惠券</label>
+                <div class="item-rg">
+                    <div class="coupon-div" @click="showCouponMask">
+                        {{coupon.length}}张可用
+                        <img src="../../assets/images/arrows/ic-arrow_10_18.png" alt="">
+                       
+                    </div>
+                </div>
+            </li>
 
-		<!-- 文字小提示 -->
-		<div class="tips">
-			<h3>温馨提示</h3>
-			<p>1.酒店与住店当天13:00办理入住，离店13:00办理退房，如您在13:00前未到达，可能需要等待方能入住，具体以酒店安排为准。 </p>
-			<p>2.发票由酒店开具。</p>
-		</div>
+            <!-- 发票 -->
+            <li class="ticket">
+                <label class="label">发票</label>
+                <div class="item-rg" style="color:#666;font-size:14px;line-height:50px;font-family:PingFangSC-Regular;">
+                    酒店开具
+                </div>
+            </li>
+        </ul>
+        <div>{{logCoupon}}</div>
+        <!-- 文字小提示 -->
+        <div class="tips">
+            <h3>温馨提示</h3>
+            <p>1.酒店与住店当天13:00办理入住，离店13:00办理退房，如您在13:00前未到达，可能需要等待方能入住，具体以酒店安排为准。 </p>
+            <p>2.发票由酒店开具。</p>
+        </div>
 
-		<!-- 确认支付bar -->
-		<div class="paybar">
-			<div class="lf">
-				<div class="money">&yen;386</div>
-				<div class="arrow" @click="showDealDetailMask"><img src="../../assets/images/arrows/ic_pay_arrow.png" alt=""></div>
-			</div>
-			<div class="rg">支付</div>
-		</div>
+        <!-- 确认支付bar -->
+        <div class="paybar">
+            <div class="lf">
+                <div class="money">&yen;{{totalPrice}}</div>
+                <div class="arrow" @click="showDealDetailMask"><img src="../../assets/images/arrows/ic_pay_arrow.png" alt=""></div>
+            </div>
+            <div class="rg">支付</div>
+        </div>
 
-		<!-- 优惠券的弹框 -->
-		<div class="coupon-mask-box">
-			<div class="weui-mask zb-weui-mask" id="couponMask" @click="hideCouponMask" :class="[{'weui-actionsheet_no_toggle_active':isCouponMask},{'weui-actionsheet_no_toggle':!isCouponMask}]"></div>
-			<div class="weui-actionsheet zb-weui-actionsheet" id="weui-actionsheet" :class="[{'weui-actionsheet_toggle':isCouponMask}]">
-				
+        <!-- 优惠券的弹框 -->
+        <div class="coupon-mask-box">
+            <div class="weui-mask zb-weui-mask" id="couponMask" @click="hideCouponMask" :class="[{'weui-actionsheet_no_toggle_active':isCouponMask},{'weui-actionsheet_no_toggle':!isCouponMask}]"></div>
+            <div class="weui-actionsheet zb-weui-actionsheet" id="weui-actionsheet" :class="[{'weui-actionsheet_toggle':isCouponMask}]">
+
                 <!-- 弹框的title -->
                 <div class="weui-actionsheet__title zb-weui-actionsheet__title">
-					<p class="weui-actionsheet__title-text zb-weui-actionsheet__title-text">优惠券</p>
-				</div>
+                    <p class="weui-actionsheet__title-text zb-weui-actionsheet__title-text">优惠券</p>
+                </div>
 
                 <!-- 弹框的内容 -->
                 <div class="weui-actionsheet__menu">
-
                     <!-- 循环下面的整体 -->
-                    <div class="zb-actionsheet__bd">
+                    <div class="zb-actionsheet__bd" v-for="(item,index) in coupon" :key="index">
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
-                            <label class="weui-cell zb-weui-cell weui-check__label " for="coupon1">
+                            <label class="weui-cell zb-weui-cell weui-check__label" :for="item.id">
                                 <div class="weui-cell__bd div zb-weui-cell__hd">
-                                    <h4>满550元减199元</h4>
-                                    <p>截止日期：2018-03-25</p>
+                                    <h4>满{{item.min_amount}}元减{{item.amount}}元</h4>
+                                    <p>截止日期：{{item.validity_end_time}}</p>
                                 </div>
-                                <div class="weui-cell__hd div">
-                                    &yen;55
-                                    <input type="checkbox" class="weui-check" name="checkbox1" id="coupon1" >
-                                    <!-- checked="checked" -->
+                                <div class="weui-cell__hd div" style="font-family:DIN;">
+                                    &yen;{{item.amount}}
+                                    <input type="radio" class="weui-check" name="checkbox" :id="item.id" :value="[item.id,item.min_amount,item.amount]" v-model="initCoupon">
                                     <i class="weui-icon-checked"></i>
                                 </div>
                             </label>
                         </div>
                     </div>
-                </div>          
-                <!-- 弹框的取消 -->
-				<div class="weui-actionsheet__action" style="background:#fff;">
-					<div class="weui-actionsheet__cell" id="coupon_actionsheet_cancel" style="font-size:16px;" @click="hideCouponMask">取消</div>
-				</div>
-			</div>
-		</div>
+                </div>
+                <!-- 弹框的取消-ui说不需要此交互 -->
+                <!-- <div class="weui-actionsheet__action" style="background:#fff;"> -->
+                <!-- <div class="weui-actionsheet__cell" id="coupon_actionsheet_cancel" style="font-size:16px;" @click="hideCouponMask">取消</div> -->
+                <!-- </div> -->
+            </div>
+        </div>
 
         <!-- 交易明细弹框 -->
 
         <div class="deal-detail-mask-box">
-			<div class="weui-mask zb-weui-mask" id="dealDetailMask" @click="hideDealDetailMask" :class="[{'weui-actionsheet_no_toggle_active':isDealDetailMask},{'weui-actionsheet_no_toggle':!isDealDetailMask}]"></div>
-			<div class="weui-actionsheet zb-weui-actionsheet" id="weui-actionsheet" :class="[{'weui-actionsheet_toggle':isDealDetailMask}]">
-				
-                <!-- 弹框的title -->
-                <div class="weui-actionsheet__title zb-weui-actionsheet__title">
-					<p class="weui-actionsheet__title-text zb-weui-actionsheet__title-text">费用明细</p>
-				</div>
+            <div class="weui-mask zb-weui-mask" id="dealDetailMask" @click="hideDealDetailMask" :class="[{'weui-actionsheet_no_toggle_active':isDealDetailMask},{'weui-actionsheet_no_toggle':!isDealDetailMask}]"></div>
+            <div class="weui-actionsheet zb-weui-actionsheet" id="weui-actionsheet" :class="[{'weui-actionsheet_toggle':isDealDetailMask}]">
 
-                <!-- 弹框的内容 -->
+                <!-- 交易明细弹框的title -->
+                <div class="weui-actionsheet__title zb-weui-actionsheet__title">
+                    <p class="weui-actionsheet__title-text zb-weui-actionsheet__title-text">费用明细</p>
+                </div>
+
+                <!-- 交易明细弹框的内容 -->
                 <div class="weui-actionsheet__menu">
 
                     <!-- 循环下面的整体 -->
@@ -150,27 +148,40 @@
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
                             <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
                                 <div class="weui-cell__bd div zb-weui-cell__hd">
-                                    <h4>入住两天房价</h4>
+                                    <h4>入住{{howManyNight}}天房价</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                   &yen;1100
+                                    &yen;{{totalPrice}}
                                 </div>
                             </label>
                         </div>
                     </div>
+                    <div class="zb-actionsheet__bd" v-if="unit_price" v-for="(item,index) in unit_price" :key="index">
+                        <div class="weui-cells zb-weui-cells weui-cells_checkbox">
+                            <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
+                                <div class="weui-cell__bd div zb-weui-cell__hd">
+                                    <h4>{{item.date}}</h4>
+                                </div>
+                                <div class="weui-cell__hd div">
+                                    <span style="color:#666;">1间 * </span> &yen;{{item.market_amount}}
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <!-- 交易明细优惠券 -->
                     <div class="zb-actionsheet__bd">
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
                             <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
                                 <div class="weui-cell__bd div zb-weui-cell__hd">
-                                    <h4>2018-07-18</h4>
+                                    <h4>优惠券折扣</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <span style="color:#666;">1间 </span>   &yen;550
+                                    <span style="color:#666;">满300减20</span> 
                                 </div>
                             </label>
                         </div>
                     </div>
-
+                    <!-- 交易明细实付 -->
                     <div class="zb-actionsheet__bd">
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
                             <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
@@ -178,39 +189,141 @@
                                     <h4>总计</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <span style="color:#666;">实付</span>  &yen;2340
+                                    <span style="color:#666;">实付</span> &yen;2340
                                 </div>
                             </label>
                         </div>
                     </div>
-                </div>          
+                </div>
                 <!-- 弹框的取消 -->
-				<div class="weui-actionsheet__action" style="background:#fff;">
-					<div class="weui-actionsheet__cell" id="deal_detail_actionsheet_cancel" style="font-size:16px;" @click="hideDealDetailMask">取消</div>
-				</div>
-			</div>
-		</div>
+                <!-- <div class="weui-actionsheet__action" style="background:#fff;"> -->
+                    <!-- <div class="weui-actionsheet__cell" id="deal_detail_actionsheet_cancel" style="font-size:16px;" @click="hideDealDetailMask">取消</div> -->
+                <!-- </div> -->
+            </div>
+        </div>
 
-	</div>
+    </div>
 </template>
 
 <script>
+import { dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
+import { order_form,increase_room_num } from "@/api/api";
 export default {
     name: "order",
     components: {},
     data() {
         return {
             isCouponMask: false,
-            isDealDetailMask : false
+            isDealDetailMask: false,
+            // 加减房间数按钮img的src路径
+            btnPlus: require("../../assets/images/btn-plus-minus/plus.png"),
+            btnPlusActive: require("../../assets/images/btn-plus-minus/plusA.png"),
+            btnMinus: require("../../assets/images/btn-plus-minus/minus.png"),
+            btnMinusActive: require("../../assets/images/btn-plus-minus/minusA.png"),
+            store_id: "",
+            room_id: "",
+            begin: "",
+            beginY: "",
+            beginM: "",
+            beginD: "",
+            finishY: "",
+            finishY: "",
+            finishM: "",
+            finishD: "",
+            howManyNight: "",
+            // --------
+            // 优惠券
+            initCoupon: "",
+            // 存优惠券
+            logCoupon: "",
+            // 门店详情
+            details: {},
+            // 明细-房间单价-包含时间
+            unit_price: [],
+            // 请求返回的数据
+            fetchData: {},
+            // 默认的房间数
+            roomNum: 1,
+            // 后台返回的该用户可订房信息
+            userOrderStatus: 5,
+            // 加减房间数按钮img的src的接受值
+            imgSrcMinus: "",
+            imgSrcPlus: "",
+
+            // 订房人预留的姓名、手机号
+            orderName: "",
+            orderTel: "",
+            // 总价
+            totalPrice:"",
+            // 房间的单间
+            discount_price:"",
+            // 优惠券
+            coupon:[],
+
         };
+    },
+    created() {
+        var routePara = {
+            store_id: this.$route.query.store_id,
+            room_id: this.$route.query.room_id,
+            begin: this.$route.query.begin,
+            finish: this.$route.query.finish
+        };
+        // 初始化数据
+        this.store_id = routePara.store_id;
+        this.room_id = routePara.room_id;
+        this.begin = routePara.begin;
+        this.beginY = routePara.begin.split("-")[0];
+        this.beginM = routePara.begin.split("-")[1];
+        this.beginD = routePara.begin.split("-")[2];
+        this.finish = routePara.finish;
+        this.finishY = routePara.finish.split("-")[0];
+        this.finishM = routePara.finish.split("-")[1];
+        this.finishD = routePara.finish.split("-")[2];
+        this.howManyNight = dateEndMinusStart(
+            routePara.begin,
+            routePara.finish
+        );
+
+        // 拉取订单信息接口
+        this.fetchOrderForm({
+            store_id: routePara.store_id,
+            room_id: routePara.room_id,
+            begin: routePara.begin,
+            finish: routePara.finish
+        });
+
+        // 加减房间数按钮img的src的初始化赋值  
+        this.imgSrcMinus = this.btnMinus;
+        this.imgSrcPlus = this.btnPlusActive;
+
+        
+    },
+    watch: {
+        initCoupon: {
+            handler(newValue, oldValue) {
+                if (newValue != "") {
+                    this.logCoupon = newValue;
+                    
+                    console.log(newValue[2]);
+                    // console.log(this.logCoupon.split("-"));
+                    this.totalPrice = this.totalPrice - newValue[2];
+                    this.isCouponMask = false;
+                }
+            },
+            deep: true,
+            immediate: true
+        }
     },
     methods: {
         // 展示优惠券遮罩
         showCouponMask() {
             this.isCouponMask = true;
+            this.initCoupon = "";
+            this.logCoupon = "";
         },
 
-        // 隐藏优惠券遮罩
+        // 隐藏优惠券遮罩--ui说不需要此交互
         hideCouponMask() {
             this.isCouponMask = false;
         },
@@ -220,9 +333,76 @@ export default {
             this.isDealDetailMask = true;
         },
 
-        // 隐藏交易明细遮罩
+        // 隐藏交易明细遮罩-ui没有设计这个交互逻辑
         hideDealDetailMask() {
             this.isDealDetailMask = false;
+        },
+
+        // 拉取订单预览数据
+        fetchOrderForm(pa) {
+            this.$http({
+                method: "POST",
+                url: order_form,
+                data: pa
+            }).then(res => {
+                if (res.data.status == 1) {
+                    this.details = res.data.data.details;    //给房间详情赋值
+                    this.discount_price = res.data.data.discount_price;  //给房间折扣价赋值
+                    this.coupon = res.data.data.coupon;  //给房间优惠券赋值
+                    this.unit_price = res.data.data.unit_price  // 给明细赋值
+                    this.totalPrice = res.data.data.discount_price * this.howManyNight * this.roomNum;  // 总价
+                }
+            }).catch(err => {});
+        },
+
+        // 加减房间数
+        minusRoomNum() {
+            if (this.roomNum == 1) {
+                this.imgSrcMinus = this.btnMinus;
+                return;
+            } else {
+                this.roomNum -= 1;
+                this.imgSrcPlus = this.btnPlusActive;
+                this.$http({
+                    method: "POST",
+                    url: increase_room_num,
+                    data: {
+                        quantity:this.howManyNight,
+                        room_type:this.room_id,
+                        room_sum:this.roomNum,
+                        begin:this.begin
+                    }
+                }).then(res => {
+                    if (res.data.status == 1) {
+                        this.totalPrice = this.discount_price * this.howManyNight * this.roomNum;
+                    }
+                }).catch(err => {});
+            }
+        },
+
+        // - this.logCoupon.split(",")[2]
+        plusRoomNum() {
+            if (this.roomNum >= 1 && this.roomNum < this.userOrderStatus) {
+                this.imgSrcMinus = this.btnMinusActive;
+                this.roomNum += 1;
+                this.$http({
+                    method: "POST",
+                    url: increase_room_num,
+                    data: {
+                        quantity:this.howManyNight,
+                        room_type:this.room_id,
+                        room_sum:this.roomNum,
+                        begin:this.begin
+                    }
+                }).then(res => {
+                    if (res.data.status == 1) {
+                        this.totalPrice = this.discount_price * this.howManyNight * this.roomNum;
+                    }
+                }).catch(err => {});
+            } else {
+                this.imgSrcPlus = this.btnPlus;
+                alert("您今天的可定房间数已经达到上限了！");
+            }
         }
     }
 };
@@ -246,7 +426,7 @@ export default {
 
 // 这是弹框的title
 .zb-weui-actionsheet__title {
-	height: auto;
+    height: auto;
     background: #fff;
     .zb-weui-actionsheet__title-text {
         height: 22px;
@@ -258,7 +438,7 @@ export default {
 }
 
 // 这是弹框的内容
-.zb-actionsheet__bd{
+.zb-actionsheet__bd {
     height: 55px;
     padding: 0 15px;
     background: #fff;
@@ -269,25 +449,25 @@ export default {
             padding: 0;
             .div {
                 height: 55px;
-                &.weui-cell__bd{
+                &.weui-cell__bd {
                     display: flex;
                     flex-direction: column;
                     justify-content: center;
                     h4 {
                         line-height: 20px;
                         color: #666;
-                        font-size: 14px; 
-                        font-weight: normal; 
+                        font-size: 14px;
+                        font-weight: normal;
                         margin-bottom: 4px;
                     }
                     p {
                         line-height: 16px;
                         color: #999;
-                        font-size: 12px; 
+                        font-size: 12px;
                     }
                 }
-                &.weui-cell__hd{
-                    padding-right: 0; 
+                &.weui-cell__hd {
+                    padding-right: 0;
                     line-height: 55px;
                     color: #ffba56;
                     font-size: 14px;
@@ -326,7 +506,8 @@ export default {
         background: #eff1f0;
         .detail-wrapper {
             padding: 15px;
-            background: url('../../assets/images/bg/bg_order_page.png') repeat-x center;
+            background: url("../../assets/images/bg/bg_order_page.png") repeat-x
+                center;
             .name {
                 font-size: 16px;
                 color: #666;

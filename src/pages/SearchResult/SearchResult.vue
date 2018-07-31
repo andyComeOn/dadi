@@ -1,8 +1,16 @@
 <template>
     <div class="search-result">
         <!-- 搜索条 -->
-        <searchbar @triggerCityDialogEmit="triggerCityDialogEmitFun" @triggerCalendarDialogEmit="triggerCalendarDialogEmitFun" @triggerSearchbarInputFocusEmit="triggerSearchbarInputFocusEmitFun" :searchbarObj="toSearchbarObj">
+        <searchbar 
+            @triggerCityDialogEmit="triggerCityDialogEmitFun" 
+            @triggerCalendarDialogEmit="triggerCalendarDialogEmitFun" 
+            @inputValEmit="inputValEmitFun" 
+            :searchbarObj="toSearchbarObj">
         </searchbar>
+
+        <!-- @triggerSearchbarInputFocusEmit="triggerSearchbarInputFocusEmitFun" -->
+        <!-- searchbar中输入框获焦的emit的函数-暂不使用-注释 -->
+        
 
         <!-- 排序 -->
         <sortbar @sortbarEmit="sortbarEmitFun">
@@ -26,11 +34,11 @@
             </Calendar>
         </mu-dialog>
 
-        <!-- 日历组件dialog -->
-        <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbSearchVisible">
-            <Search @cancelSearchEmit="cancelSearchEmitFun">
-            </Search>
-        </mu-dialog>
+        <!-- 搜索弹框组件dialog -->
+        <!-- <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbSearchVisible"> -->
+            <!-- <Search @cancelSearchEmit="cancelSearchEmitFun"> -->
+            <!-- </Search> -->
+        <!-- </mu-dialog> -->
 
     </div>
 </template>
@@ -136,7 +144,6 @@ export default {
             "-" +
             urlPara.liveoutDD;
     },
-    watch: {},
     mounted() {
         var param = this.watchObj;
         // this.fetchData(param);
@@ -219,14 +226,19 @@ export default {
                 value[1].split("/")[2];
         },
 
-        // searchbar中输入框获焦的emit的函数
-        triggerSearchbarInputFocusEmitFun() {
-            this.zbSearchVisible = true;
-        },
+        // searchbar中输入框获焦的emit的函数-暂不使用-注释
+        // triggerSearchbarInputFocusEmitFun() {
+        //     this.zbSearchVisible = true;
+        // },
 
         // 搜索组件（不是搜索条组件）右侧的取消按钮
-        cancelSearchEmitFun() {
-            this.zbSearchVisible = false;
+        // cancelSearchEmitFun() {
+        //     this.zbSearchVisible = false;
+        // },
+
+        // 搜索条组件传过来的emit方法执行的函数
+        inputValEmitFun(val){
+            console.log(val);
         },
 
         //排序sortbar组件emit之后执行的函数

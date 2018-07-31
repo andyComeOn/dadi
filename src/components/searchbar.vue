@@ -17,9 +17,11 @@
                     class="txt" 
                     v-model="o.abstract" 
                     placeholder="酒店位置/商圈"
-                    @focus="triggerSearchbarInputFocus"
+                    @keyup="inputFun"
                 >
             </div>
+            <!-- @focus="triggerSearchbarInputFocus" -->
+            <!-- 这句代码是search中的input获焦时候绑定的函数-勿删 -->
         </div>
     </div>
 </template>
@@ -85,7 +87,14 @@ export default {
         // 搜素框出发焦点事件
         triggerSearchbarInputFocus(){
             this.$emit("triggerSearchbarInputFocusEmit");
-        }
+        },
+
+        // 最后产品要求不加此功能
+        inputFun(){
+            this.$emit("inputValEmit",o.abstract);
+        },
+
+
 
     }
 };

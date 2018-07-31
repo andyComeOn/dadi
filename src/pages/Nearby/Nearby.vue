@@ -91,19 +91,15 @@ export default {
 
             // 监听数据的变化，用来筛选满足条件的酒店列表
             watchObj: {
-                cpid:'1',
-                //正序、降序排列
-                //type:'',
-                // 经度
-                //longitude:'',
-                //维度
-                //latitude:'',
-                //城市
-				city: '1',
-				//排序（价格，距离）
-                //px_rule:'',
-                //门店名称
-                //name: '',
+                cpid: "1", // 公司id
+                type: "", //正序、降序排列
+                longitude: "", // 经度
+                latitude: "", //维度
+                city: "1", //城市id
+                px_rule: "", //排序（价格，距离）
+                name: "", //门店名称
+                begin: "", // 入住时间
+                finish: "" // 离店时间
             },
 
             // 城市组件是否显示
@@ -148,6 +144,20 @@ export default {
         this.toSearchbarObj.liveoutYYYY= f(dd).yyyy;
         this.toSearchbarObj.liveoutMM= f(dd).mm;
         this.toSearchbarObj.liveoutDD= f(dd).dd;
+
+        // 把searchbar默认的时间赋值给watchObj
+        this.watchObj.begin =
+            f(d).yyyy +
+            "-" +
+            f(d).mm +
+            "-" +
+            f(d).dd;
+        this.watchObj.finish =
+            f(dd).yyyy +
+            "-" +
+            f(dd).mm +
+            "-" +
+            f(dd).dd;
 	},
 	mounted() {
 		
@@ -203,7 +213,21 @@ export default {
             this.toSearchbarObj.liveinDD = value[0].split("/")[2];
             this.toSearchbarObj.liveoutYYYY = value[1].split("/")[0];
             this.toSearchbarObj.liveoutMM = value[1].split("/")[1];
-            this.toSearchbarObj.liveoutDD = value[1].split("/")[2];           
+            this.toSearchbarObj.liveoutDD = value[1].split("/")[2];     
+            
+            // 给监听的watchObj，重新赋值
+            this.watchObj.begin =
+                value[0].split("/")[0] +
+                "-" +
+                value[0].split("/")[1] +
+                "-" +
+                value[0].split("/")[2];
+            this.watchObj.finish =
+                value[1].split("/")[0] +
+                "-" +
+                value[1].split("/")[1] +
+                "-" +
+                value[1].split("/")[2];
         },
 
 	}

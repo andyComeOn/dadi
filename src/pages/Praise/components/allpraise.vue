@@ -59,7 +59,7 @@
         mounted() {
             //all data
             var param = {
-                cpid:1
+                // cpid:1
             };
             this.$http({
                 url:awardLists,

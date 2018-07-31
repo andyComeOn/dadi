@@ -55,6 +55,10 @@ import Praise from '../pages/Praise/Praise'
 import PickCash from '../pages/PickCash/PickCash'
 // 推荐好友-我的下线
 import HelpFriend from '../pages/HelpFriend/HelpFriend'
+// 提现
+import extractMoney from '../pages/extractMoney/extractMoney'
+// 提现
+import extractCheck from '../pages/extractCheck/extractCheck'
 
 
 Vue.use(Router)
@@ -191,7 +195,18 @@ export default new Router({
 			name: 'pickCash',
 			component: PickCash
 		},
-
+		//提现
+		{
+			path:'/extractMoney',
+			name:'extractMoney',
+			component:extractMoney
+		},
+		//提现审核
+		{
+			path:'/extractCheck',
+			name:'extractCheck',
+			component:extractCheck
+		},
 
 		// 更改原手机号
 		{

@@ -86,7 +86,7 @@
 		</mu-dialog>
 
 		<!-- 日历组件dialog -->
-		<mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCalendarVisible">
+		<mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbCalendarVisible">
 			<Calendar 
 				ref="Calendar" 
 				:markDateMore="zbInitCalendar" 
