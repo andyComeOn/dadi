@@ -38,8 +38,9 @@
                 <label class="label">入住人姓名</label>
                 <div class="item-rg">
                     <div class="name-div">
-                        <input type="text" class="input-name" id="name" placeholder="请输入姓名" v-model="orderName">
+                        <input type="text" class="input-name" id="name" placeholder="请输入姓名" @blur="orderNameBlur" @focus="orderNameFocus" v-model="orderName">
                     </div>
+                    <span v-show="orderNameTipsVisible" class="errTips">{{orderNameTxt}}</span>
                 </div>
             </li>
 
@@ -48,7 +49,8 @@
                 <label class="label">手机号</label>
                 <div class="item-rg">
                     <div class="tel-div">
-                        <input type="tel" class="input-tel" id="tel" placeholder="请输入手机号" v-model="orderTel">
+                        <input type="tel" class="input-tel" id="tel" placeholder="请输入手机号" @blur="orderTelBlur" @focus="orderTelFocus" v-model="orderTel">
+                        <span v-show="orderTelTipsVisible" class="errTips">{{orderTelTxt}}</span>
                     </div>
                 </div>
             </li>
@@ -63,7 +65,7 @@
                     <div class="coupon-div" @click="showCouponMask">
                         {{coupon.length}}张可用
                         <img src="../../assets/images/arrows/ic-arrow_10_18.png" alt="">
-                       
+
                     </div>
                 </div>
             </li>
@@ -71,12 +73,12 @@
             <!-- 发票 -->
             <li class="ticket">
                 <label class="label">发票</label>
-                <div class="item-rg" style="color:#666;font-size:14px;line-height:50px;font-family:PingFangSC-Regular;">
+                <div class="item-rg" style="color:#666;font-size:14px;line-height:50px;">
                     酒店开具
                 </div>
             </li>
         </ul>
-        <div>{{logCoupon}}</div>
+
         <!-- 文字小提示 -->
         <div class="tips">
             <h3>温馨提示</h3>
@@ -90,19 +92,17 @@
                 <div class="money">&yen;{{totalPrice}}</div>
                 <div class="arrow" @click="showDealDetailMask"><img src="../../assets/images/arrows/ic_pay_arrow.png" alt=""></div>
             </div>
-            <div class="rg">支付</div>
+            <div class="rg" @click="pay">支付</div>
         </div>
 
         <!-- 优惠券的弹框 -->
         <div class="coupon-mask-box">
             <div class="weui-mask zb-weui-mask" id="couponMask" @click="hideCouponMask" :class="[{'weui-actionsheet_no_toggle_active':isCouponMask},{'weui-actionsheet_no_toggle':!isCouponMask}]"></div>
             <div class="weui-actionsheet zb-weui-actionsheet" id="weui-actionsheet" :class="[{'weui-actionsheet_toggle':isCouponMask}]">
-
                 <!-- 弹框的title -->
                 <div class="weui-actionsheet__title zb-weui-actionsheet__title">
                     <p class="weui-actionsheet__title-text zb-weui-actionsheet__title-text">优惠券</p>
                 </div>
-
                 <!-- 弹框的内容 -->
                 <div class="weui-actionsheet__menu">
                     <!-- 循环下面的整体 -->
@@ -115,7 +115,7 @@
                                 </div>
                                 <div class="weui-cell__hd div" style="font-family:DIN;">
                                     &yen;{{item.amount}}
-                                    <input type="radio" class="weui-check" name="checkbox" :id="item.id" :value="[item.id,item.min_amount,item.amount]" v-model="initCoupon">
+                                    <input type="radio" class="weui-check" :id="item.id" :value="{id:item.id,min_amount:item.min_amount,amount:item.amount}" v-model="initCoupon">
                                     <i class="weui-icon-checked"></i>
                                 </div>
                             </label>
@@ -134,7 +134,6 @@
         <div class="deal-detail-mask-box">
             <div class="weui-mask zb-weui-mask" id="dealDetailMask" @click="hideDealDetailMask" :class="[{'weui-actionsheet_no_toggle_active':isDealDetailMask},{'weui-actionsheet_no_toggle':!isDealDetailMask}]"></div>
             <div class="weui-actionsheet zb-weui-actionsheet" id="weui-actionsheet" :class="[{'weui-actionsheet_toggle':isDealDetailMask}]">
-
                 <!-- 交易明细弹框的title -->
                 <div class="weui-actionsheet__title zb-weui-actionsheet__title">
                     <p class="weui-actionsheet__title-text zb-weui-actionsheet__title-text">费用明细</p>
@@ -142,13 +141,12 @@
 
                 <!-- 交易明细弹框的内容 -->
                 <div class="weui-actionsheet__menu">
-
                     <!-- 循环下面的整体 -->
                     <div class="zb-actionsheet__bd">
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
                             <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
                                 <div class="weui-cell__bd div zb-weui-cell__hd">
-                                    <h4>入住{{howManyNight}}天房价</h4>
+                                    <h4>{{howManyNight}}晚、{{roomNum}}间共</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
                                     &yen;{{totalPrice}}
@@ -169,14 +167,14 @@
                         </div>
                     </div>
                     <!-- 交易明细优惠券 -->
-                    <div class="zb-actionsheet__bd">
+                    <div class="zb-actionsheet__bd" v-if="initCoupon">
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
                             <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
                                 <div class="weui-cell__bd div zb-weui-cell__hd">
                                     <h4>优惠券折扣</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <span style="color:#666;">满300减20</span> 
+                                    <span style="color:#666;">满{{initCoupon.min_amount}}减{{initCoupon.amount}}</span>
                                 </div>
                             </label>
                         </div>
@@ -189,16 +187,19 @@
                                     <h4>总计</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <span style="color:#666;">实付</span> &yen;2340
+                                    <span style="color:#666;">实付</span> &yen;{{totalPrice}}
                                 </div>
                             </label>
                         </div>
                     </div>
                 </div>
                 <!-- 弹框的取消 -->
-                <!-- <div class="weui-actionsheet__action" style="background:#fff;"> -->
-                    <!-- <div class="weui-actionsheet__cell" id="deal_detail_actionsheet_cancel" style="font-size:16px;" @click="hideDealDetailMask">取消</div> -->
-                <!-- </div> -->
+                <!-- <div class="weui-actionsheet__action" style="background:#fff;">
+                    <div class="weui-actionsheet__cell" 
+                        id="deal_detail_actionsheet_cancel" 
+                        style="font-size:16px;" 
+                        @click="hideDealDetailMask">取消</div>
+                </div> -->
             </div>
         </div>
 
@@ -207,7 +208,7 @@
 
 <script>
 import { dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
-import { order_form,increase_room_num } from "@/api/api";
+import { order_form, increase_room_num, create_order } from "@/api/api";
 export default {
     name: "order",
     components: {},
@@ -254,12 +255,19 @@ export default {
             orderName: "",
             orderTel: "",
             // 总价
-            totalPrice:"",
-            // 房间的单间
-            discount_price:"",
+            totalPrice: "",
+            // 总价保存
+            totalPriceLast: "",
+            // 房间的单价
+            discount_price: "",
             // 优惠券
-            coupon:[],
-
+            coupon: [],
+            // 订房人姓名输入验证
+            orderNameTipsVisible: false,
+            orderNameTxt: "123",
+            // 订房人手机号输入验证
+            orderTelTipsVisible: false,
+            orderTelTxt: ""
         };
     },
     created() {
@@ -293,21 +301,18 @@ export default {
             finish: routePara.finish
         });
 
-        // 加减房间数按钮img的src的初始化赋值  
+        // 加减房间数按钮img的src的初始化赋值
         this.imgSrcMinus = this.btnMinus;
         this.imgSrcPlus = this.btnPlusActive;
-
-        
     },
     watch: {
         initCoupon: {
             handler(newValue, oldValue) {
                 if (newValue != "") {
-                    this.logCoupon = newValue;
-                    
-                    console.log(newValue[2]);
-                    // console.log(this.logCoupon.split("-"));
-                    this.totalPrice = this.totalPrice - newValue[2];
+                    console.log(newValue);
+                    this.totalPrice =
+                        this.discount_price * this.howManyNight * this.roomNum -
+                        newValue.amount;
                     this.isCouponMask = false;
                 }
             },
@@ -319,8 +324,6 @@ export default {
         // 展示优惠券遮罩
         showCouponMask() {
             this.isCouponMask = true;
-            this.initCoupon = "";
-            this.logCoupon = "";
         },
 
         // 隐藏优惠券遮罩--ui说不需要此交互
@@ -344,20 +347,26 @@ export default {
                 method: "POST",
                 url: order_form,
                 data: pa
-            }).then(res => {
-                if (res.data.status == 1) {
-                    this.details = res.data.data.details;    //给房间详情赋值
-                    this.discount_price = res.data.data.discount_price;  //给房间折扣价赋值
-                    this.coupon = res.data.data.coupon;  //给房间优惠券赋值
-                    this.unit_price = res.data.data.unit_price  // 给明细赋值
-                    this.totalPrice = res.data.data.discount_price * this.howManyNight * this.roomNum;  // 总价
-                }
-            }).catch(err => {});
+            })
+                .then(res => {
+                    if (res.data.status == 1) {
+                        this.details = res.data.data.details; //给房间详情赋值
+                        this.discount_price = res.data.data.discount_price; //给房间折扣价赋值
+                        this.coupon = res.data.data.coupon; //给房间优惠券赋值
+                        this.unit_price = res.data.data.unit_price; // 给明细赋值
+                        this.totalPrice =
+                            res.data.data.discount_price *
+                            this.howManyNight *
+                            this.roomNum; // 总价
+                    }
+                })
+                .catch(err => {});
         },
 
         // 加减房间数
         minusRoomNum() {
             if (this.roomNum == 1) {
+                this.initCoupon = "";
                 this.imgSrcMinus = this.btnMinus;
                 return;
             } else {
@@ -367,20 +376,24 @@ export default {
                     method: "POST",
                     url: increase_room_num,
                     data: {
-                        quantity:this.howManyNight,
-                        room_type:this.room_id,
-                        room_sum:this.roomNum,
-                        begin:this.begin
+                        quantity: this.howManyNight,
+                        room_type: this.room_id,
+                        room_sum: this.roomNum,
+                        begin: this.begin
                     }
-                }).then(res => {
-                    if (res.data.status == 1) {
-                        this.totalPrice = this.discount_price * this.howManyNight * this.roomNum;
-                    }
-                }).catch(err => {});
+                })
+                    .then(res => {
+                        if (res.data.status == 1) {
+                            this.initCoupon = "";
+                            this.totalPrice =
+                                this.discount_price *
+                                this.howManyNight *
+                                this.roomNum;
+                        }
+                    })
+                    .catch(err => {});
             }
         },
-
-        // - this.logCoupon.split(",")[2]
         plusRoomNum() {
             if (this.roomNum >= 1 && this.roomNum < this.userOrderStatus) {
                 this.imgSrcMinus = this.btnMinusActive;
@@ -389,19 +402,99 @@ export default {
                     method: "POST",
                     url: increase_room_num,
                     data: {
-                        quantity:this.howManyNight,
-                        room_type:this.room_id,
-                        room_sum:this.roomNum,
-                        begin:this.begin
+                        quantity: this.howManyNight,
+                        room_type: this.room_id,
+                        room_sum: this.roomNum,
+                        begin: this.begin
                     }
-                }).then(res => {
-                    if (res.data.status == 1) {
-                        this.totalPrice = this.discount_price * this.howManyNight * this.roomNum;
-                    }
-                }).catch(err => {});
+                })
+                    .then(res => {
+                        if (res.data.status == 1) {
+                            this.initCoupon = "";
+                            this.totalPrice =
+                                this.discount_price *
+                                this.howManyNight *
+                                this.roomNum;
+                        }
+                    })
+                    .catch(err => {});
             } else {
                 this.imgSrcPlus = this.btnPlus;
                 alert("您今天的可定房间数已经达到上限了！");
+            }
+        },
+        // 订房人input姓名失焦
+        orderNameBlur() {
+            if (this.orderName.trim() == "") {
+                this.orderNameTipsVisible = true;
+                this.orderNameTxt = "输入姓名不能为空";
+                return false;
+            } else {
+                return true;
+            }
+        },
+        // 订房人input姓名获焦
+        orderNameFocus() {
+            this.orderNameTipsVisible = false;
+        },
+        // 订房人input手机失焦
+        orderTelBlur() {
+            if (this.orderTel.trim() == "") {
+                this.orderTelTipsVisible = true;
+                this.orderTelTxt = "输入手机号不能为空";
+                return false;
+            } else if (this.orderTel != "") {
+                var myreg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
+                if (!myreg.test(this.orderTel.trim())) {
+                    this.orderTelTxt = "输入手机号格式有误";
+                    this.orderTelTipsVisible = true;
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        },
+        // 订房人input手机获焦
+        orderTelFocus() {
+            this.orderTelTipsVisible = false;
+        },
+        // 支付逻辑
+        pay() {
+            // 再次判断预定人input输入框的手机号是都为空
+            if (this.orderTel.trim() == "") {
+                this.orderTelTipsVisible = true;
+                this.orderTelTxt = "输入手机号不能为空";
+            }
+
+            // 再次判断预定人input输入框的名字是否为空
+            if (this.orderName.trim() == "") {
+                this.orderNameTipsVisible = true;
+                this.orderNameTxt = "输入姓名不能为空";
+            } 
+
+            // 总的判断
+            if (this.orderNameBlur() && this.orderTelBlur()) {
+                if (this.initCoupon==""){
+                    this.initCoupon = {};
+                    this.initCoupon.id = "";
+                }
+                console.log(this.initCoupon.id);
+                this.$http({
+                    method: "POST",
+                    url: create_order,
+                    data: {
+                        room_type: this.room_id,
+                        store_id: this.store_id,
+                        dwell_name: this.orderName,
+                        dewll_mobile: this.orderTel,
+                        room_sum: this.roomNum,
+                        begin: this.begin,
+                        finish: this.finish,
+                        coupon_id:this.initCoupon.id
+                    }
+                }).then(res=>{
+                    console.log(res);
+                }).catch();
             }
         }
     }
@@ -491,6 +584,15 @@ export default {
         float: right;
         padding-right: 15px;
         height: 50px;
+        position: relative;
+        font-size: 13px;
+        .errTips {
+            position: absolute;
+            top: 30px;
+            right: 15px;
+            color: red;
+            font-size: 8px;
+        }
     }
 
     // 分割bar

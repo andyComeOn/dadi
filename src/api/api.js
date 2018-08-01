@@ -83,3 +83,6 @@ export const order_form = '/api/Order/order_form?cpid=' + GlobalCpid;    //订�
 export const increase_room_num = '/api/Order/increase_room_num?cpid=' + GlobalCpid;    //订单预览页面
 
 export const helpFriend = '/api/Distribution/subordinate?cpid=' + GlobalCpid;       //助力好友
+
+export const create_order = '/api/Order/create_order?cpid=' + GlobalCpid;  //生成订单
+
