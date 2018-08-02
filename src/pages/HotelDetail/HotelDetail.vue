@@ -326,9 +326,7 @@ export default {
         // 点击收藏按钮
         addCollect() {
             let p = {
-                cpid: 1,
-                store_id: this.watchObj.store_id,
-                room_type_id: 1
+                store_id: this.watchObj.store_id
             };
             this.$http({
                 method: "POST",

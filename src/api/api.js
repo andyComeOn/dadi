@@ -54,7 +54,7 @@ export const del_coupon = '/api/Coupon/del_coupon' // 优惠卷过期删除（�
 
 export const collect_list = '/api/User/collect_list' // 用户收藏列表
 
-export const add_collect = '/api/User/add_collect' // 添加收藏
+export const add_collect = '/api/User/add_collect?cpid=' + GlobalCpid // 添加收藏
 
 export const del_collect = '/api/User/del_collect' // 删除收藏
 
@@ -85,4 +85,7 @@ export const increase_room_num = '/api/Order/increase_room_num?cpid=' + GlobalCp
 export const helpFriend = '/api/Distribution/subordinate?cpid=' + GlobalCpid;       //助力好友
 
 export const create_order = '/api/Order/create_order?cpid=' + GlobalCpid;  //生成订单
+
+export const order_list = '/api/Order/order_list?cpid=' + GlobalCpid;  //生成订单
+
 

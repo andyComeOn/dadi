@@ -18,7 +18,7 @@ import Calendar from "@/components/calendar/calendar.vue";
 import { YTD, f, YTDRg, dateEndMinusStart } from "@/utils/date";
 
 export default {
-	name: "vip",
+    name: "vip",
     components: {
         Calendar
     },
@@ -26,9 +26,9 @@ export default {
         return {
             zbCalendarVisible: false,
             demo: "",
-			date: "",
-			howManyNight: '',
-            
+            date: "",
+            howManyNight: "",
+
             zbInitCalendar: {
                 start: {
                     yyyy: "",
@@ -49,7 +49,7 @@ export default {
         var dd = new Date();
         dd.setDate(dd.getDate() + 1);
 
-		this.howManyNight = dateEndMinusStart(d,dd);
+        this.howManyNight = dateEndMinusStart(d, dd);
         this.zbInitCalendar.start.yyyy = f(d).yyyy;
         this.zbInitCalendar.start.mm = f(d).mm;
         this.zbInitCalendar.start.dd = f(d).dd;
@@ -77,10 +77,10 @@ export default {
             // 离店时间
             this.zbInitCalendar.end.yyyy = value[1].split("/")[0];
             this.zbInitCalendar.end.mm = value[1].split("/")[1];
-			this.zbInitCalendar.end.dd = value[1].split("/")[2];
-			
-			//共几晚
-			this.howManyNight = dateEndMinusStart(value[0], value[1]);
+            this.zbInitCalendar.end.dd = value[1].split("/")[2];
+
+            //共几晚
+            this.howManyNight = dateEndMinusStart(value[0], value[1]);
         },
 
         // 日历组件的title-若用户不选取日历，点击返回使日历弹窗消失
@@ -93,8 +93,7 @@ export default {
 
 
 <style lang="less">
-
-	.demo {
+.demo {
     height: 30px;
     line-height: 30px;
     background: palevioletred;

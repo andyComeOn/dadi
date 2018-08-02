@@ -154,14 +154,14 @@
                             </label>
                         </div>
                     </div>
-                    <div class="zb-actionsheet__bd" v-if="unit_price" v-for="(item,index) in unit_price" :key="index">
+                    <div class="zb-actionsheet__bd" v-if="price" v-for="(item,index) in price" :key="index">
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
                             <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
                                 <div class="weui-cell__bd div zb-weui-cell__hd">
-                                    <h4>{{item.date}}</h4>
+                                    <h4>{{item.add_time}}</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <span style="color:#666;">1间 * </span> &yen;{{item.market_amount}}
+                                    <span style="color:#666;">1间 * </span> &yen;{{item.unit_price}}
                                 </div>
                             </label>
                         </div>
@@ -240,7 +240,7 @@ export default {
             // 门店详情
             details: {},
             // 明细-房间单价-包含时间
-            unit_price: [],
+            price: [],
             // 请求返回的数据
             fetchData: {},
             // 默认的房间数
@@ -353,7 +353,7 @@ export default {
                         this.details = res.data.data.details; //给房间详情赋值
                         this.discount_price = res.data.data.discount_price; //给房间折扣价赋值
                         this.coupon = res.data.data.coupon; //给房间优惠券赋值
-                        this.unit_price = res.data.data.unit_price; // 给明细赋值
+                        this.price = res.data.data.price; // 给明细赋值
                         this.totalPrice =
                             res.data.data.discount_price *
                             this.howManyNight *

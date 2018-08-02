@@ -1,12 +1,12 @@
 <template>
-    <div class="error-page">
-        error
+    <div class="nofound-page">
+        404
     </div>
 </template>
 
 <script>
 export default {
-    name: "vip",
+    name: "nofound",
     components: {},
     data() {
         return {};
@@ -17,7 +17,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.error-page {
+.nofound-page {
     text-align: center;
     font-size: 24px;
 }

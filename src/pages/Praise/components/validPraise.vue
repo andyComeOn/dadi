@@ -1,7 +1,7 @@
 <template>
 	<div>
         <!-- praise_content str -->
-        <div class="praise_content bd-f9" v-for='(item,index) in praiseArr' @click="isShow(index)">
+        <div class="praise_content bd-f9" v-for="(item,index) in praiseArr" @click="isShow(index)" :key="index">
             <div class="praise_lists">
                 <div class="praise_lists_msg pr">
                     <p class="praise_title col-666 fs12">
@@ -70,6 +70,7 @@
                 console.log(res);
                 if(res.data.status == 1){
                     this.praiseArr = res.data.data;
+                    console.log(this.praiseArr);
                 }else{
 
                 }

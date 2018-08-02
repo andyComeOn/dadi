@@ -16,7 +16,7 @@
     }
 
     .notHavaData img{
-        width: 150px;
+        width: 152px;
         height: 108px;
         display: block;
         margin: 0 auto;

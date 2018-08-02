@@ -19,8 +19,14 @@ import Order from '../pages/Order/Order'
 // 订单列表
 import OrderList from '../pages/OrderList/OrderList'
 
-// 订单列表中每条订单的详情页
+// 订单列表中每条订单-点击之后进入的详情页
 import OrderDetail from '../pages/OrderDetail/OrderDetail'
+
+
+//  订单列表中每条订单-下面的按钮跳转的页面-退款申请页
+import ApplyMoney from '../pages/ApplyMoney/ApplyMoney'
+
+
 
 
 import Login from '../pages/Login/Login'
@@ -59,6 +65,7 @@ import HelpFriend from '../pages/HelpFriend/HelpFriend'
 import extractMoney from '../pages/extractMoney/extractMoney'
 // 提现
 import extractCheck from '../pages/extractCheck/extractCheck'
+
 
 
 Vue.use(Router)
@@ -208,6 +215,14 @@ export default new Router({
 			component:extractCheck
 		},
 
+
+
+		// 订单列表页的申请退款按钮-跳的页面
+		{
+			path: '/applyMoney',
+			name: 'applyMoney',
+			component: ApplyMoney
+		},
 		// 更改原手机号
 		{
 			path: '/oldPhoneNum',

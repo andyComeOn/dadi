@@ -54,13 +54,13 @@
                 };
                 this.showView = active_text;
                 this.classIndex = activeIndex;
-                this.$http({
-                    url:login_test,
-                    method: "POST",
-                    data: param
-                }).then((res)=>{
+                // this.$http({
+                //     url:login_test,
+                //     method: "POST",
+                //     data: param
+                // }).then((res)=>{
                 
-                });
+                // });
             }
         },
         mounted() {
