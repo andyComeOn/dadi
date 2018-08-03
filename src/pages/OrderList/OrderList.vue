@@ -9,29 +9,19 @@
             </div>
         </div>
         <div class="body">
-            <OrderListItem :condition="watchObj">
+            <OrderListItem 
+                :condition="watchObj">
             </OrderListItem>
-            <!-- @applyMoneyEmit="applyMoneyEmitFun" -->
-
-            <!-- <allOrderList :is="select" keep-alive></allOrderList> -->
-
         </div>
-
     </div>
 </template>
 
 <script>
 import OrderListItem from "@/components/order-list-item";
-// import allOrderList from "./components/allOrderList.vue";
-// import orderingList from "./components/orderingList.vue";
-// import orderedList from "./components/orderedList.vue";
 
 export default {
     name: "order-list",
     components: {
-        // allOrderList,
-        // orderingList,
-        // orderedList
         OrderListItem
     },
     data() {

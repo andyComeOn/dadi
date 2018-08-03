@@ -32,18 +32,18 @@
 			<div class="card-box">
 				<div class="box">
 					<p class="tixian-title">可提现(元)</p>
-					<p class="tixian-num">4698.00</p>
+					<p class="tixian-num">{{use_amount}}</p>
 					<ul class="tixian-info">
-						<li class="tixian-get">待领取 456</li>
-						累计奖励 40
-						<li class="tixian-lock">已冻结 34</li>
+						<li class="tixian-get">待领取{{await_amount}}</li>
+						累计奖励{{reward_amount}}
+						<li class="tixian-lock">已冻结{{freeze_amount}}</li>
 					</ul>
-					<router-link to="/extractMoney">
-						<p class="tixian-btn">
+					<!-- <router-link to="/extractMoney"> -->
+						<p @click='extractHash' class="tixian-btn">
 							<span>提现</span>
 							<img src="../../assets/images/arrows/ic_pay_arrow.png" alt="">
 						</p>
-					</router-link>
+					<!-- </router-link> -->
 				</div>
 			</div>
 
@@ -85,19 +85,52 @@
 			</div>
 		</div>
 	</div>
-
 </template>
-
 <script>
-export default {
-    name: "recommend-f",
-    components: {
+	import {user_distribution} from '../../api/api.js';
+ 	export default {
+		name: "recommend-f",
+		components: {
 
-    }
-};
+		},
+		data(){
+			return{
+				use_amount:'',		//可提现
+				freeze_amount:'',	//冻结金额
+				reward_amount:'',	//累计金额
+				await_amount:''		//待领取
+			}
+		},
+		computed: {
+
+		},
+		methods: {
+			extractHash(){
+				this.$router.push({path:'/extractMoney?use_amount=' + this.use_amount});
+			}
+		},
+		mounted() {
+			var param = {
+				
+			};
+			this.$http({
+				url:user_distribution,
+				method:'POST',
+				data:param
+			}).then((res)=>{
+				console.log(res);
+				if(res.data.status == 1){
+					this.await_amount = res.data.data.await_amount;		//待领取
+					this.use_amount = res.data.data.use_amount;			//可提现
+					this.freeze_amount = res.data.data.freeze_amount;	//冻结金额
+					this.reward_amount = res.data.data.reward_amount;	//累计金额
+				}else{
+
+				}
+			});
+		}
+	};
 </script>
-
-
 <style lang="less" scoped>
 	.weui-media-box {
 		.weui-cell__ft {

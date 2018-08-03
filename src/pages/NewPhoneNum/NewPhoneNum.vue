@@ -6,53 +6,74 @@
 				<label>新手机号</label>
 				<div class="lf">
 					<div class="tel-div">
-						<input type="tel" class="tel-txt" placeholder="请输入新手机号">
+						<input type="tel" v-model="newMobile" class="tel-txt" placeholder="请输入新手机号">
 					</div>
 				</div>
             </li>
 			<!-- 验证码 -->
 			<li class="test-code">
 				<div class="lf">
-					<input type="tel" class="test-txt" placeholder="请输入验证码">
+					<input type="tel" v-model="codeVal" class="test-txt" placeholder="请输入验证码">
 				</div>
 				<div class="rg">
-					<input type="button" class="test-btn" value="获取验证码">
+					<input type="button" class="test-btn" @click="getCode" value="获取验证码">
 				</div>
 			</li>
-			
-
 		</ul>
 		<!-- 提交 -->
 		<div class="submit-box">
-			<div class="submit">提交</div>
-			
-			
+			<div class="submit" @click="subNewMobile">提交</div>
 		</div>
 	</div>
 </template>
-
 <script>
-
-
-export default {
-    name: "old-phone-num-page",
-    components: {
-        
-    },
-    data() {
-        return {
-        
-        };
-    },
-    mounted() {
-        
-    },
-    methods: {
-        
-    }
-};
+	import {sendMobile,check_mobile} from '../../api/api.js';
+	export default {
+		name: "old-phone-num-page",
+		components: {
+			
+		},
+		data() {
+			return {
+				newMobile:'',			//新手机
+				codeVal:'',				//验证码
+			};
+		},
+		methods: {
+			//获取验证码
+			getCode(){
+				var param = {
+					mobile:this.newMobile
+				};
+				this.$http({
+					url:sendMobile,
+					method:'POST',
+					data:param
+				}).then((res)=>{
+					console.log(res);
+				});
+			},
+			//提交新手机号
+			subNewMobile(){
+				var param = {
+					mobile:this.newMobile,
+					code:this.codeVal,
+					type:2
+				};
+				this.$http({
+					url:check_mobile,
+					method:'POST',
+					data:param
+				}).then((res)=>{
+					console.log(res);
+				});
+			}
+		},
+		mounted() {
+			
+		}
+	};
 </script>
-
 <style lang="less" scoped>
     @import "../../assets/less/var.less";
     .old-phone-num-page{
@@ -156,9 +177,9 @@ export default {
 				color: #fff;
 				font-size: 15px;
 			}
-			
-
 		}
-
-    }
+	}
+	.old-phone-num-page ul li:nth-of-type(2)::after{
+		height: 0;
+	}
 </style>

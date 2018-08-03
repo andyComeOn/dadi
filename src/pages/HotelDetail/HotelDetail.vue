@@ -4,12 +4,16 @@
         <div class="banner">
             <swiper class="zb-swiper" :options="swiperOption" ref="mySwiper" @someSwiperEvent="swiperCallback(1)">
                 <swiper-slide v-for="item in bannerList" :key="item.id" @click="swiperSlideFun(item.id)">
-                    <img :src="item.img" alt="">
+                    <router-link :to="{path:'hotelDetailBannerLink',query:{store_id:watchObj.store_id}}" class="hotel-detail-banner-link">
+                        <img :src="item.img" alt="">
+                    </router-link>
                 </swiper-slide>
                 <div class="swiper-pagination" slot="pagination"></div>
-
             </swiper>
-            <div class="collect" @click="addCollect"><img src="../../assets/images/collect.png" alt=""></div>
+            <div class="collect" @click="addCollect">
+                <img v-if="is_collect==1" :src="collectIconActive" alt="">
+                <img v-if="is_collect==0" :src="collectIconNoActive" alt="">
+            </div>
         </div>
 
         <!-- 酒店位置说明 -->
@@ -29,7 +33,7 @@
                     <span class="luggage">免费行李寄存</span>
                 </div>
                 <div class="rg">
-                    <router-link :to=" { path: 'hotelLabel', query: { store_id: this.watchObj.store_id }}" tag="div">
+                    <router-link :to=" { path: 'hotelLabel', query: { store_id: watchObj.store_id }}" tag="div">
                         <span class="btn-more">查看更多</span>
                     </router-link>
                 </div>
@@ -112,7 +116,9 @@ import {
     add_collect,
     order_form
 } from "@/api/api";
-import { f, dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
+import { dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
+import { getCookie } from "@/utils/util";
+// import { getCookie, setCookie, getUrlParam } from '@/utils/util';
 import Calendar from "@/components/calendar/calendar.vue"; // 引入日历组件
 import { swiper, swiperSlide } from "vue-awesome-swiper"; // 引入swipe组件
 
@@ -128,7 +134,8 @@ export default {
         return {
             swiperOption: {
                 notNextTick: true,
-                autoplay: 3000,
+                autoplay: false,
+                preventClicks: true,
                 direction: "horizontal",
                 grabCursor: true,
                 setWrapperSize: true,
@@ -156,6 +163,9 @@ export default {
             count: "", // 几晚
             begin: "",
             finish: "",
+            is_collect: "",
+            collectIconNoActive: require("../../assets/images/collect.png"),
+            collectIconActive: require("../../assets/images/collect-active.png"),
 
             // 日历组件dialog是否显示
             zbCalendarVisible: false,
@@ -198,13 +208,12 @@ export default {
         this.zbInitCalendar.end.mm = endArr[1];
         this.zbInitCalendar.end.dd = endArr[2];
 
-        // 拉去数据
+        // 拉取数据
         this.fetchData(this.watchObj);
 
         // 拉取banner信息
         this.fetchBannerData({ cpid: 1, type_id: 1 });
     },
-
     computed: {
         swiper() {
             return this.$refs.mySwiper.swiper;
@@ -213,7 +222,6 @@ export default {
     mounted() {
         // this.swiper.slideTo(3, 1000, false);
     },
-
     watch: {
         watchObj: {
             handler(newValue, oldValue) {
@@ -256,6 +264,8 @@ export default {
                     this.begin = res.data.data.begin;
                     this.finish = res.data.data.finish;
                     this.count = res.data.data.count;
+                    // 是否收藏
+                    this.is_collect = res.data.data.is_collect;
                 } else {
                     this.isShow = true;
                 }
@@ -264,7 +274,14 @@ export default {
 
         // 点击预定
         bookFun(isHasRoom, store_id, room_id, begin, finish) {
-            console.log(store_id + "-");
+            let tmp = getCookie("userInfoTel");
+            if (!tmp) {
+                this.$router.push({
+                    path: "/login",
+                    query: {}
+                });
+                return;
+            }
 
             if (isHasRoom == 1) {
                 this.$router.push({
@@ -325,6 +342,7 @@ export default {
 
         // 点击收藏按钮
         addCollect() {
+            if (this.is_collect == 1) return;
             let p = {
                 store_id: this.watchObj.store_id
             };
@@ -334,22 +352,11 @@ export default {
                 data: p
             }).then(res => {
                 console.log(res.data);
-                // if (res.data.status == 1) {
-                //     // 房间类型list
-                //     this.data_room = res.data.data.data_room;
-                //     // 房间介绍
-                //     this.data_store = res.data.data.data_store;
-                //     // 入店、离店、共几晚
-                //     this.begin = res.data.data.begin;
-                //     this.finish = res.data.data.finish;
-                //     this.count = res.data.data.count;
-                // } else {
-                //     this.isShow = true;
-                // }
+                if (res.data.status == 1) {
+                    this.fetchData(this.watchObj);
+                }
             });
         }
-
-        //
     }
 };
 </script>
@@ -357,6 +364,7 @@ export default {
 <style lang="less" scoped>
 .banner {
     position: relative;
+
     .collect {
         width: 32px;
         height: 32px;

@@ -309,7 +309,6 @@ export default {
         initCoupon: {
             handler(newValue, oldValue) {
                 if (newValue != "") {
-                    console.log(newValue);
                     this.totalPrice =
                         this.discount_price * this.howManyNight * this.roomNum -
                         newValue.amount;
@@ -494,6 +493,9 @@ export default {
                     }
                 }).then(res=>{
                     console.log(res);
+                    if(res.data.status==1){
+                        alert('订单预定成功');
+                    }
                 }).catch();
             }
         }

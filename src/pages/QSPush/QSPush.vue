@@ -19,7 +19,7 @@
 	</div>
 </template>
 <script>
-    import { showQsCode } from '../../api/api.js';
+    import { showQsCode,login_test } from '../../api/api.js';
     export default {
         name: "praise",
         components: {
@@ -42,12 +42,18 @@
             };
             this.$http({
                 method:'POST',
+                url:login_test,
+                data:param,
+            }).then((res)=>{
+                console.log(res);
+            });
+            this.$http({
+                method:'POST',
                 url:showQsCode,
                 data:param,
             }).then((res)=>{
-                console.log(res.data.data);
+                console.log(res);
                 this.imgurl = res.data.data;
-
             });
         }
     };

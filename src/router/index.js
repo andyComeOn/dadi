@@ -10,6 +10,9 @@ import Error from '../pages/Error/Error'
 import HotelDetail from '../pages/HotelDetail/HotelDetail'
 // 酒店详情-查看酒店更多标签
 import HotelLabel from '../pages/HotelLabel/HotelLabel'
+// 酒店详情-banner-点击之后跳转到酒店图片集和页
+import HotelDetailBannerLink from '../pages/HotelDetailBannerLink/HotelDetailBannerLink'
+
 
 import Nearby from '../pages/Nearby/Nearby'
 import SearchResult from '../pages/SearchResult/SearchResult'
@@ -25,8 +28,6 @@ import OrderDetail from '../pages/OrderDetail/OrderDetail'
 
 //  订单列表中每条订单-下面的按钮跳转的页面-退款申请页
 import ApplyMoney from '../pages/ApplyMoney/ApplyMoney'
-
-
 
 
 import Login from '../pages/Login/Login'
@@ -95,6 +96,12 @@ export default new Router({
 			path: '/hotelLabel',
 			name: 'hotelLabel',
 			component: HotelLabel
+		},
+		// 酒店详情-banner-点击之后跳转到酒店图片集和页
+		{
+			path: '/hotelDetailBannerLink',
+			name: 'hotelDetailBannerLink',
+			component: HotelDetailBannerLink
 		},
 		// 附近的酒店
 		{

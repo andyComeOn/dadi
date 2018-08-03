@@ -1,6 +1,9 @@
+//baseUrl
+export const baseUrl = 'www.test.zhaojin9.com';
 //cpid
 // global.GlobalCpid = sessionStorage.getItem(CPID);
 global.GlobalCpid = 1;
+
 
 // Stroe-酒店
 export const store_list = '/api/Store/store_list'  // 门店列表（查询酒店）   
@@ -30,15 +33,15 @@ export const DistributionBanner = '/api/Banner/DistributionBanner'  // 轮播图
 
 export const image_upload = '/api/UploadImg/image_upload'  // 上传图片（数据流图片）
 
-export const sendMobile = '/api/Login/sendMobile'  // 发送短信
+export const sendMobile = '/api/Login/sendMobile?cpid=' + GlobalCpid;  // 发送短信
 
 
 // UserInfo-用户中心
-export const userInfo = '/api/User/userInfo'   // 用户个人信息
+export const userInfo = '/api/User/userInfo?cpid=' + GlobalCpid;  // 用户个人信息
 
 export const update_user = '/api/User/update_user'   // 修改用户信息(生日)
 
-export const check_mobile = '/api/User/check_mobile'   // 更换手机号（校验验证码）
+export const check_mobile = '/api/User/check_mobile?cpid=' + GlobalCpid;   // 更换手机号（校验验证码）
 
 export const user_member = '/api/User/user_member'   // 会员中心
 
@@ -75,6 +78,10 @@ export const awardLists = '/api/Distribution/reward_list?cpid=' + GlobalCpid;   
 export const withdrawMoney = '/api/Distribution/withdraw_detail?cpid=' + GlobalCpid;   //提现明细
 
 export const showQsCode = '/api/Distribution/getEWM?cpid=' + GlobalCpid;               //二维码接口
+
+export const extractMoney = '/api/Distribution/withdraw?cpid=' + GlobalCpid;         //提现
+
+export const user_distribution = '/api/Distribution/distribution_userinfo?cpid=' + GlobalCpid;  //分销主页
 
 
 // Order-订单
