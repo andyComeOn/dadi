@@ -118,7 +118,7 @@
 				method:'POST',
 				data:param
 			}).then((res)=>{
-				console.log(res);
+				// console.log(res);
 				if(res.data.status == 1){
 					this.await_amount = res.data.data.await_amount;		//待领取
 					this.use_amount = res.data.data.use_amount;			//可提现

@@ -32,7 +32,7 @@
 	</div>
 </template>
 <script>
-    import withdrawMoney from '../../../api/api.js';
+    import {withdrawMoney} from '../../../api/api.js';
     import notHaveData from './notHaveData.vue';
     export default {
         name: "praise",

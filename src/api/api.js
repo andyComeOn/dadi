@@ -96,3 +96,5 @@ export const create_order = '/api/Order/create_order?cpid=' + GlobalCpid;  //生
 export const order_list = '/api/Order/order_list?cpid=' + GlobalCpid;  //生成订单
 
 
+//微信分享
+export const wxShare = '/api/Index/wx_share?cpid=' + GlobalCpid;       //获取参数

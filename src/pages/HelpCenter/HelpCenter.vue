@@ -76,9 +76,6 @@ export default {
 			var tmp = this.list;
 			tmp[index].showParagraph = !tmp[index].showParagraph;
 			this.list = tmp;
-			// console.log();
-			
-
 		}
 	}
 };
