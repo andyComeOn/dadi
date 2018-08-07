@@ -48,23 +48,15 @@
             
         },
         methods: {
+            //tab切换
             tabsActive(active_text,activeIndex){
-                var param = {
-                    cpid:'1'
-                };
-                this.showView = active_text;
-                this.classIndex = activeIndex;
-                // this.$http({
-                //     url:login_test,
-                //     method: "POST",
-                //     data: param
-                // }).then((res)=>{
+                this.showView = active_text;    //点击的谁
+                this.classIndex = activeIndex;  //点击的index
                 
-                // });
             }
         },
         mounted() {
-
+            
         }
     };
 </script>

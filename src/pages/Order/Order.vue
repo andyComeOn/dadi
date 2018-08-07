@@ -4,7 +4,6 @@
             <div class="detail-wrapper" v-if="details">
                 <!-- 酒店名字 -->
                 <div class="name m-ellipsis">{{details.store_name}}</div>
-
                 <!-- 酒店标签 -->
                 <div class="labels">
                     <span>{{details.name}}</span>
@@ -65,7 +64,6 @@
                     <div class="coupon-div" @click="showCouponMask">
                         {{coupon.length}}张可用
                         <img src="../../assets/images/arrows/ic-arrow_10_18.png" alt="">
-
                     </div>
                 </div>
             </li>
@@ -130,7 +128,6 @@
         </div>
 
         <!-- 交易明细弹框 -->
-
         <div class="deal-detail-mask-box">
             <div class="weui-mask zb-weui-mask" id="dealDetailMask" @click="hideDealDetailMask" :class="[{'weui-actionsheet_no_toggle_active':isDealDetailMask},{'weui-actionsheet_no_toggle':!isDealDetailMask}]"></div>
             <div class="weui-actionsheet zb-weui-actionsheet" id="weui-actionsheet" :class="[{'weui-actionsheet_toggle':isDealDetailMask}]">
@@ -138,7 +135,6 @@
                 <div class="weui-actionsheet__title zb-weui-actionsheet__title">
                     <p class="weui-actionsheet__title-text zb-weui-actionsheet__title-text">费用明细</p>
                 </div>
-
                 <!-- 交易明细弹框的内容 -->
                 <div class="weui-actionsheet__menu">
                     <!-- 循环下面的整体 -->
@@ -202,7 +198,6 @@
                 </div> -->
             </div>
         </div>
-
     </div>
 </template>
 

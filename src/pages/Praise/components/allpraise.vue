@@ -14,7 +14,8 @@
                         <span>赚</span>
                         <span class="col-yellow fw600">{{item.amount}}</span>
                     </p>
-                    <img class="pa" src="../../../assets/images/arrows/ic_pay_arrow.png">
+                    <img v-if="index != activeIndex" class="pa" src="../../../assets/images/arrows/ic_pay_arrow_bottom.png">
+                    <img v-else class="pa" src="../../../assets/images/arrows/ic_pay_arrow.png">
                 </div>
                 <p class="fs13 lh23 ma-top5" v-if="index == activeIndex">
                     <span class="">订单编号:{{item.request_no}}</span>
@@ -53,7 +54,6 @@
         methods: {
             isShow(_index){
                 this.activeIndex = _index;
-                console.log(_index);
             }
         },
         mounted() {

@@ -119,7 +119,7 @@ export default {
         return {
             // 城市和搜索关键字
             cityname: "北京",
-            cityid: "1",
+            cityid: "2",
             abstract: "",
 
             // appid

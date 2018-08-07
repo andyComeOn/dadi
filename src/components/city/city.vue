@@ -9,13 +9,12 @@
 				<div class="location-hot">
 					<ul class="location">
 						<h4>定位城市</h4>
-						<li><span>北京</span></li>
+						<li><span>暂无定位</span></li>
 					</ul>
 					<ul class="hot">
 						<h4>热门城市</h4>
 						<li>
-							<span @click="cityItem('北京', '1')">北京</span>
-							<span @click="cityItem('天津', '21')">天津</span>
+							<span v-for="(item,index) in hotCityList" :key="index" @click="cityItem(item.name, item.id)">{{item.name}}</span>
 						</li>
 					</ul>
 				</div>
@@ -33,8 +32,8 @@ import {getStorecity} from '@/api/api';
 export default {
     data() {
         return {
-			value: '',
-			cityList: []  //拉取城市的信息
+			cityList: [],  //拉取城市的信息
+			hotCityList:[]
         };
     },
     props: {},
@@ -55,7 +54,10 @@ export default {
                 url: getStorecity,
                 data:param
             }).then(res => {
-				this.cityList = res.data.data;
+				if(res.data.status==1){
+					this.cityList = res.data.data;
+					this.hotCityList = res.data.data;
+				}
             });
 		},
 		
@@ -88,7 +90,7 @@ export default {
 	}
 	.city-content{
 		.city-head{
-			height: 40px;
+			line-height: 28px;
 			padding: 6px 15px;
 			background: #F4F4F4;
 			font-size: 14px; 
@@ -114,13 +116,12 @@ export default {
 						clear: both;
 					}
 					span{
-						width: 75px;
 						line-height: 27px;
-						text-align: center;
 						margin: 0 10px 10px 0;
 						float: left;
 						border-radius: 2px; 
 						background: #fff;
+						padding: 0 20px;
 					}
 				}
 				
@@ -142,7 +143,6 @@ export default {
 						background: #E5E5E5;
 						transform: scaleY(0.5);
 					}
-
 				}
 			}
 		}

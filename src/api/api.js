@@ -47,6 +47,9 @@ export const user_member = '/api/User/user_member'   // 会员中心
 
 export const user_auth = '/api/User/user_auth'   // 实名认证（二期）
 
+export const user_card_privilege = '/api/User/user_card_privilege?cpid=' + GlobalCpid;  //生成订单
+
+
 
 // UserActivity-用户活动
 export const get_coupon = '/api/Coupon/get_coupon' // 领取优惠卷
@@ -94,6 +97,8 @@ export const helpFriend = '/api/Distribution/subordinate?cpid=' + GlobalCpid;   
 export const create_order = '/api/Order/create_order?cpid=' + GlobalCpid;  //生成订单
 
 export const order_list = '/api/Order/order_list?cpid=' + GlobalCpid;  //生成订单
+
+
 
 
 //微信分享

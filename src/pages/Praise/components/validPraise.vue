@@ -5,7 +5,7 @@
             <div class="praise_lists">
                 <div class="praise_lists_msg pr">
                     <p class="praise_title col-666 fs12">
-                        <span class="fs15 col-333">{{item.nickname}}</span>
+                        <span class="fs15 col-333">{{item.nickname}}</span>{{showIndex}}
                         <span v-if="item.level == 1">一级</span>
                         <span v-if="item.level == 2">二级</span>
                     </p>
@@ -40,6 +40,9 @@
         name: "praise",
         components: {
             notHaveData
+        },
+        props:{
+            showIndex:''
         },
         data(){
             return {

@@ -3,22 +3,19 @@
         <!-- 卡片区 -->
         <div class="cards">
             <div class="box" id="cardsBox" v-if='cardList'>
-                <div class="item" 
-                    v-for="(item, index) in cardList" 
-                    :key="index" 
-                    :style="{backgroundImage: 'url('+ item.bgUrl +')', height:cardsBoxH + 'px'}"
-                    v-show="item.isCardVisible"
-                >
-                    
-                </div>   
+                <div class="item" v-for="(item, index) in cardList" :key="index" :style="{backgroundImage: 'url('+ item.bgUrl +')', height:cardsBoxH + 'px'}" v-show="item.isCardVisible">
+                    <div class="crown">夏种</div>
+                    <div class="logo"><img src="../../assets/images/vip/logo.png" alt=""></div>
+                    <div class="type">{{item.type}}</div>
+                    <div class="labels">{{item.labels}}</div>
+
+                </div>
             </div>
         </div>
         <!-- tab切换区 -->
         <div class="tab">
             <ul class="ul" v-if="tabList">
-                <li v-for="(item,index) in tabList" :key="index" 
-                    @click="tab(index,item.type)" 
-                    :class="{active: isActive==index}">
+                <li v-for="(item,index) in tabList" :key="index" @click="tab(index,item.type)" :class="{active: isActive==index}">
                     <div>
                         <img :src="item.imgSrc" alt="">
                         <span></span>
@@ -60,7 +57,6 @@
                             </li>
                         </ul>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -69,6 +65,7 @@
 
 <script>
 // import vipDescItem from "@/components/vip-desc-item";
+import { user_card_privilege } from "@/api/api";
 export default {
     name: "vip",
     components: {},
@@ -77,27 +74,37 @@ export default {
             watchObj: {},
             current: "",
             cardsBoxH: "",
-            isActive:0,
+            isActive: 0,
             cardList: [
                 {
                     bgUrl: require("../../assets/images/vip/pu.png"),
-                    isCardVisible:true
+                    isCardVisible: true,
+                    type: "普卡会员",
+                    labels: "8.9折 1.1倍积分 20间夜升铂金"
                 },
                 {
                     bgUrl: require("../../assets/images/vip/silver.png"),
-                    isCardVisible:false
+                    isCardVisible: false,
+                    type: "银卡会员",
+                    labels: "8.9折 1.1倍积分 20间夜升铂金"
                 },
                 {
                     bgUrl: require("../../assets/images/vip/golden.png"),
-                    isCardVisible:false
+                    isCardVisible: false,
+                    type: "金卡会员",
+                    labels: "8.9折 1.1倍积分 20间夜升铂金"
                 },
                 {
                     bgUrl: require("../../assets/images/vip/diamond.png"),
-                    isCardVisible:false
+                    isCardVisible: false,
+                    type: "铂金会员",
+                    labels: "8.9折 1.1倍积分 20间夜升铂金"
                 },
                 {
                     bgUrl: require("../../assets/images/vip/black.png"),
-                    isCardVisible:false
+                    isCardVisible: false,
+                    type: " 黑钻会员",
+                    labels: "8.9折 1.1倍积分 20间夜升铂金"
                 }
             ],
             kaiCardList: [
@@ -129,34 +136,33 @@ export default {
             ],
             tabList: [
                 {
-                    imgSrc:require("../../assets/images/vip/v1.png"),
-                    type:"v1",
-                    cardType:"普卡"
+                    imgSrc: require("../../assets/images/vip/v1.png"),
+                    type: "v1",
+                    cardType: "普卡"
                 },
                 {
-                    imgSrc:require("../../assets/images/vip/v2.png"),
-                    type:"v2",
-                    cardType:"银卡"
+                    imgSrc: require("../../assets/images/vip/v2.png"),
+                    type: "v2",
+                    cardType: "银卡"
                 },
                 {
-                    imgSrc:require("../../assets/images/vip/v3.png"),
-                    type:"v3",
-                    cardType:"金卡"
+                    imgSrc: require("../../assets/images/vip/v3.png"),
+                    type: "v3",
+                    cardType: "金卡"
                 },
                 {
-                    imgSrc:require("../../assets/images/vip/v4.png"),
-                    type:"v4",
-                    cardType:"铂金卡"
+                    imgSrc: require("../../assets/images/vip/v4.png"),
+                    type: "v4",
+                    cardType: "铂金卡"
                 },
                 {
-                    imgSrc:require("../../assets/images/vip/v5.png"),
-                    type:"v5",
-                    cardType:"黑卡"
+                    imgSrc: require("../../assets/images/vip/v5.png"),
+                    type: "v5",
+                    cardType: "黑钻"
                 }
             ],
             vipList: [
                 {
-
                     desc: "餐饮折扣",
                     intro: "赠送蔬菜沙拉 92折"
                 },
@@ -185,15 +191,19 @@ export default {
     },
     methods: {
         // 点击tab切换
-        tab(index,type){
+        tab(index, type) {
             this.isActive = index;
             var tmp = this.tabList;
             var tmpC = this.cardList;
-            for(let i = 0; i < tmp.length;i++){
-                tmp[i].imgSrc = require("../../assets/images/vip/v"+ (i+1) + ".png");
+            for (let i = 0; i < tmp.length; i++) {
+                tmp[i].imgSrc = require("../../assets/images/vip/v" +
+                    (i + 1) +
+                    ".png");
                 tmpC[i].isCardVisible = false;
-                if(index==i){
-                    tmp[i].imgSrc = require("../../assets/images/vip/v"+ (i+1) + "a.png");
+                if (index == i) {
+                    tmp[i].imgSrc = require("../../assets/images/vip/v" +
+                        (i + 1) +
+                        "a.png");
                     tmpC[i].isCardVisible = true;
                 }
             }
@@ -242,6 +252,43 @@ export default {
             background-repeat: no-repeat;
             background-position: center center;
             background-size: 100% 100%;
+            position: relative;
+            padding: 40px 0 0 30px;
+            color: #fff;
+            .crown {
+                position: absolute;
+                // top: 41px;
+                right: 0;
+                width: 49px;
+                line-height: 22px;
+                padding-right: 4px;
+                text-align: right;
+                background-image: url("../../assets/images/vip/crown.png");
+                background-color: rgb(255, 255, 255);
+                background-repeat: no-repeat;
+                background-position: 6px center;
+                background-size: 14px 11px;
+                font-size: 10px;
+                color: #f78c3e;
+                border-radius: 11px 0 0 11px;
+            }
+            .logo {
+                height: 22px;
+                margin-bottom: 50px;
+                img {
+                    height: 22px;
+                }
+            }
+            .type {
+                line-height: 25px;
+                font-size: 18px;
+
+                margin-bottom: 10px;
+            }
+            .labels {
+                line-height: 18px;
+                font-size: 13px;
+            }
         }
     }
 }
@@ -259,10 +306,10 @@ export default {
             float: left;
             text-align: center;
             color: #999;
-            &.active{
+            &.active {
                 color: #333;
-                span{
-                    background: #F78C3E;
+                span {
+                    background: #f78c3e;
                 }
             }
             div {
@@ -323,7 +370,7 @@ export default {
                 }
                 dd {
                     line-height: 16px;
-                    color: #999;
+                    color: #666;
                     font-size: 12px;
                 }
             }
@@ -345,6 +392,18 @@ export default {
                     float: left;
                     border-right: 1px solid #e5e5e5;
                     border-bottom: 1px solid #e5e5e5;
+                    .li-desc {
+                        color: #333;
+                        line-height: 19px;
+                        font-size: 13px;
+                        margin-bottom: 8px;
+                    }
+                    .li-intro {
+                        text-align: center;
+                        color: #666;
+                        line-height: 14px;
+                        font-size: 10px;
+                    }
                     &.liNoBorder {
                         border-right: none;
                     }

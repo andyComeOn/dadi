@@ -19,7 +19,7 @@
 							<img class="weui-media-box__thumb mine-info-media-box__thumb" src="../../assets/images/166_146_3.png" alt="">
 						</div>
 						<div class="weui-media-box__bd mine-info-media-box__bd">
-							<h4 class="weui-media-box__title mine-info-media-box__title">乘风破浪</h4>
+							<h4 class="weui-media-box__title mine-info-media-box__title">{{nikeName}}</h4>
 						</div>
 						<router-link to="/rule" class="">
 							<span class="weui-cell__ft">规则</span>
@@ -27,7 +27,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<!--卡片 -->
 			<div class="card-box">
 				<div class="box">
@@ -39,10 +39,10 @@
 						<li class="tixian-lock">已冻结{{freeze_amount}}</li>
 					</ul>
 					<!-- <router-link to="/extractMoney"> -->
-						<p @click='extractHash' class="tixian-btn">
-							<span>提现</span>
-							<img src="../../assets/images/arrows/ic_pay_arrow.png" alt="">
-						</p>
+					<p @click='extractHash' class="tixian-btn">
+						<span>提现</span>
+						<img src="../../assets/images/arrows/list－更多icon@1x.png" alt="">
+					</p>
 					<!-- </router-link> -->
 				</div>
 			</div>
@@ -87,6 +87,45 @@
 	</div>
 </template>
 <script>
+<<<<<<< .mine
+import { user_distribution } from "../../api/api.js";
+export default {
+    name: "recommend-f",
+    components: {},
+    data() {
+        return {
+            use_amount: "", //可提现
+            freeze_amount: "", //冻结金额
+            reward_amount: "", //累计金额
+            await_amount: "" //待领取
+        };
+    },
+    computed: {},
+    methods: {
+        extractHash() {
+            this.$router.push({
+                path: "/extractMoney?use_amount=" + this.use_amount
+            });
+        }
+    },
+    mounted() {
+        var param = {};
+        this.$http({
+            url: user_distribution,
+            method: "POST",
+            data: param
+        }).then(res => {
+            if (res.data.status == 1) {
+                this.await_amount = res.data.data.await_amount; //待领取
+                this.use_amount = res.data.data.use_amount; //可提现
+                this.freeze_amount = res.data.data.freeze_amount; //冻结金额
+                this.reward_amount = res.data.data.reward_amount; //累计金额
+            } else {
+            }
+        });
+    }
+};
+||||||| .r259
 	import {user_distribution} from '../../api/api.js';
  	export default {
 		name: "recommend-f",
@@ -130,163 +169,210 @@
 			});
 		}
 	};
+=======
+	import {user_distribution} from '../../api/api.js';
+ 	export default {
+		name: "recommend-f",
+		components: {
+
+		},
+		data(){
+			return{
+				use_amount:'',		//可提现
+				freeze_amount:'',	//冻结金额
+				reward_amount:'',	//累计金额
+				await_amount:'',	//待领取
+				nikeName:'',		//昵称
+			}
+		},
+		computed: {
+
+		},
+		methods: {
+			extractHash(){
+				this.$router.push({path:'/extractMoney?use_amount=' + this.use_amount});
+			}
+		},
+		mounted() {
+			//昵称
+			this.nikeName = this.$route.query.nikeName;
+			var param = {
+				
+			};
+			this.$http({
+				url:user_distribution,
+				method:'POST',
+				data:param
+			}).then((res)=>{
+				// console.log(res);
+				if(res.data.status == 1){
+					this.await_amount = res.data.data.await_amount;		//待领取
+					this.use_amount = res.data.data.use_amount;			//可提现
+					this.freeze_amount = res.data.data.freeze_amount;	//冻结金额
+					this.reward_amount = res.data.data.reward_amount;	//累计金额
+				}else{
+
+				}
+			});
+		}
+	};
+>>>>>>> .r260
 </script>
 <style lang="less" scoped>
-	.weui-media-box {
-		.weui-cell__ft {
-			padding-right: 15px;
-			font-size: 12px;
-			position: relative;
-			color: #333;
-			&:after {
-				content: " ";
-				display: inline-block;
-				height: 6px;
-				width: 6px;
-				border-width: 2px 2px 0 0;
-				border-color: #c8c8cd;
-				border-style: solid;
-				-webkit-transform: matrix(.71,.71,-.71,.71,0,0);
-				transform: matrix(.71,.71,-.71,.71,0,0);
-				position: relative;
-				top: -2px;
-				position: absolute;
-				top: 50%;
-				margin-top: -4px;
-				right: 2px;
-			}
-		}
-	}
+.weui-media-box {
+    .weui-cell__ft {
+        padding-right: 15px;
+        font-size: 12px;
+        position: relative;
+        color: #333;
+        &:after {
+            content: " ";
+            display: inline-block;
+            height: 6px;
+            width: 6px;
+            border-width: 2px 2px 0 0;
+            border-color: #c8c8cd;
+            border-style: solid;
+            -webkit-transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+            transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+            position: relative;
+            top: -2px;
+            position: absolute;
+            top: 50%;
+            margin-top: -4px;
+            right: 2px;
+        }
+    }
+}
 
-	.mine-info-media-box {	
-		.mine-info-media-box__hd {
-			width: 45px;
-			height: 45px;
-			border-radius: 50%; 
-			margin-right: 10px;
-			img{
-				width: 100%;
-				height: 100%;
-				border-radius: 50%;
-			}
-		}
-		.mine-info-media-box__bd{
-			.mine-info-media-box__title {
-				font-size: 14px;
-				color: #333333;
-			}
-		}
-	}
+.mine-info-media-box {
+    .mine-info-media-box__hd {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        margin-right: 10px;
+        img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+    }
+    .mine-info-media-box__bd {
+        .mine-info-media-box__title {
+            font-size: 14px;
+            color: #333333;
+        }
+    }
+}
 
-	// 卡片css
-	.card-box{
-		padding: 0 15px; 
-		margin-bottom: 50px;
-		.box {
-			padding: 20px 15px 0; 
-			height: 128px;
-			background: url(../../assets/images/distribution/bg_fenxiao.png) no-repeat center center;
-			background-size: 100% 128px;
-			position: relative;
-			border-radius:10px;
-			color: #fff;
-			// 提现标题
-			.tixian-title{
-				line-height: 14px;
-				font-size: 12px;
-				margin-bottom: 10px;
-			}
-			// 提现钱数
-			.tixian-num{
-				line-height: 24px;
-				font-size: 24px;
-				margin-bottom: 20px;
-				letter-spacing: 2px;
-			}
-			// 提现详情
-			.tixian-info{
-				height: 14px;
-				line-height: 14px;
-				font-size: 12px;
-				text-align: center;
-				.tixian-get {
-					float: left;
-				}
-				.tixian-lock {
-					float: right;
-				}
-			}
-			.tixian-btn{
-				position: absolute;
-				top: 31px;
-				right: 0;
-				width:52px;
-				height:22px;
-				line-height:22px;
-				background:linear-gradient(-93.8deg,rgba(255,208,139,1),rgba(255,255,255,0.37));
-				border-radius:11px 0px 0px 11px;
-				// text-align: center;
-				padding-left: 10px;
-				font-size: 10px;
-				img{
-					width: 5px;
-					height: 10px;
-					display: block;
-					position: absolute;
-					top: 50%;
-					transform: translateY(-50%);
-					right: 10px;
-				}
-				span{
-					font-size: 12px;
-					color: #fff;
-				}
-			}
+// 卡片css
+.card-box {
+    padding: 0 15px;
+    margin-bottom: 50px;
+    .box {
+        padding: 20px 15px 0;
+        height: 128px;
+        background: url(../../assets/images/distribution/bg_fenxiao.png)
+            no-repeat center center;
+        background-size: 100% 128px;
+        position: relative;
+        border-radius: 10px;
+        color: #fff;
+        // 提现标题
+        .tixian-title {
+            line-height: 14px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        // 提现钱数
+        .tixian-num {
+            line-height: 24px;
+            font-size: 24px;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+        // 提现详情
+        .tixian-info {
+            height: 14px;
+            line-height: 14px;
+            font-size: 12px;
+            text-align: center;
+            .tixian-get {
+                float: left;
+            }
+            .tixian-lock {
+                float: right;
+            }
+        }
+        .tixian-btn {
+            position: absolute;
+            top: 31px;
+            right: 0;
+            width: 52px;
+            height: 22px;
+            line-height: 22px;
+            background: linear-gradient(
+                -93.8deg,
+                rgba(255, 208, 139, 1),
+                rgba(255, 255, 255, 0.37)
+            );
+            border-radius: 11px 0px 0px 11px;
+            padding-left: 10px;
+            img {
+                width: 6px;
+                height: 9px;
+                display: block;
+                position: absolute;
+                top: 50%;
+                right: 7px;
+                margin-top: -3px;
+            }
+            span {
+                font-size: 12px;
+                color: #fff;
+            }
+        }
+    }
+}
 
-		}
+// 四宫格
+.square-box {
+    padding: 0 15px;
+    .square {
+        // height: 160px;
+        li {
+            float: left;
+            width: 50%;
+            height: 100px;
+            padding: 10px 0 0 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            img {
+                width: 44px;
+                height: 44px;
+                margin-bottom: 10px;
+            }
+            p {
+                text-align: center;
+                color: #666;
+                font-size: 12px;
+            }
+        }
+    }
+}
 
-	}
-	
-	// 四宫格
-	.square-box{
-		padding: 0 15px;
-		.square{
-			// height: 160px;
-			li {
-				float: left;
-				width: 50%;
-				height: 100px;
-				padding:  10px 0 0 0px;
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				img{
-					width: 44px;
-					height: 44px;
-					margin-bottom: 10px;
-				}
-				p{
-					text-align: center;
-					color: #666;
-					font-size: 12px;
-				}
-			}
-			
-			
-		}
-	}
-
-	.praise{
-		border-right: 1px solid #e5e5e5; 
-		border-bottom: 1px solid #e5e5e5; 
-	}
-	.pickCash{
-		border-bottom: 1px solid #e5e5e5; 
-	}
-	.qsPush{
-		border-right: 1px solid #e5e5e5; 
-	}
-	.helpFriend{
-		border:0;
-	}
+.praise {
+    border-right: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
+}
+.pickCash {
+    border-bottom: 1px solid #e5e5e5;
+}
+.qsPush {
+    border-right: 1px solid #e5e5e5;
+}
+.helpFriend {
+    border: 0;
+}
 </style>

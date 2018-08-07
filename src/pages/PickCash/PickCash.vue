@@ -2,7 +2,7 @@
 	<div class="pad-top44">
 		<!-- praise_head -->
         <ul class="praise_head col-666 pf bd-fff">
-            <li v-for='(item,index) in tabLists'  @click='tabsActive(item.b,index)'>
+            <li v-for='(item,index) in tabLists' :showIndex = 'index'  @click='tabsActive(item.b,index)'>
                 <span :class="{praise_active:index == classIndex}">{{item.a}}</span>
             </li>
         </ul>

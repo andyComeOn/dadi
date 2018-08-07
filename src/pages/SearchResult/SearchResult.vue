@@ -76,7 +76,7 @@ export default {
                 type: "", //正序、降序排列
                 longitude: "", // 经度
                 latitude: "", //维度
-                city: "1", //城市id
+                city: "", //城市id
                 px_rule: "", //排序（价格，距离）
                 name: "", //门店名称
                 begin: "", // 入住时间
@@ -143,6 +143,7 @@ export default {
             urlPara.liveoutMM +
             "-" +
             urlPara.liveoutDD;
+        this.watchObj.city = urlPara.cityid
     },
     mounted() {
         var param = this.watchObj;

@@ -8,10 +8,10 @@
                         <div class="lf">
                             <p class="hotel-name m-ellipsis">{{item.name}}</p>
                             <p class="room-type-date type m-ellipsis">{{item.room_name}}</p>
-                            <p class="room-type-date date">{{item.start_time|filterTime}} 至 {{item.end_time|filterTime}} {{item.occupancy_day_num}}天</p>
+                            <p class="room-type-date date">{{item.start_time|filterTime}} 至 {{item.end_time|filterTime}} 共{{item.occupancy_day_num}}天</p>
                         </div>
                         <div class="rg">
-                            <p class="order-status">已关闭</p>
+                            <p class="order-status"> {{item.status|filterStatus}} </p>
                             <p class="order-price">&yen; {{item.marker_amount}}</p>
                         </div>
                     </div>
@@ -19,10 +19,10 @@
                 <!-- 可操作按钮 -->
                 <!-- 按钮的名称:删除、再次预定、取消订单、申请退款 -->
                 <div class="ft">
-                    <span class="btn black">删除</span>
-                    <span class="btn grey">取消订单</span>
-                    <span class="btn orange">再次预定</span>
-                    <span class="btn mcolor" @click="applyMoney">申请退款</span>
+                    <span class="btn black" v-if="item.status==5">删除</span>
+                    <span class="btn grey" v-if="item.status==0">取消订单</span>
+                    <span class="btn mcolor" v-if="item.status==4" @click="applyMoney">申请退款</span>
+                    <span class="btn orange" v-show="!item.status==0">再次预定</span>
                 </div>
             </li>
         </ul>
@@ -65,6 +65,27 @@ export default {
         filterTime(a) {
             const index = a.indexOf("-");
             return a.slice(index + 1, index + 6);
+        },
+        filterStatus(b) {
+            if (b == 0) {
+                return "待付款";
+            } else if (b == 1 || b == 2) {
+                return "待入住";
+            } else if (b == 3) {
+                return "入住中";
+            } else if (b == 4) {
+                return "已完成";
+            } else if (b == 5) {
+                return "已完成";
+            } else if (b == 6) {
+                return "申请退款中";
+            } else if (b == 7) {
+                return "被拒单";
+            } else if (b == 8) {
+                return "已取消";
+            } else {
+                return "退款结束";
+            }
         }
     },
     methods: {

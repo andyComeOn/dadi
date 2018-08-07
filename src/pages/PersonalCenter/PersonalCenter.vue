@@ -9,21 +9,21 @@
 				<span>昵称</span>
 				<span class='nickName'>{{nickname}}</span>
 			</li>
-			<li id="datePicker" @click='birthdayWin'>
+			<li id="datePicker pr" class="center_li" @click='birthdayWin'>
 				<span>生日</span>
 				<span class="center_date">{{birthdayNum}}</span>
-				<img src="" />
+				<img class="pa" src="../../assets/images/arrows/list－更多icon@1x.png" />
 			</li>
-			<li id="sexPrice" @click="sexChoose">
+			<li id="sexPrice" class="center_li" @click="sexChoose">
 				<span>性别</span>
 				<span v-if="this.sex == 1" class="center_date">男</span>
 				<span v-if="this.sex == 2" class="center_date">女</span>
-				<img src="" />
+				<img class="pa" src="../../assets/images/arrows/list－更多icon@1x.png" />
 			</li>
-			<li class="border0" @click="oldMobile">
+			<li class="border0 center_li" @click="oldMobile">
 				<span>手机号</span>
 				<span class="center_date">{{mobile}}</span>
-				<img src="" />
+				<img class="pa" src="../../assets/images/arrows/list－更多icon@1x.png" />
 			</li>
 		</ul>
 	</div>
@@ -75,7 +75,7 @@
                     },{
                         label: '女'
                     }], {
-                        onChange: function (result) {
+						onChange: function (result) {
                             console.log(result);
                             // console.log('改变');
                         },
@@ -157,5 +157,15 @@
 	}
 	.center_lists .border0{
 		border:0;
+	}
+	.center_li{
+		position: relative;
+	}
+	.center_li img{
+		width: 10px;
+		height: 16px;
+		top: 50%;
+		right: 15px;
+		margin-top: -8px;
 	}
 </style>

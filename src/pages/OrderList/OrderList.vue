@@ -1,16 +1,15 @@
 <template>
     <div class="order-list-page m-position-ab">
         <div class="head">
-            <div class="ing" @click="tab(0,'ing')" :class="{active:isActive===0}">
+            <div class="ing" @click="tab(1,'ing')" :class="{active:isActive===1}">
                 进行中
             </div>
-            <div class="done" @click="tab(5,'done')" :class="{active:isActive===5}">
+            <div class="done" @click="tab(2,'done')" :class="{active:isActive===2}">
                 已关闭
             </div>
         </div>
         <div class="body">
-            <OrderListItem 
-                :condition="watchObj">
+            <OrderListItem :condition="watchObj">
             </OrderListItem>
         </div>
     </div>
@@ -26,20 +25,19 @@ export default {
     },
     data() {
         return {
-            select: "ing",
             isActive: 0,
             watchObj: {
-                status: "", // 订单状态
+                type: "", // 订单状态区分
                 pay_status: "" //支付状态
             }
         };
     },
     created() {
         let urlPara = this.$route.query.status;
-        if (urlPara=="ing"){
-            this.tab(0,"ing");
-        } else{
-            this.tab(5,"done");
+        if (urlPara == "ing") {
+            this.tab(1);
+        } else {
+            this.tab(2);
         }
     },
     methods: {
@@ -49,13 +47,9 @@ export default {
                 path: "/applyMoney"
             });
         },
-        tab(index, type) {
+        tab(index) {
             this.isActive = index;
-            if (index == 0) {
-                this.watchObj.status = "";
-            } else {
-                this.watchObj.status = index;
-            }
+            this.watchObj.type = index;
         }
     }
 };
@@ -77,7 +71,5 @@ export default {
             color: #30b097;
         }
     }
-}
-.body {
 }
 </style>
