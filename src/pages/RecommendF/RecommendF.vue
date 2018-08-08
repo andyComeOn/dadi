@@ -87,89 +87,7 @@
 	</div>
 </template>
 <script>
-<<<<<<< .mine
-import { user_distribution } from "../../api/api.js";
-export default {
-    name: "recommend-f",
-    components: {},
-    data() {
-        return {
-            use_amount: "", //可提现
-            freeze_amount: "", //冻结金额
-            reward_amount: "", //累计金额
-            await_amount: "" //待领取
-        };
-    },
-    computed: {},
-    methods: {
-        extractHash() {
-            this.$router.push({
-                path: "/extractMoney?use_amount=" + this.use_amount
-            });
-        }
-    },
-    mounted() {
-        var param = {};
-        this.$http({
-            url: user_distribution,
-            method: "POST",
-            data: param
-        }).then(res => {
-            if (res.data.status == 1) {
-                this.await_amount = res.data.data.await_amount; //待领取
-                this.use_amount = res.data.data.use_amount; //可提现
-                this.freeze_amount = res.data.data.freeze_amount; //冻结金额
-                this.reward_amount = res.data.data.reward_amount; //累计金额
-            } else {
-            }
-        });
-    }
-};
-||||||| .r259
-	import {user_distribution} from '../../api/api.js';
- 	export default {
-		name: "recommend-f",
-		components: {
 
-		},
-		data(){
-			return{
-				use_amount:'',		//可提现
-				freeze_amount:'',	//冻结金额
-				reward_amount:'',	//累计金额
-				await_amount:''		//待领取
-			}
-		},
-		computed: {
-
-		},
-		methods: {
-			extractHash(){
-				this.$router.push({path:'/extractMoney?use_amount=' + this.use_amount});
-			}
-		},
-		mounted() {
-			var param = {
-				
-			};
-			this.$http({
-				url:user_distribution,
-				method:'POST',
-				data:param
-			}).then((res)=>{
-				// console.log(res);
-				if(res.data.status == 1){
-					this.await_amount = res.data.data.await_amount;		//待领取
-					this.use_amount = res.data.data.use_amount;			//可提现
-					this.freeze_amount = res.data.data.freeze_amount;	//冻结金额
-					this.reward_amount = res.data.data.reward_amount;	//累计金额
-				}else{
-
-				}
-			});
-		}
-	};
-=======
 	import {user_distribution} from '../../api/api.js';
  	export default {
 		name: "recommend-f",
@@ -216,7 +134,7 @@ export default {
 			});
 		}
 	};
->>>>>>> .r260
+
 </script>
 <style lang="less" scoped>
 .weui-media-box {
