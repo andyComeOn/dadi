@@ -45,8 +45,7 @@ Vue.use(MuseUI);
 
 // 获取cookie
 let mycookie = getCookie('auth_user_1');
-
-// console.log(mycookie);
+console.log(mycookie);
 
 // 获取参数的cpid
 let CPID = getUrlParam('cpid');

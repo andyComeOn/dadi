@@ -77,16 +77,12 @@
                         <!-- ../assets/images/img/room.png -->
                         <img :src="item.room_img" alt="">
                     </div>
-
                     <!-- 中间 -->
                     <div class="md">
                         <!-- 大标题 -->
-                        <p class="name m-ellipsis">商务间{{item.name}}</p>
+                        <p class="name m-ellipsis">{{item.name}}</p>
                         <!-- 酒店设施集合 -->
                         <div class="labels">
-                            <!-- <span>18平</span>
-                            <span>大床房</span>
-                            <span>大浴缸</span> -->
                             {{item.introduce}}
                         </div>
                         <!-- 价格（新、旧） -->
@@ -116,8 +112,8 @@ import {
     add_collect,
     order_form
 } from "@/api/api";
-import { dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
 import { getCookie } from "@/utils/util";
+import { f, dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
 // import { getCookie, setCookie, getUrlParam } from '@/utils/util';
 import Calendar from "@/components/calendar/calendar.vue"; // 引入日历组件
 import { swiper, swiperSlide } from "vue-awesome-swiper"; // 引入swipe组件
@@ -169,7 +165,6 @@ export default {
 
             // 日历组件dialog是否显示
             zbCalendarVisible: false,
-
             // 初始化日历日期
             zbInitCalendar: {
                 start: {
@@ -192,21 +187,37 @@ export default {
             begin: this.$route.query.begin,
             finish: this.$route.query.finish
         };
+        // 如果从订单列表页的“再次预定”按钮过来只带store_id参数，无begin、finish参数
+        if(routePara.begin==undefined||routePara.finish==undefined){
+            var d = new Date();
+            var dd = new Date();
+            dd.setDate(dd.getDate() + 1); 
+            this.watchObj.begin = f(d).yyyy+"-"+f(d).mm+"-"+f(d).dd;
+            this.watchObj.finish = f(dd).yyyy+"-"+f(dd).mm+"-"+f(dd).dd;
+            this.watchObj.store_id = routePara.store_id;
+            this.zbInitCalendar.start.yyyy = f(d).yyyy;
+            this.zbInitCalendar.start.mm = f(d).mm;
+            this.zbInitCalendar.start.dd = f(d).dd;
+            this.zbInitCalendar.end.yyyy = f(dd).yyyy;
+            this.zbInitCalendar.end.mm = f(dd).mm;
+            this.zbInitCalendar.end.dd = f(dd).dd;
 
-        // 给date()中监听数据进行赋值
-        this.watchObj.store_id = routePara.store_id;
-        this.watchObj.begin = routePara.begin;
-        this.watchObj.finish = routePara.finish;
-
-        // 初始化日历中的值
-        let beginArr = routePara.begin.split("-");
-        let endArr = routePara.finish.split("-");
-        this.zbInitCalendar.start.yyyy = beginArr[0];
-        this.zbInitCalendar.start.mm = beginArr[1];
-        this.zbInitCalendar.start.dd = beginArr[2];
-        this.zbInitCalendar.end.yyyy = endArr[0];
-        this.zbInitCalendar.end.mm = endArr[1];
-        this.zbInitCalendar.end.dd = endArr[2];
+        } else {
+            // 给date()中监听数据进行赋值
+            this.watchObj.store_id = routePara.store_id;
+            this.watchObj.begin = routePara.begin;
+            this.watchObj.finish = routePara.finish;
+            // 初始化日历中的值
+            let beginArr = routePara.begin.split("-");
+            let endArr = routePara.finish.split("-");
+            this.zbInitCalendar.start.yyyy = beginArr[0];
+            this.zbInitCalendar.start.mm = beginArr[1];
+            this.zbInitCalendar.start.dd = beginArr[2];
+            this.zbInitCalendar.end.yyyy = endArr[0];
+            this.zbInitCalendar.end.mm = endArr[1];
+            this.zbInitCalendar.end.dd = endArr[2];
+        }
+        
 
         // 拉取数据
         this.fetchData(this.watchObj);
@@ -247,7 +258,6 @@ export default {
                 }
             });
         },
-
         // 拉取门店详情
         fetchData(param) {
             this.$http({
@@ -364,7 +374,6 @@ export default {
 <style lang="less" scoped>
 .banner {
     position: relative;
-
     .collect {
         width: 32px;
         height: 32px;

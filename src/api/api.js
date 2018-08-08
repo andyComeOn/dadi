@@ -98,6 +98,12 @@ export const create_order = '/api/Order/create_order?cpid=' + GlobalCpid;  //生
 
 export const order_list = '/api/Order/order_list?cpid=' + GlobalCpid;  //生成订单
 
+export const cancel_orderform = '/api/Order/cancel_orderform?cpid=' + GlobalCpid;  //取消订单
+
+export const delete_order = '/api/Order/delete_order?cpid=' + GlobalCpid;  //删除订单
+
+
+
 
 
 

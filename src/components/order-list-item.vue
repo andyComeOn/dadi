@@ -19,10 +19,10 @@
                 <!-- 可操作按钮 -->
                 <!-- 按钮的名称:删除、再次预定、取消订单、申请退款 -->
                 <div class="ft">
-                    <span class="btn black" v-if="item.status==5">删除</span>
-                    <span class="btn grey" v-if="item.status==0">取消订单</span>
+                    <span class="btn black" v-if="item.status==5" @click="del(item.id)">删除</span>
+                    <span class="btn grey" v-if="item.status==0" @click="cancal(item.id,item.status)">取消订单</span>
                     <span class="btn mcolor" v-if="item.status==4" @click="applyMoney">申请退款</span>
-                    <span class="btn orange" v-show="!item.status==0">再次预定</span>
+                    <span class="btn orange" v-show="!item.status==0" @click="reOrder(item.store_id)">再次预定</span>
                 </div>
             </li>
         </ul>
@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { order_list } from "@/api/api";
+import { order_list, cancel_orderform, delete_order } from "@/api/api";
 export default {
     name: "order-list-item",
     props: ["condition"],
@@ -99,7 +99,6 @@ export default {
                     this.list = res.data.data;
                 } else {
                     this.list = [];
-                    // this.isShow = true;
                 }
             });
         },
@@ -107,6 +106,50 @@ export default {
         // 申请退款
         applyMoney() {
             this.$emit("applyMoneyEmit");
+        },
+        // 取消订单
+        cancal(order_id, status) {
+            this.$http({
+                method: "POST",
+                url: cancel_orderform,
+                data: {
+                    order_id: order_id,
+                    status: status
+                }
+            })
+                .then(res => {
+                    if (res.data.status == 1) {
+                        window.location.href = window.location.href;
+                    }
+                    // console.log(res);
+                })
+                .catch();
+        },
+        // 再次预定
+        reOrder(store_id) {
+            this.$router.push({
+                path: "/hotelDetail",
+                query: {
+                    store_id: store_id
+                }
+            });
+        },
+        // 删除订单（假）
+        del(order_id) {
+            this.$http({
+                method: "POST",
+                url: delete_order,
+                data: {
+                    order_id: order_id
+                }
+            })
+                .then(res => {
+                    if (res.data.status == 1) {
+                        console.log(res);
+                    }
+                    
+                })
+                .catch(err => {});
         }
     }
 };

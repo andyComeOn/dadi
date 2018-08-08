@@ -3,7 +3,7 @@ export function f(para){
 	var d = para;
 	var yyyy = d.getFullYear();
 	var mm = d.getMonth() + 1 < 10 ? '0' + (d.getMonth() + 1): d.getMonth() + 1;
-	var dd = d.getDate() + 1 < 10 ? '0' + d.getDate() : d.getDate(); 
+	var dd = d.getDate() < 10 ? '0' + d.getDate() : d.getDate(); 
 	var hh = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
 	var MM = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
 	var ss = d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds();

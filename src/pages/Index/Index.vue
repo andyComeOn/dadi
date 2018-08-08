@@ -188,7 +188,6 @@ export default {
                 url: oauth,
                 data: param
             }).then(res => {
-                console.log(res.data.data);
                 if (res.data.data != "") {
                     window.location.href = res.data.data;
                 }
