@@ -3,7 +3,7 @@
         <ul class="list" v-if="list.length>0">
             <li v-for="(item,index) in list" :key="index">
                 <!-- 主信息 -->
-                <router-link to="orderDetail" tag="span">
+                <router-link :to="{path:'orderDetail', query:{order_id:item.id}}" tag="span">
                     <div class="bd">
                         <div class="lf">
                             <p class="hotel-name m-ellipsis">{{item.name}}</p>
@@ -11,7 +11,7 @@
                             <p class="room-type-date date">{{item.start_time|filterTime}} 至 {{item.end_time|filterTime}} 共{{item.occupancy_day_num}}天</p>
                         </div>
                         <div class="rg">
-                            <p class="order-status"> {{item.status|filterStatus}} </p>
+                            <p class="order-status" v-html="$options.filters.filterStatus(item.status)"></p>
                             <p class="order-price">&yen; {{item.marker_amount}}</p>
                         </div>
                     </div>
@@ -28,7 +28,15 @@
         </ul>
         <div v-else class="no-order">
             <img src="../assets/images/404/404-no-order.png" alt="">
-            <p>暂无订单</p>
+            <p>{{noOrderStatusTxt}}</p>
+        </div>
+        <!-- toast提示 -->
+        <div id="orderListToast" v-show="isOrderListToastVisible">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-loading weui-icon_toast"></i>
+                <p class="weui-toast__content">数据加载中</p>
+            </div>
         </div>
     </div>
 </template>
@@ -41,11 +49,12 @@ export default {
     watch: {
         condition: {
             handler(newValue, oldValue) {
-                // if (newValue.status == 5) {
-                //     this.noOrderStatusTxt = "暂无已关闭订单";
-                // } else {
-                //     this.noOrderStatusTxt = "暂无进行中订单";
-                // }
+                if (newValue.status == 2) {
+                    this.noOrderStatusTxt = "暂无已关闭订单";
+                } else {
+                    this.noOrderStatusTxt = "暂无进行中订单";
+                }
+                this.isOrderListToastVisible = true;
                 this.fetchData(newValue);
             },
             deep: true,
@@ -56,7 +65,7 @@ export default {
         return {
             list: [],
             noOrderStatusTxt: "",
-            isShow: false
+            isOrderListToastVisible: false
         };
     },
     created() {},
@@ -72,7 +81,7 @@ export default {
             } else if (b == 1 || b == 2) {
                 return "待入住";
             } else if (b == 3) {
-                return "入住中";
+                return '<span style="color:#30B097">入住中</span>';
             } else if (b == 4) {
                 return "已完成";
             } else if (b == 5) {
@@ -95,10 +104,12 @@ export default {
                 url: order_list,
                 data: param
             }).then(res => {
+                this.isOrderListToastVisible = false;
                 if (res.data.status == 1) {
                     this.list = res.data.data;
-                } else {
+                } else if (res.data.status == -3) {
                     this.list = [];
+                } else {
                 }
             });
         },
@@ -147,10 +158,11 @@ export default {
                     if (res.data.status == 1) {
                         console.log(res);
                     }
-                    
                 })
                 .catch(err => {});
-        }
+        },
+        
+
     }
 };
 </script>

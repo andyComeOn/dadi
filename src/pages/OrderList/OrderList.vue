@@ -17,7 +17,6 @@
 
 <script>
 import OrderListItem from "@/components/order-list-item";
-
 export default {
     name: "order-list",
     components: {
@@ -29,7 +28,7 @@ export default {
             watchObj: {
                 type: "", // 订单状态区分
                 pay_status: "" //支付状态
-            }
+            },
         };
     },
     created() {

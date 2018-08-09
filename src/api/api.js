@@ -58,7 +58,7 @@ export const coupon_list = '/api/Coupon/coupon_list' // 优惠卷列表
 
 export const del_coupon = '/api/Coupon/del_coupon' // 优惠卷过期删除（后台）
 
-export const collect_list = '/api/User/collect_list' // 用户收藏列表
+export const collect_list = '/api/User/collect_list?cpid=' + GlobalCpid // 用户收藏列表
 
 export const add_collect = '/api/User/add_collect?cpid=' + GlobalCpid // 添加收藏
 
@@ -73,6 +73,7 @@ export const history_list = '/api/User/history_list' // 浏览历史列表
 export const history_del = '/api/User/history_del' // 删除浏览历史
 
 export const my_comment = '/api/Comment/my_comment' // 我的点评（二期）
+
 
 
 // 分销相关
@@ -101,6 +102,9 @@ export const order_list = '/api/Order/order_list?cpid=' + GlobalCpid;  //生成�
 export const cancel_orderform = '/api/Order/cancel_orderform?cpid=' + GlobalCpid;  //取消订单
 
 export const delete_order = '/api/Order/delete_order?cpid=' + GlobalCpid;  //删除订单
+
+export const order_detail = 'api/Order/order_detail?cpid=' + GlobalCpid;  //订单详情
+
 
 
 

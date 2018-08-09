@@ -2,10 +2,9 @@
     <div class="my-collect-page m-position-ab">
         <ul class="list">
             <li>
-                <div class="head">7月|2018年 </div>
+                <div class="head">7月 | 2018年 </div>
                 <div class="body">
                     <div class="body-box">
-
                         <div class="lf">
                             <!-- <img :src="item.img_logo" alt=""> -->
                             <!-- :src="item.img_logo" -->
@@ -49,26 +48,52 @@
 
 <script>
 // import City from "@/components/city/city.vue";
+import { collect_list } from "@/api/api";
 export default {
     name: "my-collect",
     components: {
         // City
     },
     data() {
-        return {};
+        return {
+            data: [
+                {
+                    mm: "6月",
+                    list: [{}, {}]
+                },
+                {
+                    mm: "7月",
+                    list: [{}, {}]
+                }
+            ]
+        };
     },
-    methods: {}
+    mounted() {
+        this.fetchData();
+    },
+    methods: {
+        fetchData() {
+            this.$http({
+                method: "POST",
+                url: collect_list,
+                data: {}
+            })
+                .then(res => {
+                    console.log(res);
+                })
+                .catch(err => {});
+        }
+    }
 };
 </script>
 
 
 <style lang="less" scoped>
 .list {
-    // padding: 8px 15px 0;
-
     li {
         .head {
-            height: 30px;
+            line-height: 30px;
+            padding-left: 15px;
         }
         .body {
             padding: 0 15px;

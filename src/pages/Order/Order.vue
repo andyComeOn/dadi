@@ -500,7 +500,6 @@ export default {
 
 <style lang="less" scoped>
 // 重置weui样式
-
 .zb-weui-mask {
     background: rgba(0, 0, 0, 0.45);
 }
@@ -513,7 +512,6 @@ export default {
 .weui-actionsheet_no_toggle_active {
     opacity: 1;
 }
-
 // 这是弹框的title
 .zb-weui-actionsheet__title {
     height: auto;
@@ -526,7 +524,6 @@ export default {
         font-size: 16px;
     }
 }
-
 // 这是弹框的内容
 .zb-actionsheet__bd {
     height: 55px;
@@ -605,7 +602,7 @@ export default {
         background: #eff1f0;
         .detail-wrapper {
             padding: 15px;
-            background: url("../../assets/images/bg/bg_order_page.png") repeat-x
+            background: url("../../assets/images/bg/bg_order_page.png") repeat-x 
                 center;
             .name {
                 font-size: 16px;
@@ -795,16 +792,17 @@ export default {
                 float: left;
             }
             .arrow {
-                width: 33px;
+                width: 36px;
                 height: 49px;
                 line-height: 49px;
                 text-align: center;
                 float: right;
                 padding: 0 10px;
+                font-size:0; 
                 img {
                     display: inline-block;
-                    width: 13px;
-                    height: 7px;
+                    width: 16px;
+                    height: 16px;
                 }
             }
         }

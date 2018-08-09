@@ -66,6 +66,8 @@ import HelpFriend from '../pages/HelpFriend/HelpFriend'
 import extractMoney from '../pages/extractMoney/extractMoney'
 // 提现
 import extractCheck from '../pages/extractCheck/extractCheck'
+//在线支付
+import onlinePay from '../pages/onlinePay/onlinePay.vue'
 
 
 
@@ -77,92 +79,137 @@ export default new Router({
 		{
 			path: '/index',
 			name: 'index',
-			component: Index
+			component: Index,
+			meta:{
+				title:'秋果酒店'
+			}
 		},
 		// 搜素结果页
 		{
 			path: '/searchResult',
 			name: 'searchResult',
-			component: SearchResult
+			component: SearchResult,
+			meta:{
+				title:'秋果酒店'
+			}
 		},
 		// 酒店详情页
 		{
 			path: '/hotelDetail',
 			name: 'hotelDetail',
-			component: HotelDetail
+			component: HotelDetail,
+			meta:{
+				title:'酒店详情'
+			}
 		},
 		// 酒店详情页-查看更多酒店标签
 		{
 			path: '/hotelLabel',
 			name: 'hotelLabel',
-			component: HotelLabel
+			component: HotelLabel,
+			meta:{
+				title:'酒店设施'
+			}
 		},
 		// 酒店详情-banner-点击之后跳转到酒店图片集和页
 		{
 			path: '/hotelDetailBannerLink',
 			name: 'hotelDetailBannerLink',
-			component: HotelDetailBannerLink
+			component: HotelDetailBannerLink,
+			meta:{
+				title:'酒店图片'
+			}
 		},
 		// 附近的酒店
 		{
 			path: '/nearby',
 			name: 'nearby',
-			component: Nearby
+			component: Nearby,
+			meta:{
+				title:'附近的酒店'
+			}
 		},
 		// 订单页
 		{
 			path: '/order',
 			name: 'order',
-			component: Order
+			component: Order,
+			meta:{
+				title:'订单填写'
+			}
 		},
 		// 订单的列表页
 		{
 			path: '/orderList',
 			name: 'orderList',
-			component: OrderList
+			component: OrderList,
+			meta:{
+				title:'订单'
+			}
 		},
 
 		// 订单的列表页中每条订单的详情页
 		{
 			path: '/orderDetail',
 			name: 'orderDetail',
-			component: OrderDetail
+			component: OrderDetail,
+			meta:{
+				title:'订单详情'
+			}
 		},
 		// 我的
 		{
 			path: '/mine',
 			name: 'mine',
-			component: Mine
+			component: Mine,
+			meta:{
+				title:'我的'
+			}
 		},
 		//个人中心
 		{
 			path: '/personalCenter',
 			name: 'personalCenter',
-			component: PersonalCenter
+			component: PersonalCenter,
+			meta:{
+				title:'个人中心'
+			}
 		},
 		//推荐好友
 		{
 			path: '/recommendF',
 			name: 'recommendF',
-			component: RecommendF
+			component: RecommendF,
+			meta:{
+				title:'邀请好友'
+			}
 		},
 		//我的优惠券
 		{
 			path: '/myCoupon',
 			name: 'myCoupon',
-			component: MyCoupon
+			component: MyCoupon,
+			meta:{
+				title:'优惠券'
+			}
 		},
 		//我的积分
 		{
 			path: '/myPoint',
 			name: 'myPoint',
-			component: MyPoint
+			component: MyPoint,
+			meta:{
+				title:'积分明细'
+			}
 		},
 		//我的收藏
 		{
 			path: '/myCollect',
 			name: 'myCollect',
-			component: MyCollect
+			component: MyCollect,
+			meta:{
+				title:'我的收藏'
+			}
 		},
 		//会员特权
 		{
@@ -174,80 +221,122 @@ export default new Router({
 		{
 			path: '/helpCenter',
 			name: 'helpCenter',
-			component: HelpCenter
+			component: HelpCenter,
+			meta:{
+				title:'帮助中心'
+			}
 		},
 		// 推荐好友-规则
 		{
 			path: '/rule',
 			name: 'rule',
-			component: Rule
+			component: Rule,
+			meta:{
+				title:'规则'
+			}
 		},
 
 		// 推荐好友-点我推广
 		{
 			path: '/qsPush',
 			name: 'qsPush',
-			component: QSPush
+			component: QSPush,
+			meta:{
+				title:'二维码'
+			}
 		},
 
 		// 推荐好友-奖励明细
 		{
 			path: '/praise',
 			name: 'praise',
-			component: Praise
+			component: Praise,
+			meta:{
+				title:'奖励明细'
+			}
 		},
 
 		// 推荐好友-助力好友
 		{
 			path: '/helpFriend',
 			name: 'helpFriend',
-			component: HelpFriend
+			component: HelpFriend,
+			meta:{
+				title:'助力好友'
+			}
 		},
 		// 推荐好友-提现明细
 		{
 			path: '/pickCash',
 			name: 'pickCash',
-			component: PickCash
+			component: PickCash,
+			meta:{
+				title:'提现明细'
+			}
 		},
 		//提现
 		{
 			path:'/extractMoney',
 			name:'extractMoney',
-			component:extractMoney
+			component:extractMoney,
+			meta:{
+				title:'奖励提现'
+			}
 		},
 		//提现审核
 		{
 			path:'/extractCheck',
 			name:'extractCheck',
-			component:extractCheck
+			component:extractCheck,
+			meta:{
+				title:'奖励提现'
+			}
 		},
-
-
-
+		//在线支付
+		{
+			path:'/onlinePay',
+			name:'onlinePay',
+			component:onlinePay,
+			meta:{
+				title:'在线支付'
+			}
+		},
 		// 订单列表页的申请退款按钮-跳的页面
 		{
 			path: '/applyMoney',
 			name: 'applyMoney',
-			component: ApplyMoney
+			component: ApplyMoney,
+			meta:{
+				title:'申请退款'
+			}
 		},
 		// 更改原手机号
 		{
 			path: '/oldPhoneNum',
 			name: 'oldPhoneNum',
-			component: OldPhoneNum
+			component: OldPhoneNum,
+			meta:{
+				title:'手机号'
+			}
 		},
 		// 提交新手机号
 		{
 			path: '/newPhoneNum',
 			name: 'newPhoneNum',
-			component: NewPhoneNum
+			component: NewPhoneNum,
+			meta:{
+				title:'手机号'
+			}
 		},
 
 		// 登录
 		{
 			path: '/login',
 			name: 'login',
-			component: Login
+			component: Login,
+			meta:{
+				title:'登录'
+			}
 		},
 		{
 			path: '/error',

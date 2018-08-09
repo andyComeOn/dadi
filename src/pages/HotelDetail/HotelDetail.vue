@@ -1,111 +1,128 @@
 <template>
     <div class="hotel-detail">
-        <!-- 广告 -->
-        <div class="banner">
-            <swiper class="zb-swiper" :options="swiperOption" ref="mySwiper" @someSwiperEvent="swiperCallback(1)">
-                <swiper-slide v-for="item in bannerList" :key="item.id" @click="swiperSlideFun(item.id)">
-                    <router-link :to="{path:'hotelDetailBannerLink',query:{store_id:watchObj.store_id}}" class="hotel-detail-banner-link">
-                        <img :src="item.img" alt="">
-                    </router-link>
-                </swiper-slide>
-                <div class="swiper-pagination" slot="pagination"></div>
-            </swiper>
-            <div class="collect" @click="addCollect">
-                <img v-if="is_collect==1" :src="collectIconActive" alt="">
-                <img v-if="is_collect==0" :src="collectIconNoActive" alt="">
+        <div class="main">
+            <!-- 广告 -->
+            <div class="banner-box">
+                <!-- <div class="banner"> -->
+                <swiper class="zb-swiper" :options="swiperOption" ref="mySwiper" @someSwiperEvent="swiperCallback(1)">
+                    <swiper-slide v-for="item in bannerList" :key="item.id" @click="swiperSlideFun(item.id)">
+                        <router-link :to="{path:'hotelDetailBannerLink',query:{store_id:watchObj.store_id}}" class="hotel-detail-banner-link">
+                            <img :src="item.img" alt="">
+                        </router-link>
+                    </swiper-slide>
+                    <div class="swiper-pagination" slot="pagination"></div>
+                </swiper>
+                <!-- </div> -->
+
+                <!-- <div class="swiper-container"> -->
+                    <!-- <div class="swiper-wrapper"> -->
+                        
+                        <!-- <div class="swiper-slide" v-for="item in bannerList" :key="item.id">
+                            <img :src="item.img" alt="">
+                        </div> -->
+
+                    <!-- </div> -->
+                    <!-- <div class="swiper-pagination"></div> -->
+
+                <!-- </div> -->
+
+                <!-- <div class="collect" @click="addCollect">
+                    <img v-if="is_collect==1" :src="collectIconActive" alt="">
+                    <img v-if="is_collect==0" :src="collectIcon" alt="">
+                </div> -->
             </div>
-        </div>
-
-        <!-- 酒店位置说明 -->
-        <div class="detail">
-            <div class="name">{{data_store.store_name}}</div>
-            <ul class="location-wrapper">
-                <li class="location">{{data_store.address}}</li>
-                <li class="location-info"> {{data_store.introduce}}</li>
-            </ul>
-        </div>
-
-        <!-- 酒店详情查看更多 -->
-        <div class="detail-more-container">
-            <div class="detail-more-wrapper">
-                <div class="lf">
-                    <span class="wifi">免费wifi</span>
-                    <span class="luggage">免费行李寄存</span>
-                </div>
-                <div class="rg">
-                    <router-link :to=" { path: 'hotelLabel', query: { store_id: watchObj.store_id }}" tag="div">
-                        <span class="btn-more">查看更多</span>
-                    </router-link>
-                </div>
+            <!-- 酒店位置说明 -->
+            <div class="detail">
+                <div class="name">{{data_store.store_name}}</div>
+                <ul class="location-wrapper">
+                    <li class="location">{{data_store.address}}</li>
+                    <li class="location-info"> {{data_store.introduce}}</li>
+                </ul>
             </div>
-        </div>
 
-        <!-- 入离时间展示 -->
-        <div class="come-go-box">
-            <div class="come-go">
-                <div class="come" @click="triggerCalendar">
-                    <span>入住</span>
-                    <span>{{zbInitCalendar.start.mm}}月{{zbInitCalendar.start.dd}}日</span>
-                </div>
-                <span class="total">
-                    共{{count}}晚
-                </span>
-
-                <div class="go" @click="triggerCalendar">
-                    <span>离店</span>
-                    <span>{{zbInitCalendar.end.mm}}月{{zbInitCalendar.end.dd}}日</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- 日历组件dialog -->
-        <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbCalendarVisible">
-            <Calendar ref="Calendar" :markDateMore="zbInitCalendar" @isToday="clickToday" @calendarTitleBackEmit="calendarTitleBackEmitFun">
-            </Calendar>
-        </mu-dialog>
-
-        <!-- 预定组件 -->
-        <!-- <reserveItem
-			:condition="watchObj">
-		</reserveItem> -->
-
-        <div class="reverse-wrapper">
-            <ul class="list">
-                <li v-for="(item,index) in data_room" :key="index">
-                    <!-- 左边图片展示 -->
+            <!-- 酒店详情查看更多 -->
+            <div class="detail-more-container">
+                <div class="detail-more-wrapper">
                     <div class="lf">
-                        <!-- ../assets/images/img/room.png -->
-                        <img :src="item.room_img" alt="">
+                        <span class="wifi">免费wifi</span>
+                        <span class="luggage">免费行李寄存</span>
                     </div>
-                    <!-- 中间 -->
-                    <div class="md">
-                        <!-- 大标题 -->
-                        <p class="name m-ellipsis">{{item.name}}</p>
-                        <!-- 酒店设施集合 -->
-                        <div class="labels">
-                            {{item.introduce}}
-                        </div>
-                        <!-- 价格（新、旧） -->
-                        <div class="price">
-                            <span class="price-new">&yen;{{item.discount_price}}</span>
-                            <span class="price-old">&yen;{{item.market_amount}}</span>
-                        </div>
-                    </div>
-                    <!-- 右侧预定按钮 -->
                     <div class="rg">
-                        <span class="book" @click="bookFun(item.is, item.store_id,item.id, begin, finish)">
-                            预订
-                        </span>
+                        <router-link :to=" { path: 'hotelLabel', query: { store_id: watchObj.store_id }}" tag="div">
+                            <span class="btn-more">查看更多</span>
+                        </router-link>
                     </div>
-                </li>
-            </ul>
-        </div>
+                </div>
+            </div>
 
+            <!-- 入离时间展示 -->
+            <div class="come-go-box">
+                <div class="come-go">
+                    <div class="come" @click="triggerCalendar">
+                        <span>入住</span>
+                        <span>{{zbInitCalendar.start.mm}}月{{zbInitCalendar.start.dd}}日</span>
+                    </div>
+                    <span class="total">
+                        共{{count}}晚
+                    </span>
+
+                    <div class="go" @click="triggerCalendar">
+                        <span>离店</span>
+                        <span>{{zbInitCalendar.end.mm}}月{{zbInitCalendar.end.dd}}日</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 日历组件dialog -->
+            <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbCalendarVisible">
+                <Calendar ref="Calendar" :markDateMore="zbInitCalendar" @isToday="clickToday" @calendarTitleBackEmit="calendarTitleBackEmitFun">
+                </Calendar>
+            </mu-dialog>
+
+            <!-- 预定组件 -->
+            <!-- <reserveItem
+			:condition="watchObj">
+		    </reserveItem> -->
+
+            <div class="reverse-wrapper">
+                <ul class="list">
+                    <li v-for="(item,index) in data_room" :key="index">
+                        <!-- 左边图片展示 -->
+                        <div class="lf">
+                            <!-- ../assets/images/img/room.png -->
+                            <img :src="item.room_img" alt="">
+                        </div>
+                        <!-- 中间 -->
+                        <div class="md">
+                            <!-- 大标题 -->
+                            <p class="name m-ellipsis">{{item.name}}</p>
+                            <!-- 酒店设施集合 -->
+                            <div class="labels">
+                                {{item.introduce}}
+                            </div>
+                            <!-- 价格（新、旧） -->
+                            <div class="price">
+                                <span class="price-new">&yen;{{item.discount_price}}</span>
+                                <span class="price-old">&yen;{{item.market_amount}}</span>
+                            </div>
+                        </div>
+                        <!-- 右侧预定按钮 -->
+                        <div class="rg">
+                            <span class="book" @click="bookFun(item.is, item.store_id,item.id, begin, finish)">
+                                预订
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- 该门店下架时候展示 -->
+        <div>下架</div>
     </div>
+
 </template>
 
 <script>
-import hotelLocation from "../../components/hotel-location";
 import {
     store_detail,
     DistributionBanner,
@@ -114,20 +131,20 @@ import {
 } from "@/api/api";
 import { getCookie } from "@/utils/util";
 import { f, dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
-// import { getCookie, setCookie, getUrlParam } from '@/utils/util';
 import Calendar from "@/components/calendar/calendar.vue"; // 引入日历组件
 import { swiper, swiperSlide } from "vue-awesome-swiper"; // 引入swipe组件
+// import Swiper from "swiper";
 
 export default {
     name: "hotel-detail",
     components: {
-        hotelLocation,
         Calendar,
         swiper,
         swiperSlide
     },
     data() {
         return {
+            // swiper相关参数
             swiperOption: {
                 notNextTick: true,
                 autoplay: false,
@@ -135,12 +152,12 @@ export default {
                 direction: "horizontal",
                 grabCursor: true,
                 setWrapperSize: true,
-                autoHeight: true,
+                autoHeight: false,
                 pagination: ".swiper-pagination",
                 paginationClickable: true,
                 mousewheelControl: false,
                 observeParents: true,
-                debugger: true
+                debugger: true,
             },
             // 拉取banner信息
             bannerList: [],
@@ -159,8 +176,8 @@ export default {
             count: "", // 几晚
             begin: "",
             finish: "",
-            is_collect: "",
-            collectIconNoActive: require("../../assets/images/collect.png"),
+            is_collect: "", //该门店是否被收藏
+            collectIcon: require("../../assets/images/collect.png"),
             collectIconActive: require("../../assets/images/collect-active.png"),
 
             // 日历组件dialog是否显示
@@ -188,12 +205,12 @@ export default {
             finish: this.$route.query.finish
         };
         // 如果从订单列表页的“再次预定”按钮过来只带store_id参数，无begin、finish参数
-        if(routePara.begin==undefined||routePara.finish==undefined){
+        if (routePara.begin == undefined || routePara.finish == undefined) {
             var d = new Date();
             var dd = new Date();
-            dd.setDate(dd.getDate() + 1); 
-            this.watchObj.begin = f(d).yyyy+"-"+f(d).mm+"-"+f(d).dd;
-            this.watchObj.finish = f(dd).yyyy+"-"+f(dd).mm+"-"+f(dd).dd;
+            dd.setDate(dd.getDate() + 1);
+            this.watchObj.begin = f(d).yyyy + "-" + f(d).mm + "-" + f(d).dd;
+            this.watchObj.finish = f(dd).yyyy + "-" + f(dd).mm + "-" + f(dd).dd;
             this.watchObj.store_id = routePara.store_id;
             this.zbInitCalendar.start.yyyy = f(d).yyyy;
             this.zbInitCalendar.start.mm = f(d).mm;
@@ -201,7 +218,6 @@ export default {
             this.zbInitCalendar.end.yyyy = f(dd).yyyy;
             this.zbInitCalendar.end.mm = f(dd).mm;
             this.zbInitCalendar.end.dd = f(dd).dd;
-
         } else {
             // 给date()中监听数据进行赋值
             this.watchObj.store_id = routePara.store_id;
@@ -217,13 +233,12 @@ export default {
             this.zbInitCalendar.end.mm = endArr[1];
             this.zbInitCalendar.end.dd = endArr[2];
         }
-        
 
         // 拉取数据
         this.fetchData(this.watchObj);
 
         // 拉取banner信息
-        this.fetchBannerData({ cpid: 1, type_id: 1 });
+        // this.fetchBannerData({ cpid: 1, type_id: 1 });
     },
     computed: {
         swiper() {
@@ -231,7 +246,8 @@ export default {
         }
     },
     mounted() {
-        // this.swiper.slideTo(3, 1000, false);
+        // 拉取banner信息
+        this.fetchBannerData({ cpid: 1, type_id: 1 });
     },
     watch: {
         watchObj: {
@@ -251,10 +267,29 @@ export default {
                 data: param
             }).then(res => {
                 if (res.data.status == 1) {
-                    // bannerList
                     this.bannerList = res.data.data;
+                    // var mySwiper = new Swiper(".swiper-container", {
+                        // pagination : {el: '.swiper-pagination'},
+                        // pagination : '.swiper-pagination',
+                        // direction: 'vertical',
+                        // pagination: {
+                        //     el: ".swiper-pagination"
+                        // },
+                        // loop: true,
+                        // autoplay: true,
+                        // noSwiping : true,
+                        // preventClicks: true,
+                        // direction: "horizontal"
+                        // grabCursor: true,
+                        // setWrapperSize: true,
+                        // autoHeight: true,
+                        // paginationClickable: true,
+                        // mousewheelControl: false,
+                        // observeParents: true,
+                        // debugger: true,
+                    // });
                 } else {
-                    // this.isShow = true;
+
                 }
             });
         },
@@ -292,7 +327,6 @@ export default {
                 });
                 return;
             }
-
             if (isHasRoom == 1) {
                 this.$router.push({
                     path: "/order",
@@ -372,8 +406,15 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.banner {
+
+// banner的box
+.banner-box {
     position: relative;
+    .zb-swiper {
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+    }
     .collect {
         width: 32px;
         height: 32px;
@@ -402,7 +443,6 @@ export default {
         background: #e5e5e5;
         transform: scaleY(0.5);
     }
-
     .name {
         height: 22px;
         line-height: 22px;
@@ -410,7 +450,6 @@ export default {
         color: #333333;
         letter-spacing: 0;
     }
-
     .location-wrapper {
         width: 100%;
         padding-left: 22px;
