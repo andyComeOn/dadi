@@ -15,14 +15,14 @@
                 <!-- </div> -->
 
                 <!-- <div class="swiper-container"> -->
-                    <!-- <div class="swiper-wrapper"> -->
-                        
-                        <!-- <div class="swiper-slide" v-for="item in bannerList" :key="item.id">
+                <!-- <div class="swiper-wrapper"> -->
+
+                <!-- <div class="swiper-slide" v-for="item in bannerList" :key="item.id">
                             <img :src="item.img" alt="">
                         </div> -->
 
-                    <!-- </div> -->
-                    <!-- <div class="swiper-pagination"></div> -->
+                <!-- </div> -->
+                <!-- <div class="swiper-pagination"></div> -->
 
                 <!-- </div> -->
 
@@ -133,7 +133,7 @@ import { getCookie } from "@/utils/util";
 import { f, dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
 import Calendar from "@/components/calendar/calendar.vue"; // 引入日历组件
 import { swiper, swiperSlide } from "vue-awesome-swiper"; // 引入swipe组件
-// import Swiper from "swiper";
+
 
 export default {
     name: "hotel-detail",
@@ -157,7 +157,7 @@ export default {
                 paginationClickable: true,
                 mousewheelControl: false,
                 observeParents: true,
-                debugger: true,
+                debugger: true
             },
             // 拉取banner信息
             bannerList: [],
@@ -236,9 +236,6 @@ export default {
 
         // 拉取数据
         this.fetchData(this.watchObj);
-
-        // 拉取banner信息
-        // this.fetchBannerData({ cpid: 1, type_id: 1 });
     },
     computed: {
         swiper() {
@@ -268,28 +265,7 @@ export default {
             }).then(res => {
                 if (res.data.status == 1) {
                     this.bannerList = res.data.data;
-                    // var mySwiper = new Swiper(".swiper-container", {
-                        // pagination : {el: '.swiper-pagination'},
-                        // pagination : '.swiper-pagination',
-                        // direction: 'vertical',
-                        // pagination: {
-                        //     el: ".swiper-pagination"
-                        // },
-                        // loop: true,
-                        // autoplay: true,
-                        // noSwiping : true,
-                        // preventClicks: true,
-                        // direction: "horizontal"
-                        // grabCursor: true,
-                        // setWrapperSize: true,
-                        // autoHeight: true,
-                        // paginationClickable: true,
-                        // mousewheelControl: false,
-                        // observeParents: true,
-                        // debugger: true,
-                    // });
                 } else {
-
                 }
             });
         },
@@ -406,7 +382,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
 // banner的box
 .banner-box {
     position: relative;

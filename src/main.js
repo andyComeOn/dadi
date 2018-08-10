@@ -41,12 +41,6 @@ import VueAwesomeSwiper from 'vue-awesome-swiper';
 import 'swiper/dist/css/swiper.css';
 Vue.use(VueAwesomeSwiper);
 
-// 引入官方swiper
-
-
-
-// 引入zepto（当前项目无用） 
-// import $ from 'zepto';
 
 Vue.use(Loading);
 Vue.use(MuseUI);

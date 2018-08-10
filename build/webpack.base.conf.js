@@ -42,8 +42,7 @@ module.exports = {
 			{
 				test: /\.js$/,
 				loader: 'babel-loader',
-				include: [resolve('src'), resolve('test')],
-				exclude:/node_modules\/(?!(dom7|ssr-window|swiper)\/).*/
+				include: [resolve('src'), resolve('test')]
 			},
 			{
 				test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -60,10 +59,6 @@ module.exports = {
 					limit: 10000,
 					name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
 				}
-			},
-			{
-				test: require.resolve('zepto'),
-				loader: 'exports-loader?window.Zepto!script-loader'
 			}
 		]
 	}
