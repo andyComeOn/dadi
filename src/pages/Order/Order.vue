@@ -27,7 +27,7 @@
                 <div class="room-info">
                     <span class="span-minus" @click="minusRoomNum"><img :src="imgSrcMinus" alt=""></span>
                     <span class="span-input">
-                        <input type="number" class="txt" id="roomNum" v-model="roomNum">
+                        <input type="number" class="txt" id="roomNum" v-model="watchObj.room_sum">
                     </span>
                     <span class="span-plus" @click="plusRoomNum"><img :src="imgSrcPlus" alt=""></span>
                 </div>
@@ -198,6 +198,14 @@
                 </div> -->
             </div>
         </div>
+        <!-- toas提示 -->
+        <div v-show="OrderFullToast">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-error weui-icon_toast"></i>
+                <p class="weui-toast__content">您今日可订限额已用完，请明天再来</p>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -216,22 +224,27 @@ export default {
             btnPlusActive: require("../../assets/images/btn-plus-minus/plusA.png"),
             btnMinus: require("../../assets/images/btn-plus-minus/minus.png"),
             btnMinusActive: require("../../assets/images/btn-plus-minus/minusA.png"),
-            store_id: "",
-            room_id: "",
-            begin: "",
+
+            watchObj: {
+                store_id: "",
+                room_id: "",
+                begin: "",
+                finish: "",
+                room_sum: 1
+            },
+
             beginY: "",
             beginM: "",
             beginD: "",
-            finishY: "",
+
             finishY: "",
             finishM: "",
             finishD: "",
+
             howManyNight: "",
             // --------
             // 优惠券
             initCoupon: "",
-            // 存优惠券
-            logCoupon: "",
             // 门店详情
             details: {},
             // 明细-房间单价-包含时间
@@ -241,7 +254,9 @@ export default {
             // 默认的房间数
             roomNum: 1,
             // 后台返回的该用户可订房信息
-            userOrderStatus: 5,
+            userOrderMaxNum: 5,
+            // 后台返回的该用户是否可订房标志
+            isUserCanOrder: true,
             // 加减房间数按钮img的src的接受值
             imgSrcMinus: "",
             imgSrcPlus: "",
@@ -262,7 +277,8 @@ export default {
             orderNameTxt: "123",
             // 订房人手机号输入验证
             orderTelTipsVisible: false,
-            orderTelTxt: ""
+            orderTelTxt: "",
+            OrderFullToast: false
         };
     },
     created() {
@@ -273,28 +289,27 @@ export default {
             finish: this.$route.query.finish
         };
         // 初始化数据
-        this.store_id = routePara.store_id;
-        this.room_id = routePara.room_id;
-        this.begin = routePara.begin;
-        this.beginY = routePara.begin.split("-")[0];
-        this.beginM = routePara.begin.split("-")[1];
-        this.beginD = routePara.begin.split("-")[2];
-        this.finish = routePara.finish;
-        this.finishY = routePara.finish.split("-")[0];
-        this.finishM = routePara.finish.split("-")[1];
-        this.finishD = routePara.finish.split("-")[2];
+        this.watchObj.store_id = routePara.store_id;
+        this.watchObj.room_id = routePara.room_id;
+        this.watchObj.begin = routePara.begin;
+        this.watchObj.finish = routePara.finish;
+
+        var beginArr = routePara.begin.split("-");
+        this.beginY = beginArr[0];
+        this.beginM = beginArr[1];
+        this.beginD = beginArr[2];
+        var finishArr = routePara.finish.split("-");
+        this.finishY = finishArr[0];
+        this.finishM = finishArr[1];
+        this.finishD = finishArr[2];
+        // 计算入住-离店共有几晚
         this.howManyNight = dateEndMinusStart(
             routePara.begin,
             routePara.finish
         );
 
         // 拉取订单信息接口
-        this.fetchOrderForm({
-            store_id: routePara.store_id,
-            room_id: routePara.room_id,
-            begin: routePara.begin,
-            finish: routePara.finish
-        });
+        this.fetchOrderForm();
 
         // 加减房间数按钮img的src的初始化赋值
         this.imgSrcMinus = this.btnMinus;
@@ -303,12 +318,13 @@ export default {
     watch: {
         initCoupon: {
             handler(newValue, oldValue) {
-                if (newValue != "") {
-                    this.totalPrice =
-                        this.discount_price * this.howManyNight * this.roomNum -
-                        newValue.amount;
-                    this.isCouponMask = false;
-                }
+                // if (newValue != "") {
+                this.totalPrice = this.discount_price;
+                //  * this.howManyNight * this.roomNum -
+                // newValue.amount;
+                this.isCouponMask = false;
+                console.log(111);
+                // }
             },
             deep: true,
             immediate: true
@@ -336,86 +352,56 @@ export default {
         },
 
         // 拉取订单预览数据
-        fetchOrderForm(pa) {
+        fetchOrderForm() {
+            var para = this.watchObj;
             this.$http({
                 method: "POST",
                 url: order_form,
-                data: pa
+                data: para
             })
                 .then(res => {
                     if (res.data.status == 1) {
                         this.details = res.data.data.details; //给房间详情赋值
-                        this.discount_price = res.data.data.discount_price; //给房间折扣价赋值
+                        this.discount_price = res.data.data.discount_price; //预定房间总价赋值
                         this.coupon = res.data.data.coupon; //给房间优惠券赋值
                         this.price = res.data.data.price; // 给明细赋值
-                        this.totalPrice =
-                            res.data.data.discount_price *
-                            this.howManyNight *
-                            this.roomNum; // 总价
+                        this.totalPrice = res.data.data.discount_price;
+                    } else if (res.data.status == -3) {
+                        this.isUserCanOrder = false;
+                        this.watchObj.room_sum -= 1; //当不能在订房时候，其实已经达到了6，马上减1使其变成5。
                     }
                 })
                 .catch(err => {});
         },
 
-        // 加减房间数
+        // 减房间数
         minusRoomNum() {
-            if (this.roomNum == 1) {
+            if (this.watchObj.room_sum == 1) {
                 this.initCoupon = "";
                 this.imgSrcMinus = this.btnMinus;
                 return;
             } else {
-                this.roomNum -= 1;
                 this.imgSrcPlus = this.btnPlusActive;
-                this.$http({
-                    method: "POST",
-                    url: increase_room_num,
-                    data: {
-                        quantity: this.howManyNight,
-                        room_type: this.room_id,
-                        room_sum: this.roomNum,
-                        begin: this.begin
-                    }
-                })
-                    .then(res => {
-                        if (res.data.status == 1) {
-                            this.initCoupon = "";
-                            this.totalPrice =
-                                this.discount_price *
-                                this.howManyNight *
-                                this.roomNum;
-                        }
-                    })
-                    .catch(err => {});
+                this.watchObj.room_sum -= 1;
+                this.fetchOrderForm();
             }
         },
+        // 加房间数
         plusRoomNum() {
-            if (this.roomNum >= 1 && this.roomNum < this.userOrderStatus) {
-                this.imgSrcMinus = this.btnMinusActive;
-                this.roomNum += 1;
-                this.$http({
-                    method: "POST",
-                    url: increase_room_num,
-                    data: {
-                        quantity: this.howManyNight,
-                        room_type: this.room_id,
-                        room_sum: this.roomNum,
-                        begin: this.begin
-                    }
-                })
-                    .then(res => {
-                        if (res.data.status == 1) {
-                            this.initCoupon = "";
-                            this.totalPrice =
-                                this.discount_price *
-                                this.howManyNight *
-                                this.roomNum;
-                        }
-                    })
-                    .catch(err => {});
-            } else {
+            if (!this.isUserCanOrder) {
+                this.OrderFullToast = true;
                 this.imgSrcPlus = this.btnPlus;
-                alert("您今天的可定房间数已经达到上限了！");
+                setTimeout(() => {
+                    this.OrderFullToast = false;
+                }, 2000);
+                return;
             }
+            if (this.watchObj.room_sum >= 1) {
+                this.watchObj.room_sum += 1;
+                this.imgSrcMinus = this.btnMinusActive;
+                this.initCoupon = "";
+                this.fetchOrderForm();
+            } 
         },
         // 订房人input姓名失焦
         orderNameBlur() {
@@ -460,38 +446,39 @@ export default {
                 this.orderTelTxt = "输入手机号不能为空";
             }
 
-            // 再次判断预定人input输入框的名字是否为空
+            // 再次判断入住人input输入框的名字是否为空
             if (this.orderName.trim() == "") {
                 this.orderNameTipsVisible = true;
                 this.orderNameTxt = "输入姓名不能为空";
-            } 
+            }
 
             // 总的判断
             if (this.orderNameBlur() && this.orderTelBlur()) {
-                if (this.initCoupon==""){
+                if (this.initCoupon == "") {
                     this.initCoupon = {};
                     this.initCoupon.id = "";
                 }
-                console.log(this.initCoupon.id);
+                // console.log(this.initCoupon.id);
                 this.$http({
                     method: "POST",
                     url: create_order,
                     data: {
-                        room_type: this.room_id,
-                        store_id: this.store_id,
+                        room_type: this.watchObj.room_id,
+                        store_id: this.watchOb.jstore_id,
                         dwell_name: this.orderName,
                         dewll_mobile: this.orderTel,
-                        room_sum: this.roomNum,
-                        begin: this.begin,
-                        finish: this.finish,
-                        coupon_id:this.initCoupon.id
+                        room_sum: this.watchObj.room_sum,
+                        begin: this.watchObj.begin,
+                        finish: this.watchObj.finish,
+                        coupon_id: this.initCoupon.id
                     }
-                }).then(res=>{
-                    console.log(res);
-                    if(res.data.status==1){
-                        alert('订单预定成功');
-                    }
-                }).catch();
+                })
+                    .then(res => {
+                        if (res.data.status == 1) {
+                            alert("订单预定成功");
+                        }
+                    })
+                    .catch();
             }
         }
     }
@@ -602,7 +589,7 @@ export default {
         background: #eff1f0;
         .detail-wrapper {
             padding: 15px;
-            background: url("../../assets/images/bg/bg_order_page.png") repeat-x 
+            background: url("../../assets/images/bg/bg_order_page.png") repeat-x
                 center;
             .name {
                 font-size: 16px;
@@ -798,7 +785,7 @@ export default {
                 text-align: center;
                 float: right;
                 padding: 0 10px;
-                font-size:0; 
+                font-size: 0;
                 img {
                     display: inline-block;
                     width: 16px;

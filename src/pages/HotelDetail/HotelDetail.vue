@@ -1,6 +1,6 @@
 <template>
     <div class="hotel-detail">
-        <div class="main">
+        <div class="main" v-if="data_room.length>0">
             <!-- 广告 -->
             <div class="banner-box">
                 <!-- <div class="banner"> -->
@@ -117,7 +117,10 @@
             </div>
         </div>
         <!-- 该门店下架时候展示 -->
-        <div>下架</div>
+        <div v-else class="no-store">
+            <img src="../../assets/images/404/xiajia.png" alt="">
+            <p>该酒店已下架</p>
+        </div>
     </div>
 
 </template>
@@ -612,6 +615,23 @@ export default {
                 }
             }
         }
+    }
+}
+
+// -------------------无酒店--------------------
+.no-store{
+    margin-top:170px; 
+    img{
+        display: block;
+        width: 152px;
+        height: 108px;
+        margin: 0 auto;
+    }
+    p{
+        line-height: 20px;
+        font-size: 14px;
+        color: #666;
+        text-align: center;
     }
 }
 </style>

@@ -123,34 +123,27 @@
 </template>
 
 <script>
-import { order_detail } from "@/api/api";
+import { order_detail, order_cost_detail } from "@/api/api";
 export default {
     name: "order-detail",
     components: {},
     data() {
         return {
             isDealDetailMask: false,
-            order_id: "",  //接收路由传过来的order_id
-            order_id_info: "" // 接收http请求的数据
+            order_id: "", //接收路由传过来的order_id
+            order_id_info: "", // 接收http请求的数据
+            order_cost_info:""
         };
     },
     created() {
         this.order_id = this.$route.query.order_id;
     },
     mounted() {
-        this.$http({
-            method: "POST",
-            url: order_detail,
-            data: {
-                order_id: this.order_id
-            }
-        })
-            .then(res => {
-                if (res.data.status == 1) {
-                    this.order_id_info = res.data.data;
-                }
-            })
-            .catch();
+        // 拉取订单详情
+        this.fetchOrderDetail();
+        // 拉取明细详情
+        this.fetchOrderCostDetail();
+
     },
     methods: {
         // 展示交易明细遮罩
@@ -161,12 +154,46 @@ export default {
         hideDealDetailMask() {
             this.isDealDetailMask = false;
         },
+        // 订单详情
+        fetchOrderDetail() {
+            this.$http({
+                method: "POST",
+                url: order_detail,
+                data: {
+                    order_id: this.order_id
+                }
+            })
+                .then(res => {
+                    if (res.data.status == 1) {
+                        this.order_id_info = res.data.data;
+                    }
+                })
+                .catch();
+        },
+        // 明细详情
+        fetchOrderCostDetail() {
+            this.$http({
+                method: "POST",
+                url: order_cost_detail,
+                data: {
+                    order_id: this.order_id
+                }
+            })
+                .then(res => {
+                    if (res.data.status == 1) {
+                        this.order_cost_info=res.data.data
+
+                        
+                    }
+                })
+                .catch();
+        },
+
     }
 };
 </script>
 
 <style lang="less" scoped>
-
 // 重置weui样式
 .zb-weui-mask {
     background: rgba(0, 0, 0, 0.45);

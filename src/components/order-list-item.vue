@@ -70,33 +70,7 @@ export default {
     },
     created() {},
     mounted() {},
-    filters: {
-        filterTime(a) {
-            const index = a.indexOf("-");
-            return a.slice(index + 1, index + 6);
-        },
-        filterStatus(b) {
-            if (b == 0) {
-                return "待付款";
-            } else if (b == 1 || b == 2) {
-                return "待入住";
-            } else if (b == 3) {
-                return '<span style="color:#30B097">入住中</span>';
-            } else if (b == 4) {
-                return "已完成";
-            } else if (b == 5) {
-                return "已完成";
-            } else if (b == 6) {
-                return "申请退款中";
-            } else if (b == 7) {
-                return "被拒单";
-            } else if (b == 8) {
-                return "已取消";
-            } else {
-                return "退款结束";
-            }
-        }
-    },
+    
     methods: {
         fetchData(param) {
             this.$http({
@@ -132,7 +106,6 @@ export default {
                     if (res.data.status == 1) {
                         window.location.href = window.location.href;
                     }
-                    // console.log(res);
                 })
                 .catch();
         },
@@ -161,8 +134,6 @@ export default {
                 })
                 .catch(err => {});
         },
-        
-
     }
 };
 </script>
@@ -209,12 +180,12 @@ export default {
                     margin-bottom: 5px;
                     &.type {
                         color: #999;
-                        background: url("../assets/images/hotel-label/my_order_hotel.png")
+                        background: url("../assets/images/hotel-label/my_order_hotel_grey.png")
                             no-repeat left center;
                         background-size: 16px 16px;
                     }
                     &.date {
-                        background: url("../assets/images/hotel-label/my_order_date.png")
+                        background: url("../assets/images/hotel-label/my_order_date_grey.png")
                             no-repeat left center;
                         background-size: 16px 16px;
                     }
@@ -229,11 +200,13 @@ export default {
                     height: 16px;
                     line-height: 16px;
                     margin-bottom: 8px;
+                    color: #999;
                 }
                 .order-price {
                     height: 20px;
                     line-height: 20px;
                     font-size: 14px;
+
                 }
             }
         }

@@ -105,6 +105,9 @@ export const delete_order = '/api/Order/delete_order?cpid=' + GlobalCpid;  //删
 
 export const order_detail = 'api/Order/order_detail?cpid=' + GlobalCpid;  //订单详情
 
+export const order_cost_detail = '/api/Order/order_cost_detail?cpid=' + GlobalCpid;  //订单费用明细
+
+
 
 
 
