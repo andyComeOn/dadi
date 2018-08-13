@@ -19,6 +19,9 @@
         components: {
             noLevel
         },
+        props:{
+            
+        },
         data(){
             return{
                 help_lists_arr:[],      //所有数据
@@ -47,6 +50,7 @@
                     this.help_lists_arr = res.data.data.stair;
                     this.oneLevel_num = res.data.data.stair_count;
                     this.twoLevel_num = res.data.data.second_count;
+                    this.$emit('listenToChildEvent',res.data.data.stair_count,res.data.data.second_count);
                 }else{
 
                 }

@@ -71,8 +71,7 @@ export default {
             color: #999;
             font-size: 14px;
             line-height: 50px;
-            display: inline-block;
-            float: right;
+            float:right;
             margin-right:30px; 
         }
         img{

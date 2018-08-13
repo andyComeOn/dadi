@@ -47,6 +47,7 @@
                     this.help_lists_arr = res.data.data.second;
                     this.oneLevel_num = res.data.data.stair_count;
                     this.twoLevel_num = res.data.data.second_count;
+                    this.$emit('listenToChildEvent',res.data.data.stair_count,res.data.data.second_count);
                 }else{
 
                 }

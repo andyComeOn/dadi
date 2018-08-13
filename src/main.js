@@ -47,7 +47,7 @@ Vue.use(MuseUI);
 
 // 获取cookie
 let mycookie = getCookie('auth_user_1');
-console.log('cookie='+ mycookie);
+// console.log('cookie='+ mycookie);
 
 // 获取参数的cpid
 let CPID = getUrlParam('cpid');
@@ -57,7 +57,6 @@ let CPID = getUrlParam('cpid');
 // console.log(sessionStorage.getItem('CPID'));
 // cookie为空，调取登陆接口
 
-console.log(11111111111111111111111111111111111111111);
 var param = { cpid: 1 };
 axios.post(login_test, param).then(res => {
 	if(res.data.status==1){

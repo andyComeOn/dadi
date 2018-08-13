@@ -64,7 +64,7 @@ export const add_collect = '/api/User/add_collect?cpid=' + GlobalCpid // 添加�
 
 export const del_collect = '/api/User/del_collect' // 删除收藏
 
-export const integral_detail = '/api/Credit/integral_detail'   // 积分明细列表
+export const integral_detail = '/api/Credit/integral_detail?cpid=' + GlobalCpid;  // 积分明细列表
 
 export const user_help = '/api/User/user_help' // 帮助中心
 

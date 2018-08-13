@@ -215,7 +215,10 @@ export default new Router({
 		{
 			path: '/vip',
 			name: 'vip',
-			component: Vip
+			component: Vip,
+			meta:{
+				title:'会员特权'
+			}
 		},
 		// 帮助中心
 		{
