@@ -55,30 +55,27 @@ let CPID = getUrlParam('cpid');
 
 // sessionStorage.setItem('CPID', CPID);
 // console.log(sessionStorage.getItem('CPID'));
-
 // cookie为空，调取登陆接口
 
+console.log(11111111111111111111111111111111111111111);
+var param = { cpid: 1 };
+axios.post(login_test, param).then(res => {
+	if(res.data.status==1){
+		axios.post(userInfo, param).then(res=>{
+			if(res.data.status==1){
+				setCookie("userInfoTel",res.data.data.mobile);  //手机号
+				setCookie("userInfoIsRealname",res.data.data.is_realname); //真实姓名
+				setCookie("userInfoGroupid",res.data.data.group_id);  //会员组id
+			}
+		}).catch()
+	}
+}).catch(function (err) { console.log(err) });
 
 
 // 在点击预定时候判断有没有绑定手机号
 // 若没有绑定，使用路由监听跳到绑定手机号（登陆）页面
 // console.log(sessionStorage);
 router.beforeEach((to, from, next) => {
-	if (!mycookie) {
-		var param = { cpid: 1 };
-		axios.post(login_test, param).then(res => {
-			if(res.data.status==1){
-				axios.post(userInfo, param).then(res=>{
-					if(res.data.status==1){
-						// console.log(res.data);
-						setCookie("userInfoTel",res.data.data.mobile);  //手机号
-						setCookie("userInfoIsRealname",res.data.data.is_realname); //真实姓名
-						setCookie("userInfoGroupid",res.data.data.group_id);  //会员组id
-					}
-				}).catch()
-			}
-		}).catch(function (err) { console.log(err) });
-	}
 	//路由改变，改变页面title
 	if (to.meta.title) {
 		document.title = to.meta.title;

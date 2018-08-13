@@ -290,20 +290,22 @@ export default {
             }
         }
         .rg {
-            width: 90px;
+            // width: 90px;
             height: 46px;
             padding-top: 3px;
             display: flex;
             flex-direction: row;
             .price {
-                width: 70px;
+                // width: 70px;
                 color: #ffba56;
                 line-height: 18px;
                 font-size: 15px;
+                
             }
             .arrow {
                 width: 16px;
                 height: 16px;
+                margin-left:10px; 
                 img {
                     display: block;
                     width: 16px;

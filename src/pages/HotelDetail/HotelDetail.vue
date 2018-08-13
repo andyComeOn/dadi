@@ -1,5 +1,13 @@
 <template>
     <div class="hotel-detail">
+        <!-- toast提示 -->
+        <div v-show="isRoomDetailToastVisible">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-loading weui-icon_toast"></i>
+                <p class="weui-toast__content">数据加载中</p>
+            </div>
+        </div>
         <div class="main" v-if="data_room.length>0">
             <!-- 广告 -->
             <div class="banner-box">
@@ -12,18 +20,6 @@
                     </swiper-slide>
                     <div class="swiper-pagination" slot="pagination"></div>
                 </swiper>
-                <!-- </div> -->
-
-                <!-- <div class="swiper-container"> -->
-                <!-- <div class="swiper-wrapper"> -->
-
-                <!-- <div class="swiper-slide" v-for="item in bannerList" :key="item.id">
-                            <img :src="item.img" alt="">
-                        </div> -->
-
-                <!-- </div> -->
-                <!-- <div class="swiper-pagination"></div> -->
-
                 <!-- </div> -->
 
                 <!-- <div class="collect" @click="addCollect">
@@ -62,9 +58,7 @@
                         <span>入住</span>
                         <span>{{zbInitCalendar.start.mm}}月{{zbInitCalendar.start.dd}}日</span>
                     </div>
-                    <span class="total">
-                        共{{count}}晚
-                    </span>
+                    <span class="total">共{{count}}晚</span>
 
                     <div class="go" @click="triggerCalendar">
                         <span>离店</span>
@@ -72,34 +66,27 @@
                     </div>
                 </div>
             </div>
-
             <!-- 日历组件dialog -->
             <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbCalendarVisible">
                 <Calendar ref="Calendar" :markDateMore="zbInitCalendar" @isToday="clickToday" @calendarTitleBackEmit="calendarTitleBackEmitFun">
                 </Calendar>
             </mu-dialog>
 
-            <!-- 预定组件 -->
-            <!-- <reserveItem
-			:condition="watchObj">
-		    </reserveItem> -->
+            <!-- 预定组件-后来取消引入 -->
+            <!-- <reserveItem :condition="watchObj"></reserveItem> -->
 
+            <!-- 搜索到list -->
             <div class="reverse-wrapper">
                 <ul class="list">
                     <li v-for="(item,index) in data_room" :key="index">
                         <!-- 左边图片展示 -->
-                        <div class="lf">
-                            <!-- ../assets/images/img/room.png -->
-                            <img :src="item.room_img" alt="">
-                        </div>
+                        <div class="lf"><img :src="item.room_img" alt=""></div>
                         <!-- 中间 -->
                         <div class="md">
                             <!-- 大标题 -->
                             <p class="name m-ellipsis">{{item.name}}</p>
                             <!-- 酒店设施集合 -->
-                            <div class="labels">
-                                {{item.introduce}}
-                            </div>
+                            <div class="labels">{{item.introduce}}</div>
                             <!-- 价格（新、旧） -->
                             <div class="price">
                                 <span class="price-new">&yen;{{item.discount_price}}</span>
@@ -117,12 +104,11 @@
             </div>
         </div>
         <!-- 该门店下架时候展示 -->
-        <div v-else class="no-store">
+        <div v-else v-show="isShow" class="no-store">
             <img src="../../assets/images/404/xiajia.png" alt="">
             <p>该酒店已下架</p>
         </div>
     </div>
-
 </template>
 
 <script>
@@ -136,8 +122,6 @@ import { getCookie } from "@/utils/util";
 import { f, dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
 import Calendar from "@/components/calendar/calendar.vue"; // 引入日历组件
 import { swiper, swiperSlide } from "vue-awesome-swiper"; // 引入swipe组件
-
-
 export default {
     name: "hotel-detail",
     components: {
@@ -162,9 +146,9 @@ export default {
                 observeParents: true,
                 debugger: true
             },
-            // 拉取banner信息
-            bannerList: [],
-
+            isRoomDetailToastVisible:true,
+            isShow:false,
+            bannerList: [],  // 拉取banner信息
             // 请求数据需要传的参数
             watchObj: {
                 cpid: "1",
@@ -172,7 +156,6 @@ export default {
                 begin: "",
                 finish: ""
             },
-
             // 接收http请求返回的数据
             data_room: [],
             data_store: {},
@@ -279,6 +262,7 @@ export default {
                 url: store_detail,
                 data: param
             }).then(res => {
+                this.isRoomDetailToastVisible = false;
                 if (res.data.status == 1) {
                     // 房间类型list
                     this.data_room = res.data.data.data_room;

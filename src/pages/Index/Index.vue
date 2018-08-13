@@ -1,130 +1,133 @@
 <template>
-	<div class="index-page">
-		<!-- 主内容-->
-		<div class="page-content">
-			<!-- 轮播 -->
-			<m-swipe swipeid="swipe01" :autoplay="1000" paginationDirection="right">
-				<div class="swiper-slide " slot="swiper-con">
-					<!-- <router-link to="/hotelDetail"> -->
-						<img src="../../assets/images/banner/01.jpg" alt="">
-					<!-- </router-link> -->
-				</div>
-				<div class="swiper-slide " slot="swiper-con">
-					<img src="../../assets/images/banner/02.jpg" alt="">
-				</div>
-				<div class="swiper-slide " slot="swiper-con">
-					<img src="../../assets/images/banner/03.jpg" alt="">
-				</div>
-			</m-swipe>
+    <div class="index-page">
+        <!-- 主内容-->
+        <div class="page-content">
+            <!-- 轮播 -->
+            <div class="banner-box">
+                <swiper class="zb-swiper" :options="swiperOption" ref="mySwiper" @someSwiperEvent="swiperCallback(1)">
+                    <swiper-slide v-for="item in bannerList" :key="item.id" @click="swiperSlideFun(item.id)">
+                        <router-link :to="{path:'hotelDetailBannerLink',query:{}}" class="hotel-detail-banner-link">
+                            <!-- store_id:2 -->
+                            <img :src="item.img" alt="">
+                        </router-link>
+                    </swiper-slide>
+                    <div class="swiper-pagination" slot="pagination"></div>
+                </swiper>
+            </div>
+            <!-- 用户预定区 -->
+            <div class="reserve-form">
+                <div class="reserve-wrap">
+                    <!-- 位置选择 -->
+                    <div class="select-location">
+                        <div class="lf" @click="triggerCityDialog">
+                            <div class="dest-city">
+                                <span class="dest">目的地</span>
+                                <span class="city">{{cityname}}</span>
+                            </div>
+                            <div class="dest-city-arrow">
+                                <img src="../../assets/images/arrows/ic-arrow_10_18.png" alt="">
+                            </div>
+                        </div>
+                        <div class="rg">
+                            <span class="my-location">
+                                <img src="../../assets/images/home_location.png" alt=""><br>我的位置
+                            </span>
+                        </div>
+                    </div>
 
-			<!-- 用户预定区 -->
-			<div class="reserve-form">
-				<div class="reserve-wrap">
+                    <!-- 入住和离店 -->
+                    <div class="time">
+                        <!-- 入住模块 -->
+                        <div class="lf">
+                            <span class="instr">入住</span>
+                            <span class="date" @click="triggerCalendar">
+                                {{zbInitCalendar.start.mm}}月{{zbInitCalendar.start.dd}}日
+                            </span>
+                        </div>
 
-					<!-- 位置选择 -->
-					<div class="select-location">
-						<div class="lf" @click="triggerCityDialog">
-							<div class="dest-city">
-								<span class="dest">目的地</span>
-								<span class="city">{{cityname}}</span>
-							</div>
-							<div class="dest-city-arrow">
-								<img src="../../assets/images/arrows/ic-arrow_10_18.png" alt="">
-							</div>
-						</div>
-						<div class="rg">
-							<span class="my-location">
-								<img src="../../assets/images/home_location.png" alt=""><br>我的位置
-							</span>
-						</div>
-					</div>
+                        <!-- 入住几晚 -->
+                        <div class="md">共{{howManyNight}}晚</div>
 
-					<!-- 入住和离店 -->
-					<div class="time">
-						<!-- 入住模块 -->
-						<div class="lf">
-							<span class="instr">入住</span>
-							<span class="date" @click="triggerCalendar">
-								{{zbInitCalendar.start.mm}}月{{zbInitCalendar.start.dd}}日
-							</span>
-						</div>
+                        <!-- 离店模块 -->
+                        <div class="rg">
+                            <span class="instr">离店</span>
+                            <span class="date" @click="triggerCalendar">
+                                {{zbInitCalendar.end.mm}}月{{zbInitCalendar.end.dd}}日
+                            </span>
+                        </div>
+                    </div>
 
-						<!-- 入住几晚 -->
-						<div class="md">共{{howManyNight}}晚</div>
+                    <!-- 关键词搜索 -->
+                    <div class="search">
+                        <input type="text" class="txt" v-model="abstract" placeholder="请输入关键词／地址／商圈">
+                    </div>
 
-						<!-- 离店模块 -->
-						<div class="rg">
-							<span class="instr">离店</span>
-							<span class="date" @click="triggerCalendar">
-								{{zbInitCalendar.end.mm}}月{{zbInitCalendar.end.dd}}日
-							</span>
-						</div>
-					</div>
+                    <!-- 提交按钮 -->
+                    <div class="submit" @click="submitFun">
+                        酒店预订
+                    </div>
+                </div>
+            </div>
+        </div>
 
-					<!-- 关键词搜索 -->
-					<div class="search">
-						<input type="text" class="txt" v-model="abstract" placeholder="请输入关键词／地址／商圈">
-					</div>
+        <!-- 引入底部tabbar -->
+        <mTabbarFa></mTabbarFa>
 
-					<!-- 提交按钮 -->
-					<div class="submit" @click="submitFun">
-						酒店预订
-					</div>
-				</div>
-			</div>
-		</div>
+        <!-- 城市组件dialog -->
+        <mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCityVisible">
+            <City @cityTitleBackEmit="cityTitleBackEmitFun" @cityItemEmit="cityItemEmitFun">
+            </City>
+        </mu-dialog>
 
-		<!-- 引入底部tabbar -->
-		<mTabbarFa></mTabbarFa>
-
-		<!-- 城市组件dialog -->
-		<mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCityVisible">
-			<City 
-				@cityTitleBackEmit="cityTitleBackEmitFun" 
-				@cityItemEmit="cityItemEmitFun">
-			</City>
-		</mu-dialog>
-
-		<!-- 日历组件dialog -->
-		<mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbCalendarVisible">
-			<Calendar 
-				ref="Calendar" 
-				:markDateMore="zbInitCalendar" 
-				@isToday="clickToday" 
-				@calendarTitleBackEmit="calendarTitleBackEmitFun">
-			</Calendar>
-		</mu-dialog>
-
-	</div>
+        <!-- 日历组件dialog -->
+        <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbCalendarVisible">
+            <Calendar ref="Calendar" :markDateMore="zbInitCalendar" @isToday="clickToday" @calendarTitleBackEmit="calendarTitleBackEmitFun">
+            </Calendar>
+        </mu-dialog>
+    </div>
 </template>
 
 <script>
-
-import { slt_location, oauth, getCompanyInfo } from "../../api/api"; // 引入api
-import { f, dateEndMinusStart } from "@/utils/date";  // 引入封装时间函数
+import { slt_location, oauth, getCompanyInfo,DistributionBanner } from "../../api/api"; // 引入api
+import { f, dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
 import mTabbarFa from "@/components/tabbarfa";
 import mSwipe from "../../components/swipe";
+import { swiper, swiperSlide } from "vue-awesome-swiper"; // 引入swipe组件
 import City from "@/components/city/city.vue"; // 引入城市组件
 import Calendar from "@/components/calendar/calendar.vue"; // 引入日历组件
 export default {
     name: "index",
     components: {
         mTabbarFa,
-        mSwipe,
+        // mSwipe,
+        swiper,
+        swiperSlide,
         City,
         Calendar
-	},
-	props: {},
+    },
+    props: {},
     data() {
         return {
-            // 城市和搜索关键字
-            cityname: "北京",
-            cityid: "2",
-            abstract: "",
-
-            // appid
-            appid: "",
-
+            // swiper相关参数
+            swiperOption: {
+                notNextTick: true,
+                autoplay: false,
+                preventClicks: true,
+                direction: "horizontal",
+                grabCursor: true,
+                setWrapperSize: true,
+                autoHeight: false,
+                pagination: ".swiper-pagination",
+                paginationClickable: true,
+                mousewheelControl: false,
+                observeParents: true,
+                debugger: true
+            },
+            bannerList: "",  // 拉取banner信息
+            cityname: "北京", // 城市名称
+            cityid: "2",  // 城市id
+            abstract: "",  //搜索关键字
+            appid: "",  // 公众号id
             // 城市组件dialog是否显示
             zbCityVisible: false,
 
@@ -167,8 +170,24 @@ export default {
         this.zbInitCalendar.end.yyyy = f(dd).yyyy;
         this.zbInitCalendar.end.mm = f(dd).mm;
         this.zbInitCalendar.end.dd = f(dd).dd;
+        // 拉取banner的方法
+        this.fetchBannerData({ cpid: 1, type_id: 1 });
+
     },
     methods: {
+        // banner方法
+        fetchBannerData(param) {
+            this.$http({
+                method: "POST",
+                url: DistributionBanner,
+                data: param
+            }).then(res => {
+                if (res.data.status == 1) {
+                    this.bannerList = res.data.data;
+                } else {
+                }
+            });
+        },
         // 获取当前位置
         getLocation() {
             // var param = {cpid:1};
@@ -252,13 +271,13 @@ export default {
                 path: "/searchResult",
                 query: {
                     cityname: this.cityname,
-					cityid: this.cityid,
-					liveinYYYY:this.zbInitCalendar.start.yyyy,
-					liveinMM:this.zbInitCalendar.start.mm,
-					liveinDD:this.zbInitCalendar.start.dd,
-					liveoutYYYY:this.zbInitCalendar.end.yyyy,
-					liveoutMM:this.zbInitCalendar.end.mm,
-					liveoutDD:this.zbInitCalendar.end.dd,
+                    cityid: this.cityid,
+                    liveinYYYY: this.zbInitCalendar.start.yyyy,
+                    liveinMM: this.zbInitCalendar.start.mm,
+                    liveinDD: this.zbInitCalendar.start.dd,
+                    liveoutYYYY: this.zbInitCalendar.end.yyyy,
+                    liveoutMM: this.zbInitCalendar.end.mm,
+                    liveoutDD: this.zbInitCalendar.end.dd,
                     abstract: this.abstract
                 }
             });

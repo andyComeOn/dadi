@@ -55,7 +55,6 @@ import roomItem from "@/components/room-item";
 import searchbar from "@/components/searchbar";
 import sortbar from "@/components/sortbar";
 import refreshbar from "@/components/refresh-bar";
-import noSearchResult from "@/components/no-search-result";
 import { f, dateEndMinusStart } from "@/utils/date";  // 引入封装时间函数
 import City from "@/components/city/city.vue"; // 引入城市组件
 import Calendar from "@/components/calendar/calendar.vue"; // 引入日历组件
@@ -67,7 +66,7 @@ export default {
         searchbar,
         sortbar,
         refreshbar,
-        noSearchResult,
+        
         City,
 		Calendar,
 		mHeader,
@@ -79,7 +78,7 @@ export default {
 			// 最终传给searchbar的对象
             toSearchbarObj:{
                 cityname:'北京',
-                cityid:'1',
+                cityid:'2',
                 liveinYYYY:this.$route.query.liveinYYYY,
                 liveinMM:this.$route.query.liveinMM,
                 liveinDD:this.$route.query.liveinDD,
@@ -95,7 +94,7 @@ export default {
                 type: "", //正序、降序排列
                 longitude: "", // 经度
                 latitude: "", //维度
-                city: "1", //城市id
+                city: "2", //城市id
                 px_rule: "", //排序（价格，距离）
                 name: "", //门店名称
                 begin: "", // 入住时间

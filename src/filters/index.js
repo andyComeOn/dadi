@@ -14,6 +14,10 @@ export function filterTimeDD(a) {
 	const index = a.indexOf("-");
 	return a.slice(index + 4, index + 6);
 }
+// 过滤后台时间格式"2018-08"的天
+export function filterTimeYY(a) {
+	return a.slice(0, 4);
+}
 // 过滤不同的状态
 export function filterStatus(b) {
 	if (b == 0) {
