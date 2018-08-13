@@ -30,7 +30,15 @@
         <!-- praise_content end -->
         <!-- not have data str -->
         <notHaveData v-if='this.praiseArr.length == 0'></notHaveData>
-        <!-- not have data end -->  
+        <!-- not have data end -->
+        <!-- toast提示 -->
+        <div id="orderListToast" v-if='toash_show == true'>
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-loading weui-icon_toast"></i>
+                <p class="weui-toast__content">数据加载中</p>
+            </div>
+        </div>
 	</div>
 </template>
 <script>
@@ -44,7 +52,8 @@
         data(){
             return {
                 praiseArr:[],   //无效数据
-                activeIndex:1
+                activeIndex:1,  //
+                toash_show:true,    //loading
             }
         },
         computed: {
@@ -69,9 +78,10 @@
             }).then((res)=>{
                 console.log(res);
                 if(res.data.status == 1){
+                    this.toash_show = false;
                     this.praiseArr = res.data.data;
                 }else{
-
+                    this.toash_show = false;
                 }
             });
         }

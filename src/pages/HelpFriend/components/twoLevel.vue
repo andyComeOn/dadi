@@ -9,6 +9,14 @@
         <!-- noLevel str -->
         <noLevel v-if='this.help_lists_arr.length == 0'></noLevel>
         <!-- noLevel end -->
+        <!-- toast提示 -->
+        <div id="orderListToast" v-if='toash_show == true'>
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-loading weui-icon_toast"></i>
+                <p class="weui-toast__content">数据加载中</p>
+            </div>
+        </div>
 	</div>
 </template>
 <script>
@@ -24,6 +32,7 @@
                 help_lists_arr:[],      //所有数据
                 oneLevel_num:'',        //一级
                 twoLevel_num:'',        //二级
+                toash_show:true         //loading
             }
         },
         computed: {
@@ -44,12 +53,13 @@
             }).then((res)=>{
                 console.log(res.data);
                 if(res.data.status == 1){
+                    this.toash_show = false;
                     this.help_lists_arr = res.data.data.second;
                     this.oneLevel_num = res.data.data.stair_count;
                     this.twoLevel_num = res.data.data.second_count;
                     this.$emit('listenToChildEvent',res.data.data.stair_count,res.data.data.second_count);
                 }else{
-
+                    this.toash_show = false;
                 }
             });
         }

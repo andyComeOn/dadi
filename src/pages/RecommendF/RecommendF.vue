@@ -84,10 +84,17 @@
 				</ul>
 			</div>
 		</div>
+        <!-- toast提示 -->
+        <div id="orderListToast" v-if='toash_show == true'>
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-loading weui-icon_toast"></i>
+                <p class="weui-toast__content">数据加载中</p>
+            </div>
+        </div>
 	</div>
 </template>
 <script>
-
 	import {user_distribution} from '../../api/api.js';
  	export default {
 		name: "recommend-f",
@@ -100,7 +107,8 @@
 				freeze_amount:'',	//冻结金额
 				reward_amount:'',	//累计金额
 				await_amount:'',	//待领取
-				nikeName:'',		//昵称
+                nikeName:'',		//昵称
+                toash_show:true     //loadingShow
 			}
 		},
 		computed: {
@@ -124,12 +132,13 @@
 			}).then((res)=>{
 				// console.log(res);
 				if(res.data.status == 1){
+                    this.toash_show = false;
 					this.await_amount = res.data.data.await_amount;		//待领取
 					this.use_amount = res.data.data.use_amount;			//可提现
 					this.freeze_amount = res.data.data.freeze_amount;	//冻结金额
 					this.reward_amount = res.data.data.reward_amount;	//累计金额
 				}else{
-
+                    this.toash_show = false;
 				}
 			});
 		}

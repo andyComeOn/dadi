@@ -27,7 +27,7 @@
                 <div class="room-info">
                     <span class="span-minus" @click="minusRoomNum"><img :src="imgSrcMinus" alt=""></span>
                     <span class="span-input">
-                        <input type="number" class="txt" id="roomNum" v-model="watchObj.room_sum">
+                        <input type="number" class="txt" id="" v-model="watchObj.room_sum">
                     </span>
                     <span class="span-plus" @click="plusRoomNum"><img :src="imgSrcPlus" alt=""></span>
                 </div>
@@ -142,7 +142,7 @@
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
                             <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
                                 <div class="weui-cell__bd div zb-weui-cell__hd">
-                                    <h4>{{howManyNight}}晚、{{roomNum}}间共</h4>
+                                    <h4>{{howManyNight}}晚、{{watchObj.room_sum}}间共</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
                                     &yen;{{totalPrice}}
@@ -230,7 +230,7 @@ export default {
                 room_id: "",
                 begin: "",
                 finish: "",
-                room_sum: 1
+                room_sum: 1   //默认的房间数
             },
 
             beginY: "",
@@ -251,8 +251,8 @@ export default {
             price: [],
             // 请求返回的数据
             fetchData: {},
-            // 默认的房间数
-            roomNum: 1,
+            
+           
             // 后台返回的该用户可订房信息
             userOrderMaxNum: 5,
             // 后台返回的该用户是否可订房标志
@@ -318,13 +318,11 @@ export default {
     watch: {
         initCoupon: {
             handler(newValue, oldValue) {
-                // if (newValue != "") {
-                this.totalPrice = this.discount_price;
-                //  * this.howManyNight * this.roomNum -
-                // newValue.amount;
-                this.isCouponMask = false;
-                console.log(111);
-                // }
+                if (newValue != "") {
+                    console.log(newValue);
+                    this.totalPrice = this.discount_price - newValue.amount;
+                    this.isCouponMask = false;  //选取优惠券是其dialog消失
+                }
             },
             deep: true,
             immediate: true
@@ -335,22 +333,18 @@ export default {
         showCouponMask() {
             this.isCouponMask = true;
         },
-
         // 隐藏优惠券遮罩--ui说不需要此交互
         hideCouponMask() {
             this.isCouponMask = false;
         },
-
         // 展示交易明细遮罩
         showDealDetailMask() {
             this.isDealDetailMask = true;
         },
-
         // 隐藏交易明细遮罩-ui没有设计这个交互逻辑
         hideDealDetailMask() {
             this.isDealDetailMask = false;
         },
-
         // 拉取订单预览数据
         fetchOrderForm() {
             var para = this.watchObj;
@@ -373,7 +367,6 @@ export default {
                 })
                 .catch(err => {});
         },
-
         // 减房间数
         minusRoomNum() {
             if (this.watchObj.room_sum == 1) {
@@ -445,26 +438,25 @@ export default {
                 this.orderTelTipsVisible = true;
                 this.orderTelTxt = "输入手机号不能为空";
             }
-
             // 再次判断入住人input输入框的名字是否为空
             if (this.orderName.trim() == "") {
                 this.orderNameTipsVisible = true;
                 this.orderNameTxt = "输入姓名不能为空";
             }
-
             // 总的判断
             if (this.orderNameBlur() && this.orderTelBlur()) {
+                // 如果用户没有选取优惠券，initCoupon为空值，在传参时候，
+                // this.initCoupon.id会报错，故添加下面的逻辑代码。
                 if (this.initCoupon == "") {
                     this.initCoupon = {};
                     this.initCoupon.id = "";
                 }
-                // console.log(this.initCoupon.id);
                 this.$http({
                     method: "POST",
                     url: create_order,
                     data: {
                         room_type: this.watchObj.room_id,
-                        store_id: this.watchOb.jstore_id,
+                        store_id: this.watchObj.store_id,
                         dwell_name: this.orderName,
                         dewll_mobile: this.orderTel,
                         room_sum: this.watchObj.room_sum,
@@ -475,7 +467,12 @@ export default {
                 })
                     .then(res => {
                         if (res.data.status == 1) {
-                            alert("订单预定成功");
+                            this.$router.push({
+                                path: "/onlinePay",
+                                query:{
+                                    order_id:res.data.data.order_id
+                                }
+                            });
                         }
                     })
                     .catch();

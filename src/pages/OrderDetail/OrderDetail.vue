@@ -32,7 +32,9 @@
                 </li>
                 <li class="li">
                     <label class="lab">住店日期</label>
-                    <span class="span">{{order_id_info.start_time|filterTimeMM}}月{{order_id_info.start_time|filterTimeDD}}日－{{order_id_info.end_time|filterTimeMM}}月{{order_id_info.end_time|filterTimeDD}}日 共{{order_id_info.occupancy_day_num}}天</span>
+                    <span class="span">
+                        {{order_id_info.start_time|filterTimeMM}}月 {{order_id_info.start_time|filterTimeDD}}日 － {{order_id_info.end_time|filterTimeMM}}月 {{order_id_info.end_time|filterTimeDD}}日 共{{order_id_info.occupancy_day_num}}天
+                    </span>
                 </li>
                 <li class="li">
                     <label class="lab">下单日期</label>
@@ -67,55 +69,55 @@
                 </div>
                 <!-- 交易明细弹框的内容 -->
                 <div class="weui-actionsheet__menu">
-                    <!-- <div class="zb-actionsheet__bd">
+                    <div class="zb-actionsheet__bd">
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
                             <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
                                 <div class="weui-cell__bd div zb-weui-cell__hd">
-                                    <h4>{{howManyNight}}晚、{{roomNum}}间共</h4>
+                                    <h4>{{order_id_info.occupancy_day_num}}晚、{{order_detail.length}}间共</h4>
                                 </div>
-                                <div class="weui-cell__hd div">&yen;{{totalPrice}}</div>
+                                <div class="weui-cell__hd div">&yen;{{order_id_info.amount}}</div>
                             </label>
                         </div>
-                    </div> -->
-                    <!-- 循环下面的整体 -->
-                    <!-- <div class="zb-actionsheet__bd" v-if="price" v-for="(item,index) in price" :key="index">
+                    </div>
+                    <!-- 每天每间多少钱 -->
+                    <div class="zb-actionsheet__bd" v-if="order_cost_info.detail" v-for="(item,index) in order_cost_info.detail" :key="index">
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
                             <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
                                 <div class="weui-cell__bd div zb-weui-cell__hd">
-                                    <h4>{{item.add_time}}</h4>
+                                    <h4>{{item.order_time}}</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <span style="color:#666;">1间 * </span> &yen;{{item.unit_price}}
+                                    <span style="color:#666;">1间 * </span> &yen;{{item.money}}
                                 </div>
                             </label>
                         </div>
-                    </div> -->
-                    <!-- 交易明细优惠券 -->
-                    <!-- <div class="zb-actionsheet__bd" v-if="initCoupon">
+                    </div>
+                    <!-- 订单优惠券是否使用并展示 -->
+                    <div class="zb-actionsheet__bd" v-if="order_cost_info.coupon_id">
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
-                            <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
+                            <label class="weui-cell zb-weui-cell weui-check__label" for="deal1">
                                 <div class="weui-cell__bd div zb-weui-cell__hd">
                                     <h4>优惠券折扣</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <span style="color:#666;">满{{initCoupon.min_amount}}减{{initCoupon.amount}}</span>
+                                    <span style="color:#666;">满{{order_cost_info.counpon_min_amount}}减{{order_cost_info.coupon_amount}}</span>
                                 </div>
                             </label>
                         </div>
-                    </div> -->
-                    <!-- 交易明细实付 -->
-                    <!-- <div class="zb-actionsheet__bd">
+                    </div>
+                    <!-- 实付 -->
+                    <div class="zb-actionsheet__bd">
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
-                            <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
+                            <label class="weui-cell zb-weui-cell weui-check__label" for="deal1">
                                 <div class="weui-cell__bd div zb-weui-cell__hd">
                                     <h4>总计</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <span style="color:#666;">实付</span> &yen;{{totalPrice}}
+                                    <span style="color:#666;">实付</span> &yen;{{order_cost_info.order_money}}
                                 </div>
                             </label>
                         </div>
-                    </div> -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -131,8 +133,8 @@ export default {
         return {
             isDealDetailMask: false,
             order_id: "", //接收路由传过来的order_id
-            order_id_info: "", // 接收http请求的数据
-            order_cost_info:""
+            order_id_info: "", // 接收http请求的order_detail数据
+            order_cost_info: ""  // 接收http请求的明细接口（order_cost_info）数据
         };
     },
     created() {
@@ -143,7 +145,6 @@ export default {
         this.fetchOrderDetail();
         // 拉取明细详情
         this.fetchOrderCostDetail();
-
     },
     methods: {
         // 展示交易明细遮罩
@@ -166,6 +167,7 @@ export default {
                 .then(res => {
                     if (res.data.status == 1) {
                         this.order_id_info = res.data.data;
+                        this.order_detail = res.data.data.order_detail;
                     }
                 })
                 .catch();
@@ -181,14 +183,11 @@ export default {
             })
                 .then(res => {
                     if (res.data.status == 1) {
-                        this.order_cost_info=res.data.data
-
-                        
+                        this.order_cost_info = res.data.data;
                     }
                 })
                 .catch();
-        },
-
+        }
     }
 };
 </script>
@@ -300,12 +299,11 @@ export default {
                 color: #ffba56;
                 line-height: 18px;
                 font-size: 15px;
-                
             }
             .arrow {
                 width: 16px;
                 height: 16px;
-                margin-left:10px; 
+                margin-left: 10px;
                 img {
                     display: block;
                     width: 16px;
