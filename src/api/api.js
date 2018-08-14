@@ -54,7 +54,7 @@ export const user_card_privilege = '/api/User/user_card_privilege?cpid=' + Globa
 // UserActivity-用户活动
 export const get_coupon = '/api/Coupon/get_coupon' // 领取优惠卷
 
-export const coupon_list = '/api/Coupon/coupon_list' // 优惠卷列表
+export const coupon_list = '/api/Coupon/coupon_list?cpid=' + GlobalCpid // 优惠卷列表
 
 export const del_coupon = '/api/Coupon/del_coupon' // 优惠卷过期删除（后台）
 
@@ -106,6 +106,9 @@ export const delete_order = '/api/Order/delete_order?cpid=' + GlobalCpid;  //删
 export const order_detail = 'api/Order/order_detail?cpid=' + GlobalCpid;  //订单详情
 
 export const order_cost_detail = '/api/Order/order_cost_detail?cpid=' + GlobalCpid;  //订单费用明细
+
+export const order_preserver = '/api/Order/order_preserver?cpid=' + GlobalCpid;  //维权（申请退款）
+
 
 
 

@@ -7,13 +7,13 @@
         <div class="olinePay_box_content">
             <p class="store_name">{{order_id_info.name}}</p>
             <div class="room_introduce">
-                <img src="../../assets/images/hotel-label/my_order_hotel.png" />
+                <img src="../../assets/images/hotel-label/my_order_hotel.png" style="vertical-align: text-top;"/>
                 <span>{{order_id_info.room_name}}</span>
-                <span>1间!</span>
+                <span>{{order_id_info.room_sum}}间</span>
                 <span class="room_money">&yen; {{order_id_info.amount}}</span>
             </div>
             <div class="calendar">
-                <img src="../../assets/images/hotel-label/my_order_date.png" />
+                <img src="../../assets/images/hotel-label/my_order_date.png" style="vertical-align: text-top;"/>
                 <span>
                     {{order_id_info.start_time|filterTimeMM}}月{{order_id_info.start_time|filterTimeDD}}日 - {{order_id_info.end_time|filterTimeMM}}月{{order_id_info.end_time|filterTimeDD}}日
                 </span>

@@ -72,7 +72,7 @@
             <li class="ticket">
                 <label class="label">发票</label>
                 <div class="item-rg" style="color:#666;font-size:14px;line-height:50px;">
-                    酒店开具
+                    酒店开具发票
                 </div>
             </li>
         </ul>
@@ -319,7 +319,7 @@ export default {
         initCoupon: {
             handler(newValue, oldValue) {
                 if (newValue != "") {
-                    console.log(newValue);
+                    // console.log(newValue);
                     this.totalPrice = this.discount_price - newValue.amount;
                     this.isCouponMask = false;  //选取优惠券是其dialog消失
                 }

@@ -61,7 +61,7 @@
         </router-link>
         <!-- 交易明细弹框 -->
         <div class="deal-detail-mask-box">
-            <div class="weui-mask zb-weui-mask" id="dealDetailMask" @click="hideDealDetailMask" :class="[{'weui-actionsheet_no_toggle_active':isDealDetailMask},{'weui-actionsheet_no_toggle':!isDealDetailMask}]"></div>
+            <div class="weui-mask zb-weui-mask" @click="hideDealDetailMask" :class="[{'weui-actionsheet_no_toggle_active':isDealDetailMask},{'weui-actionsheet_no_toggle':!isDealDetailMask}]"></div>
             <div class="weui-actionsheet zb-weui-actionsheet" id="weui-actionsheet" :class="[{'weui-actionsheet_toggle':isDealDetailMask}]">
                 <!-- 交易明细弹框的title -->
                 <div class="weui-actionsheet__title zb-weui-actionsheet__title">
@@ -100,7 +100,7 @@
                                     <h4>优惠券折扣</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <span style="color:#666;">满{{order_cost_info.counpon_min_amount}}减{{order_cost_info.coupon_amount}}</span>
+                                    <span style="color:#666;">{{order_cost_info.coupon_str}}</span>
                                 </div>
                             </label>
                         </div>

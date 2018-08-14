@@ -45,7 +45,7 @@
                     </div>
                     <div class="rg">
                         <router-link :to=" { path: 'hotelLabel', query: { store_id: watchObj.store_id }}" tag="div">
-                            <span class="btn-more">查看更多</span>
+                            <span class="btn-more">更多</span>
                         </router-link>
                     </div>
                 </div>

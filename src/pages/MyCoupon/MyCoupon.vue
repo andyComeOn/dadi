@@ -1,7 +1,7 @@
 <template>
 	<div class="my-coupon-page m-position-ab" >
-		<mCoupon @nowUseEmit="nowUseFun" :list="posts"></mCoupon>
-		<!-- <div>{{type}}</div> -->
+		<mCoupon @nowUseEmit="nowUseFun"></mCoupon>
+		
 	</div>
 
 </template>
@@ -41,11 +41,15 @@ export default {
 			type:0
 		}
 	},
+	created() {
+		
+	},
 	methods:{
 		nowUseFun(val){
 			console.log(val);
 			this.type = val;
-		}
+		},
+		// 我的优惠券
 	}
 };
 </script>
