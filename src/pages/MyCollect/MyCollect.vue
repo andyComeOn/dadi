@@ -75,7 +75,7 @@ export default {
                     }
                 })
                 .catch(err => {});
-        },
+        }
     }
 };
 </script>
@@ -108,7 +108,9 @@ export default {
                     width: 83px;
                     height: 73px;
                     float: left;
-                    background: palegreen;
+                    background: url("../../assets/images/default/fangxing.jpg")
+                        no-repeat right center;
+                    background-size: 83px 73px;
                     img {
                         width: 83px;
                         height: 73px;

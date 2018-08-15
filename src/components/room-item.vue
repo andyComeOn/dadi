@@ -133,6 +133,9 @@ export default {
             width: 100px;
             height: 120px;
             float: left;
+            background: url("../assets/images/default/jiudian.jpg")
+                    no-repeat right center;
+                background-size: 100px 120px;
             img {
                 width: 100px;
                 height: 120px;

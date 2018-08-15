@@ -8,24 +8,23 @@
                 <p class="weui-toast__content">数据加载中</p>
             </div>
         </div>
-        <div class="main" v-if="data_room.length>0">
+        <div class="main" v-if="data_store">
             <!-- 广告 -->
             <div class="banner-box">
-                <!-- <div class="banner"> -->
-                <swiper class="zb-swiper" :options="swiperOption" ref="mySwiper" @someSwiperEvent="swiperCallback(1)">
-                    <swiper-slide v-for="item in bannerList" :key="item.id" @click="swiperSlideFun(item.id)">
-                        <router-link :to="{path:'hotelDetailBannerLink',query:{store_id:watchObj.store_id}}" class="hotel-detail-banner-link">
-                            <img :src="item.img" alt="">
-                        </router-link>
-                    </swiper-slide>
-                    <div class="swiper-pagination" slot="pagination"></div>
-                </swiper>
-                <!-- </div> -->
-
-                <!-- <div class="collect" @click="addCollect">
+                <div class="banner">
+                    <swiper class="zb-swiper" :options="swiperOption" ref="mySwiper" @someSwiperEvent="swiperCallback(1)">
+                        <swiper-slide v-for="(item,index) in data_store.img_logo" :key="index" @click="swiperSlideFun(index)">
+                            <router-link :to="{path:'hotelDetailBannerLink',query:{store_id:watchObj.store_id}}" class="hotel-detail-banner-link">
+                                <img :src="item" alt="">
+                            </router-link>
+                        </swiper-slide>
+                        <div class="swiper-pagination" slot="pagination"></div>
+                    </swiper>
+                </div>
+                <div class="collect" @click="addCollect">
                     <img v-if="is_collect==1" :src="collectIconActive" alt="">
                     <img v-if="is_collect==0" :src="collectIcon" alt="">
-                </div> -->
+                </div>
             </div>
             <!-- 酒店位置说明 -->
             <div class="detail">
@@ -146,9 +145,9 @@ export default {
                 observeParents: true,
                 debugger: true
             },
-            isRoomDetailToastVisible:true,
-            isShow:false,
-            bannerList: [],  // 拉取banner信息
+            isRoomDetailToastVisible: true,
+            isShow: false,
+            bannerList: [], // 拉取banner信息
             // 请求数据需要传的参数
             watchObj: {
                 cpid: "1",
@@ -358,7 +357,6 @@ export default {
                 url: add_collect,
                 data: p
             }).then(res => {
-                console.log(res.data);
                 if (res.data.status == 1) {
                     this.fetchData(this.watchObj);
                 }
@@ -372,11 +370,18 @@ export default {
 // banner的box
 .banner-box {
     position: relative;
-    .zb-swiper {
-        width: 100%;
-        height: 100%;
-        margin: 0 auto;
+    .banner {
+        min-height: 162px;
+        background: url("../../assets/images/default/banner.jpg") no-repeat
+            center center;
+        background-size: 100% 100%;
+        .zb-swiper {
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+        }
     }
+
     .collect {
         width: 32px;
         height: 32px;
@@ -537,6 +542,9 @@ export default {
             .lf {
                 width: 83px;
                 height: 73px;
+                background: url("../../assets/images/default/fangxing.jpg")
+                    no-repeat right center;
+                background-size: 83px 73px;
                 margin-right: 10px;
                 img {
                     width: 83px;
@@ -603,15 +611,15 @@ export default {
 }
 
 // -------------------无酒店--------------------
-.no-store{
-    margin-top:170px; 
-    img{
+.no-store {
+    margin-top: 170px;
+    img {
         display: block;
         width: 152px;
         height: 108px;
         margin: 0 auto;
     }
-    p{
+    p {
         line-height: 20px;
         font-size: 14px;
         color: #666;

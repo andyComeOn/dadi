@@ -18,6 +18,11 @@ export function filterTimeDD(a) {
 export function filterTimeYY(a) {
 	return a.slice(0, 4);
 }
+// 过滤后台时间格式"2018-08-09 12:00:00"的年月日
+export function filterTimeYTD(a) {
+	let index = a.indexOf(" ");
+	return a.slice(0, index);
+}
 // 过滤不同的状态
 export function filterStatus(b) {
 	if (b == 0) {
@@ -39,5 +44,28 @@ export function filterStatus(b) {
 	} else {
 		return "退款结束";
 	}
+}
+// 过滤优惠券  后台时间格式"2018-08"的天
+export function filterCouponStoreflag(a) {
+	if (a == 0) {
+		return '通用';
+	} else if (a == 1) {
+		return '指定';
+	}
+}
+// 过滤优惠券状态，如：0=>未使用;1=>已使用;2=>已过期;-1=>已失效;
+export function filterCouponStatusLab(a) {
+	if (a == 0) {
+		return '未使用';
+	} else if (a == 1) {
+		return '已使用';
+	} else {
+		return '已过期';
+	} 
+}
+// 过滤金额如：50.00 => 50
+export function filterMoneyInt(a) {
+	let index = a.indexOf(".");
+	return a.slice(0, index);
 }
 
