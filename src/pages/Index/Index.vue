@@ -7,7 +7,6 @@
                 <swiper class="zb-swiper" :options="swiperOption" ref="mySwiper" @someSwiperEvent="swiperCallback(1)">
                     <swiper-slide v-for="item in bannerList" :key="item.id" @click="swiperSlideFun(item.id)">
                         <router-link :to="{path:'hotelDetailBannerLink',query:{}}" class="hotel-detail-banner-link">
-                            <!-- store_id:2 -->
                             <img :src="item.img" alt="">
                         </router-link>
                     </swiper-slide>
@@ -116,7 +115,7 @@ export default {
                 direction: "horizontal",
                 grabCursor: true,
                 setWrapperSize: true,
-                autoHeight: false,
+                autoHeight: true,
                 pagination: ".swiper-pagination",
                 paginationClickable: true,
                 mousewheelControl: false,
@@ -303,7 +302,14 @@ export default {
     padding-bottom: 50px;
     height: 100%;
 }
-
+.banner-box{
+    position: relative;
+    min-height: 162px;
+    max-height: 190px;
+    background: url("../../assets/images/default/banner.jpg") no-repeat center
+        center;
+    background-size: 100% 100%;
+}
 // 用户预定区
 .reserve-form {
     width: 100%;

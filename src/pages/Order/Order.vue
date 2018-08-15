@@ -161,7 +161,7 @@
                                 </div>
                             </label>
                         </div>
-                    </div>
+                    </div>  
                     <!-- 交易明细优惠券 -->
                     <div class="zb-actionsheet__bd" v-if="initCoupon">
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">

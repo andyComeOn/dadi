@@ -11,16 +11,18 @@
         <div class="main" v-if="data_store">
             <!-- 广告 -->
             <div class="banner-box">
-                <div class="banner">
-                    <swiper class="zb-swiper" :options="swiperOption" ref="mySwiper" @someSwiperEvent="swiperCallback(1)">
-                        <swiper-slide v-for="(item,index) in data_store.img_logo" :key="index" @click="swiperSlideFun(index)">
-                            <router-link :to="{path:'hotelDetailBannerLink',query:{store_id:watchObj.store_id}}" class="hotel-detail-banner-link">
-                                <img :src="item" alt="">
-                            </router-link>
-                        </swiper-slide>
-                        <div class="swiper-pagination" slot="pagination"></div>
-                    </swiper>
-                </div>
+                
+                <swiper class="zb-swiper" :options="swiperOption" ref="mySwiper" @someSwiperEvent="swiperCallback(1)">
+                    <swiper-slide v-for="(item,index) in data_store.img_logo" :key="index" @click="swiperSlideFun(index)">
+                        <!-- data_store.img_logo -->
+                        <router-link :to="{path:'hotelDetailBannerLink',query:{store_id:watchObj.store_id}}" class="hotel-detail-banner-link">
+                            <img :src="item" alt="">
+                            <!-- {{item}} -->
+                        </router-link>
+                    </swiper-slide>
+                    <div class="swiper-pagination" slot="pagination"></div>
+                </swiper>
+                
                 <div class="collect" @click="addCollect">
                     <img v-if="is_collect==1" :src="collectIconActive" alt="">
                     <img v-if="is_collect==0" :src="collectIcon" alt="">
@@ -138,7 +140,7 @@ export default {
                 direction: "horizontal",
                 grabCursor: true,
                 setWrapperSize: true,
-                autoHeight: false,
+                autoHeight: true,
                 pagination: ".swiper-pagination",
                 paginationClickable: true,
                 mousewheelControl: false,
@@ -147,7 +149,8 @@ export default {
             },
             isRoomDetailToastVisible: true,
             isShow: false,
-            bannerList: [], // 拉取banner信息
+            bannerList: ["123", "456"], // 拉取banner信息
+            // data_store.img_logo
             // 请求数据需要传的参数
             watchObj: {
                 cpid: "1",
@@ -229,7 +232,7 @@ export default {
     },
     mounted() {
         // 拉取banner信息
-        this.fetchBannerData({ cpid: 1, type_id: 1 });
+        // this.fetchBannerData({ cpid: 1, type_id: 1 });
     },
     watch: {
         watchObj: {
@@ -367,21 +370,19 @@ export default {
 </script>
 
 <style lang="less" scoped>
-// banner的box
+// banner
 .banner-box {
     position: relative;
-    .banner {
-        min-height: 162px;
-        background: url("../../assets/images/default/banner.jpg") no-repeat
-            center center;
-        background-size: 100% 100%;
-        .zb-swiper {
-            width: 100%;
-            height: 100%;
-            margin: 0 auto;
-        }
+    min-height: 162px;
+    max-height: 190px;
+    background: url("../../assets/images/default/banner.jpg") no-repeat center
+        center;
+    background-size: 100% 100%;
+    .zb-swiper {
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
     }
-
     .collect {
         width: 32px;
         height: 32px;
