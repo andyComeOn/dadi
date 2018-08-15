@@ -171,7 +171,11 @@ export default {
         this.zbInitCalendar.end.dd = f(dd).dd;
         // 拉取banner的方法
         this.fetchBannerData({ cpid: 1, type_id: 1 });
-
+    },
+    computed: {
+        swiper() {
+            return this.$refs.mySwiper.swiper;
+        }
     },
     methods: {
         // banner方法

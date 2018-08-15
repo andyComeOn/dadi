@@ -11,7 +11,6 @@
         <div class="main" v-if="data_store">
             <!-- 广告 -->
             <div class="banner-box">
-                
                 <swiper class="zb-swiper" :options="swiperOption" ref="mySwiper" @someSwiperEvent="swiperCallback(1)">
                     <swiper-slide v-for="(item,index) in data_store.img_logo" :key="index" @click="swiperSlideFun(index)">
                         <!-- data_store.img_logo -->
@@ -35,6 +34,7 @@
                     <li class="location">{{data_store.address}}</li>
                     <li class="location-info"> {{data_store.introduce}}</li>
                 </ul>
+                <a :href="'tel:' + data_store.tel" class="call"><img src="../../assets/images/icon/ic-call.png" alt=""></a>
             </div>
 
             <!-- 酒店详情查看更多 -->
@@ -387,8 +387,8 @@ export default {
         width: 32px;
         height: 32px;
         position: absolute;
-        bottom: -16px;
-        right: 15px;
+        top: 15px;
+        right: 20px;
         z-index: 10;
         img {
             width: 32px;
@@ -424,6 +424,20 @@ export default {
         background: url("../../assets/images/hotel-label/ic_dingwei.png")
             no-repeat 3px 3px;
         background-size: 13px 15px;
+    }
+    .call{
+        width: 32px;
+        height: 32px;
+        position: absolute;
+        top: 50%;
+        margin-top: -16px;
+        right: 20px;
+        z-index: 10;
+        img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
     }
 }
 
