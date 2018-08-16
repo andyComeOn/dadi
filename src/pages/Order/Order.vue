@@ -18,20 +18,27 @@
                 </div>
             </div>
         </div>
-
         <!-- 用户信息操作区 -->
         <ul class="info">
             <!-- 房间数 -->
             <li class="room">
                 <label class="label">房间数</label>
-                <div class="room-info">
-                    <span class="span-minus" @click="minusRoomNum"><img :src="imgSrcMinus" alt=""></span>
+                <div class="room-info" @click="selectRoom">
+                    {{quantity}}间
+                    <img class="arrow-icon" src="../../assets/images/arrows/ic_pay_arrow.png" alt="">
+                    <!-- <span class="span-minus" @click="minusRoomNum"><img :src="imgSrcMinus" alt=""></span>
                     <span class="span-input">
                         <input type="number" class="txt" id="" v-model="watchObj.room_sum">
                     </span>
-                    <span class="span-plus" @click="plusRoomNum"><img :src="imgSrcPlus" alt=""></span>
+                    <span class="span-plus" @click="plusRoomNum"><img :src="imgSrcPlus" alt=""></span> -->
                 </div>
             </li>
+            <!-- 可定房间的列表 -->
+            <div class="room-num-select" v-show="isSelectRoom">
+                <span v-for="(item,index) in roomNumItems" :key="index">
+                    <i :class="{canSel:item.isCanSel}" @click="selectOrder(item.num,item.isCanSel)">{{item.num}}</i>
+                </span>
+            </div>
             <!-- 入住人姓名 -->
             <li class="name">
                 <label class="label">入住人姓名</label>
@@ -77,7 +84,7 @@
             </li>
         </ul>
 
-        <!-- 文字小提示 -->
+        <!-- 文字提示 -->
         <div class="tips">
             <h3>温馨提示</h3>
             <p>1.酒店与住店当天13:00办理入住，离店13:00办理退房，如您在13:00前未到达，可能需要等待方能入住，具体以酒店安排为准。 </p>
@@ -161,7 +168,7 @@
                                 </div>
                             </label>
                         </div>
-                    </div>  
+                    </div>
                     <!-- 交易明细优惠券 -->
                     <div class="zb-actionsheet__bd" v-if="initCoupon">
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
@@ -219,18 +226,18 @@ export default {
         return {
             isCouponMask: false,
             isDealDetailMask: false,
+            isSelectRoom: false,
             // 加减房间数按钮img的src路径
             btnPlus: require("../../assets/images/btn-plus-minus/plus.png"),
             btnPlusActive: require("../../assets/images/btn-plus-minus/plusA.png"),
             btnMinus: require("../../assets/images/btn-plus-minus/minus.png"),
             btnMinusActive: require("../../assets/images/btn-plus-minus/minusA.png"),
-
             watchObj: {
                 store_id: "",
                 room_id: "",
                 begin: "",
                 finish: "",
-                room_sum: 1   //默认的房间数
+                room_sum: 1 //默认的房间数
             },
 
             beginY: "",
@@ -251,8 +258,7 @@ export default {
             price: [],
             // 请求返回的数据
             fetchData: {},
-            
-           
+
             // 后台返回的该用户可订房信息
             userOrderMaxNum: 5,
             // 后台返回的该用户是否可订房标志
@@ -278,7 +284,9 @@ export default {
             // 订房人手机号输入验证
             orderTelTipsVisible: false,
             orderTelTxt: "",
-            OrderFullToast: false
+            OrderFullToast: false,
+            roomNumItems: "", //循环可定房间
+            quantity: "", //该用户可定的房间数
         };
     },
     created() {
@@ -321,7 +329,7 @@ export default {
                 if (newValue != "") {
                     // console.log(newValue);
                     this.totalPrice = this.discount_price - newValue.amount;
-                    this.isCouponMask = false;  //选取优惠券是其dialog消失
+                    this.isCouponMask = false; //选取优惠券是其dialog消失
                 }
             },
             deep: true,
@@ -360,6 +368,17 @@ export default {
                         this.coupon = res.data.data.coupon; //给房间优惠券赋值
                         this.price = res.data.data.price; // 给明细赋值
                         this.totalPrice = res.data.data.discount_price;
+                        let quantity = parseInt(res.data.data.quantity); // 后台配置的最大可选择几间房
+                        let astrict = parseInt(res.data.data.astrict); //当前用户能定的最大房间数
+                        this.quantity = quantity;
+                        let tmp = [];
+                        for (let i = 1; i <= astrict; i++) {
+                            tmp.push({
+                                num: i,
+                                isCanSel: i <= quantity ? true : false
+                            });
+                        }
+                        this.roomNumItems = tmp;
                     } else if (res.data.status == -3) {
                         this.isUserCanOrder = false;
                         this.watchObj.room_sum -= 1; //当不能在订房时候，其实已经达到了6，马上减1使其变成5。
@@ -394,7 +413,23 @@ export default {
                 this.imgSrcMinus = this.btnMinusActive;
                 this.initCoupon = "";
                 this.fetchOrderForm();
-            } 
+            }
+        },
+        // 选择房间折叠与否
+        selectRoom() {
+            this.isSelectRoom = !this.isSelectRoom;
+        },
+        // 点击按钮进行订房
+        selectOrder(num,type){
+            if (type==false) {
+                this.OrderFullToast = true;
+                setTimeout(() => {
+                    this.OrderFullToast = false;
+                }, 2000);
+                return;
+            }
+            this.watchObj.room_sum = num;
+            this.fetchOrderForm();
         },
         // 订房人input姓名失焦
         orderNameBlur() {
@@ -468,9 +503,9 @@ export default {
                     .then(res => {
                         if (res.data.status == 1) {
                             this.$router.push({
-                                path: "/onlinePay",
-                                query:{
-                                    order_id:res.data.data.order_id
+                                path: "onlinePay",
+                                query: {
+                                    order_id: res.data.data.order_id
                                 }
                             });
                         }
@@ -624,6 +659,36 @@ export default {
     .info {
         padding-left: 15px;
         background: #fff;
+        .room-num-select {
+            margin-left: -15px;
+            background: #eff1f0;
+            padding: 15px 0;
+            &::after {
+                display: table;
+                content: "";
+                clear: both;
+            }
+            span {
+                float: left;
+                width: 20%;
+                padding: 0 12px;
+                font-size: 14px;
+                margin-bottom: 12px;
+                i {
+                    display: inline-block;
+                    width: 100%;
+                    text-align: center;
+                    line-height: 34px;
+                    font-style: normal;
+                    background: #ccc;
+                    color: #999;
+                    &.canSel {
+                        background: #fff;
+                        color: #666;
+                    }
+                }
+            }
+        }
         li {
             height: 50px;
             position: relative;
@@ -641,7 +706,14 @@ export default {
                 .room-info {
                     float: right;
                     height: 50px;
+                    line-height: 50px;
                     padding-right: 15px;
+                    .arrow-icon {
+                        display: inline-block;
+                        width: 16px;
+                        height: 16px;
+                        margin: -2px 0 0 5px;
+                    }
                     span {
                         height: 50px;
                         float: left;
@@ -776,7 +848,7 @@ export default {
                 float: left;
             }
             .arrow {
-                width: 36px;
+                width: 49px;
                 height: 49px;
                 line-height: 49px;
                 text-align: center;

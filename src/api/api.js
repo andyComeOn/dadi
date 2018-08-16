@@ -27,6 +27,8 @@ export const getCompanyInfo = '/api/Index/getCompanyInfo'     //
 
 export const login_test = '/api/login/login_test?cpid=' + GlobalCpid;   // 模拟登陆
 
+export const login = '/api/Login/login?cpid=' + GlobalCpid;     //登录接口
+
 
 // Public-公共
 export const DistributionBanner = '/api/Banner/DistributionBanner'  // 轮播图
@@ -108,12 +110,6 @@ export const order_detail = 'api/Order/order_detail?cpid=' + GlobalCpid;  //订�
 export const order_cost_detail = '/api/Order/order_cost_detail?cpid=' + GlobalCpid;  //订单费用明细
 
 export const order_preserver = '/api/Order/order_preserver?cpid=' + GlobalCpid;  //维权（申请退款）
-
-
-
-
-
-
 
 
 

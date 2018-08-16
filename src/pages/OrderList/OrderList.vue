@@ -40,12 +40,6 @@ export default {
         }
     },
     methods: {
-        // 申请退款emit的方法
-        applyMoneyEmitFun() {
-            this.$router.push({
-                path: "/applyMoney"
-            });
-        },
         tab(index) {
             this.isActive = index;
             this.watchObj.type = index;

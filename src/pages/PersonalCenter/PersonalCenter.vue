@@ -42,7 +42,8 @@
 				imgUrl:'',		//头像
 				nickname:'',	//昵称
 				sex:'',			//性别   1
-				mobile:''		//手机号
+				mobile:'',		//手机号
+				openId:'',		//openId
 			}
 		},
 		computed: {
@@ -92,7 +93,12 @@
 			},
 			//跳转到
 			oldMobile(){
-				this.$router.push({path:'/oldPhoneNum?oldMobile=' + this.mobile})
+				//手机号为空跳转到登录页面，有值跳转到老手机号页面
+				if(this.mobile == ''){
+					this.$router.push({path:'/login?loginPage=' + 2 + '&openId=' + this.openId});
+				}else{
+					this.$router.push({path:'/oldPhoneNum?oldMobile=' + this.mobile});
+				}
 			}
 		},
 		mounted() {
@@ -109,6 +115,7 @@
 				this.birthdayNum = res.data.data.birthday;	//生日
 				this.sex = res.data.data.sex;				//
 				this.mobile = res.data.data.mobile;
+				this.openId = res.data.data.openid;
 				console.log(res);
 			});
         }

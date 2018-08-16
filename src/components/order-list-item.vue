@@ -38,6 +38,14 @@
                 <p class="weui-toast__content">数据加载中</p>
             </div>
         </div>
+        <!-- toas提示(包含2s延时) -->
+        <div v-show="delayToastShow">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+                <p class="weui-toast__content">{{delayToastTxt}}</p>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -65,7 +73,10 @@ export default {
         return {
             list: [],
             noOrderStatusTxt: "",
-            isOrderListToastVisible: false
+            isOrderListToastVisible: false,
+            delayToastShow: false,  //延时toast的开关
+            delayToastTxt:"取消成功",   //延时toast的txt提示
+
         };
     },
     created() {},
@@ -91,7 +102,7 @@ export default {
         // 申请退款
         applyMoney(order_id) {
             this.$router.push({
-                path: "/applyMoney",
+                path: "applyMoney",
                 query: {
                     order_id: order_id
                 }
@@ -109,7 +120,11 @@ export default {
             })
                 .then(res => {
                     if (res.data.status == 1) {
-                        window.location.href = window.location.href;
+                        this.delayToastShow = true;
+                        setTimeout(()=>{
+                            this.delayToastShow = false;
+                        },2000);
+                        this.fetchData(this.condition);
                     }
                 })
                 .catch();
@@ -117,7 +132,7 @@ export default {
         // 再次预定
         reOrder(store_id) {
             this.$router.push({
-                path: "/hotelDetail",
+                path: "hotelDetail",
                 query: {
                     store_id: store_id
                 }
@@ -134,7 +149,7 @@ export default {
             })
                 .then(res => {
                     if (res.data.status == 1) {
-                        console.log(res);
+                        this.fetchData(this.condition);
                     }
                 })
                 .catch(err => {});
