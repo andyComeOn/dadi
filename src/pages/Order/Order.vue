@@ -190,7 +190,7 @@
                                     <h4>总计</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <span style="color:#666;">实付</span> &yen;{{totalPrice}}
+                                    <span style="color:#666;">实付金额：</span> &yen;{{totalPrice}}
                                 </div>
                             </label>
                         </div>

@@ -39,7 +39,6 @@
             <!-- <Search @cancelSearchEmit="cancelSearchEmitFun"> -->
             <!-- </Search> -->
         <!-- </mu-dialog> -->
-
     </div>
 </template>
 
@@ -72,7 +71,6 @@ export default {
 
             // 监听数据的变化，用来筛选满足条件的酒店列表
             watchObj: {
-                cpid: "1", // 公司id
                 type: "", //正序、降序排列
                 longitude: "", // 经度
                 latitude: "", //维度

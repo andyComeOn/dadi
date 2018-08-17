@@ -5,7 +5,8 @@ import Index from '../pages/Index/Index'
 
 // Error
 import Error from '../pages/Error/Error'
-
+// 首页banner广告
+import Ad from '../pages/Ad/Ad'
 // 酒店详情
 import HotelDetail from '../pages/HotelDetail/HotelDetail'
 // 酒店详情-查看酒店更多标签
@@ -100,6 +101,15 @@ export default new Router({
 			component: HotelDetail,
 			meta:{
 				title:'酒店详情'
+			}
+		},
+		// 推荐好友-点我推广
+		{
+			path: '/ad',
+			name: 'ad',
+			component: Ad,
+			meta:{
+				title:'广告'
 			}
 		},
 		// 酒店详情页-查看更多酒店标签

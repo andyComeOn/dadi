@@ -6,11 +6,11 @@
             <div class="banner-box">
                 <swiper class="zb-swiper" :options="swiperOption" ref="mySwiper" @someSwiperEvent="swiperCallback(1)">
                     <swiper-slide v-for="item in bannerList" :key="item.id" @click="swiperSlideFun(item.id)">
-                        <router-link :to="{path:'hotelDetailBannerLink',query:{}}" class="hotel-detail-banner-link">
+                        <router-link :to="{path:'ad',query:{}}" class="hotel-detail-banner-link">
                             <img :src="item.img" alt="">
                         </router-link>
                     </swiper-slide>
-                    <div class="swiper-pagination" slot="pagination"></div>
+                    <div class="swiper-pagination" style="line-height:5px;bottom:5px;" slot="pagination"></div>
                 </swiper>
             </div>
             <!-- 用户预定区 -->
@@ -87,7 +87,12 @@
 </template>
 
 <script>
-import { slt_location, oauth, getCompanyInfo,DistributionBanner } from "../../api/api"; // 引入api
+import {
+    slt_location,
+    oauth,
+    getCompanyInfo,
+    DistributionBanner
+} from "../../api/api"; // 引入api
 import { f, dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
 import mTabbarFa from "@/components/tabbarfa";
 import mSwipe from "../../components/swipe";
@@ -115,18 +120,36 @@ export default {
                 direction: "horizontal",
                 grabCursor: true,
                 setWrapperSize: true,
-                autoHeight: true,
+                autoHeight: false,
                 pagination: ".swiper-pagination",
+                paginationType: "custom",
+                paginationCustomRender: function(swiper, current, total) {
+                    const activeColor = "#30B097";
+                    const normalColor = "rgba(255,255,255,0.5)";
+                    let color = "";
+                    let paginationStyle = "";
+                    let html = "";
+                    for (let i = 1; i <= total; i++) {
+                        if (i === current) {
+                            color = activeColor;
+                        } else {
+                            color = normalColor;
+                        }
+                        paginationStyle = `background:${color};opacity:1;margin-right:4px;width:5px;height:5px;`;
+                        html += `<span class="swiper-pagination-bullet" style=${paginationStyle}></span>`;
+                    }
+                    return html;
+                },
                 paginationClickable: true,
                 mousewheelControl: false,
                 observeParents: true,
                 debugger: true
             },
-            bannerList: "",  // 拉取banner信息
+            bannerList: "", // 拉取banner信息
             cityname: "北京", // 城市名称
-            cityid: "2",  // 城市id
-            abstract: "",  //搜索关键字
-            appid: "",  // 公众号id
+            cityid: "2", // 城市id
+            abstract: "", //搜索关键字
+            appid: "", // 公众号id
             // 城市组件dialog是否显示
             zbCityVisible: false,
 
@@ -306,7 +329,7 @@ export default {
     padding-bottom: 50px;
     height: 100%;
 }
-.banner-box{
+.banner-box {
     position: relative;
     min-height: 162px;
     max-height: 190px;

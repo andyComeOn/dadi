@@ -13,26 +13,30 @@
             <div class="banner-box">
                 <swiper class="zb-swiper" :options="swiperOption" ref="mySwiper" @someSwiperEvent="swiperCallback(1)">
                     <swiper-slide v-for="(item,index) in data_store.img_logo" :key="index" @click="swiperSlideFun(index)">
-                        <!-- data_store.img_logo -->
                         <router-link :to="{path:'hotelDetailBannerLink',query:{store_id:watchObj.store_id}}" class="hotel-detail-banner-link">
                             <img :src="item" alt="">
-                            <!-- {{item}} -->
                         </router-link>
                     </swiper-slide>
                     <div class="swiper-pagination" slot="pagination"></div>
+                    
+                    <!-- {{data_store.img_logo.length}} -->
                 </swiper>
-                
+                <div class="z-swiper-intro">
+                    <img src="../../assets/images/icon/ic-hotel-detail.png" alt="">
+                    共{{data_store.img_logo.length}}张
+                </div>
                 <div class="collect" @click="addCollect">
                     <img v-if="is_collect==1" :src="collectIconActive" alt="">
                     <img v-if="is_collect==0" :src="collectIcon" alt="">
                 </div>
+                
             </div>
             <!-- 酒店位置说明 -->
             <div class="detail">
-                <div class="name">{{data_store.store_name}}</div>
+                <div class="name m-ellipsis">{{data_store.store_name}}</div>
                 <ul class="location-wrapper">
-                    <li class="location">{{data_store.address}}</li>
-                    <li class="location-info"> {{data_store.introduce}}</li>
+                    <li class="location m-ellipsis">{{data_store.address}}</li>
+                    <li class="location-info m-ellipsis"> {{data_store.introduce}}</li>
                 </ul>
                 <a :href="'tel:' + data_store.tel" class="call"><img src="../../assets/images/icon/ic-call.png" alt=""></a>
             </div>
@@ -140,8 +144,26 @@ export default {
                 direction: "horizontal",
                 grabCursor: true,
                 setWrapperSize: true,
-                autoHeight: true,
+                autoHeight: false,
                 pagination: ".swiper-pagination",
+                paginationType: "custom",
+                paginationCustomRender: function(swiper, current, total) {
+                    const activeColor = "#30B097";
+                    const normalColor = "rgba(255,255,255,0.5)";
+                    let color = "";
+                    let paginationStyle = "";
+                    let html = "";
+                    for (let i = 1; i <= total; i++) {
+                        if (i === current) {
+                            color = activeColor;
+                        } else {
+                            color = normalColor;
+                        }
+                        paginationStyle = `background:${color};opacity:1;margin-right:4px;width:5px;height:5px;`;
+                        html += `<span class="swiper-pagination-bullet" style=${paginationStyle}></span>`;
+                    }
+                    return html;
+                },
                 paginationClickable: true,
                 mousewheelControl: false,
                 observeParents: true,
@@ -150,10 +172,8 @@ export default {
             isRoomDetailToastVisible: true,
             isShow: false,
             bannerList: ["123", "456"], // 拉取banner信息
-            // data_store.img_logo
             // 请求数据需要传的参数
             watchObj: {
-                cpid: "1",
                 store_id: "",
                 begin: "",
                 finish: ""
@@ -388,7 +408,7 @@ export default {
         height: 32px;
         position: absolute;
         top: 15px;
-        right: 20px;
+        right: 15px;
         z-index: 10;
         img {
             width: 32px;
@@ -396,10 +416,30 @@ export default {
             border-radius: 50%;
         }
     }
+    .z-swiper-intro{
+        position: absolute;
+        line-height: 22px;
+        right: 15px;
+        background: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        font-size:10px;
+        bottom: 10px; 
+        z-index: 10;
+        padding: 0 6px 0 25px;
+        border-radius:5px;
+        img{
+            width: 14px;
+            height: 12px;
+            position: absolute;
+            top: 50%;
+            margin-top:-6px; 
+            left: 6px;
+        }
+    }
 }
 // 酒店的位置
 .detail {
-    padding: 10px 15px;
+    padding: 10px 50px 10px 15px;
     position: relative;
     &:after {
         content: "";
@@ -431,7 +471,7 @@ export default {
         position: absolute;
         top: 50%;
         margin-top: -16px;
-        right: 20px;
+        right: 15px;
         z-index: 10;
         img {
             width: 32px;

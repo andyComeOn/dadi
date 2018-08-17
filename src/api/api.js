@@ -6,9 +6,9 @@ global.GlobalCpid = 1;
 
 
 // Stroe-酒店
-export const store_list = '/api/Store/store_list'  // 门店列表（查询酒店）   
+export const store_list = '/api/Store/store_list?cpid=' + GlobalCpid  // 门店列表（查询酒店）   
 
-export const store_detail = '/api/StoreRoomType/store_detail'    // 门店详情 (房间列表)
+export const store_detail = '/api/StoreRoomType/store_detail?cpid=' + GlobalCpid  // 门店详情 (房间列表)
 
 
 // Index-首页
