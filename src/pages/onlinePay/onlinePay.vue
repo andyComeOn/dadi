@@ -21,7 +21,15 @@
             </div>
         </div>
         <div v-if="this.setTime >= 0" class="onlinePay_btn" @click="pay">确认支付</div>
-        <div v-else class="onlinePay_btn_old">已过期，请重新下单</div>
+        <div v-else class="onlinePay_btn_old">已超时，请重新下单</div>
+        <!-- toas提示(loading) -->
+        <div v-show="loading">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-loading weui-icon_toast"></i>
+                <p class="weui-toast__content">加载中</p>
+            </div>
+        </div>
         <!-- toas提示(包含2s延时) -->
         <div v-show="delayToastShow">
             <div class="weui-mask_transparent"></div>
@@ -43,7 +51,8 @@ export default {
             getTime: "15:00",
             order_id_info: "",
             delayToastShow: false,
-            delayToastTxt:"支付中"
+            delayToastTxt: "支付中",
+            loading: true
         };
     },
     methods: {},
@@ -79,17 +88,82 @@ export default {
             })
                 .then(res => {
                     if (res.data.status == 1) {
+                        this.loading = false;
                         this.order_id_info = res.data.data;
                     }
                 })
                 .catch();
         },
         // wx支付
+
+        // this.delayToastShow = true;
+        // setTimeout(() => {
+        //     this.delayToastShow = false;
+        // }, 2000);
+
         pay() {
-            this.delayToastShow = true;
-            setTimeout(() => {
-                this.delayToastShow = false;
-            }, 2000);
+            let _this = this;
+            let jsApiParameters = {};
+            let onBridgeReady = function() {
+                WeixinJSBridge.invoke(
+                    "getBrandWCPayRequest",
+                    jsApiParameters,
+                    res => {
+                        if (res.err_msg == "get_brand_wcpay_request:ok") {
+                            _this.alert("支付成功");
+                            window.location.reload();
+                        }
+                        if (res.err_msg == "get_brand_wcpay_request:cancel") {
+                            _this.alert("取消支付");
+                            window.location.reload();
+                        }
+                    }
+                );
+            };
+            let callpay = function() {
+                if (typeof WeixinJSBridge == "undefined") {
+                    if (document.addEventListener) {
+                        document.addEventListener(
+                            "WeixinJSBridgeReady",
+                            onBridgeReady,
+                            false
+                        );
+                    } else if (document.attachEvent) {
+                        document.attachEvent(
+                            "WeixinJSBridgeReady",
+                            onBridgeReady
+                        );
+                        document.attachEvent(
+                            "onWeixinJSBridgeReady",
+                            onBridgeReady
+                        );
+                    }
+                } else {
+                    onBridgeReady();
+                }
+            };
+            //请求支付数据
+            // this.$http({
+            //     method: "POST",
+            //     url: order_detail,
+            //     data: {
+            //         openid: this.openid,
+            //         id: this.$route.params.id
+            //     }
+            // })
+            // .then(response => {
+            //     if (response.body.status == 1) {
+            //         jsApiParameters = response.body.data;
+            //         callpay();
+            //     } else {
+            //         _this.alert(response.body.msg);
+            //     }
+            // });
+
+            // "wechat/wxpay?openid=" +
+            //         this.$store.state.openid +
+            //         "&id=" +
+            //         this.$route.params.id
         }
     }
 };

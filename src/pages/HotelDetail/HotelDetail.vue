@@ -18,10 +18,8 @@
                         </router-link>
                     </swiper-slide>
                     <div class="swiper-pagination" slot="pagination"></div>
-                    
-                    <!-- {{data_store.img_logo.length}} -->
                 </swiper>
-                <div class="z-swiper-intro">
+                <div class="z-swiper-intro" v-if="data_store.img_logo">
                     <img src="../../assets/images/icon/ic-hotel-detail.png" alt="">
                     共{{data_store.img_logo.length}}张
                 </div>
@@ -305,10 +303,15 @@ export default {
         // 点击预定
         bookFun(isHasRoom, store_id, room_id, begin, finish) {
             let tmp = getCookie("userInfoTel");
+            let tmpOpenid = getCookie("openid");  
             if (!tmp) {
                 this.$router.push({
                     path: "/login",
-                    query: {}
+                    query: {
+                        loginPage:1,
+                        openId: tmpOpenid,
+                        store_id: store_id,
+                    }
                 });
                 return;
             }

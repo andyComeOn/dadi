@@ -65,6 +65,7 @@ axios.post(login_test, param).then(res => {
 				setCookie("userInfoTel",res.data.data.mobile);  //手机号
 				setCookie("userInfoIsRealname",res.data.data.is_realname); //真实姓名
 				setCookie("userInfoGroupid",res.data.data.group_id);  //会员组id
+				setCookie("openid",res.data.data.openid);  //会员组id
 			}
 		}).catch()
 	}

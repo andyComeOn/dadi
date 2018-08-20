@@ -12,7 +12,7 @@
             <li v-for="(item,index) in list" :key="index">
                 <div class="head">{{item.time|filterTimeYY}}年{{item.time|filterTimeMM}}月</div>
                 <div class="body" v-if="item.list.length>0">
-                    <div class="body-box" v-for="(itemSon,ind) in item.list" :key="ind">
+                    <div class="body-box" v-for="(itemSon,ind) in item.list" :key="ind" @click="collectItemJump(itemSon.store_id)">
                         <div class="lf">
                             <img :src="itemSon.img_logo" alt="">
                         </div>
@@ -59,6 +59,7 @@ export default {
         this.fetchData();
     },
     methods: {
+        // 拉取data
         fetchData() {
             this.$http({
                 method: "POST",
@@ -66,7 +67,6 @@ export default {
                 data: {}
             })
                 .then(res => {
-                    console.log(res);
                     this.isMyCollectToastVisible = false;
                     if (res.data.status == 1) {
                         this.list = res.data.data;
@@ -75,6 +75,10 @@ export default {
                     }
                 })
                 .catch(err => {});
+        },
+        // 收藏item点击跳转该门店详情
+        collectItemJump(store_id){
+            this.$router.push({path:"hotelDetail",query:{store_id:store_id}});
         }
     }
 };

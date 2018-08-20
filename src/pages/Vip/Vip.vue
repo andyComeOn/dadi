@@ -54,7 +54,7 @@
                             <dt>消费积分</dt>
                             <dd>{{item.score_rate}}</dd>
                         </dl>
-                        <dl>
+                        <dl v-if="item.pre_cancel_time">
                             <img src="../../assets/images/vip/mianfei.png" alt="">
                             <dt>免费取消</dt>
                             <dd>{{item.pre_cancel_time}}</dd>
@@ -70,31 +70,31 @@
                     </div>
                     <div class="content">
                         <ul class="ul">
-                            <li>
+                            <li v-if="item.catering_discount">
                                 <p class="li-desc">餐饮折扣</p>
                                 <p class="li-intro">{{item.catering_discount}}</p>
                             </li>
-                            <li>
+                            <li v-if="item.enjoy_channel">
                                 <p class="li-desc">优享通道</p>
                                 <p class="li-intro">{{item.enjoy_channel}}</p>
                             </li>
-                            <li>
+                            <li v-if="item.supper">
                                 <p class="li-desc">上门宵夜</p>
                                 <p class="li-intro">{{item.supper}}</p>
                             </li>
-                            <li>
+                            <li v-if="item.delay_room">
                                 <p class="li-desc">延迟退房</p>
                                 <p class="li-intro">{{item.delay_room}}</p>
                             </li>
-                            <li>
+                            <li v-if="item.birthday">
                                 <p class="li-desc">生日礼遇</p>
                                 <p class="li-intro">{{item.birthday}}</p>
                             </li>
-                            <li>
+                            <li v-if="item.equity">
                                 <p class="li-desc">权益共享</p>
                                 <p class="li-intro">{{item.equity}}</p>
                             </li>
-                            <li>
+                            <li v-if="item.user_activity">
                                 <p class="li-desc">收费会员活动</p>
                                 <p class="li-intro">{{item.user_activity}}</p>
                             </li>

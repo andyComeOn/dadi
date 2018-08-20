@@ -36,7 +36,7 @@
             <!-- 可定房间的列表 -->
             <div class="room-num-select" v-show="isSelectRoom">
                 <span v-for="(item,index) in roomNumItems" :key="index">
-                    <i :class="{canSel:item.isCanSel}" @click="selectOrder(item.num,item.isCanSel)">{{item.num}}</i>
+                    <i :class="[{canSel:item.isCanSel},{default: isActive == item.num }]" @click="selectOrder(item.num,item.isCanSel)">{{item.num}}</i>
                 </span>
             </div>
             <!-- 入住人姓名 -->
@@ -164,7 +164,7 @@
                                     <h4>{{item.add_time}}</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <span style="color:#666;">1间 * </span> &yen;{{item.unit_price}}
+                                    <span style="color:#666;">{{howManyNight}}间 * </span> &yen;{{item.unit_price * howManyNight}}
                                 </div>
                             </label>
                         </div>
@@ -287,6 +287,7 @@ export default {
             OrderFullToast: false,
             roomNumItems: "", //循环可定房间
             quantity: "", //该用户可定的房间数
+            isActive: 1
         };
     },
     created() {
@@ -379,7 +380,7 @@ export default {
                             });
                         }
                         this.roomNumItems = tmp;
-                    } else if (res.data.status == -3) {
+                    } else if (res.data.status == -3) { // 若按照新的产品思路，这个else if 就不会出现了
                         this.isUserCanOrder = false;
                         this.watchObj.room_sum -= 1; //当不能在订房时候，其实已经达到了6，马上减1使其变成5。
                     }
@@ -429,6 +430,7 @@ export default {
                 return;
             }
             this.watchObj.room_sum = num;
+            this.isActive = num;
             this.fetchOrderForm();
         },
         // 订房人input姓名失焦
@@ -480,12 +482,6 @@ export default {
             }
             // 总的判断
             if (this.orderNameBlur() && this.orderTelBlur()) {
-                // 如果用户没有选取优惠券，initCoupon为空值，在传参时候，
-                // this.initCoupon.id会报错，故添加下面的逻辑代码。
-                if (this.initCoupon == "") {
-                    this.initCoupon = {};
-                    this.initCoupon.id = "";
-                }
                 this.$http({
                     method: "POST",
                     url: create_order,
@@ -510,7 +506,7 @@ export default {
                             });
                         }
                     })
-                    .catch();
+                    .catch(err=>{console.log(err)});
             }
         }
     }
@@ -662,7 +658,8 @@ export default {
         .room-num-select {
             margin-left: -15px;
             background: #eff1f0;
-            padding: 15px 0;
+            // padding: 15px 0;
+            padding: 12px 0 0;
             &::after {
                 display: table;
                 content: "";
@@ -685,6 +682,11 @@ export default {
                     &.canSel {
                         background: #fff;
                         color: #666;
+                    }
+                    &.default {
+                        // background: rgba(red, green, blue, alpha);
+                        background: #269882;
+                        color: #fff;
                     }
                 }
             }
