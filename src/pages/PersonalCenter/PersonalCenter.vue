@@ -110,7 +110,7 @@
                 method:'POST',
                 data:param
 			}).then((res)=>{
-				this.imgUrl = res.data.data.code_img;		//头像
+				this.imgUrl = res.data.data.avatar;		//头像
 				this.nickname = res.data.data.nickname;		//昵称
 				this.birthdayNum = res.data.data.birthday;	//生日
 				this.sex = res.data.data.sex;				//

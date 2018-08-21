@@ -40,261 +40,264 @@
 </template>
 
 <script>
-    import {login,sendMobile} from '../../api/api.js';
-    export default {
-        name: "login",
-        components: {
-            
-        },
-        data() {
-            return {
-                //用户姓名相关
-                userName: "",
-                userNameBtn: false,
-                userNameErrVisible: false,
-                userNameErrTxt: "",
-                //用户手机号相关
-                userTel: "",
-                userTelBtn: false,
-                userTelErrVisible: false,
-                userTelErrTxt:"",
-                // 验证码相关
-                userCode: "",
-                hint_box_show:false,        //提示信息显示、隐藏
-                hint_box_content:'',        //提示信息
-                coder_show_aaa:true,
-                coder_show:false,
-                get_code_btn:false,
-                setTime: 58,
-                getTime:'59',
-                bind_show:false,
-                bind_aaa_show:true,
-            };
-        },
-        watch: {
-            // 用户姓名监听
-            userName:{
-                handler(newVal,oldVal){
-                    if(newVal==""){
-                        this.userNameBtn = false;
-                    }
-                },
-                deep: true,
-                immediate: true
-            },
-            // 用户姓名监听
-            userTel:{
-                handler(newVal,oldVal){
-                    if(newVal==""){
-                        this.userTelBtn = false;
-                    }
-                },
-                deep: true,
-                immediate: true
-            }
-        },
-        methods: {
-            // 用户姓名获焦
-            userNameFocus() {
-                this.userNameBtn = true;  //删除按钮显示
-            },
-            // 用户姓名失焦
-            userNameBlur() {
-                this.userNameBtn = false;  //删除按钮隐藏
-                if(this.userName == ''){
-                    this.bind_aaa_show = true;
-                    this.bind_show = false;
-                    this.hint_box_show = true;
-                    this.hint_box_content = '姓名不能为空';
-                    setTimeout(()=>{
-                        this.hint_box_show = false;
-                        this.hint_box_content = '';
-                    },2000);
-                }else{
-                    let reg = new RegExp(/^[\u4E00-\u9FA5A-Za-z]+$/);
-                    if(!reg.test(this.userName)){
-                        this.hint_box_show = true;
-                        this.hint_box_content = '姓名格式不正确';
-                        setTimeout(()=>{
-                            this.hint_box_show = false;
-                            this.hint_box_content = '';
-                        },2000);
-                    }else{
-                        if(this.userTel == '' || this.userCode == ''){
-                            this.bind_aaa_show = true;
-                            this.bind_show = false;
-                        }else{
-                            this.bind_aaa_show = false;
-                            this.bind_show = true;
-                        }
-                    }
+import { login, sendMobile } from "@/api/api";
+import { setCookie } from '@/utils/util';
+
+import { fetchUserInfo } from "@/api/login";
+export default {
+    name: "login",
+    components: {},
+    data() {
+        return {
+            //用户姓名相关
+            userName: "",
+            userNameBtn: false,
+            userNameErrVisible: false,
+            userNameErrTxt: "",
+            //用户手机号相关
+            userTel: "",
+            userTelBtn: false,
+            userTelErrVisible: false,
+            userTelErrTxt: "",
+            // 验证码相关
+            userCode: "",
+            hint_box_show: false, //提示信息显示、隐藏
+            hint_box_content: "", //提示信息
+            coder_show_aaa: true,
+            coder_show: false,
+            get_code_btn: false,
+            setTime: 58,
+            getTime: "59",
+            bind_show: false,
+            bind_aaa_show: true
+        };
+    },
+    watch: {
+        // 用户姓名监听
+        userName: {
+            handler(newVal, oldVal) {
+                if (newVal == "") {
+                    this.userNameBtn = false;
                 }
             },
-            // 用户姓名关闭按钮
-            userNameClose(){
-                this.userName = "";
+            deep: true,
+            immediate: true
+        },
+        // 用户姓名监听
+        userTel: {
+            handler(newVal, oldVal) {
+                if (newVal == "") {
+                    this.userTelBtn = false;
+                }
             },
-            // ------分割线-------
-            // 用户手机号获焦
-            userTelFocus() {
-                this.userTelBtn = true;  //删除按钮显示
-            },
-            // 用户手机号失焦
-            userTelBlur() {
-                this.userTelBtn = false;   //删除按钮隐藏
-                if (this.userTel == "") {
-                    this.bind_aaa_show = true;
-                    this.bind_show = false;
+            deep: true,
+            immediate: true
+        }
+    },
+    methods: {
+        // 用户姓名获焦
+        userNameFocus() {
+            this.userNameBtn = true; //删除按钮显示
+        },
+        // 用户姓名失焦
+        userNameBlur() {
+            this.userNameBtn = false; //删除按钮隐藏
+            if (this.userName == "") {
+                this.bind_aaa_show = true;
+                this.bind_show = false;
+                this.hint_box_show = true;
+                this.hint_box_content = "姓名不能为空";
+                setTimeout(() => {
+                    this.hint_box_show = false;
+                    this.hint_box_content = "";
+                }, 2000);
+            } else {
+                let reg = new RegExp(/^[\u4E00-\u9FA5A-Za-z]+$/);
+                if (!reg.test(this.userName)) {
                     this.hint_box_show = true;
-                    this.hint_box_content = '输入手机号不能为空';
-                    setTimeout(()=>{
+                    this.hint_box_content = "姓名格式不正确";
+                    setTimeout(() => {
                         this.hint_box_show = false;
-                        this.hint_box_content = '';
-                    },2000);
+                        this.hint_box_content = "";
+                    }, 2000);
+                } else {
+                    if (this.userTel == "" || this.userCode == "") {
+                        this.bind_aaa_show = true;
+                        this.bind_show = false;
+                    } else {
+                        this.bind_aaa_show = false;
+                        this.bind_show = true;
+                    }
+                }
+            }
+        },
+        // 用户姓名关闭按钮
+        userNameClose() {
+            this.userName = "";
+        },
+        // ------分割线-------
+        // 用户手机号获焦
+        userTelFocus() {
+            this.userTelBtn = true; //删除按钮显示
+        },
+        // 用户手机号失焦
+        userTelBlur() {
+            this.userTelBtn = false; //删除按钮隐藏
+            if (this.userTel == "") {
+                this.bind_aaa_show = true;
+                this.bind_show = false;
+                this.hint_box_show = true;
+                this.hint_box_content = "输入手机号不能为空";
+                setTimeout(() => {
+                    this.hint_box_show = false;
+                    this.hint_box_content = "";
+                }, 2000);
+                this.coder_show_aaa = true;
+                this.coder_show = false;
+            } else {
+                var myreg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
+                if (!myreg.test(this.userTel)) {
+                    this.hint_box_show = true;
+                    this.hint_box_content = "输入手机号格式有误";
+                    setTimeout(() => {
+                        this.hint_box_show = false;
+                        this.hint_box_content = "";
+                    }, 2000);
                     this.coder_show_aaa = true;
                     this.coder_show = false;
                 } else {
-                    var myreg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
-                    if (!myreg.test(this.userTel)){
-                        this.hint_box_show = true;
-                        this.hint_box_content = '输入手机号格式有误';
-                        setTimeout(()=>{
-                            this.hint_box_show = false;
-                            this.hint_box_content = '';
-                        },2000);
-                        this.coder_show_aaa = true;
-                        this.coder_show = false;
-                    }else{
-                        if(this.userName == '' || this.userCode == ''){
-                            this.bind_aaa_show = true;
-                            this.bind_show = false;
-                        }else{
-                            this.bind_aaa_show = false;
-                            this.bind_show = true;
-                        }
-                        this.coder_show_aaa = false;
-                        this.coder_show = true;
+                    if (this.userName == "" || this.userCode == "") {
+                        this.bind_aaa_show = true;
+                        this.bind_show = false;
+                    } else {
+                        this.bind_aaa_show = false;
+                        this.bind_show = true;
                     }
+                    this.coder_show_aaa = false;
+                    this.coder_show = true;
                 }
-            },
-            // 用户手机号关闭按钮
-            userTelClose(){
-                this.userTel = "";
-            },
-            // ------分割线-----
-            // 验证码获焦
-            userCodeFocus() {
-
-            },
-            // 点击按钮获取验证码
-            getCodeEv() {
-                if(this.userTel == ''){
-                    this.hint_box_show = true;
-                    this.hint_box_content = '手机号不能为空';
-                    setTimeout(() => {
-                        this.hint_box_show = false;
-                        this.hint_box_content = '';
-                    }, 2000);
-                }else{
-                    this.$http({
-                        method:'POST',
-                        url:sendMobile,
-                        data:{
-                            mobile:this.userTel
-                        }
-                    }).then((res)=>{
-                        console.log(res);
-                        if(res.data.status == 1){
-                            //倒计时
-                            this.get_code_btn = true;
-                            this.coder_show_aaa = false;
-                            this.coder_show = false;
-                            let timer = setInterval(() => {
-                                if (this.setTime >= 0) {
-                                    let tmpMin = Math.floor(this.setTime / 60);
-                                    let min = tmpMin < 10 ? "0" + tmpMin : tmpMin;
-                                    let tmpSec = Math.floor(this.setTime % 60);
-                                    let sec = tmpSec < 10 ? "0" + tmpSec : tmpSec;
-                                    this.getTime = sec;
-                                    this.setTime--;
-                                } else {
-                                    clearInterval(timer);
-                                    this.get_code_btn = false;
-                                    this.coder_show_aaa = false;
-                                    this.coder_show = true;
-                                    this.setTime = 58;
-                                    this.getTime = 59;
-                                }
-                            }, 1000);
-                        }else{
-
-                        }
-                    });
-                }
-            },
-            // 验证码失焦
-            userCodeBlur() {
-                if (this.userCode == "") {
-                    this.bind_aaa_show = true;
-                    this.bind_show = false;
-                    this.hint_box_show = true;
-                    this.hint_box_content = '验证码不能为空';
-                    setTimeout(() => {
-                        this.hint_box_show = false;
-                        this.hint_box_content = '';
-                    }, 2000);
-                } else {
-                    var myreg = /^[0-9]{4}$/;
-                    if(!myreg.test(this.userCode)){
-                        this.hint_box_show = true;
-                        this.hint_box_content = '验证码格式不正确';
-                        setTimeout(() => {
-                            this.hint_box_show = false;
-                            this.hint_box_content = '';
-                        }, 2000);
-                    }else{
-                        if(this.userTel == '' || this.userName == ''){
-                            this.bind_aaa_show = true;
-                            this.bind_show = false;
-                        }else{
-                            this.bind_aaa_show = false;
-                            this.bind_show = true;
-                        }
-                    }
-                }
-            },
-            // 总的提交
-            bindMobile(){
-                let openId = this.$route.query.openId;
+            }
+        },
+        // 用户手机号关闭按钮
+        userTelClose() {
+            this.userTel = "";
+        },
+        // ------分割线-----
+        // 验证码获焦
+        userCodeFocus() {},
+        // 点击按钮获取验证码
+        getCodeEv() {
+            if (this.userTel == "") {
+                this.hint_box_show = true;
+                this.hint_box_content = "手机号不能为空";
+                setTimeout(() => {
+                    this.hint_box_show = false;
+                    this.hint_box_content = "";
+                }, 2000);
+            } else {
                 this.$http({
-                    method:'POST',
-                    url:login,
-                    data:{
-                        mobile:this.userTel,
-                        openid:openId,
-                        code:this.userCode,
-                        realname:this.userName
+                    method: "POST",
+                    url: sendMobile,
+                    data: {
+                        mobile: this.userTel
                     }
-                }).then((res)=>{
-                    console.log(res);
-                    if(res.data.status == 1){
-                        if(this.$route.query.loginPage == 2){
-                            this.$router.push({path:'/personalCenter'});
-                        }else{
-
-                        }
-                    }else{
-                        this.hint_box_show = true;
-                        this.hint_box_content = res.data.msg;
-                        setTimeout(()=>{
-                            this.hint_box_show = false;
-                            this.hint_box_content = '';
-                        },2000);
+                }).then(res => {
+                    if (res.data.status == 1) {
+                        //倒计时
+                        this.get_code_btn = true;
+                        this.coder_show_aaa = false;
+                        this.coder_show = false;
+                        let timer = setInterval(() => {
+                            if (this.setTime >= 0) {
+                                let tmpMin = Math.floor(this.setTime / 60);
+                                let min = tmpMin < 10 ? "0" + tmpMin : tmpMin;
+                                let tmpSec = Math.floor(this.setTime % 60);
+                                let sec = tmpSec < 10 ? "0" + tmpSec : tmpSec;
+                                this.getTime = sec;
+                                this.setTime--;
+                            } else {
+                                clearInterval(timer);
+                                this.get_code_btn = false;
+                                this.coder_show_aaa = false;
+                                this.coder_show = true;
+                                this.setTime = 58;
+                                this.getTime = 59;
+                            }
+                        }, 1000);
+                    } else {
                     }
                 });
             }
+        },
+        // 验证码失焦
+        userCodeBlur() {
+            if (this.userCode == "") {
+                this.bind_aaa_show = true;
+                this.bind_show = false;
+                this.hint_box_show = true;
+                this.hint_box_content = "验证码不能为空";
+                setTimeout(() => {
+                    this.hint_box_show = false;
+                    this.hint_box_content = "";
+                }, 2000);
+            } else {
+                var myreg = /^[0-9]{4}$/;
+                if (!myreg.test(this.userCode)) {
+                    this.hint_box_show = true;
+                    this.hint_box_content = "验证码格式不正确";
+                    setTimeout(() => {
+                        this.hint_box_show = false;
+                        this.hint_box_content = "";
+                    }, 2000);
+                } else {
+                    if (this.userTel == "" || this.userName == "") {
+                        this.bind_aaa_show = true;
+                        this.bind_show = false;
+                    } else {
+                        this.bind_aaa_show = false;
+                        this.bind_show = true;
+                    }
+                }
+            }
+        },
+        // 总的提交
+        bindMobile() {
+            let openId = this.$route.query.openId;
+            this.$http({
+                method: "POST",
+                url: login,
+                data: {
+                    mobile: this.userTel,
+                    openid: openId,
+                    code: this.userCode,
+                    realname: this.userName
+                }
+            }).then(res => {
+                if (res.data.status == 1) {
+                    setCookie("userInfoTel", this.userTel); //手机号
+                    // 路由跳转逻辑
+                    if (this.$route.query.loginPage == 2) {
+                        this.$router.push({ path: "/personalCenter" });
+                    } else if (this.$route.query.loginPage == 1) {
+                        this.$router.push({
+                            path: "/hotelDetail",
+                            query: {
+                                store_id: this.$route.query.store_id
+                            }
+                        });
+                    }
+                } else {
+                    this.hint_box_show = true;
+                    this.hint_box_content = res.data.msg;
+                    setTimeout(() => {
+                        this.hint_box_show = false;
+                        this.hint_box_content = "";
+                    }, 2000);
+                }
+            });
         }
-    };
+    }
+};
 </script>
 
 <style lang="less" scoped>
@@ -375,7 +378,7 @@
                 font-size: 12px;
                 background: #30b097;
             }
-            .getCode-aaa{
+            .getCode-aaa {
                 line-height: 30px;
                 padding: 0 13px;
                 color: #999;
@@ -387,7 +390,7 @@
                 font-size: 12px;
                 background: #fff;
             }
-            .test-code-btn{
+            .test-code-btn {
                 line-height: 30px;
                 padding: 0 13px;
                 color: #999;
@@ -409,7 +412,7 @@
             border-radius: 5px;
             margin: 15px auto 8px;
         }
-        .bind_aaa{
+        .bind_aaa {
             line-height: 44px;
             background: #e5e5e5;
             text-align: center;
@@ -426,20 +429,20 @@
         }
     }
 }
-.hint_box{
-    background:rgba(75,75,75,0.7);
+.hint_box {
+    background: rgba(75, 75, 75, 0.7);
     color: #fff;
-    padding:5px 10px;
+    padding: 5px 10px;
     font-size: 8px;
     line-height: 16px;
     border-radius: 13px;
     position: fixed;
     top: 50%;
     left: 50%;
-    margin-top:-13px;
+    margin-top: -13px;
     transform: translateX(-50%);
 }
-.user_agreement{
+.user_agreement {
     width: 100%;
     font-size: 12px;
     line-height: 16px;
@@ -449,7 +452,7 @@
     text-align: center;
     transform: translateX(-50%);
     color: #999;
-    a{
+    a {
         color: #30b097;
     }
 }

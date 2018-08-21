@@ -1,9 +1,9 @@
+//截取url参数方法
+import { getUrlParam } from '@/utils/util';
 //baseUrl
-export const baseUrl = 'www.test.zhaojin9.com';
+export const baseUrl = 'm.wei.ddyg.cn';
 //cpid
-// global.GlobalCpid = sessionStorage.getItem(CPID);
-global.GlobalCpid = 1;
-
+global.GlobalCpid = getUrlParam('cpid');
 
 // Stroe-酒店
 export const store_list = '/api/Store/store_list?cpid=' + GlobalCpid  // 门店列表（查询酒店）   
@@ -21,17 +21,17 @@ export const getHotcity = '/api/Index/getHotcity'      //获取热门城市
 export const getStorecity = '/api/Index/getStorecity'     //门店城市统计
 
 // 授权-模拟登陆
-export const oauth = '/api/Index/oauth'       //授权  
-
 export const getCompanyInfo = '/api/Index/getCompanyInfo'     //
 
 export const login_test = '/api/login/login_test?cpid=' + GlobalCpid;   // 模拟登陆
 
 export const login = '/api/Login/login?cpid=' + GlobalCpid;     //登录接口
 
+export const check_login = '/api/Accredit/check_login?cpid=' + GlobalCpid;   //检查登录
+
 
 // Public-公共
-export const DistributionBanner = '/api/Banner/DistributionBanner'  // 轮播图
+export const DistributionBanner = '/api/Banner/DistributionBanner?cpid=' + GlobalCpid;  // 轮播图
 
 export const image_upload = '/api/UploadImg/image_upload'  // 上传图片（数据流图片）
 
@@ -111,7 +111,9 @@ export const order_cost_detail = '/api/Order/order_cost_detail?cpid=' + GlobalCp
 
 export const order_preserver = '/api/Order/order_preserver?cpid=' + GlobalCpid;  //维权（申请退款）
 
-
-
 //微信分享
 export const wxShare = '/api/Index/wx_share?cpid=' + GlobalCpid;       //获取参数
+
+
+// UserAccount-用户账户
+export const wx_pay = '/api/WxPay/pay?cpid=' + GlobalCpid;       //微信支付

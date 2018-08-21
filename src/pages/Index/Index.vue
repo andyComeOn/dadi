@@ -87,12 +87,7 @@
 </template>
 
 <script>
-import {
-    slt_location,
-    oauth,
-    getCompanyInfo,
-    DistributionBanner
-} from "../../api/api"; // 引入api
+import {slt_location,getCompanyInfo,DistributionBanner,check_login} from "../../api/api"; // 引入api
 import { f, dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
 import mTabbarFa from "@/components/tabbarfa";
 import mSwipe from "../../components/swipe";
@@ -177,10 +172,7 @@ export default {
     created() {
         // 获取地理位置接口
         // this.getLocation();
-
-        var param = { cpid: 1 };
-        // this.Oauth({cpid:1,form: 'http://m.test.zhaojin9.com:6677/#/index?cpid=1'});
-
+        var param = {  };
         // 初始化日历日期赋值
         var d = new Date();
         var dd = new Date();
@@ -216,26 +208,12 @@ export default {
         },
         // 获取当前位置
         getLocation() {
-            // var param = {cpid:1};
             this.$http({
                 method: "GET",
                 url: "http://pv.sohu.com/cityjson?ie=utf-8",
                 data: {}
             }).then(res => {
                 console.log(res);
-            });
-        },
-
-        // 授权
-        Oauth(param) {
-            this.$http({
-                method: "POST",
-                url: oauth,
-                data: param
-            }).then(res => {
-                if (res.data.data != "") {
-                    window.location.href = res.data.data;
-                }
             });
         },
 

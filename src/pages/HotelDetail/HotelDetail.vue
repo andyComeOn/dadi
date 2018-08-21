@@ -20,14 +20,13 @@
                     <div class="swiper-pagination" slot="pagination"></div>
                 </swiper>
                 <div class="z-swiper-intro" v-if="data_store.img_logo">
-                    <img src="../../assets/images/icon/ic-hotel-detail.png" alt="">
-                    共{{data_store.img_logo.length}}张
+                    <img src="../../assets/images/icon/ic-hotel-detail.png" alt=""> 共{{data_store.img_logo.length}}张
                 </div>
                 <div class="collect" @click="addCollect">
                     <img v-if="is_collect==1" :src="collectIconActive" alt="">
                     <img v-if="is_collect==0" :src="collectIcon" alt="">
                 </div>
-                
+
             </div>
             <!-- 酒店位置说明 -->
             <div class="detail">
@@ -248,10 +247,7 @@ export default {
             return this.$refs.mySwiper.swiper;
         }
     },
-    mounted() {
-        // 拉取banner信息
-        // this.fetchBannerData({ cpid: 1, type_id: 1 });
-    },
+    mounted() {},
     watch: {
         watchObj: {
             handler(newValue, oldValue) {
@@ -262,19 +258,6 @@ export default {
         }
     },
     methods: {
-        // 拉取banner详情
-        fetchBannerData(param) {
-            this.$http({
-                method: "POST",
-                url: DistributionBanner,
-                data: param
-            }).then(res => {
-                if (res.data.status == 1) {
-                    this.bannerList = res.data.data;
-                } else {
-                }
-            });
-        },
         // 拉取门店详情
         fetchData(param) {
             this.$http({
@@ -299,18 +282,17 @@ export default {
                 }
             });
         },
-
         // 点击预定
         bookFun(isHasRoom, store_id, room_id, begin, finish) {
             let tmp = getCookie("userInfoTel");
-            let tmpOpenid = getCookie("openid");  
+            let tmpOpenid = getCookie("openid");
             if (!tmp) {
                 this.$router.push({
                     path: "/login",
                     query: {
-                        loginPage:1,
+                        loginPage: 1,
                         openId: tmpOpenid,
-                        store_id: store_id,
+                        store_id: store_id
                     }
                 });
                 return;
@@ -419,23 +401,23 @@ export default {
             border-radius: 50%;
         }
     }
-    .z-swiper-intro{
+    .z-swiper-intro {
         position: absolute;
         line-height: 22px;
         right: 15px;
         background: rgba(0, 0, 0, 0.5);
         color: #fff;
-        font-size:10px;
-        bottom: 10px; 
+        font-size: 10px;
+        bottom: 10px;
         z-index: 10;
         padding: 0 6px 0 25px;
-        border-radius:5px;
-        img{
+        border-radius: 5px;
+        img {
             width: 14px;
             height: 12px;
             position: absolute;
             top: 50%;
-            margin-top:-6px; 
+            margin-top: -6px;
             left: 6px;
         }
     }
@@ -468,7 +450,7 @@ export default {
             no-repeat 3px 3px;
         background-size: 13px 15px;
     }
-    .call{
+    .call {
         width: 32px;
         height: 32px;
         position: absolute;

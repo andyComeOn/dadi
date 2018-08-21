@@ -8,7 +8,7 @@ import store from './store/store'
 import * as myFilter from './filters'
 
 Object.keys(myFilter).forEach(key => {
-  Vue.filter(key, myFilter[key])
+	Vue.filter(key, myFilter[key])
 })
 
 import axios from 'axios'
@@ -22,10 +22,10 @@ import 'muse-ui/dist/muse-ui.css';
 import './assets/less/app.less'
 
 // 引入饿了么移动端mint-ui
-import { Field, Search } from 'mint-ui';
-Vue.component(Field.name, Field);
-Vue.component(Search.name, Search);
-import 'mint-ui/lib/style.css'
+// import { Field, Search } from 'mint-ui';
+// Vue.component(Field.name, Field);
+// Vue.component(Search.name, Search);
+// import 'mint-ui/lib/style.css'
 
 // 引入weui
 import 'weui/dist/style/weui.min.css';
@@ -33,8 +33,8 @@ import 'weui/dist/style/weui.min.css';
 // 引入cookie、获取url参数的接口
 import { getCookie, setCookie, getUrlParam } from '@/utils/util';
 
-// 引入api
-import { login_test, userInfo } from "@/api/api";
+// 引入api和login.js
+import { check_login } from "@/api/api";
 
 // 引入swiper插件
 import VueAwesomeSwiper from 'vue-awesome-swiper';
@@ -45,36 +45,20 @@ Vue.use(VueAwesomeSwiper);
 Vue.use(Loading);
 Vue.use(MuseUI);
 
-// 获取cookie
-let mycookie = getCookie('auth_user_1');
-// console.log('cookie='+ mycookie);
-
-// 获取参数的cpid
-let CPID = getUrlParam('cpid');
-// console.log(CPID);
-
-// sessionStorage.setItem('CPID', CPID);
-// console.log(sessionStorage.getItem('CPID'));
-// cookie为空，调取登陆接口
-
-var param = { cpid: 1 };
-axios.post(login_test, param).then(res => {
-	if(res.data.status==1){
-		axios.post(userInfo, param).then(res=>{
-			if(res.data.status==1){
-				setCookie("userInfoTel",res.data.data.mobile);  //手机号
-				setCookie("userInfoIsRealname",res.data.data.is_realname); //真实姓名
-				setCookie("userInfoGroupid",res.data.data.group_id);  //会员组id
-				setCookie("openid",res.data.data.openid);  //会员组id
-			}
-		}).catch()
+//登录检查
+var param = {}
+axios.post(check_login,param).then((res)=>{
+	if(res.data.status == 0){
+		window.location.href = res.data.data;
+	}else{
+		setCookie("userInfoTel",res.data.data.mobile);  //手机号
+		setCookie("userInfoIsRealname",res.data.data.is_realname); //真实姓名
+		setCookie("userInfoGroupid",res.data.data.group_id);  //会员组id
+		setCookie("openid",res.data.data.openid);  //openid
 	}
-}).catch(function (err) { console.log(err) });
+});
 
 
-// 在点击预定时候判断有没有绑定手机号
-// 若没有绑定，使用路由监听跳到绑定手机号（登陆）页面
-// console.log(sessionStorage);
 router.beforeEach((to, from, next) => {
 	//路由改变，改变页面title
 	if (to.meta.title) {

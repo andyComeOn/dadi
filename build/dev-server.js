@@ -74,7 +74,7 @@ app.use(staticPath, express.static('./static'))
 
 // var uri = 'http://localhost:' + port
 // m.test.zhaojin9.com
-var uri = 'http://mydadi.com:' + port
+var uri = 'm.wei.ddyg.cn:' + port
 
 // var uri = 'm.test.zhaojin9.com:' + port
 

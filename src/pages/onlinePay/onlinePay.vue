@@ -41,7 +41,8 @@
     </div>
 </template>
 <script>
-import { order_detail } from "@/api/api";
+import { order_detail,wx_pay } from "@/api/api";
+import wx from 'weixin-js-sdk';
 export default {
     name: "onlinePay",
     components: {},
@@ -56,8 +57,6 @@ export default {
         };
     },
     methods: {},
-    watch: {},
-    computed: {},
     created() {
         let para = this.$route.query.order_id;
         this.order_id = para;
@@ -76,6 +75,8 @@ export default {
                 clearInterval(timer);
             }
         }, 1000);
+
+
     },
     methods: {
         fetchOrderidInfo() {
@@ -95,13 +96,12 @@ export default {
                 .catch();
         },
         // wx支付
-
         // this.delayToastShow = true;
         // setTimeout(() => {
         //     this.delayToastShow = false;
         // }, 2000);
 
-        pay() {
+        payMethod() {
             let _this = this;
             let jsApiParameters = {};
             let onBridgeReady = function() {
@@ -142,28 +142,25 @@ export default {
                     onBridgeReady();
                 }
             };
-            //请求支付数据
-            // this.$http({
-            //     method: "POST",
-            //     url: order_detail,
-            //     data: {
-            //         openid: this.openid,
-            //         id: this.$route.params.id
-            //     }
-            // })
-            // .then(response => {
-            //     if (response.body.status == 1) {
-            //         jsApiParameters = response.body.data;
-            //         callpay();
-            //     } else {
-            //         _this.alert(response.body.msg);
-            //     }
-            // });
+            // 请求支付数据
+            this.$http({
+                method: "GET",
+                url: wx_pay,
+                data: {
+                    orderid: this.order_id
+                }
+            })
+            .then((res) => {
+                if (res.data.status == 1) {
+                    console.log(res.data.data);
+                    jsApiParameters = response.body.data;
+                    // callpay();
+                } else {
+                    // _this.alert(response.body.msg);
+                }
+            });
 
-            // "wechat/wxpay?openid=" +
-            //         this.$store.state.openid +
-            //         "&id=" +
-            //         this.$route.params.id
+           
         }
     }
 };

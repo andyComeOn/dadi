@@ -46,7 +46,7 @@
                     <div class="name-div">
                         <input type="text" class="input-name" id="name" placeholder="请输入姓名" @blur="orderNameBlur" @focus="orderNameFocus" v-model="orderName">
                     </div>
-                    <span v-show="orderNameTipsVisible" class="errTips">{{orderNameTxt}}</span>
+                    <!-- <span v-show="orderNameTipsVisible" class="errTips">{{orderNameTxt}}</span> -->
                 </div>
             </li>
 
@@ -56,7 +56,7 @@
                 <div class="item-rg">
                     <div class="tel-div">
                         <input type="tel" class="input-tel" id="tel" placeholder="请输入手机号" @blur="orderTelBlur" @focus="orderTelFocus" v-model="orderTel">
-                        <span v-show="orderTelTipsVisible" class="errTips">{{orderTelTxt}}</span>
+                        <!-- <span v-show="orderTelTipsVisible" class="errTips">{{orderTelTxt}}</span> -->
                     </div>
                 </div>
             </li>
@@ -205,12 +205,20 @@
                 </div> -->
             </div>
         </div>
-        <!-- toas提示 -->
-        <div v-show="OrderFullToast">
+        <!-- toas提示（delay） -->
+        <!-- <div v-show="orderDelayToast">
             <div class="weui-mask_transparent"></div>
             <div class="weui-toast">
                 <i class="weui-error weui-icon_toast"></i>
-                <p class="weui-toast__content">您今日可订限额已用完，请明天再来</p>
+                <p class="weui-toast__content">{{orderDelayToastTxt}}</p>
+            </div>
+        </div> -->
+        <!-- toast（delay-z） -->
+        <div v-show="orderDelayToast">
+            <div class="z-mask-transparent"></div>
+            <div class="z-toast">
+                <i class="z-toast-icon"></i>
+                <p class="z-toast-content">{{orderDelayToastTxt}}</p>
             </div>
         </div>
     </div>
@@ -284,9 +292,10 @@ export default {
             // 订房人手机号输入验证
             orderTelTipsVisible: false,
             orderTelTxt: "",
-            OrderFullToast: false,
+            orderDelayToast: false, 
+            orderDelayToastTxt: "您今日可订限额已用完，请明天再来",
             roomNumItems: "", //循环可定房间
-            quantity: "", //该用户可定的房间数
+            quantity: "",   //该用户还能再定房间数的上限
             isActive: 1
         };
     },
@@ -321,14 +330,13 @@ export default {
         this.fetchOrderForm();
 
         // 加减房间数按钮img的src的初始化赋值
-        this.imgSrcMinus = this.btnMinus;
-        this.imgSrcPlus = this.btnPlusActive;
+        // this.imgSrcMinus = this.btnMinus;
+        // this.imgSrcPlus = this.btnPlusActive;
     },
     watch: {
         initCoupon: {
             handler(newValue, oldValue) {
                 if (newValue != "") {
-                    // console.log(newValue);
                     this.totalPrice = this.discount_price - newValue.amount;
                     this.isCouponMask = false; //选取优惠券是其dialog消失
                 }
@@ -387,35 +395,37 @@ export default {
                 })
                 .catch(err => {});
         },
-        // 减房间数
-        minusRoomNum() {
-            if (this.watchObj.room_sum == 1) {
-                this.initCoupon = "";
-                this.imgSrcMinus = this.btnMinus;
-                return;
-            } else {
-                this.imgSrcPlus = this.btnPlusActive;
-                this.watchObj.room_sum -= 1;
-                this.fetchOrderForm();
-            }
-        },
-        // 加房间数
-        plusRoomNum() {
-            if (!this.isUserCanOrder) {
-                this.OrderFullToast = true;
-                this.imgSrcPlus = this.btnPlus;
-                setTimeout(() => {
-                    this.OrderFullToast = false;
-                }, 2000);
-                return;
-            }
-            if (this.watchObj.room_sum >= 1) {
-                this.watchObj.room_sum += 1;
-                this.imgSrcMinus = this.btnMinusActive;
-                this.initCoupon = "";
-                this.fetchOrderForm();
-            }
-        },
+        // 减房间数-产品去掉此逻辑
+        // minusRoomNum() {
+        //     if (this.watchObj.room_sum == 1) {
+        //         this.initCoupon = "";
+        //         this.imgSrcMinus = this.btnMinus;
+        //         return;
+        //     } else {
+        //         this.imgSrcPlus = this.btnPlusActive;
+        //         this.watchObj.room_sum -= 1;
+        //         this.fetchOrderForm();
+        //     }
+        // },
+
+        // 加房间数-产品去掉此逻辑
+        // plusRoomNum() {
+        //     if (!this.isUserCanOrder) {
+        //         this.orderDelayToast = true;
+        //         this.imgSrcPlus = this.btnPlus;
+        //         setTimeout(() => {
+        //             this.orderDelayToast = false;
+        //         }, 2000);
+        //         return;
+        //     }
+        //     if (this.watchObj.room_sum >= 1) {
+        //         this.watchObj.room_sum += 1;
+        //         this.imgSrcMinus = this.btnMinusActive;
+        //         this.initCoupon = "";
+        //         this.fetchOrderForm();
+        //     }
+        // },
+
         // 选择房间折叠与否
         selectRoom() {
             this.isSelectRoom = !this.isSelectRoom;
@@ -423,9 +433,10 @@ export default {
         // 点击按钮进行订房
         selectOrder(num,type){
             if (type==false) {
-                this.OrderFullToast = true;
+                this.orderDelayToastTxt = "您今日可订限额已用完，请明天再来";
+                this.orderDelayToast = true;
                 setTimeout(() => {
-                    this.OrderFullToast = false;
+                    this.orderDelayToast = false;
                 }, 2000);
                 return;
             }
@@ -433,31 +444,50 @@ export default {
             this.isActive = num;
             this.fetchOrderForm();
         },
+        // 订房人input姓名获焦
+        orderNameFocus() {
+            // this.orderNameTipsVisible = false;
+        },
         // 订房人input姓名失焦
         orderNameBlur() {
             if (this.orderName.trim() == "") {
-                this.orderNameTipsVisible = true;
-                this.orderNameTxt = "输入姓名不能为空";
+                // this.orderNameTipsVisible = true;
+                // this.orderNameTxt = "输入姓名不能为空";
+
+
+                this.orderDelayToastTxt = "输入姓名不能为空";
+                this.orderDelayToast = true;
+                setTimeout(() => {
+                    this.orderDelayToast = false;
+                }, 2000);
+
                 return false;
             } else {
                 return true;
             }
         },
-        // 订房人input姓名获焦
-        orderNameFocus() {
-            this.orderNameTipsVisible = false;
-        },
+        
         // 订房人input手机失焦
         orderTelBlur() {
             if (this.orderTel.trim() == "") {
-                this.orderTelTipsVisible = true;
-                this.orderTelTxt = "输入手机号不能为空";
+                // this.orderTelTipsVisible = true;
+                // this.orderTelTxt = "输入手机号不能为空";
+                this.orderDelayToastTxt = "输入手机号不能为空";
+                this.orderDelayToast = true;
+                setTimeout(() => {
+                    this.orderDelayToast = false;
+                }, 1500);
                 return false;
             } else if (this.orderTel != "") {
                 var myreg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
                 if (!myreg.test(this.orderTel.trim())) {
-                    this.orderTelTxt = "输入手机号格式有误";
-                    this.orderTelTipsVisible = true;
+                    // this.orderTelTxt = "输入手机号格式有误";
+                    // this.orderTelTipsVisible = true;
+                    this.orderDelayToastTxt = "输入手机号不能为空";
+                    this.orderDelayToast = true;
+                    setTimeout(() => {
+                        this.orderDelayToast = false;
+                    }, 1500);
                     return false;
                 } else {
                     return true;
@@ -466,19 +496,29 @@ export default {
         },
         // 订房人input手机获焦
         orderTelFocus() {
-            this.orderTelTipsVisible = false;
+            // this.orderTelTipsVisible = false;
         },
         // 支付逻辑
         pay() {
             // 再次判断预定人input输入框的手机号是都为空
             if (this.orderTel.trim() == "") {
-                this.orderTelTipsVisible = true;
-                this.orderTelTxt = "输入手机号不能为空";
+                // this.orderTelTipsVisible = true;
+                // this.orderTelTxt = "输入手机号不能为空";
+                this.orderDelayToastTxt = "输入手机号不能为空";
+                this.orderDelayToast = true;
+                setTimeout(() => {
+                    this.orderDelayToast = false;
+                }, 1500);
             }
             // 再次判断入住人input输入框的名字是否为空
             if (this.orderName.trim() == "") {
-                this.orderNameTipsVisible = true;
-                this.orderNameTxt = "输入姓名不能为空";
+                // this.orderNameTipsVisible = true;
+                // this.orderNameTxt = "输入姓名不能为空";
+                this.orderDelayToastTxt = "输入姓名不能为空";
+                this.orderDelayToast = true;
+                setTimeout(() => {
+                    this.orderDelayToast = false;
+                }, 1500);
             }
             // 总的判断
             if (this.orderNameBlur() && this.orderTelBlur()) {
