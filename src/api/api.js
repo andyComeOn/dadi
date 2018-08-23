@@ -4,21 +4,25 @@ import { getUrlParam } from '@/utils/util';
 export const baseUrl = 'm.wei.ddyg.cn';
 //cpid
 global.GlobalCpid = getUrlParam('cpid');
+console.log(global.GlobalCpid);
 
 // Stroe-酒店
 export const store_list = '/api/Store/store_list?cpid=' + GlobalCpid  // 门店列表（查询酒店）   
 
 export const store_detail = '/api/StoreRoomType/store_detail?cpid=' + GlobalCpid  // 门店详情 (房间列表)
 
+export const storeLogo = '/api/Login/getStore?cpid=' + GlobalCpid;      //获取门店logo和店名
+
 
 // Index-首页
 export const slt_location = '/api/Index/slt_location'     //定位当前城市    
 
-export const getCityList = '/api/Index/getCityList'     //获取城市列表    
+export const getCityList = '/api/Index/getCityList?cpid=' + GlobalCpid;    //获取城市列表    
 
-export const getHotcity = '/api/Index/getHotcity'      //获取热门城市    
+export const getHotcity = '/api/Index/getHotcity?cpid=' + GlobalCpid;     //获取热门城市    
 
-export const getStorecity = '/api/Index/getStorecity'     //门店城市统计
+export const getStorecity = '/api/Index/getStorecity?cpid=' + GlobalCpid;    //热门城市
+
 
 // 授权-模拟登陆
 export const getCompanyInfo = '/api/Index/getCompanyInfo'     //
@@ -41,7 +45,7 @@ export const sendMobile = '/api/Login/sendMobile?cpid=' + GlobalCpid;  // 发送
 // UserInfo-用户中心
 export const userInfo = '/api/User/userInfo?cpid=' + GlobalCpid;  // 用户个人信息
 
-export const update_user = '/api/User/update_user'   // 修改用户信息(生日)
+export const update_user = '/api/User/update_user?cpid=' + GlobalCpid;   // 修改用户信息(生日)
 
 export const check_mobile = '/api/User/check_mobile?cpid=' + GlobalCpid;   // 更换手机号（校验验证码）
 
@@ -50,7 +54,6 @@ export const user_member = '/api/User/user_member'   // 会员中心
 export const user_auth = '/api/User/user_auth'   // 实名认证（二期）
 
 export const user_card_privilege = '/api/User/user_card_privilege?cpid=' + GlobalCpid;  //生成订单
-
 
 
 // UserActivity-用户活动

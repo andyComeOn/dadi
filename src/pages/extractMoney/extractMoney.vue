@@ -1,39 +1,57 @@
 <template>
-    <div class="bd-extract">
-        <div class="extract_box bd-fff">
-            <p>提现金额</p>
-            <div class="extract_input">
-                <span>￥</span>
-                <input type="text" v-model="extractVal" value='' placeholder="请输入金额..." />
+    <div>
+        <div v-if="isShowMoney" class="bd-extract">
+            <div class="extract_box bd-fff">
+                <p>提现金额</p>
+                <div class="extract_input">
+                    <span>￥</span>
+                    <input type="text" v-model="extractVal" value='' placeholder="请输入金额..." />
+                </div>
+                <p class="extract_money">可提现金额：¥{{use_amount}}</p>
+                <!-- <router-link to='/extractCheck'> -->
+                    <div class='extract_btn' @click="extractBtn">提现</div>
+                <!-- </router-link> -->
             </div>
-            <p class="extract_money">可提现金额：¥{{use_amount}}</p>
-            <!-- <router-link to='/extractCheck'> -->
-                <div class='extract_btn' @click="extractBtn">提现</div>
-            <!-- </router-link> -->
+            <p class="extract_hint">温馨提示：预计在3个工作日内到账</p>
+            <!-- hint str -->
+            <span class="hint_box" v-if='hint_box_show == true'>{{hint_box_content}}</span>
+            <!-- hint end -->
         </div>
-        <p class="extract_hint">温馨提示：预计在3个工作日内到账</p>
+        <!-- extractCheck str -->
+        <extractCheck v-if="isShow"></extractCheck>
+        <!-- extractCheck end -->
     </div>
 </template>
 <script>
+    import extractCheck from '../extractCheck/extractCheck.vue';
     import {extractMoney} from '../../api/api.js';
     export default {
         name:"extractMoney",
         components: {
-            
+            extractCheck
         },
         data(){
             return {
-                extractVal:'',
-                use_amount:''
+                extractVal:'',          //提现额度
+                use_amount:'',           //可以提现的额度
+                hint_box_show: false, //提示信息显示、隐藏
+                hint_box_content: "", //提示信息 
+                isShow:false,
+                isShowMoney:true
             }
         },
-         computed: {
+        computed: {
             
         },
         methods: {
             extractBtn(){
-                if(this.extractVal > this.use_amount){
-                    alert('错误');
+                if(this.extractVal > this.use_amount || this.extractVal <=0 || this.extractVal == ''){
+                    this.hint_box_show = true;
+                    this.hint_box_content = '信息错误';
+                    setTimeout(()=>{
+                        this.hint_box_show = false;
+                        this.hint_box_content = '';
+                    },2000);
                 }else{
                     var param = {
                         money:this.extractVal
@@ -43,10 +61,18 @@
                         method:'POST',
                         data:param
                     }).then((res)=>{
+                        console.log(res);
                         if(res.data.status == 1){
-
+                            // this.$router.push({path:'/extractCheck'});
+                            this.isShow = true;
+                            this.isShowMoney = false;
                         }else{
-                            alert(res.data.msg);
+                            this.hint_box_show = true;
+                            this.hint_box_content = res.data.msg;
+                            setTimeout(()=>{
+                                this.hint_box_show = false;
+                                this.hint_box_content = '';
+                            },2000);
                         }
                     });
                 }
@@ -116,5 +142,18 @@
         color: #999;
         text-indent: 15px;
         margin-top: 10px;
+    }
+    .hint_box {
+        background: rgba(75, 75, 75, 0.7);
+        color: #fff;
+        padding: 5px 10px;
+        font-size: 8px;
+        line-height: 16px;
+        border-radius: 13px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        margin-top: -13px;
+        transform: translateX(-50%);
     }
 </style>

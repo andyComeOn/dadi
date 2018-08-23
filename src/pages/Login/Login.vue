@@ -40,10 +40,8 @@
 </template>
 
 <script>
-import { login, sendMobile } from "@/api/api";
-import { setCookie } from '@/utils/util';
+import { login, sendMobile,storeLogo } from "../../api/api.js";
 
-import { fetchUserInfo } from "@/api/login";
 export default {
     name: "login",
     components: {},
@@ -296,6 +294,17 @@ export default {
                 }
             });
         }
+    },
+    mounted(){
+        this.$http({
+            method: "POST",
+            url: storeLogo,
+            data: {
+                
+            }
+        }).then((res)=>{
+            console.log(res);
+        });
     }
 };
 </script>

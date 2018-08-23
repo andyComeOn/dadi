@@ -7,7 +7,7 @@
 		</div>
 		<!-- body -->
 		<ul class="body">
-			<li v-for="item in pointArr">
+			<li v-for="(item,index) in pointArr" :key="index">
 				<div class="lf">
 					<p class="jifen-type">{{item.store_name}}</p>
 					<p class="jifen-date">{{item.add_time}}</p>

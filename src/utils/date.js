@@ -74,6 +74,6 @@ export function formateTomorrow() {
 export function dateEndMinusStart(p1, p2){
 	let a = new Date(p1);
 	let b = new Date(p2);
-	return (b - a)/(24*3600*1000)
+	return parseInt((b - a)/(24*3600*1000));
 }
 

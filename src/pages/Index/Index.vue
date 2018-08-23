@@ -6,9 +6,10 @@
             <div class="banner-box">
                 <swiper class="zb-swiper" :options="swiperOption" ref="mySwiper" @someSwiperEvent="swiperCallback(1)">
                     <swiper-slide v-for="item in bannerList" :key="item.id" @click="swiperSlideFun(item.id)">
-                        <router-link :to="{path:'ad',query:{}}" class="hotel-detail-banner-link">
+                        <!-- <router-link :to="{path:'ad',query:{}}" class="hotel-detail-banner-link"></router-link> -->
+                        <a :href="item.url">
                             <img :src="item.img" alt="">
-                        </router-link>
+                        </a>
                     </swiper-slide>
                     <div class="swiper-pagination" style="line-height:5px;bottom:5px;" slot="pagination"></div>
                 </swiper>

@@ -7,7 +7,7 @@
                     <p class="praise_title col-666 fs12">
                         <span class="fs15 col-333">提现</span>
                     </p>
-                    <p class="fs12 col-666 lh19">{{item.audit_time}}</p>
+                    <p class="fs12 col-666 lh19">{{item.add_time}}</p>
                     <p class="praise_make_money pa fs12 col-666">
                         <span>赚</span>
                         <span class="col-yellow fw600">{{item.money}}</span>

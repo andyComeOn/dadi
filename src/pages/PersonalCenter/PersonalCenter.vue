@@ -3,7 +3,8 @@
 		<ul class="center_lists">
 			<li class="center_head">
 				<span>头像</span>
-				<img :src="imgUrl" />
+				<img v-if="imgUrl != ''" :src="imgUrl" />
+				<img v-else src="../../assets/images/default_avatar.png" />
 			</li>
 			<li>
 				<span>昵称</span>
@@ -26,11 +27,14 @@
 				<img class="pa" src="../../assets/images/arrows/list－更多icon@1x.png" />
 			</li>
 		</ul>
+		<!-- hint str -->
+        <span class="hint_box" v-if='hint_box_show == true'>{{hint_box_content}}</span>
+        <!-- hint end -->
 	</div>
 </template>
 <script>
 	import weui from 'weui.js';
-	import {userInfo,baseUrl} from '../../api/api.js';
+	import {userInfo,baseUrl,update_user} from '../../api/api.js';
 	export default {
 		name: "personalCenter",
 		components: {
@@ -44,6 +48,8 @@
 				sex:'',			//性别   1
 				mobile:'',		//手机号
 				openId:'',		//openId
+				hint_box_show:false,	//hint
+				hint_box_content:'',	//hint_content
 			}
 		},
 		computed: {
@@ -56,13 +62,29 @@
 				weui.datePicker({
 					start:1800,
 					end: new Date(),
-					defaultValue: [1991, 1, 1],
+					defaultValue: [1991,1,1],
 					onChange: function(result){
 						console.log(result);
 					},
 					onConfirm: function(result){
-						console.log(result);
-						that.birthdayNum = result[0].value + '-' + result[1].value + '-' + result[2].value;
+						that.$http({
+							method:'POST',
+							url:update_user,
+							data:{
+								birthday:result[0].value + '-' + result[1].value + '-' + result[2].value
+							}
+						}).then((res)=>{
+							if(res.data.status == 1){
+								that.birthdayNum = result[0].value + '-' + result[1].value + '-' + result[2].value;
+							}else{
+								that.hint_box_show = true;
+								that.hint_box_content = res.data.msg;
+								setTimeout(()=>{
+									that.hint_box_show = false;
+									that.hint_box_content = '';
+								},2000);
+							}
+						});
 					},
 					id: 'datePicker'
 				});
@@ -81,11 +103,34 @@
                             // console.log('改变');
                         },
                         onConfirm: function (result) {
+							//修改性别
 							if(result[0].label == '男'){
 								_this.sex = 1;
 							}else{
 								_this.sex = 2;
 							}
+							_this.$http({
+								method:'POST',
+								url:update_user,
+								data:{
+									sex:_this.sex
+								}
+							}).then((res)=>{
+								if(res.data.status == 1){
+									if(result[0].label == '男'){
+										_this.sex = 1;
+									}else{
+										_this.sex = 2;
+									}
+								}else{
+									_this.hint_box_show = true;
+									_this.hint_box_content = res.data.msg;
+									setTimeout(()=>{
+										_this.hint_box_show = false;
+										_this.hint_box_content = '';
+									},2000);
+								}
+							});
 						},
 						id:'sexPrice'
                     }
@@ -153,6 +198,7 @@
 		top: 50%;
 		transform: translateY(-50%);
 		right: 15px;
+		border-radius: 50%;
 	}
 	.nickName{
 		float: right;
@@ -174,5 +220,18 @@
 		top: 50%;
 		right: 15px;
 		margin-top: -8px;
+	}
+	.hint_box {
+		background: rgba(75, 75, 75, 0.7);
+		color: #fff;
+		padding: 5px 10px;
+		font-size: 8px;
+		line-height: 16px;
+		border-radius: 13px;
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		margin-top: -13px;
+		transform: translateX(-50%);
 	}
 </style>

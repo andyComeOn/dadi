@@ -1,5 +1,13 @@
 <template>
     <div class="olinePay_box" v-if="order_id_info">
+        <!-- toas提示(loading) -->
+        <div v-show="loading">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-loading weui-icon_toast"></i>
+                <p class="weui-toast__content">数据加载中</p>
+            </div>
+        </div>
         <div class="olinePay_box_time">
             <h1>{{getTime}}</h1>
             <p>支付剩余时间</p>
@@ -20,36 +28,19 @@
                 <span>共{{order_id_info.occupancy_day_num}}晚</span>
             </div>
         </div>
-        <div v-if="this.setTime >= 0" class="onlinePay_btn" @click="pay">确认支付</div>
+        <div v-if="this.setTime >= 0" class="onlinePay_btn" @click="payMethod">确认支付</div>
         <div v-else class="onlinePay_btn_old">已超时，请重新下单</div>
-        <!-- toas提示(loading) -->
-        <div v-show="loading">
-            <div class="weui-mask_transparent"></div>
-            <div class="weui-toast">
-                <i class="weui-loading weui-icon_toast"></i>
-                <p class="weui-toast__content">加载中</p>
-            </div>
-        </div>
-        <!-- toas提示(包含2s延时) -->
-        <div v-show="delayToastShow">
-            <div class="weui-mask_transparent"></div>
-            <div class="weui-toast">
-                <i class="weui-loading weui-icon_toast"></i>
-                <p class="weui-toast__content">{{delayToastTxt}}</p>
-            </div>
-        </div>
     </div>
 </template>
 <script>
 import { order_detail,wx_pay } from "@/api/api";
-import wx from 'weixin-js-sdk';
 export default {
     name: "onlinePay",
     components: {},
     data() {
         return {
-            setTime: 900, //15分钟即900s，自己调整!
-            getTime: "15:00",
+            setTime: "", //15分钟即900s，自己调整!
+            getTime: "",   //15:00
             order_id_info: "",
             delayToastShow: false,
             delayToastTxt: "支付中",
@@ -75,8 +66,6 @@ export default {
                 clearInterval(timer);
             }
         }, 1000);
-
-
     },
     methods: {
         fetchOrderidInfo() {
@@ -91,16 +80,12 @@ export default {
                     if (res.data.status == 1) {
                         this.loading = false;
                         this.order_id_info = res.data.data;
+                        this.setTime = res.data.data.count_down;
                     }
                 })
                 .catch();
         },
-        // wx支付
-        // this.delayToastShow = true;
-        // setTimeout(() => {
-        //     this.delayToastShow = false;
-        // }, 2000);
-
+        // 立即支付按钮
         payMethod() {
             let _this = this;
             let jsApiParameters = {};
@@ -142,9 +127,9 @@ export default {
                     onBridgeReady();
                 }
             };
-            // 请求支付数据
+            // 请求支付接口
             this.$http({
-                method: "GET",
+                method: "POST",
                 url: wx_pay,
                 data: {
                     orderid: this.order_id
@@ -152,15 +137,12 @@ export default {
             })
             .then((res) => {
                 if (res.data.status == 1) {
-                    console.log(res.data.data);
-                    jsApiParameters = response.body.data;
-                    // callpay();
+                    jsApiParameters = JSON.parse(res.data.data);
+                    callpay();
                 } else {
-                    // _this.alert(response.body.msg);
+                    _this.alert(response.body.msg);
                 }
             });
-
-           
         }
     }
 };

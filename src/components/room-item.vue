@@ -12,7 +12,7 @@
         <ul class="list" v-if="dataList">
             <li v-for="(item,index) in dataList" :key="index" @click="storeDetail(item.id,item.begin,item.finish)">
                 <div class="lf">
-                    <img :src="item.img_logo" alt="">
+                    <img :src="item.logo" alt="">
                 </div>
                 <div class="rg">
                     <p class="name m-ellipsis">{{item.name}}</p>

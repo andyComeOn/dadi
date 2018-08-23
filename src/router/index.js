@@ -66,7 +66,7 @@ import HelpFriend from '../pages/HelpFriend/HelpFriend'
 // 提现
 import extractMoney from '../pages/extractMoney/extractMoney'
 // 提现
-import extractCheck from '../pages/extractCheck/extractCheck'
+// import extractCheck from '../pages/extractCheck/extractCheck'
 //在线支付
 import onlinePay from '../pages/onlinePay/onlinePay.vue'
 
@@ -296,15 +296,15 @@ export default new Router({
 				title:'奖励提现'
 			}
 		},
-		//提现审核
-		{
-			path:'/extractCheck',
-			name:'extractCheck',
-			component:extractCheck,
-			meta:{
-				title:'奖励提现'
-			}
-		},
+		// //提现审核
+		// {
+		// 	path:'/extractCheck',
+		// 	name:'extractCheck',
+		// 	component:extractCheck,
+		// 	meta:{
+		// 		title:'奖励提现'
+		// 	}
+		// },
 		//在线支付
 		{
 			path:'/onlinePay',

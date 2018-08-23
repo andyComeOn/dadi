@@ -87,7 +87,7 @@
                                     <h4>{{item.order_time}}</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <span style="color:#666;">1间 * </span> &yen;{{item.money}}
+                                    <span style="color:#666;">{{item.room_num}}间 * </span> &yen;{{item.money * item.room_num | Fixto2}}
                                 </div>
                             </label>
                         </div>
@@ -110,10 +110,11 @@
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
                             <label class="weui-cell zb-weui-cell weui-check__label" for="deal1">
                                 <div class="weui-cell__bd div zb-weui-cell__hd">
-                                    <h4>总计</h4>
+                                    <!-- <h4>总计</h4> -->
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <span style="color:#666;">实付</span> &yen;{{order_cost_info.order_money}}
+                                    <!-- <span style="color:#666;">实付</span> -->
+                                    &yen;{{order_cost_info.order_money}}
                                 </div>
                             </label>
                         </div>
@@ -134,7 +135,7 @@ export default {
             isDealDetailMask: false,
             order_id: "", //接收路由传过来的order_id
             order_id_info: "", // 接收http请求的order_detail数据
-            order_cost_info: ""  // 接收http请求的明细接口（order_cost_info）数据
+            order_cost_info: "" // 接收http请求的明细接口（order_cost_info）数据
         };
     },
     created() {
@@ -149,7 +150,12 @@ export default {
     methods: {
         // 展示交易明细遮罩
         showDealDetailMask() {
-            this.isDealDetailMask = true;
+            if (this.order_id_info.close_status == 4) {
+                return;
+            } else {
+                this.isDealDetailMask = true;
+            }
+            
         },
         // 隐藏交易明细遮罩-ui没有设计这个交互逻辑
         hideDealDetailMask() {

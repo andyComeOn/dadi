@@ -4,7 +4,8 @@
 			<div class="weui-panel__bd mine-info-panel__bd">
 				<router-link to="/personalCenter" class="weui-media-box mine-info-media-box weui-media-box_appmsg">
 					<div class="weui-media-box__hd mine-info-media-box__hd">
-						<img class="weui-media-box__thumb mine-info-media-box__thumb" :src="userInfoData.avatar" alt="">
+						<img v-if='userInfoData.avatar != ""' class="weui-media-box__thumb mine-info-media-box__thumb" :src="userInfoData.avatar" alt="">
+						<img v-else class="weui-media-box__thumb mine-info-media-box__thumb" src="../../assets/images/default_avatar.png" alt="">
 					</div>
 					<div class="weui-media-box__bd mine-info-media-box__bd ">
 						<h4 class="weui-media-box__title mine-info-media-box__title">{{userInfoData.nickname}}</h4>
@@ -94,7 +95,7 @@
 </template>
 <script>
     import mTabbarfa from "@/components/tabbarfa";
-    import { login_test, userInfo } from "@/api/api";
+    import { userInfo } from "@/api/api";
     export default {
         name: "mine",
         components: {
@@ -105,42 +106,23 @@
                 userInfoData : {}
             };
         },
-        created() {
-            // this.getLoginTest();
-            this.getUserInfo();
-        },
         methods: {
-            // 模拟登陆
-            getLoginTest() {
-                var param = { cpid: 1 };
-                this.$http({
-                    method: "POST",
-                    url: login_test,
-                    data: param
-                }).then(res => {
-                    // console.log(res.data);
-                    this.getUserInfo();
-                });
-            },
-            
-            // 拉取wx中用户头像等信息
-            getUserInfo() {
-                var param = { cpid: 1 };
-                this.$http({
-                    method: "POST",
-                    url: userInfo,
-                    data: param
-                }).then(res => {
-                    if (res.data.status == 1){
-                        // console.log(res.data.data);
-                        this.userInfoData = res.data.data;
-                    }
-                });
-            },
             //推荐好友拿奖励
             recommendFriend(){
                 this.$router.push({path:'/recommendF?nikeName=' + this.userInfoData.nickname})
             }
+        },
+        mounted(){
+            this.$http({
+                method: "POST",
+                url: userInfo,
+                data: {}
+            }).then(res => {
+                if (res.data.status == 1){
+                    console.log(res);
+                    this.userInfoData = res.data.data;
+                }
+            });
         }
     };
 </script>
@@ -186,6 +168,7 @@
                 img {
                     width: 100%;
                     height: 100%;
+                    border-radius: 50%;
                 }
             }
             .mine-info-media-box__bd {

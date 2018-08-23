@@ -221,6 +221,14 @@
                 <p class="z-toast-content">{{orderDelayToastTxt}}</p>
             </div>
         </div>
+        <!-- toast（weui） -->
+        <div v-show="orderLoadingToast">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-loading weui-icon_toast"></i>
+                <p class="weui-toast__content">加载中</p>
+            </div>           
+        </div>
     </div>
 </template>
 
@@ -257,7 +265,6 @@ export default {
             finishD: "",
 
             howManyNight: "",
-            // --------
             // 优惠券
             initCoupon: "",
             // 门店详情
@@ -266,7 +273,6 @@ export default {
             price: [],
             // 请求返回的数据
             fetchData: {},
-
             // 后台返回的该用户可订房信息
             userOrderMaxNum: 5,
             // 后台返回的该用户是否可订房标志
@@ -292,11 +298,12 @@ export default {
             // 订房人手机号输入验证
             orderTelTipsVisible: false,
             orderTelTxt: "",
-            orderDelayToast: false, 
+            orderDelayToast: false,
             orderDelayToastTxt: "您今日可订限额已用完，请明天再来",
             roomNumItems: "", //循环可定房间
-            quantity: "",   //该用户还能再定房间数的上限
-            isActive: 1
+            quantity: "", //该用户还能再定房间数的上限
+            isActive: 1,
+            orderLoadingToast:true //loading  
         };
     },
     created() {
@@ -338,7 +345,7 @@ export default {
             handler(newValue, oldValue) {
                 if (newValue != "") {
                     this.totalPrice = this.discount_price - newValue.amount;
-                    this.isCouponMask = false; //选取优惠券是其dialog消失
+                    this.isCouponMask = false; //选取优惠券使其dialog消失
                 }
             },
             deep: true,
@@ -372,6 +379,7 @@ export default {
             })
                 .then(res => {
                     if (res.data.status == 1) {
+                        this.orderLoadingToast = false;
                         this.details = res.data.data.details; //给房间详情赋值
                         this.discount_price = res.data.data.discount_price; //预定房间总价赋值
                         this.coupon = res.data.data.coupon; //给房间优惠券赋值
@@ -388,7 +396,8 @@ export default {
                             });
                         }
                         this.roomNumItems = tmp;
-                    } else if (res.data.status == -3) { // 若按照新的产品思路，这个else if 就不会出现了
+                    } else if (res.data.status == -3) {
+                        // 若按照新的产品思路，这个else if 就不会出现了
                         this.isUserCanOrder = false;
                         this.watchObj.room_sum -= 1; //当不能在订房时候，其实已经达到了6，马上减1使其变成5。
                     }
@@ -431,8 +440,8 @@ export default {
             this.isSelectRoom = !this.isSelectRoom;
         },
         // 点击按钮进行订房
-        selectOrder(num,type){
-            if (type==false) {
+        selectOrder(num, type) {
+            if (type == false) {
                 this.orderDelayToastTxt = "您今日可订限额已用完，请明天再来";
                 this.orderDelayToast = true;
                 setTimeout(() => {
@@ -454,7 +463,6 @@ export default {
                 // this.orderNameTipsVisible = true;
                 // this.orderNameTxt = "输入姓名不能为空";
 
-
                 this.orderDelayToastTxt = "输入姓名不能为空";
                 this.orderDelayToast = true;
                 setTimeout(() => {
@@ -466,7 +474,7 @@ export default {
                 return true;
             }
         },
-        
+
         // 订房人input手机失焦
         orderTelBlur() {
             if (this.orderTel.trim() == "") {
@@ -546,7 +554,9 @@ export default {
                             });
                         }
                     })
-                    .catch(err=>{console.log(err)});
+                    .catch(err => {
+                        console.log(err);
+                    });
             }
         }
     }

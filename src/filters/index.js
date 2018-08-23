@@ -68,4 +68,8 @@ export function filterMoneyInt(a) {
 	let index = a.indexOf(".");
 	return a.slice(0, index);
 }
+// 保留2位小数点：50.3999 => 50.40
+export function Fixto2(a) {
+	return Math.round(a*100)/100;
+}
 
