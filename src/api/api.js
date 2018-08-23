@@ -25,7 +25,7 @@ export const getStorecity = '/api/Index/getStorecity?cpid=' + GlobalCpid;    //�
 
 
 // 授权-模拟登陆
-export const getCompanyInfo = '/api/Index/getCompanyInfo'     //
+export const getCompanyInfo = '/api/Index/getCompanyInfo'     // 暂时没用
 
 export const login_test = '/api/login/login_test?cpid=' + GlobalCpid;   // 模拟登陆
 

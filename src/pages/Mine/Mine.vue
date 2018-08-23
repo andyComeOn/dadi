@@ -9,7 +9,7 @@
 					</div>
 					<div class="weui-media-box__bd mine-info-media-box__bd ">
 						<h4 class="weui-media-box__title mine-info-media-box__title">{{userInfoData.nickname}}</h4>
-						<p class="weui-media-box__desc mine-info-media-box__desc">Lv1 普通会员卡</p>
+						<p class="weui-media-box__desc mine-info-media-box__desc">Lv{{userInfoData.grade}}&nbsp;&nbsp;{{userInfoData.card}}</p>
 					</div>
 					<span class="weui-cell__ft"></span>
 				</router-link>

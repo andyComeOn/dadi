@@ -1,14 +1,14 @@
 <template>
 	<div class="nearby-page">
 		<!-- 头部 -->
-		<m-header title="附近的酒店" fixed class="is-fixed">
+		<!-- <m-header title="附近的酒店" fixed class="is-fixed">
 			<a href="javascript:;" slot="left">
 				<img class="m-icon-img margin-right-10" src="../../assets/images/bak/ic_actionbar_search_icon.png" />
 			</a>
 			<a href="javascript:;" slot="right">
 				<img class="m-icon-img" src="../../assets/images/bak/ic_chat_green.png" />
 			</a>
-		</m-header>
+		</m-header> -->
 
 		<!-- 主内容区 -->
 		<div class="page-content">

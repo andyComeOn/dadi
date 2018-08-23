@@ -51,11 +51,13 @@ axios.post(check_login,param).then((res)=>{
 	if(res.data.status == 0){
 		window.location.href = res.data.data;
 	}else{
+		console.log(res);
 		// setCookie("userInfoTel","13121796612");
 		setCookie("userInfoTel",res.data.data.mobile);  //手机号
 		setCookie("userInfoIsRealname",res.data.data.is_realname); //真实姓名
 		setCookie("userInfoGroupid",res.data.data.group_id);  //会员组id
 		setCookie("openid",res.data.data.openid);  //openid
+		setCookie("avatar",res.data.data.avatar);  //avatar
 	}
 });
 

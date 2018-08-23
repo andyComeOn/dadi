@@ -1,10 +1,10 @@
 <template>
     <div class="login">
         <div class="avatar">
-            <img src="../../assets/images/img/room.png" alt="">
+            <img v-if="default_avatar !=''" :src="default_avatar" alt="">
+            <img v-else src="../../assets/images/default_avatar.png" />
         </div>
-        <div class="welcome">欢迎来到秋果酒店</div>
-
+        <!-- <div class="welcome">欢迎来到秋果酒店</div> -->
         <ul class="list">
             <li>
                 <input type="text" class="txt" v-model="userName" placeholder="请输入真实姓名" @focus="userNameFocus" @blur="userNameBlur">
@@ -41,6 +41,7 @@
 
 <script>
 import { login, sendMobile,storeLogo } from "../../api/api.js";
+import { getCookie } from '../../utils/util.js';
 
 export default {
     name: "login",
@@ -67,7 +68,8 @@ export default {
             setTime: 58,
             getTime: "59",
             bind_show: false,
-            bind_aaa_show: true
+            bind_aaa_show: true,
+            default_avatar:'',      //头像
         };
     },
     watch: {
@@ -296,15 +298,8 @@ export default {
         }
     },
     mounted(){
-        this.$http({
-            method: "POST",
-            url: storeLogo,
-            data: {
-                
-            }
-        }).then((res)=>{
-            console.log(res);
-        });
+        //头像default_avatar
+        this.default_avatar = decodeURIComponent(decodeURIComponent(getCookie('avatar')));
     }
 };
 </script>
@@ -314,7 +309,7 @@ export default {
     // 头像
     .avatar {
         height: 80px;
-        margin: 25px auto 8px;
+        margin: 25px auto 32px;
         img {
             display: block;
             width: 80px;

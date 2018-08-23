@@ -8,7 +8,8 @@
                     <swiper-slide v-for="item in bannerList" :key="item.id" @click="swiperSlideFun(item.id)">
                         <!-- <router-link :to="{path:'ad',query:{}}" class="hotel-detail-banner-link"></router-link> -->
                         <a :href="item.url">
-                            <img :src="item.img" alt="">
+                            <img :src="item.img" alt="" style="width:100%;">
+                            <!-- style="width:100%;" -->
                         </a>
                     </swiper-slide>
                     <div class="swiper-pagination" style="line-height:5px;bottom:5px;" slot="pagination"></div>
@@ -88,10 +89,9 @@
 </template>
 
 <script>
-import {slt_location,getCompanyInfo,DistributionBanner,check_login} from "../../api/api"; // 引入api
+import {DistributionBanner} from "@/api/api"; // 引入api
 import { f, dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
 import mTabbarFa from "@/components/tabbarfa";
-import mSwipe from "../../components/swipe";
 import { swiper, swiperSlide } from "vue-awesome-swiper"; // 引入swipe组件
 import City from "@/components/city/city.vue"; // 引入城市组件
 import Calendar from "@/components/calendar/calendar.vue"; // 引入日历组件
@@ -99,7 +99,6 @@ export default {
     name: "index",
     components: {
         mTabbarFa,
-        // mSwipe,
         swiper,
         swiperSlide,
         City,
@@ -111,10 +110,10 @@ export default {
             // swiper相关参数
             swiperOption: {
                 notNextTick: true,
-                autoplay: false,
+                autoplay: false,  
                 preventClicks: true,
-                direction: "horizontal",
-                grabCursor: true,
+                direction: "horizontal", 
+                grabCursor: true, //设置为true时，鼠标覆盖Swiper时指针会变成手掌形状，拖动时指针会变成抓手形状
                 setWrapperSize: true,
                 autoHeight: false,
                 pagination: ".swiper-pagination",
@@ -173,7 +172,6 @@ export default {
     created() {
         // 获取地理位置接口
         // this.getLocation();
-        var param = {  };
         // 初始化日历日期赋值
         var d = new Date();
         var dd = new Date();
@@ -186,7 +184,7 @@ export default {
         this.zbInitCalendar.end.mm = f(dd).mm;
         this.zbInitCalendar.end.dd = f(dd).dd;
         // 拉取banner的方法
-        this.fetchBannerData({ cpid: 1, type_id: 1 });
+        this.fetchBannerData({ type_id: 1 });
     },
     computed: {
         swiper() {

@@ -14,7 +14,7 @@
                 <swiper class="zb-swiper" :options="swiperOption" ref="mySwiper" @someSwiperEvent="swiperCallback(1)">
                     <swiper-slide v-for="(item,index) in data_store.img_logo" :key="index" @click="swiperSlideFun(index)">
                         <router-link :to="{path:'hotelDetailBannerLink',query:{store_id:watchObj.store_id}}" class="hotel-detail-banner-link">
-                            <img :src="item" alt="">
+                            <img :src="item" alt="" style="display:block;width:100%;">
                         </router-link>
                     </swiper-slide>
                     <div class="swiper-pagination" slot="pagination"></div>
@@ -141,7 +141,7 @@ export default {
                 direction: "horizontal",
                 grabCursor: true,
                 setWrapperSize: true,
-                autoHeight: false,
+                autoHeight: true,
                 pagination: ".swiper-pagination",
                 paginationType: "custom",
                 paginationCustomRender: function(swiper, current, total) {

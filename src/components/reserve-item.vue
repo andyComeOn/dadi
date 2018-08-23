@@ -4,7 +4,6 @@
             <li v-for="(item,index) in data_room" :key="index">
                 <!-- 左边图片展示 -->
                 <div class="lf">
-                    <!-- ../assets/images/img/room.png -->
                     <img :src="item.room_img" alt="">
                 </div>
 

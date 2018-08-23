@@ -14,7 +14,7 @@
                 <div class="body" v-if="item.list.length>0">
                     <div class="body-box" v-for="(itemSon,ind) in item.list" :key="ind" @click="collectItemJump(itemSon.store_id)">
                         <div class="lf">
-                            <img :src="itemSon.img_logo" alt="">
+                            <img :src="itemSon.logo" alt="">
                         </div>
                         <div class="rg">
                             <p class="name m-ellipsis">{{itemSon.name}}</p>

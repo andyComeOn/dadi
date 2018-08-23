@@ -24,7 +24,7 @@
             <li class="room">
                 <label class="label">房间数</label>
                 <div class="room-info" @click="selectRoom">
-                    {{quantity}}间
+                    {{watchObj.room_sum}}间
                     <img class="arrow-icon" src="../../assets/images/arrows/ic_pay_arrow.png" alt="">
                     <!-- <span class="span-minus" @click="minusRoomNum"><img :src="imgSrcMinus" alt=""></span>
                     <span class="span-input">
@@ -35,9 +35,10 @@
             </li>
             <!-- 可定房间的列表 -->
             <div class="room-num-select" v-show="isSelectRoom">
-                <span v-for="(item,index) in roomNumItems" :key="index">
-                    <i :class="[{canSel:item.isCanSel},{default: isActive == item.num }]" @click="selectOrder(item.num,item.isCanSel)">{{item.num}}</i>
+                <span v-if="roomNumItems" v-for="(item,index) in roomNumItems" :key="index">
+                    <i :class="[{default: isActive == item.num }]" @click="selectOrder(item.num,item.isCanSel)">{{item.num}}</i>
                 </span>
+                <span v-else>{{}}</span>
             </div>
             <!-- 入住人姓名 -->
             <li class="name">
@@ -83,14 +84,12 @@
                 </div>
             </li>
         </ul>
-
         <!-- 文字提示 -->
         <div class="tips">
             <h3>温馨提示</h3>
             <p>1.酒店与住店当天13:00办理入住，离店13:00办理退房，如您在13:00前未到达，可能需要等待方能入住，具体以酒店安排为准。 </p>
             <p>2.发票由酒店开具。</p>
         </div>
-
         <!-- 确认支付bar -->
         <div class="paybar">
             <div class="lf">
@@ -99,7 +98,6 @@
             </div>
             <div class="rg" @click="pay">支付</div>
         </div>
-
         <!-- 优惠券的弹框 -->
         <div class="coupon-mask-box">
             <div class="weui-mask zb-weui-mask" id="couponMask" @click="hideCouponMask" :class="[{'weui-actionsheet_no_toggle_active':isCouponMask},{'weui-actionsheet_no_toggle':!isCouponMask}]"></div>
@@ -164,7 +162,7 @@
                                     <h4>{{item.add_time}}</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <span style="color:#666;">{{howManyNight}}间 * </span> &yen;{{item.unit_price * howManyNight}}
+                                    <span style="color:#666;">{{watchObj.room_sum}}间 * </span> &yen;{{item.unit_price * watchObj.room_sum | Fixto2}}
                                 </div>
                             </label>
                         </div>
@@ -227,7 +225,7 @@
             <div class="weui-toast">
                 <i class="weui-loading weui-icon_toast"></i>
                 <p class="weui-toast__content">加载中</p>
-            </div>           
+            </div>
         </div>
     </div>
 </template>
@@ -303,7 +301,7 @@ export default {
             roomNumItems: "", //循环可定房间
             quantity: "", //该用户还能再定房间数的上限
             isActive: 1,
-            orderLoadingToast:true //loading  
+            orderLoadingToast: true //loading
         };
     },
     created() {
@@ -385,17 +383,20 @@ export default {
                         this.coupon = res.data.data.coupon; //给房间优惠券赋值
                         this.price = res.data.data.price; // 给明细赋值
                         this.totalPrice = res.data.data.discount_price;
-                        let quantity = parseInt(res.data.data.quantity); // 后台配置的最大可选择几间房
-                        let astrict = parseInt(res.data.data.astrict); //当前用户能定的最大房间数
+                        let quantity = parseInt(res.data.data.quantity); // 当前用户能定的最大房间数
+                        let astrict = parseInt(res.data.data.astrict); // 后台配置的最大可选择几间房
                         this.quantity = quantity;
-                        let tmp = [];
-                        for (let i = 1; i <= astrict; i++) {
-                            tmp.push({
-                                num: i,
-                                isCanSel: i <= quantity ? true : false
-                            });
+                        if (quantity > 0) {
+                            let tmp = [];
+                            for (let i = 1; i <= quantity; i++) {
+                                tmp.push({
+                                    num: i
+                                });
+                            }
+                            this.roomNumItems = tmp;
+                        } else {
+                            // 您今日可订限额已用完，请明天再来
                         }
-                        this.roomNumItems = tmp;
                     } else if (res.data.status == -3) {
                         // 若按照新的产品思路，这个else if 就不会出现了
                         this.isUserCanOrder = false;
@@ -441,16 +442,9 @@ export default {
         },
         // 点击按钮进行订房
         selectOrder(num, type) {
-            if (type == false) {
-                this.orderDelayToastTxt = "您今日可订限额已用完，请明天再来";
-                this.orderDelayToast = true;
-                setTimeout(() => {
-                    this.orderDelayToast = false;
-                }, 2000);
-                return;
-            }
             this.watchObj.room_sum = num;
             this.isActive = num;
+            this.isSelectRoom = false;
             this.fetchOrderForm();
         },
         // 订房人input姓名获焦
@@ -727,14 +721,10 @@ export default {
                     text-align: center;
                     line-height: 34px;
                     font-style: normal;
-                    background: #ccc;
-                    color: #999;
-                    &.canSel {
-                        background: #fff;
-                        color: #666;
-                    }
+                    background: #fff;
+                    color: #666;
+                    cursor: pointer;
                     &.default {
-                        // background: rgba(red, green, blue, alpha);
                         background: #269882;
                         color: #fff;
                     }
