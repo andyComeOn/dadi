@@ -1,5 +1,13 @@
 <template>
     <div class="order-list-item-page">
+        <!-- toas提示(loading) -->
+        <div id="orderListToast" v-show="isOrderListToastVisible">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-loading weui-icon_toast"></i>
+                <p class="weui-toast__content">数据加载中</p>
+            </div>
+        </div>
         <ul class="list" v-if="list.length>0">
             <li v-for="(item,index) in list" :key="index">
                 <!-- 主信息 -->
@@ -23,6 +31,7 @@
                     <span class="btn grey" v-if="item.status==0" @click="cancal(item.id,item.status)">取消订单</span>
                     <span class="btn mcolor" v-if="item.status==4" @click="applyMoney(item.id)">申请退款</span>
                     <span class="btn orange" v-show="!item.status==0" @click="reOrder(item.store_id)">再次预定</span>
+                    <span class="btn mcolor" v-if="item.status==0" @click="payMethod(item.id)">付款</span>
                 </div>
             </li>
         </ul>
@@ -30,14 +39,7 @@
             <img src="../assets/images/404/404-no-order.png" alt="">
             <p>{{noOrderStatusTxt}}</p>
         </div>
-        <!-- toast提示 -->
-        <div id="orderListToast" v-show="isOrderListToastVisible">
-            <div class="weui-mask_transparent"></div>
-            <div class="weui-toast">
-                <i class="weui-loading weui-icon_toast"></i>
-                <p class="weui-toast__content">数据加载中</p>
-            </div>
-        </div>
+        
         <!-- toas提示(包含2s延时) -->
         <div v-show="delayToastShow">
             <div class="weui-mask_transparent"></div>
@@ -46,11 +48,20 @@
                 <p class="weui-toast__content">{{delayToastTxt}}</p>
             </div>
         </div>
+        <!-- dialog(支付成功) -->
+        <div v-show="paySuccessToast">
+            <div class="z-mask-transparent-pay"></div>
+            <div class="z-toast-pay">
+                <p class="z-toast-pay-head">提示</p>
+                <p class="z-toast-pay-body">支付完成</p>
+                <p class="z-toast-pay-footer" @click="paySuccessMethod">我知道了</p>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
-import { order_list, cancel_orderform, delete_order } from "@/api/api";
+import { order_list, cancel_orderform, delete_order,wx_pay } from "@/api/api";
 export default {
     name: "order-list-item",
     props: ["condition"],
@@ -74,9 +85,9 @@ export default {
             list: [],
             noOrderStatusTxt: "",
             isOrderListToastVisible: false,
-            delayToastShow: false,  //延时toast的开关
-            delayToastTxt:"取消成功",   //延时toast的txt提示
-
+            delayToastShow: false, //延时toast的开关
+            delayToastTxt: "取消成功", //延时toast的txt提示
+            paySuccessToast:false
         };
     },
     created() {},
@@ -121,9 +132,9 @@ export default {
                 .then(res => {
                     if (res.data.status == 1) {
                         this.delayToastShow = true;
-                        setTimeout(()=>{
+                        setTimeout(() => {
                             this.delayToastShow = false;
-                        },2000);
+                        }, 2000);
                         this.fetchData(this.condition);
                     }
                 })
@@ -153,6 +164,67 @@ export default {
                     }
                 })
                 .catch(err => {});
+        },
+        // 支付成功回调执行方法
+        paySuccessMethod(){
+            this.paySuccessToast = false;
+        },
+        // 立即支付按钮
+        payMethod(order_id) {
+            let _this = this;
+            let jsApiParameters = {};
+            let onBridgeReady = function() {
+                WeixinJSBridge.invoke(
+                    "getBrandWCPayRequest",
+                    jsApiParameters,
+                    res => {
+                        if (res.err_msg == "get_brand_wcpay_request:ok") {
+                            _this.paySuccessToast = true;
+                        }
+                        if (res.err_msg == "get_brand_wcpay_request:cancel") {
+                            // alert("取消支付");
+                            // window.location.reload();
+                        }
+                    }
+                );
+            };
+            let callpay = function() {
+                if (typeof WeixinJSBridge == "undefined") {
+                    if (document.addEventListener) {
+                        document.addEventListener(
+                            "WeixinJSBridgeReady",
+                            onBridgeReady,
+                            false
+                        );
+                    } else if (document.attachEvent) {
+                        document.attachEvent(
+                            "WeixinJSBridgeReady",
+                            onBridgeReady
+                        );
+                        document.attachEvent(
+                            "onWeixinJSBridgeReady",
+                            onBridgeReady
+                        );
+                    }
+                } else {
+                    onBridgeReady();
+                }
+            };
+            // 请求支付接口
+            this.$http({
+                method: "POST",
+                url: wx_pay,
+                data: {
+                    orderid: order_id
+                }
+            }).then(res => {
+                if (res.data.status == 1) {
+                    jsApiParameters = JSON.parse(res.data.data);
+                    callpay();
+                } else {
+                    _this.alert(res.data.msg);
+                }
+            });
         }
     }
 };

@@ -1,5 +1,5 @@
 <template>
-    <div class="olinePay_box" v-if="order_id_info">
+    <div class="olinePay_box">
         <!-- toas提示(loading) -->
         <div v-show="loading">
             <div class="weui-mask_transparent"></div>
@@ -8,11 +8,21 @@
                 <p class="weui-toast__content">数据加载中</p>
             </div>
         </div>
+        <!-- dialog(支付成功) -->
+        <div v-show="paySuccessToast">
+            <div class="z-mask-transparent-pay"></div>
+            <div class="z-toast-pay">
+                <p class="z-toast-pay-head">提示</p>
+                <p class="z-toast-pay-body">支付完成</p>
+                <p class="z-toast-pay-footer" @click="paySuccessMethod">我知道了</p>
+            </div>
+        </div>
+        <!-- 支付剩余时间 -->
         <div class="olinePay_box_time">
             <h1>{{getTime}}</h1>
             <p>支付剩余时间</p>
         </div>
-        <div class="olinePay_box_content">
+        <div class="olinePay_box_content" v-if="order_id_info">
             <p class="store_name">{{order_id_info.name}}</p>
             <div class="room_introduce">
                 <img src="../../assets/images/hotel-label/my_order_hotel.png" style="vertical-align: text-top;" />
@@ -33,18 +43,18 @@
     </div>
 </template>
 <script>
-import { order_detail,wx_pay } from "@/api/api";
+import { order_detail, wx_pay } from "@/api/api";
 export default {
     name: "onlinePay",
     components: {},
     data() {
         return {
             setTime: "", //15分钟即900s，自己调整!
-            getTime: "",   //15:00
+            getTime: "", //15:00
             order_id_info: "",
-            delayToastShow: false,
-            delayToastTxt: "支付中",
-            loading: true
+            loading: true,
+            paySuccessToast: false, //支付成功toast
+            timer: ""
         };
     },
     methods: {},
@@ -54,7 +64,7 @@ export default {
         this.fetchOrderidInfo();
     },
     mounted() {
-        let timer = setInterval(() => {
+        this.timer = setInterval(() => {
             if (this.setTime >= 0) {
                 let tmpMin = Math.floor(this.setTime / 60);
                 let min = tmpMin < 10 ? "0" + tmpMin : tmpMin;
@@ -63,7 +73,7 @@ export default {
                 this.getTime = min + ":" + sec;
                 this.setTime--;
             } else {
-                clearInterval(timer);
+                clearInterval(this.timer);
             }
         }, 1000);
     },
@@ -95,12 +105,11 @@ export default {
                     jsApiParameters,
                     res => {
                         if (res.err_msg == "get_brand_wcpay_request:ok") {
-                            _this.alert("支付成功");
-                            window.location.reload();
+                            _this.paySuccessToast = true;
                         }
                         if (res.err_msg == "get_brand_wcpay_request:cancel") {
                             _this.alert("取消支付");
-                            window.location.reload();
+                            // window.location.reload();
                         }
                     }
                 );
@@ -134,13 +143,23 @@ export default {
                 data: {
                     orderid: this.order_id
                 }
-            })
-            .then((res) => {
+            }).then(res => {
                 if (res.data.status == 1) {
                     jsApiParameters = JSON.parse(res.data.data);
                     callpay();
                 } else {
-                    _this.alert(response.body.msg);
+                    _this.alert(res.data.msg);
+                }
+            });
+        },
+        // 支付成功toast中下面的点击按妞
+        paySuccessMethod() {
+            this.paySuccessToast = false;
+            clearInterval(this.timer);
+            this.$router.push({
+                path: "orderList",
+                query: {
+                    status: "ing"
                 }
             });
         }

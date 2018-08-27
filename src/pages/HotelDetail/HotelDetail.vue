@@ -1,11 +1,19 @@
 <template>
     <div class="hotel-detail">
-        <!-- toast提示 -->
-        <div v-show="isRoomDetailToastVisible">
+        <!-- toast(loading=>weui) -->
+        <div v-show="loading">
             <div class="weui-mask_transparent"></div>
             <div class="weui-toast">
                 <i class="weui-loading weui-icon_toast"></i>
                 <p class="weui-toast__content">数据加载中</p>
+            </div>
+        </div>
+        <!-- toast（delay=>z） -->
+        <div v-show="delayToast">
+            <div class="z-mask-transparent"></div>
+            <div class="z-toast">
+                <i class="z-toast-icon"></i>
+                <p class="z-toast-content">{{delayToastTxt}}</p>
             </div>
         </div>
         <div class="main" v-if="data_store">
@@ -20,7 +28,7 @@
                     <div class="swiper-pagination" slot="pagination"></div>
                 </swiper>
                 <div class="z-swiper-intro" v-if="data_store.img_logo">
-                    <img src="../../assets/images/icon/ic-hotel-detail.png" alt=""> 共{{data_store.img_logo.length}}张
+                    <img src="../../assets/images/icon/ic-hotel-detail.png" alt="">共{{data_store.img_logo.length}}张
                 </div>
                 <div class="collect" @click="addCollect">
                     <img v-if="is_collect==1" :src="collectIconActive" alt="">
@@ -43,7 +51,7 @@
                 <div class="detail-more-wrapper">
                     <div class="lf">
                         <span class="wifi">免费wifi</span>
-                        <span class="luggage">免费行李寄存</span>
+                        <span class="luggage">行李寄存</span>
                     </div>
                     <div class="rg">
                         <router-link :to=" { path: 'hotelLabel', query: { store_id: watchObj.store_id }}" tag="div">
@@ -97,8 +105,8 @@
                         </div>
                         <!-- 右侧预定按钮 -->
                         <div class="rg">
-                            <span class="book" @click="bookFun(item.is, item.store_id,item.id, begin, finish)">
-                                预订
+                            <span class="book" :class="{isHasRoom: item.is==2 ? true : false}" @click="bookFun(item.is, item.store_id,item.id, begin, finish)">
+                                {{item.is|filterIsHasRoom}}
                             </span>
                         </div>
                     </li>
@@ -116,9 +124,7 @@
 <script>
 import {
     store_detail,
-    DistributionBanner,
-    add_collect,
-    order_form
+    add_collect
 } from "@/api/api";
 import { getCookie } from "@/utils/util";
 import { f, dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
@@ -166,9 +172,10 @@ export default {
                 observeParents: true,
                 debugger: true
             },
-            isRoomDetailToastVisible: true,
+            loading: true,
             isShow: false,
-            bannerList: ["123", "456"], // 拉取banner信息
+            delayToast:false,
+            delayToastTxt:"",
             // 请求数据需要传的参数
             watchObj: {
                 store_id: "",
@@ -265,7 +272,7 @@ export default {
                 url: store_detail,
                 data: param
             }).then(res => {
-                this.isRoomDetailToastVisible = false;
+                this.loading = false;
                 if (res.data.status == 1) {
                     // 房间类型list
                     this.data_room = res.data.data.data_room;
@@ -308,7 +315,11 @@ export default {
                     }
                 });
             } else {
-                alert("不可预订");
+                this.delayToastTxt = "该房型已满房";
+                this.delayToast = true;
+                setTimeout(() => {
+                    this.delayToast = false;
+                }, 2000);
             }
         },
 
@@ -486,12 +497,12 @@ export default {
                 padding-left: 26px;
                 margin-right: 12px;
                 &.wifi {
-                    background: url("../../assets/images/hotel-label/ic_wifi.png")
+                    background: url("../../assets/images/hotel-label/lab1.png")
                         no-repeat left center;
                     background-size: 18px 18px;
                 }
                 &.luggage {
-                    background: url("../../assets/images/hotel-label/ic_luggage.png")
+                    background: url("../../assets/images/hotel-label/lab3.png")
                         no-repeat left center;
                     background-size: 18px 18px;
                 }
@@ -644,6 +655,9 @@ export default {
                     font-size: 14px;
                     background: rgba(48, 176, 151, 1);
                     border-radius: 5px;
+                    &.isHasRoom {
+                        background: #CCCCCC;
+                    }
                 }
             }
         }

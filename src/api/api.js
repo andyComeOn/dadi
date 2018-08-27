@@ -13,6 +13,9 @@ export const store_detail = '/api/StoreRoomType/store_detail?cpid=' + GlobalCpid
 
 export const storeLogo = '/api/Login/getStore?cpid=' + GlobalCpid;      //获取门店logo和店名
 
+export const store_introduce = '/api/StoreRoomType/store_introduce?cpid=' + GlobalCpid; //获取门店的更多说明
+
+
 
 // Index-首页
 export const slt_location = '/api/Index/slt_location'     //定位当前城市    

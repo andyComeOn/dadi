@@ -26,19 +26,16 @@
                 <div class="room-info" @click="selectRoom">
                     {{watchObj.room_sum}}间
                     <img class="arrow-icon" src="../../assets/images/arrows/ic_pay_arrow.png" alt="">
-                    <!-- <span class="span-minus" @click="minusRoomNum"><img :src="imgSrcMinus" alt=""></span>
-                    <span class="span-input">
-                        <input type="number" class="txt" id="" v-model="watchObj.room_sum">
-                    </span>
-                    <span class="span-plus" @click="plusRoomNum"><img :src="imgSrcPlus" alt=""></span> -->
                 </div>
             </li>
             <!-- 可定房间的列表 -->
             <div class="room-num-select" v-show="isSelectRoom">
-                <span v-if="roomNumItems" v-for="(item,index) in roomNumItems" :key="index">
-                    <i :class="[{default: isActive == item.num }]" @click="selectOrder(item.num,item.isCanSel)">{{item.num}}</i>
+                <span v-if="roomNumItems">
+                    <span class="room-num-item" v-for="(item,index) in roomNumItems" :key="index">
+                        <i :class="[{default: isActive == item.num }]" @click="selectOrder(item.num)">{{item.num}}</i>
+                    </span>
                 </span>
-                <span v-else>{{}}</span>
+                <div v-else class="room-num-empty">您今日可订限额已用完，请明天再来</div>
             </div>
             <!-- 入住人姓名 -->
             <li class="name">
@@ -203,15 +200,7 @@
                 </div> -->
             </div>
         </div>
-        <!-- toas提示（delay） -->
-        <!-- <div v-show="orderDelayToast">
-            <div class="weui-mask_transparent"></div>
-            <div class="weui-toast">
-                <i class="weui-error weui-icon_toast"></i>
-                <p class="weui-toast__content">{{orderDelayToastTxt}}</p>
-            </div>
-        </div> -->
-        <!-- toast（delay-z） -->
+        <!-- toast（delay=>z） -->
         <div v-show="orderDelayToast">
             <div class="z-mask-transparent"></div>
             <div class="z-toast">
@@ -219,7 +208,7 @@
                 <p class="z-toast-content">{{orderDelayToastTxt}}</p>
             </div>
         </div>
-        <!-- toast（weui） -->
+        <!-- toast(loading=>weui) -->
         <div v-show="orderLoadingToast">
             <div class="weui-mask_transparent"></div>
             <div class="weui-toast">
@@ -333,10 +322,6 @@ export default {
 
         // 拉取订单信息接口
         this.fetchOrderForm();
-
-        // 加减房间数按钮img的src的初始化赋值
-        // this.imgSrcMinus = this.btnMinus;
-        // this.imgSrcPlus = this.btnPlusActive;
     },
     watch: {
         initCoupon: {
@@ -383,9 +368,9 @@ export default {
                         this.coupon = res.data.data.coupon; //给房间优惠券赋值
                         this.price = res.data.data.price; // 给明细赋值
                         this.totalPrice = res.data.data.discount_price;
-                        let quantity = parseInt(res.data.data.quantity); // 当前用户能定的最大房间数
+
                         let astrict = parseInt(res.data.data.astrict); // 后台配置的最大可选择几间房
-                        this.quantity = quantity;
+                        let quantity = parseInt(res.data.data.quantity); // 当前用户能定的最大房间数
                         if (quantity > 0) {
                             let tmp = [];
                             for (let i = 1; i <= quantity; i++) {
@@ -395,7 +380,8 @@ export default {
                             }
                             this.roomNumItems = tmp;
                         } else {
-                            // 您今日可订限额已用完，请明天再来
+                            this.roomNumItems = "";
+                            this.watchObj.room_sum = 0;
                         }
                     } else if (res.data.status == -3) {
                         // 若按照新的产品思路，这个else if 就不会出现了
@@ -405,37 +391,6 @@ export default {
                 })
                 .catch(err => {});
         },
-        // 减房间数-产品去掉此逻辑
-        // minusRoomNum() {
-        //     if (this.watchObj.room_sum == 1) {
-        //         this.initCoupon = "";
-        //         this.imgSrcMinus = this.btnMinus;
-        //         return;
-        //     } else {
-        //         this.imgSrcPlus = this.btnPlusActive;
-        //         this.watchObj.room_sum -= 1;
-        //         this.fetchOrderForm();
-        //     }
-        // },
-
-        // 加房间数-产品去掉此逻辑
-        // plusRoomNum() {
-        //     if (!this.isUserCanOrder) {
-        //         this.orderDelayToast = true;
-        //         this.imgSrcPlus = this.btnPlus;
-        //         setTimeout(() => {
-        //             this.orderDelayToast = false;
-        //         }, 2000);
-        //         return;
-        //     }
-        //     if (this.watchObj.room_sum >= 1) {
-        //         this.watchObj.room_sum += 1;
-        //         this.imgSrcMinus = this.btnMinusActive;
-        //         this.initCoupon = "";
-        //         this.fetchOrderForm();
-        //     }
-        // },
-
         // 选择房间折叠与否
         selectRoom() {
             this.isSelectRoom = !this.isSelectRoom;
@@ -702,14 +657,14 @@ export default {
         .room-num-select {
             margin-left: -15px;
             background: #eff1f0;
-            // padding: 15px 0;
             padding: 12px 0 0;
+            text-align: center;
             &::after {
                 display: table;
                 content: "";
                 clear: both;
             }
-            span {
+            .room-num-item {
                 float: left;
                 width: 20%;
                 padding: 0 12px;
@@ -723,12 +678,15 @@ export default {
                     font-style: normal;
                     background: #fff;
                     color: #666;
-                    cursor: pointer;
                     &.default {
                         background: #269882;
                         color: #fff;
                     }
                 }
+            }
+            .room-num-empty {
+                line-height: 36px;
+                margin-top: -12px;
             }
         }
         li {

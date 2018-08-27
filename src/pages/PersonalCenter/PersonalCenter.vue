@@ -63,6 +63,7 @@
 					start:1800,
 					end: new Date(),
 					defaultValue: [1991,1,1],
+					// defaultValue:3,
 					onChange: function(result){
 						console.log(result);
 					},

@@ -72,4 +72,90 @@ export function filterMoneyInt(a) {
 export function Fixto2(a) {
 	return Math.round(a*100)/100;
 }
+// 过滤是否有房
+export function filterIsHasRoom(a){
+	if (a==1){
+		return "预订";
+	} else {
+		return "订完";
+	}
+}
+// 过滤酒店设施
+export function filterLabel(a){
+	if (a==1){
+		return "免费wifi";
+	} else if(a==2) {
+		return "停车场";
+	} else if(a==3) {
+		return "行李寄存";
+	} else if(a==4) {
+		return "携带宠物";
+	} else if(a==5) {
+		return "接送机";
+	} else if(a==6) {
+		return "会议室";
+	} else if(a==7) {
+		return "健身中心";
+	} else if(a==8) {
+		return "24小时前台";
+	} else if(a==9) {
+		return "商务中心";
+	} else if(a==10) {
+		return "游泳池";
+	} else if(a==11) {
+		return "ATM机";
+	} else if(a==12) {
+		return "前台保险柜";
+	} else if(a==13) {
+		return "中餐";
+	} else if(a==14) {
+		return "西餐";
+	} else if(a==15) {
+		return "宴会厅";
+	} else if(a==16) {
+		return "酒吧";
+	} else if(a==17) {
+		return "咖啡厅";
+	} else if(a==18) {
+		return "茶室";
+	} else if(a==19) {
+		return "刷卡服务";
+	} else if(a==20) {
+		return "沙滩";
+	} else if(a==21) {
+		return "沙滩娱乐";
+	} else if(a==22) {
+		return "残疾人服务";
+	} else if(a==23) {
+		return "叫车服务";
+	} else if(a==24) {
+		return "叫醒服务";
+	} else if(a==25) {
+		return "代订火车票";
+	} else if(a==26) {
+		return "代订飞机票";
+	} else if(a==27) {
+		return "专职行李员";
+	} else if(a==28) {
+		return "洗衣服务";
+	} else if(a==29) {
+		return "擦鞋";
+	} else if(a==30) {
+		return "送餐服务";
+	} else if(a==31) {
+		return "旅游服务";
+	} else if(a==32) {
+		return "租车服务";
+	} else if(a==33) {
+		return "雨伞租借";
+	} else if(a==34) {
+		return "医疗支援";
+	} else if(a==35) {
+		return "货币兑换";
+	} else {
+		return "美容美发";
+	} 
 
+
+	行李寄存
+}

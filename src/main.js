@@ -51,7 +51,7 @@ axios.post(check_login,param).then((res)=>{
 	if(res.data.status == 0){
 		window.location.href = res.data.data;
 	}else{
-		console.log(res);
+		// console.log(res);
 		// setCookie("userInfoTel","13121796612");
 		setCookie("userInfoTel",res.data.data.mobile);  //手机号
 		setCookie("userInfoIsRealname",res.data.data.is_realname); //真实姓名

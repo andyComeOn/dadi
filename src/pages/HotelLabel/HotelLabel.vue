@@ -3,132 +3,254 @@
 		<!-- 酒店详情标签 -->
 		<div class="labels-box item">
 			<div class="labels">
-				<div class="hd item-hd">酒店详情</div>
+				<div class="hd item-hd">酒店设施</div>
 				<div class="bd">
-					<span class="wifi">免费wifi</span>
-					<span class="luggage">免费行李寄存</span>
-					<span class="wifi">免费wifi</span>
-					<span class="luggage">免费行李寄存</span>
-					<span class="wifi">免费wifi</span>
-		
-					<span class="luggage">免费行李寄存</span>
-					<span class="wifi">免费wifi</span>
-					<span class="luggage">免费行李寄存</span>
+					<!-- <span class="wifi">免费wifi</span> -->
+					<!-- <span class="luggage">免费行李寄存</span> -->
+					<span v-for="(item,index) in info.server_tag" :key="index" :class="'lab'+item">{{item|filterLabel}}</span>
 				</div>
 			</div>
 		</div>
-
 		<!-- 酒店详情说明 -->
 		<div class="desc-box item">
 			<div class="desc">
-				<div class="hd item-hd">酒店说明</div>
-				<div class="bd">
+				<div class="hd item-hd">酒店描述</div>
+				<!-- <div class="bd">
 					“秋果”品牌以自然、健康、率性的价值观，为希望能在繁华、喧嚣的都市中寻得一品净土的中产商务人士打造一处静谧之所，栖身、栖心。 秋果品牌定位：都市人文精品酒店缔造者与领导者；秋果品牌主张－我们不仅是一家高品质酒店，亦希望为旅途客人打造一个舒适的家，为有共同兴趣爱好的客人塑造一个专属社区，并引导一种生活方式。
-				</div>
+				</div> -->
+				<div class="bd" v-html="info.brief"></div>
 			</div>
 		</div>
-
 		<!-- 温馨提示 -->
 		<div class="tips-box">
 			<div class="tips">
 				<h4>温馨提示：</h4>
-				<p>1.联系电话： 010-6666666</p>
+				<p>1.联系电话：
+					<a :href="'tel:' + info.tel" class="call">{{info.tel}}</a>
+				</p>
 				<p>2.入离通知：入住时间－12点以后；离店时间－次日12点以前</p>
 			</div>
 		</div>
-		
+
 	</div>
 </template>
 
 <script>
-
+import { store_introduce } from "@/api/api";
 export default {
     name: "hotel-label",
-    components: {
-        
+    data() {
+        return {
+            labels: "",
+            store_id: "",
+            info: ""
+        };
+    },
+    created() {
+        this.store_id = this.$route.query.store_id;
+        this.fetchData();
+    },
+    methods: {
+        fetchData() {
+            this.$http({
+                method: "POST",
+                url: store_introduce,
+                data: { store_id: this.store_id }
+            })
+                .then(res => {
+                    if (res.data.status == 1) {
+                        this.info = res.data.data;
+                    }
+                    // console.log(res.data.data);
+                })
+                .catch();
+        }
     }
 };
 </script>
 
 <style lang="less" scoped>
-	// 共有的样式
-	.item {
-		padding-top: 10px;
-	}
-	.item-hd {
-		height: 20px;
-		line-height: 20px;
-		font-size: 15px;
-		color: #333;
-		padding-left: 12px;
-		position: relative;
-		&::before {
-			content: '';
-			position: absolute;
-			left: 0;
-			width: 3px;
-			bottom: 0;
-			top: 0;
-			background: #30B097;
-		} 
-	}
+// 共有的样式
+.item {
+    padding-top: 10px;
+}
+.item-hd {
+    height: 20px;
+    line-height: 20px;
+    font-size: 15px;
+    color: #333;
+    padding-left: 12px;
+    position: relative;
+    &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        width: 3px;
+        bottom: 0;
+        top: 0;
+        background: #30b097;
+    }
+}
 
-	// 酒店详情标签
-	.labels-box{
-		padding-top: 10px;
-		.labels{
-			padding: 15px;
-			background: #ffffff;
-			.bd {
-				span {
-					display: inline-block;
-					height: 20px;
-					line-height: 20px;
-					padding-left: 26px;
-					margin: 10px 12px 0 0;
-					&.wifi{
-						background: url('../../assets/images/hotel-label/ic_wifi.png') no-repeat left center;
-						background-size: 18px 18px;
-					}
-					&.luggage{
-						background: url('../../assets/images/hotel-label/ic_luggage.png') no-repeat left center;
-						background-size: 18px 18px;
-					}
-				} 				
-			}
-		}
+// 酒店详情标签
+.labels-box {
+    padding-top: 10px;
+    .labels {
+        padding: 15px;
+        background: #ffffff;
+        .bd {
+            span {
+                display: inline-block;
+                height: 20px;
+                line-height: 20px;
+                padding-left: 26px;
+                margin: 10px 12px 0 0;
+                background-repeat: no-repeat;
+                background-position: left center;
+                background-size: 18px 18px;
+                &.lab1 {
+                    background-image: url("../../assets/images/hotel-label/lab1.png");
+                }
+                &.lab2 {
+                    background-image: url("../../assets/images/hotel-label/lab2.png");
+                }
+                &.lab3 {
+                    background-image: url("../../assets/images/hotel-label/lab3.png");
+                }
+                &.lab4 {
+                    background-image: url("../../assets/images/hotel-label/lab4.png");
+                }
+                &.lab5 {
+                    background-image: url("../../assets/images/hotel-label/lab5.png");
+                }
+                &.lab6 {
+                    background-image: url("../../assets/images/hotel-label/lab6.png");
+                }
+                &.lab7 {
+                    background-image: url("../../assets/images/hotel-label/lab7.png");
+                }
+                &.lab8 {
+                    background-image: url("../../assets/images/hotel-label/lab8.png");
+                }
+                &.lab9 {
+                    background-image: url("../../assets/images/hotel-label/lab9.png");
+                }
+                &.lab10 {
+                    background-image: url("../../assets/images/hotel-label/lab10.png");
+                }
+                &.lab11 {
+                    background-image: url("../../assets/images/hotel-label/lab11.png");
+                }
+                &.lab12 {
+                    background-image: url("../../assets/images/hotel-label/lab12.png");
+                }
+                &.lab13 {
+                    background-image: url("../../assets/images/hotel-label/lab13.png");
+                }
+                &.lab14 {
+                    background-image: url("../../assets/images/hotel-label/lab14.png");
+                }
+                &.lab15 {
+                    background-image: url("../../assets/images/hotel-label/lab15.png");
+                }
+                &.lab16 {
+                    background-image: url("../../assets/images/hotel-label/lab16.png");
+                }
+                &.lab17 {
+                    background-image: url("../../assets/images/hotel-label/lab17.png");
+                }
+                &.lab18 {
+                    background-image: url("../../assets/images/hotel-label/lab18.png");
+                }
+                &.lab19 {
+                    background-image: url("../../assets/images/hotel-label/lab19.png");
+                }
+                &.lab20 {
+                    background-image: url("../../assets/images/hotel-label/lab20.png");
+                }
+                &.lab21 {
+                    background-image: url("../../assets/images/hotel-label/lab21.png");
+                }
+                &.lab22 {
+                    background-image: url("../../assets/images/hotel-label/lab22.png");
+                }
+                &.lab23 {
+                    background-image: url("../../assets/images/hotel-label/lab23.png");
+                }
+                &.lab24 {
+                    background-image: url("../../assets/images/hotel-label/lab24.png");
+                }
+                &.lab25 {
+                    background-image: url("../../assets/images/hotel-label/lab25.png");
+                }
+                &.lab26 {
+                    background-image: url("../../assets/images/hotel-label/lab26.png");
+                }
+                &.lab27 {
+                    background-image: url("../../assets/images/hotel-label/lab27.png");
+                }
+                &.lab28 {
+                    background-image: url("../../assets/images/hotel-label/lab28.png");
+                }
+                &.lab29 {
+                    background-image: url("../../assets/images/hotel-label/lab29.png");
+                }
+                &.lab30 {
+                    background-image: url("../../assets/images/hotel-label/lab30.png");
+                }
+                &.lab31 {
+                    background-image: url("../../assets/images/hotel-label/lab31.png");
+                }
+                &.lab32 {
+                    background-image: url("../../assets/images/hotel-label/lab32.png");
+                }
+                &.lab33 {
+                    background-image: url("../../assets/images/hotel-label/lab33.png");
+                }
+                &.lab34 {
+                    background-image: url("../../assets/images/hotel-label/lab34.png");
+                }
+                &.lab35 {
+                    background-image: url("../../assets/images/hotel-label/lab35.png");
+                }
+                &.lab36 {
+                    background-image: url("../../assets/images/hotel-label/lab36.png");
+                }
+            }
+        }
+    }
+}
 
-	}
+// 酒店详情说明
+.desc-box {
+    .desc {
+        padding: 15px;
+        background: #ffffff;
+        .bd {
+            margin-top: 10px;
+            font-size: 14px;
+            font-family: PingFangSC-Regular;
+            color: #666;
+            line-height: 24px;
+        }
+    }
+}
 
-	// 酒店详情说明
-	.desc-box {
-		.desc {
-			padding: 15px;
-			background: #ffffff;
-			.bd {
-				margin-top: 10px;
-				font-size:14px;
-				font-family:PingFangSC-Regular;
-				color: #666;
-				line-height:24px;
-			}
-		}
-	}
-
-	// 温馨提示
-	.tips-box {
-		padding: 10px 15px 0;
-		.tips {
-			font-size: 12px;
-			color: #666;
-			line-height: 15px;
-			h4 {
-				margin-bottom: 5px;
-			}
-			p {
-				margin-bottom: 5px;
-			}
-			
-		}
- 	}
+// 温馨提示
+.tips-box {
+	padding: 10px 15px 10px;
+	background: #EFF1F0;
+    .tips {
+        font-size: 12px;
+        color: #666;
+		line-height: 15px;
+		// padding: 0 0 10px 0;
+        h4 {
+            margin-bottom: 5px;
+        }
+        p {
+            margin-bottom: 5px;
+        }
+    }
+}
 </style>

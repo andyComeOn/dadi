@@ -118,7 +118,7 @@ export default new Router({
 			name: 'hotelLabel',
 			component: HotelLabel,
 			meta:{
-				title:'酒店设施'
+				title:'酒店介绍'
 			}
 		},
 		// 酒店详情-banner-点击之后跳转到酒店图片集和页

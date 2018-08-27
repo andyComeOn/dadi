@@ -30,7 +30,7 @@
         </ul>
         <!-- 用户协议 -->
         <div class="user_agreement">
-            <span>注册登录代表您已同意</span>
+            <span>绑定手机号代表您已同意</span>
             <a class="" href="javascript:;">《秋果酒店服务条款》</a>
         </div>
         <!-- hint str -->
@@ -41,7 +41,7 @@
 
 <script>
 import { login, sendMobile,storeLogo } from "../../api/api.js";
-import { getCookie } from '../../utils/util.js';
+import { getCookie,setCookie } from '../../utils/util.js';
 
 export default {
     name: "login",
