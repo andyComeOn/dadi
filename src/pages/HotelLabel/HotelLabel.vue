@@ -5,8 +5,6 @@
 			<div class="labels">
 				<div class="hd item-hd">酒店设施</div>
 				<div class="bd">
-					<!-- <span class="wifi">免费wifi</span> -->
-					<!-- <span class="luggage">免费行李寄存</span> -->
 					<span v-for="(item,index) in info.server_tag" :key="index" :class="'lab'+item">{{item|filterLabel}}</span>
 				</div>
 			</div>

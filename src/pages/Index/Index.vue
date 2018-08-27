@@ -67,6 +67,8 @@
                     <div class="submit" @click="submitFun">
                         酒店预订
                     </div>
+
+                    <div></div>
                 </div>
             </div>
         </div>
@@ -89,7 +91,7 @@
 </template>
 
 <script>
-import {DistributionBanner} from "@/api/api"; // 引入api
+import {DistributionBanner,slt_location} from "@/api/api"; // 引入api
 import { f, dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
 import mTabbarFa from "@/components/tabbarfa";
 import { swiper, swiperSlide } from "vue-awesome-swiper"; // 引入swipe组件
@@ -185,6 +187,7 @@ export default {
         this.zbInitCalendar.end.dd = f(dd).dd;
         // 拉取banner的方法
         this.fetchBannerData({ type_id: 1 });
+        // this.getLocation();
     },
     computed: {
         swiper() {
@@ -208,8 +211,8 @@ export default {
         // 获取当前位置
         getLocation() {
             this.$http({
-                method: "GET",
-                url: "http://pv.sohu.com/cityjson?ie=utf-8",
+                method: "POST",
+                url: slt_location,
                 data: {}
             }).then(res => {
                 console.log(res);

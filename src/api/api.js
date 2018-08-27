@@ -18,13 +18,15 @@ export const store_introduce = '/api/StoreRoomType/store_introduce?cpid=' + Glob
 
 
 // Index-首页
-export const slt_location = '/api/Index/slt_location'     //定位当前城市    
+export const slt_location = '/api/Index/slt_location?cpid=' + GlobalCpid     //定位当前城市    
 
 export const getCityList = '/api/Index/getCityList?cpid=' + GlobalCpid;    //获取城市列表    
 
 export const getHotcity = '/api/Index/getHotcity?cpid=' + GlobalCpid;     //获取热门城市    
 
 export const getStorecity = '/api/Index/getStorecity?cpid=' + GlobalCpid;    //热门城市
+
+
 
 
 // 授权-模拟登陆

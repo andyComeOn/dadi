@@ -12,13 +12,7 @@
             </div>
             <span class="stick">|</span>
             <div class="search">
-                <input 
-                    type="text" 
-                    class="txt" 
-                    v-model="o.abstract" 
-                    placeholder="酒店位置/商圈"
-                    @keyup="inputFun"
-                >
+                <input type="text" class="txt" v-model="o.abstract" placeholder="酒店位置/商圈" @keyup="inputFun">
             </div>
             <!-- @focus="triggerSearchbarInputFocus" -->
             <!-- 这句代码是search中的input获焦时候绑定的函数-勿删 -->
@@ -85,68 +79,62 @@ export default {
         },
 
         // 搜素框出发焦点事件
-        triggerSearchbarInputFocus(){
+        triggerSearchbarInputFocus() {
             this.$emit("triggerSearchbarInputFocusEmit");
         },
 
         // 最后产品要求不加此功能
-        inputFun(){
-            this.$emit("inputValEmit",o.abstract);
-        },
-
-
-
+        inputFun() {
+            this.$emit("inputValEmit", o.abstract);
+        }
     }
 };
 </script>
 <style lang="less" scoped>
 .search-container {
-    height: 40px;
-    padding: 6px 15px;
+    height: 48px;
+    padding: 8px 15px;
     .search-wrapper {
-        height: 28px;
+        height: 32px;
         display: flex;
         flex-direction: row;
         background: #f4f4f4;
         color: #666666;
         font-size: 12px;
         .city {
-            height: 28px;
-            line-height: 28px;
+            line-height: 32px;
             padding: 0 9px;
         }
         .stick {
-            height: 28px;
             line-height: 28px;
         }
         .date-wrapper {
             display: flex;
             flex-direction: row;
-            height: 28px;
+            height: 32px;
             padding: 0 9px;
             .date-area {
                 font-size: 0;
                 margin-right: 9px;
                 .start,
                 .end {
-                    line-height: 14px;
+                    line-height: 16px;
                     padding: 2px 0;
-                    font-size: 10px;
+                    font-size: 12px;
                 }
             }
             .date-instro {
-                height: 28px;
-                line-height: 28px;
-                color: #30B097;
+                line-height: 32px;
+                color: #30b097;
             }
         }
         .search {
             flex: 1;
-            height: 28px;
+            height: 32px;
             padding: 2px 0;
             .txt {
                 width: 100%;
-                height: 24px;
+                height: 28px;
                 outline: none;
                 border: none;
                 background: #f4f4f4;
@@ -156,6 +144,4 @@ export default {
         }
     }
 }
-
-
 </style>

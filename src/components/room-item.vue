@@ -19,8 +19,14 @@
                     <p class="info m-ellipsis-2">{{item.introduce}}</p>
                     <p class="location">{{item.area}}</p>
                     <div class="price-wrap">
-                        <div class="price">&yen;
-                            <span>{{item.price}}</span>起</div>
+                        <span class="yen">&yen;</span>
+                        <span class="price">{{item.price}}</span>
+                        起
+                        <!-- <div class="price">
+                            
+                            
+                            <span>{{item.price}}</span>
+                        起</div> -->
                     </div>
                 </div>
             </li>
@@ -51,9 +57,9 @@ export default {
     },
     data() {
         return {
-            isShow: false,  
-            dataList: "",// 门店list
-            isRoomItemToastVisible:true  // 搜索
+            isShow: false,
+            dataList: "", // 门店list
+            isRoomItemToastVisible: true // 搜索
         };
     },
     created() {},
@@ -91,7 +97,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
 .no-search-result-wrapper {
     padding-top: 15px;
     background: #eff1f0;
@@ -133,9 +138,9 @@ export default {
             width: 100px;
             height: 120px;
             float: left;
-            background: url("../assets/images/default/jiudian.jpg")
-                    no-repeat right center;
-                background-size: 100px 120px;
+            background: url("../assets/images/default/jiudian.jpg") no-repeat
+                right center;
+            background-size: 100px 120px;
             img {
                 width: 100px;
                 height: 120px;
@@ -145,7 +150,6 @@ export default {
             margin-left: 100px;
             padding: 5px 0 0 10px;
             .name {
-                height: 22px;
                 font-size: 16px;
                 color: rgba(51, 51, 51, 1);
                 line-height: 22px;
@@ -157,24 +161,23 @@ export default {
                 color: rgba(102, 102, 102, 1);
             }
             .location {
-                margin-top: 9px;
-                margin-bottom: 9px;
-                height: 14px;
-                font-size: 10px;
+                margin-top: 5px;
+                margin-bottom: 10px;
+                line-height: 16px;
+                font-size: 12px;
                 color: rgba(102, 102, 102, 1);
-                line-height: 14px;
             }
             .price-wrap {
-                height: 20px;
+                line-height: 21px;
+                vertical-align: bottom;
+                font-size: 12px;
+                color: #666;
+                .yen {
+                    color: #ffba56;
+                }
                 .price {
-                    height: 20px;
-                    vertical-align: bottom;
-                    font-size: 8px;
-                    color: #666;
-                    span {
-                        font-size: 16px;
-                        color: #ffba56;
-                    }
+                    font-size: 16px;
+                    color: #ffba56;
                 }
             }
         }
