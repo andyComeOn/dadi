@@ -14,12 +14,14 @@
 		top: 0;
 		z-index: 2;
 		padding: 0 15px;
-		height: 44px;
 		line-height: 44px;
 		text-align: center;
 		background: #ccc;
 		.lf {
-			float: left;
+			position: absolute;
+            line-height: 44px;
+            left: 15px;
+            top: 0;
 		}
 	}
 	.wh_content_head {

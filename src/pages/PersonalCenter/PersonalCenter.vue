@@ -225,9 +225,9 @@
 	.hint_box {
 		background: rgba(75, 75, 75, 0.7);
 		color: #fff;
-		padding: 5px 10px;
-		font-size: 8px;
-		line-height: 16px;
+		padding: 5px 20px;
+		font-size: 14px;
+		line-height: 44px;
 		border-radius: 13px;
 		position: fixed;
 		top: 50%;

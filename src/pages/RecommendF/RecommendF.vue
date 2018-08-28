@@ -31,7 +31,7 @@
 
             <!--卡片 -->
             <div class="card-box">
-                <div class="box" id="cardBoxContent" :style="{height:cardBoxContentH + 'px'}">
+                <div class="box" id="cardBoxContent">
                     <p class="tixian-title">可提现(元)</p>
                     <p class="tixian-num">{{use_amount}}</p>
                     <ul class="tixian-info">
@@ -103,7 +103,6 @@ export default {
     components: {},
     data() {
         return {
-            cardBoxContentH:"",  //卡片的高度
             use_amount: "", //可提现
             freeze_amount: "", //冻结金额
             reward_amount: "", //累计金额
@@ -122,13 +121,6 @@ export default {
         }
     },
     mounted() {
-        // 为了使“卡片”背景不失真
-        this.$nextTick(() => {
-            // 由卡片的宽度-->给卡片的高赋值
-            let cardBoxContent = document.querySelector("#cardBoxContent");
-            let cardBoxContentH = cardBoxContent.clientWidth * 51 / 138;
-            this.cardBoxContentH = cardBoxContentH;
-        });
         //头像
         this.avatar_head = decodeURIComponent(getCookie('avatar'));
         //昵称
@@ -203,7 +195,7 @@ export default {
     padding: 0 15px;
     margin-bottom: 50px;
     .box {
-        padding: 20px 15px 0;
+        padding: 16px 15px;
         // height: 128px;
         background: url(../../assets/images/distribution/bg_fenxiao.png)
             no-repeat center center;
@@ -211,24 +203,24 @@ export default {
         position: relative;
         border-radius: 10px;
         color: #fff;
+        box-shadow: 0px 9px 20px #FCC77B;
         // 提现标题
         .tixian-title {
-            line-height: 14px;
-            font-size: 12px;
-            margin-bottom: 10px;
+            line-height: 21px;
+            font-size: 13px;
+            margin-bottom: 4px;
         }
         // 提现钱数
         .tixian-num {
-            line-height: 24px;
+            line-height: 28px;
             font-size: 24px;
-            margin-bottom: 20px;
+            margin-bottom: 54px;
             letter-spacing: 2px;
         }
         // 提现详情
         .tixian-info {
-            height: 14px;
-            line-height: 14px;
-            font-size: 12px;
+            line-height: 21px;
+            font-size: 13px;
             text-align: center;
             .tixian-get {
                 float: left;

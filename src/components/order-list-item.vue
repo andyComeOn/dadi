@@ -68,7 +68,7 @@ export default {
     watch: {
         condition: {
             handler(newValue, oldValue) {
-                if (newValue.status == 2) {
+                if (newValue.type == 2) {
                     this.noOrderStatusTxt = "暂无已关闭订单";
                 } else {
                     this.noOrderStatusTxt = "暂无进行中订单";
@@ -92,7 +92,6 @@ export default {
     },
     created() {},
     mounted() {},
-
     methods: {
         fetchData(param) {
             this.$http({

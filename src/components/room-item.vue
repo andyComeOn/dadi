@@ -22,11 +22,6 @@
                         <span class="yen">&yen;</span>
                         <span class="price">{{item.price}}</span>
                         起
-                        <!-- <div class="price">
-                            
-                            
-                            <span>{{item.price}}</span>
-                        起</div> -->
                     </div>
                 </div>
             </li>
@@ -178,6 +173,7 @@ export default {
                 .price {
                     font-size: 16px;
                     color: #ffba56;
+                    line-height: 1.0;
                 }
             }
         }

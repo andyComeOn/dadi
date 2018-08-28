@@ -2,7 +2,9 @@
 <template>
 	<div class="city-wendor m-position-ab">
 		<div class="city-title">
-			<div class="lf" @click="cityTitleBackfun">返回</div>请选择城市</div>
+			<div class="lf" @click="cityTitleBackfun">返回</div>
+            请选择城市
+        </div>
 		<div class="city-content">
 			<div class="city-head">搜索条</div>
 			<div class="city-body">
@@ -96,12 +98,14 @@ export default {
         top: 0;
         z-index: 2;
         padding: 0 15px;
-        height: 44px;
         line-height: 44px;
         text-align: center;
         background: #ccc;
         .lf {
-            float: left;
+            position: absolute;
+            line-height: 44px;
+            left: 15px;
+            top: 0;
         }
     }
     .city-content {

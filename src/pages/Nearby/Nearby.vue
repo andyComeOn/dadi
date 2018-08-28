@@ -240,7 +240,4 @@ export default {
 		padding-bottom: 50px;
 		height: 100%;
 	}
-
-	
-
 </style>

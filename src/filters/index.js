@@ -23,6 +23,10 @@ export function filterTimeYTD(a) {
 	let index = a.indexOf(" ");
 	return a.slice(0, index);
 }
+// 过滤后台时间格式"2018-08-09 12:00:00"的年月日
+export function filterTimeYTD_HHMM(a) {
+	return a.slice(0, 16);
+}
 // 过滤不同的状态
 export function filterStatus(b) {
 	if (b == 0) {
@@ -41,8 +45,10 @@ export function filterStatus(b) {
 		return '<span style="color:#F7543E">被拒单</span>';
 	} else if (b == 8) {
 		return "已取消";
-	} else {
+	} else if (b == 9) {
 		return "退款结束";
+	} else {
+		return "已关闭";
 	}
 }
 // 过滤优惠券  后台时间格式"2018-08"的天
@@ -155,7 +161,4 @@ export function filterLabel(a){
 	} else {
 		return "美容美发";
 	} 
-
-
-	行李寄存
 }

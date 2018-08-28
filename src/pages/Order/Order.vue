@@ -63,11 +63,17 @@
             <div class="divivid-bar"></div>
 
             <!-- 优惠券 -->
-            <li class="coupon" v-if="coupon">
+            <li class="coupon">
                 <label class="label">优惠券</label>
                 <div class="item-rg">
                     <div class="coupon-div" @click="showCouponMask">
-                        {{coupon.length}}张可用
+                        <div v-show="couponBarShow" style="display:inline-block;">
+                            <span v-if="coupon.length==0">无</span>
+                            <span v-else>{{coupon.length}}张可用</span>
+                        </div>
+                        <div v-show="!couponBarShow" style="display:inline-block;">
+                            已选择1张，抵扣{{initCoupon.amount}}元
+                        </div>
                         <img src="../../assets/images/arrows/ic-arrow_10_18.png" alt="">
                     </div>
                 </div>
@@ -97,7 +103,7 @@
         </div>
         <!-- 优惠券的弹框 -->
         <div class="coupon-mask-box">
-            <div class="weui-mask zb-weui-mask" id="couponMask" @click="hideCouponMask" :class="[{'weui-actionsheet_no_toggle_active':isCouponMask},{'weui-actionsheet_no_toggle':!isCouponMask}]"></div>
+            <div class="weui-mask zb-weui-mask" @click="hideCouponMask" :class="[{'weui-actionsheet_no_toggle_active':isCouponMask},{'weui-actionsheet_no_toggle':!isCouponMask}]"></div>
             <div class="weui-actionsheet zb-weui-actionsheet" id="weui-actionsheet" :class="[{'weui-actionsheet_toggle':isCouponMask}]">
                 <!-- 弹框的title -->
                 <div class="weui-actionsheet__title zb-weui-actionsheet__title">
@@ -106,7 +112,7 @@
                 <!-- 弹框的内容 -->
                 <div class="weui-actionsheet__menu">
                     <!-- 循环下面的整体 -->
-                    <div class="zb-actionsheet__bd" v-for="(item,index) in coupon" :key="index">
+                    <div class="zb-actionsheet__bd" v-if="coupon" v-for="(item,index) in coupon" :key="index">
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
                             <label class="weui-cell zb-weui-cell weui-check__label" :for="item.id">
                                 <div class="weui-cell__bd div zb-weui-cell__hd">
@@ -121,6 +127,7 @@
                             </label>
                         </div>
                     </div>
+                    <div v-else style="line-height: 55px;background: #fff;font-size:17px;text-center:center;">暂无优惠券可用</div>
                 </div>
                 <!-- 弹框的取消-ui说不需要此交互 -->
                 <!-- <div class="weui-actionsheet__action" style="background:#fff;"> -->
@@ -209,11 +216,11 @@
             </div>
         </div>
         <!-- toast(loading=>weui) -->
-        <div v-show="orderLoadingToast">
+        <div v-show="loading">
             <div class="weui-mask_transparent"></div>
             <div class="weui-toast">
                 <i class="weui-loading weui-icon_toast"></i>
-                <p class="weui-toast__content">加载中</p>
+                <p class="weui-toast__content">数据加载中</p>
             </div>
         </div>
     </div>
@@ -224,17 +231,11 @@ import { dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
 import { order_form, increase_room_num, create_order } from "@/api/api";
 export default {
     name: "order",
-    components: {},
     data() {
         return {
             isCouponMask: false,
             isDealDetailMask: false,
             isSelectRoom: false,
-            // 加减房间数按钮img的src路径
-            btnPlus: require("../../assets/images/btn-plus-minus/plus.png"),
-            btnPlusActive: require("../../assets/images/btn-plus-minus/plusA.png"),
-            btnMinus: require("../../assets/images/btn-plus-minus/minus.png"),
-            btnMinusActive: require("../../assets/images/btn-plus-minus/minusA.png"),
             watchObj: {
                 store_id: "",
                 room_id: "",
@@ -246,7 +247,6 @@ export default {
             beginY: "",
             beginM: "",
             beginD: "",
-
             finishY: "",
             finishM: "",
             finishD: "",
@@ -264,17 +264,11 @@ export default {
             userOrderMaxNum: 5,
             // 后台返回的该用户是否可订房标志
             isUserCanOrder: true,
-            // 加减房间数按钮img的src的接受值
-            imgSrcMinus: "",
-            imgSrcPlus: "",
-
             // 订房人预留的姓名、手机号
             orderName: "",
             orderTel: "",
             // 总价
             totalPrice: "",
-            // 总价保存
-            totalPriceLast: "",
             // 房间的单价
             discount_price: "",
             // 优惠券
@@ -290,7 +284,8 @@ export default {
             roomNumItems: "", //循环可定房间
             quantity: "", //该用户还能再定房间数的上限
             isActive: 1,
-            orderLoadingToast: true //loading
+            loading: true, //loading
+            couponBarShow : true
         };
     },
     created() {
@@ -328,6 +323,7 @@ export default {
             handler(newValue, oldValue) {
                 if (newValue != "") {
                     this.totalPrice = this.discount_price - newValue.amount;
+                    this.couponBarShow = false;
                     this.isCouponMask = false; //选取优惠券使其dialog消失
                 }
             },
@@ -362,7 +358,7 @@ export default {
             })
                 .then(res => {
                     if (res.data.status == 1) {
-                        this.orderLoadingToast = false;
+                        this.loading = false;
                         this.details = res.data.data.details; //给房间详情赋值
                         this.discount_price = res.data.data.discount_price; //预定房间总价赋值
                         this.coupon = res.data.data.coupon; //给房间优惠券赋值
@@ -580,6 +576,7 @@ export default {
 
 // order页的样式
 .order {
+    padding-bottom:50px; 
     // 相同的样式提取
     .label {
         float: left;

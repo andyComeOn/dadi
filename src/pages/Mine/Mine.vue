@@ -122,7 +122,6 @@ export default {
                 data: {}
             }).then(res => {
                 if (res.data.status == 1) {
-                    console.log(res);
                     this.userInfoData = res.data.data;
                 }
             });
@@ -130,14 +129,13 @@ export default {
     },
     mounted() {
         this.fetchUserInfo();
-
-
     }
 };
 </script>
 <style lang="less" scoped>
 @import "../../assets/less/var.less";
 .mine {
+    padding-bottom:50px; 
     .weui-cell {
         padding: 12px 15px;
     }

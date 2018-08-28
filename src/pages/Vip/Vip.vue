@@ -226,8 +226,9 @@ export default {
     align-items: center;
     justify-content: center;
     color: #333;
-    font-size: 15px;
+    font-size: 16px;
     margin-top: 30px;
+    font-weight: 600;
     span {
         width: 72px;
         height: 8px;
@@ -278,7 +279,7 @@ export default {
             // }
             .logo {
                 height: 22px;
-                margin-bottom: 50px;
+                margin-bottom: 30px;
                 img {
                     height: 22px;
                 }
@@ -394,11 +395,11 @@ export default {
                     clear: both;
                 }
                 li {
-                    padding: 20px 30px 0;
+                    // padding: 20px 30px 0;
+                    padding: 15px 15px 0;
                     height: 100px;
                     width: 33.33%;
                     float: left;
-                    border-right: 1px solid #e5e5e5;
                     border-bottom: 1px solid #e5e5e5;
                     .li-desc {
                         color: #333;
@@ -410,17 +411,8 @@ export default {
                     .li-intro {
                         text-align: center;
                         color: #666;
-                        line-height: 14px;
-                        font-size: 10px;
-                    }
-                    &:nth-child(3) {
-                        border-right: none;
-                    }
-                    &:nth-child(6) {
-                        border-right: none;
-                    }
-                    &:last-of-type {
-                        border-bottom: none;
+                        line-height: 16px;
+                        font-size: 12px;
                     }
                 }
             }

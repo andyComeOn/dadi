@@ -4,7 +4,7 @@
         <div class="order-info">
             <div class="order-box">
                 <div class="lf">
-                    <span class="type">已关闭</span>
+                    <span class="type" v-html="$options.filters.filterStatus(order_id_info.status)"></span>
                     <span class="order-num">订单号：{{order_id_info.request_no}}</span>
                 </div>
                 <div class="rg">
@@ -38,7 +38,7 @@
                 </li>
                 <li class="li">
                     <label class="lab">下单日期</label>
-                    <span class="span">{{order_id_info.add_time}}</span>
+                    <span class="span">{{order_id_info.add_time|filterTimeYTD_HHMM}}</span>
                 </li>
             </ul>
         </div>
@@ -87,7 +87,7 @@
                                     <h4>{{item.order_time}}</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <span style="color:#666;">{{item.room_num}}间 * </span> &yen;{{item.money * item.room_num | Fixto2}}
+                                    <span style="color:#666;">{{order_cost_info.room_num}}间 * </span> &yen;{{item.money * order_cost_info.room_num | Fixto2}}
                                 </div>
                             </label>
                         </div>
@@ -150,12 +150,12 @@ export default {
     methods: {
         // 展示交易明细遮罩
         showDealDetailMask() {
-            if (this.order_id_info.close_status == 4) {
+            if (this.order_id_info.close_status == 4 || this.order_id_info.close_status == 1) {
                 return;
             } else {
                 this.isDealDetailMask = true;
             }
-            
+            //  || this.order_id_info.close_status == 0
         },
         // 隐藏交易明细遮罩-ui没有设计这个交互逻辑
         hideDealDetailMask() {
@@ -302,7 +302,7 @@ export default {
             flex-direction: row;
             .price {
                 // width: 70px;
-                color: #ffba56;
+                color: #666;
                 line-height: 18px;
                 font-size: 15px;
             }

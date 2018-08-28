@@ -41,13 +41,11 @@
             
         },
         mounted() {
-            var param = {
-                // cpid:1
-            };
+            //获取二维码
             this.$http({
                 method: "POST",
                 url: showQsCode,
-                data: param
+                data: {}
             }).then(res => {
                 console.log(res);
                 this.imgurl = res.data.data;
@@ -67,11 +65,13 @@
                 this.nonceStr = res.data.data.noncestr;
                 this.signature = res.data.data.signature;
                 this.url = res.data.data.url;
-                this.share(res.data.data.url);
+                this.share(res.data.data.url,res.data.data.share_img);
+            }).catch((err)=>{
+                console.log(err);
             });
         },
         methods: {
-            share(url){
+            share(url,shareImg){
                 wx.config({
                     debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
                     appId:this.appId, // 必填，公众号的唯一标识
@@ -81,10 +81,10 @@
                     jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
                 });
                 wx.onMenuShareAppMessage({
-                    title: '测试', // 分享标题
-                    desc: '描述', // 分享描述
-                    link:this.url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                    imgUrl: '', // 分享图标
+                    title: '秋果人文精品酒店', // 分享标题
+                    desc: '拿奖金，拿奖金，拿奖金，点开拿奖金', // 分享描述
+                    link:url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    imgUrl: shareImg, // 分享图标
                     type: '', // 分享类型,music、video或link，不填默认为link
                     dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
                     success: function () {
