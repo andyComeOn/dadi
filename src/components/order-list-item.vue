@@ -27,7 +27,7 @@
                 <!-- 可操作按钮 -->
                 <!-- 按钮的名称:删除、再次预定、取消订单、申请退款 -->
                 <div class="ft">
-                    <span class="btn black" v-if="item.status==5" @click="del(item.id)">删除</span>
+                    <span class="btn black" v-if="item.status==10" @click="del(item.id)">删除</span>
                     <span class="btn grey" v-if="item.status==0" @click="cancal(item.id,item.status)">取消订单</span>
                     <span class="btn mcolor" v-if="item.status==4" @click="applyMoney(item.id)">申请退款</span>
                     <span class="btn orange" v-show="!item.status==0" @click="reOrder(item.store_id)">再次预定</span>
@@ -167,6 +167,7 @@ export default {
         // 支付成功回调执行方法
         paySuccessMethod(){
             this.paySuccessToast = false;
+            this.fetchData(this.condition);
         },
         // 立即支付按钮
         payMethod(order_id) {

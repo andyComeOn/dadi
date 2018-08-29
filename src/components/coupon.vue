@@ -39,7 +39,6 @@
 <script>
 import { coupon_list } from "@/api/api";
 export default {
-    props: {},
     data() {
         return {
             items: "",

@@ -1,5 +1,14 @@
 <template>
     <div class="order-detail-page m-position-ab" v-if="order_id_info">
+        <!-- dialog(支付成功) -->
+        <div v-show="paySuccessToast">
+            <div class="z-mask-transparent-pay"></div>
+            <div class="z-toast-pay">
+                <p class="z-toast-pay-head">提示</p>
+                <p class="z-toast-pay-body">支付完成</p>
+                <p class="z-toast-pay-footer" @click="paySuccessMethod">我知道了</p>
+            </div>
+        </div>
         <!-- 订单号 -->
         <div class="order-info">
             <div class="order-box">
@@ -56,9 +65,18 @@
             </ul>
         </div>
         <!-- 再次预定按钮  -->
-        <router-link :to="{path: 'hotelDetail',query:{store_id:order_id_info.store_id}}">
-            <div class="re-order">再次预定</div>
-        </router-link>
+        <!-- <div></div> -->
+        <div v-if="order_id_info.status!=0">
+            <router-link :to="{path: 'hotelDetail',query:{store_id:order_id_info.store_id}}">
+                <div class="re-order">再次预定</div>
+            </router-link>
+        </div>
+        <!-- 当该订单是出于待付款status==0的状态展示 -->
+        <div v-if="order_id_info.status==0">
+            <div class="pay-cancel pay-bar" @click="payMethod(order_id)">立即支付</div>
+            <div class="pay-cancel cancel-bar" @click="cancal">取消订单</div>
+        </div>
+
         <!-- 交易明细弹框 -->
         <div class="deal-detail-mask-box">
             <div class="weui-mask zb-weui-mask" @click="hideDealDetailMask" :class="[{'weui-actionsheet_no_toggle_active':isDealDetailMask},{'weui-actionsheet_no_toggle':!isDealDetailMask}]"></div>
@@ -73,9 +91,9 @@
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
                             <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
                                 <div class="weui-cell__bd div zb-weui-cell__hd">
-                                    <h4>{{order_id_info.occupancy_day_num}}晚、{{order_detail.length}}间共</h4>
+                                    <h4>{{order_cost_info.occupancy_day_num}}晚、{{order_cost_info.room_sum}}间共</h4>
                                 </div>
-                                <div class="weui-cell__hd div">&yen;{{order_id_info.amount}}</div>
+                                <div class="weui-cell__hd div">&yen;{{order_cost_info.order_money}}</div>
                             </label>
                         </div>
                     </div>
@@ -87,7 +105,7 @@
                                     <h4>{{item.order_time}}</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <span style="color:#666;">{{order_cost_info.room_num}}间 * </span> &yen;{{item.money * order_cost_info.room_num | Fixto2}}
+                                    <span style="color:#666;">{{order_cost_info.room_sum}}间 * </span> &yen;{{item.money | Fixto2}}
                                 </div>
                             </label>
                         </div>
@@ -110,10 +128,10 @@
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
                             <label class="weui-cell zb-weui-cell weui-check__label" for="deal1">
                                 <div class="weui-cell__bd div zb-weui-cell__hd">
-                                    <!-- <h4>总计</h4> -->
+                                    <h4>总计</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <!-- <span style="color:#666;">实付</span> -->
+                                    <span style="color:#666;">实付金额：</span>
                                     &yen;{{order_cost_info.order_money}}
                                 </div>
                             </label>
@@ -126,7 +144,7 @@
 </template>
 
 <script>
-import { order_detail, order_cost_detail } from "@/api/api";
+import { order_detail, order_cost_detail,cancel_orderform , wx_pay } from "@/api/api";
 export default {
     name: "order-detail",
     components: {},
@@ -135,7 +153,8 @@ export default {
             isDealDetailMask: false,
             order_id: "", //接收路由传过来的order_id
             order_id_info: "", // 接收http请求的order_detail数据
-            order_cost_info: "" // 接收http请求的明细接口（order_cost_info）数据
+            order_cost_info: "", // 接收http请求的明细接口（order_cost_info）数据
+            paySuccessToast: false
         };
     },
     created() {
@@ -150,7 +169,10 @@ export default {
     methods: {
         // 展示交易明细遮罩
         showDealDetailMask() {
-            if (this.order_id_info.close_status == 4 || this.order_id_info.close_status == 1) {
+            if (
+                this.order_id_info.close_status == 4 ||
+                this.order_id_info.close_status == 1
+            ) {
                 return;
             } else {
                 this.isDealDetailMask = true;
@@ -193,7 +215,90 @@ export default {
                     }
                 })
                 .catch();
-        }
+        },
+
+        // 支付成功回调执行方法
+        paySuccessMethod(){
+            this.paySuccessToast = false;
+        },
+        // 立即支付按钮
+        payMethod(order_id) {
+            let _this = this;
+            let jsApiParameters = {};
+            let onBridgeReady = function() {
+                WeixinJSBridge.invoke(
+                    "getBrandWCPayRequest",
+                    jsApiParameters,
+                    res => {
+                        if (res.err_msg == "get_brand_wcpay_request:ok") {
+                            _this.paySuccessToast = true;
+                        }
+                        if (res.err_msg == "get_brand_wcpay_request:cancel") {
+                            // alert("取消支付");
+                            // window.location.reload();
+                        }
+                    }
+                );
+            };
+            let callpay = function() {
+                if (typeof WeixinJSBridge == "undefined") {
+                    if (document.addEventListener) {
+                        document.addEventListener(
+                            "WeixinJSBridgeReady",
+                            onBridgeReady,
+                            false
+                        );
+                    } else if (document.attachEvent) {
+                        document.attachEvent(
+                            "WeixinJSBridgeReady",
+                            onBridgeReady
+                        );
+                        document.attachEvent(
+                            "onWeixinJSBridgeReady",
+                            onBridgeReady
+                        );
+                    }
+                } else {
+                    onBridgeReady();
+                }
+            };
+            // 请求支付接口
+            this.$http({
+                method: "POST",
+                url: wx_pay,
+                data: {
+                    orderid: order_id
+                }
+            }).then(res => {
+                if (res.data.status == 1) {
+                    jsApiParameters = JSON.parse(res.data.data);
+                    callpay();
+                } else {
+                    _this.alert(res.data.msg);
+                }
+            });
+        },
+        // 取消订单
+        cancal() {
+            this.$http({
+                method: "POST",
+                url: cancel_orderform,
+                data: {
+                    order_id: this.order_id,
+                    status: this.order_id_info.status
+                }
+            })
+                .then(res => {
+                    if (res.data.status == 1) {
+                        this.delayToastShow = true;
+                        setTimeout(() => {
+                            this.delayToastShow = false;
+                        }, 2000);
+                        this.fetchData(this.condition);
+                    }
+                })
+                .catch();
+        },
     }
 };
 </script>
@@ -282,7 +387,6 @@ export default {
             display: flex;
             flex-direction: column;
             .type {
-                width: 70px;
                 line-height: 22px;
                 color: #30b097;
                 font-size: 15px;
@@ -396,5 +500,22 @@ export default {
     border-radius: 5px;
     font-size: 16px;
     text-align: center;
+}
+// 立即支付和取消订单
+.pay-cancel {
+    margin-bottom: 15px;
+    line-height: 44px;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+}
+.pay-bar {
+    background: #30b097;
+    color: #ffffff;
+    margin-top: 25px;
+}
+.cancel-bar {
+    border: 1px solid #cccccc;
+    color: #333;
 }
 </style>

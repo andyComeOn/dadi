@@ -166,7 +166,7 @@
                                     <h4>{{item.add_time}}</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <span style="color:#666;">{{watchObj.room_sum}}间 * </span> &yen;{{item.unit_price * watchObj.room_sum | Fixto2}}
+                                    <span style="color:#666;">{{watchObj.room_sum}}间 * </span> &yen;{{item.unit_price | Fixto2}}
                                 </div>
                             </label>
                         </div>
@@ -220,7 +220,7 @@
             <div class="weui-mask_transparent"></div>
             <div class="weui-toast">
                 <i class="weui-loading weui-icon_toast"></i>
-                <p class="weui-toast__content">数据加载中</p>
+                <p class="weui-toast__content">{{loadingTxt}}</p>
             </div>
         </div>
     </div>
@@ -284,7 +284,8 @@ export default {
             roomNumItems: "", //循环可定房间
             quantity: "", //该用户还能再定房间数的上限
             isActive: 1,
-            loading: true, //loading
+            loading: true, //
+            loadingTxt:"数据加载中",
             couponBarShow : true
         };
     },
@@ -407,13 +408,11 @@ export default {
             if (this.orderName.trim() == "") {
                 // this.orderNameTipsVisible = true;
                 // this.orderNameTxt = "输入姓名不能为空";
-
                 this.orderDelayToastTxt = "输入姓名不能为空";
                 this.orderDelayToast = true;
                 setTimeout(() => {
                     this.orderDelayToast = false;
                 }, 2000);
-
                 return false;
             } else {
                 return true;
@@ -457,11 +456,12 @@ export default {
             if (this.orderTel.trim() == "") {
                 // this.orderTelTipsVisible = true;
                 // this.orderTelTxt = "输入手机号不能为空";
-                this.orderDelayToastTxt = "输入手机号不能为空";
+                this.orderDelayToastTxt = "输入手机号不能为空0";
                 this.orderDelayToast = true;
                 setTimeout(() => {
                     this.orderDelayToast = false;
                 }, 1500);
+
             }
             // 再次判断入住人input输入框的名字是否为空
             if (this.orderName.trim() == "") {
@@ -475,6 +475,8 @@ export default {
             }
             // 总的判断
             if (this.orderNameBlur() && this.orderTelBlur()) {
+                this.loadingTxt = "支付中...";
+                this.loading = true;
                 this.$http({
                     method: "POST",
                     url: create_order,
@@ -491,6 +493,7 @@ export default {
                 })
                     .then(res => {
                         if (res.data.status == 1) {
+                            this.loading = false;
                             this.$router.push({
                                 path: "onlinePay",
                                 query: {

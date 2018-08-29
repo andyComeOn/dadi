@@ -48,9 +48,9 @@
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
                             <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
                                 <div class="weui-cell__bd div zb-weui-cell__hd">
-                                    <h4>{{orderInfo.occupancy_day_num}}晚、{{orderInfo.room_sum}}间共</h4>
+                                    <h4>{{order_cost_info.occupancy_day_num}}晚、{{order_cost_info.room_sum}}间共</h4>
                                 </div>
-                                <div class="weui-cell__hd div">&yen;{{orderInfo.amount}}</div>
+                                <div class="weui-cell__hd div">&yen;{{order_cost_info.order_money}}</div>
                             </label>
                         </div>
                     </div>
@@ -62,7 +62,7 @@
                                     <h4>{{item.order_time}}</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <span style="color:#666;">1间 * </span> &yen;{{item.money}}
+                                    <span style="color:#666;">{{order_cost_info.room_sum}}间 * </span> &yen;{{item.money|Fixto2}}
                                 </div>
                             </label>
                         </div>
@@ -88,7 +88,8 @@
                                     <h4>总计</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <span style="color:#666;">实付</span> &yen;{{order_cost_info.order_money}}
+                                    <span style="color:#666;">实付金额：</span>
+                                     &yen;{{orderInfo.amount}}
                                 </div>
                             </label>
                         </div>
@@ -111,9 +112,8 @@ export default {
             orderInfo: "", //订单信息
             isCoupon: "", //  该订单是否使用优惠券
             submitSucToast: false, // Toast开关
-            isTipsShow:false,
-            order_cost_info:""
-
+            isTipsShow: false,
+            order_cost_info: ""
         };
     },
     mounted() {
@@ -133,7 +133,6 @@ export default {
         }
     },
     methods: {
-
         // 展示交易明细遮罩
         showDealDetailMask() {
             this.isDealDetailMask = true;
@@ -177,22 +176,21 @@ export default {
                         // this.totalBakMoney =
                         //     res.data.data.order_money -
                         //     res.data.data.coupon_amount;
-
                         this.order_cost_info = res.data.data;
                     }
                 })
                 .catch();
         },
         // textarea获焦
-        focusM(){
+        focusM() {
             this.isTipsShow = false;
         },
 
         // 提交维权
         submit() {
-            if(this.refund_cause==""){
+            if (this.refund_cause == "") {
                 this.isTipsShow = true;
-                return ;
+                return;
             }
             this.$http({
                 method: "POST",
@@ -208,6 +206,7 @@ export default {
                         setTimeout(() => {
                             this.submitSucToast = false;
                         }, 2000);
+                        this.$router.go(-1);
                     }
                 })
                 .catch();
@@ -216,8 +215,6 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-
-
 .zb-weui-mask {
     background: rgba(0, 0, 0, 0.45);
 }

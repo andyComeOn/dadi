@@ -5,7 +5,7 @@
                 进行中
             </div>
             <div class="done" @click="tab(2,'done')" :class="{active:isActive===2}">
-                已关闭
+                已结束
             </div>
         </div>
         <div class="body">
