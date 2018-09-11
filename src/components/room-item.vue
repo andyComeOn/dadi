@@ -17,7 +17,12 @@
                 <div class="rg">
                     <p class="name m-ellipsis">{{item.name}}</p>
                     <p class="info m-ellipsis-2">{{item.introduce}}</p>
-                    <p class="location">{{item.area}}</p>
+                    <p class="location">
+                        <span>{{item.city}}</span>
+                        <span class="wrapper">
+                            -<span style="color:#30B097;"> {{item.area}}</span> 距离您<span style="color:#30B097;">{{item.distance}}</span>
+                        </span>
+                    </p>
                     <div class="price-wrap">
                         <span class="yen">&yen;</span>
                         <span class="price">{{item.price}}</span>
@@ -70,9 +75,10 @@ export default {
                 this.isRoomItemToastVisible = false;
                 if (res.data.status == 1) {
                     this.dataList = res.data.data;
-                } else {
+                } else if (res.data.status == -2){
+                    this.dataList = "";
                     this.isShow = true;
-                }
+                } 
             });
         },
 

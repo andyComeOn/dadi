@@ -26,8 +26,11 @@ export const getHotcity = '/api/Index/getHotcity?cpid=' + GlobalCpid;     //获�
 
 export const getStorecity = '/api/Index/getStorecity?cpid=' + GlobalCpid;    //热门城市
 
+export const oauth  = '/api/Accredit/oauth?cpid=' + GlobalCpid;      //oauth
 
+export const setCookieTest  = '/api/Accredit/setCookieTest?cpid=' + GlobalCpid; 
 
+export const getCookieTest  = '/api/Accredit/getCookieTest?cpid=' + GlobalCpid; 
 
 // 授权-模拟登陆
 export const getCompanyInfo = '/api/Index/getCompanyInfo'     // 暂时没用
@@ -72,7 +75,7 @@ export const collect_list = '/api/User/collect_list?cpid=' + GlobalCpid // 用�
 
 export const add_collect = '/api/User/add_collect?cpid=' + GlobalCpid // 添加收藏
 
-export const del_collect = '/api/User/del_collect' // 删除收藏
+export const del_collect = '/api/User/del_collect?cpid=' + GlobalCpid // 删除收藏
 
 export const integral_detail = '/api/Credit/integral_detail?cpid=' + GlobalCpid;  // 积分明细列表
 

@@ -13,7 +13,7 @@
             </div>
             <div class="qsPush_logo">
                 <img src="../../assets/images/distribution/logo.png" />
-                <p>都市里的室外桃园</p>
+                <p>都市里的世外桃园</p>
             </div>
         </div>
     </div>
@@ -73,12 +73,12 @@
         methods: {
             share(url,shareImg){
                 wx.config({
-                    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
                     appId:this.appId, // 必填，公众号的唯一标识
                     timestamp:this.timestamp, // 必填，生成签名的时间戳
                     nonceStr: this.nonceStr, // 必填，生成签名的随机串
                     signature:this.signature,// 必填，签名
-                    jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
+                    jsApiList: ['onMenuShareAppMessage','onMenuShareTimeline'] // 必填，需要使用的JS接口列表
                 });
                 wx.onMenuShareAppMessage({
                     title: '秋果人文精品酒店', // 分享标题
@@ -89,7 +89,7 @@
                     dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
                     success: function () {
                         // 用户点击了分享后执行的回调函数
-                        alert(1234);
+                        // alert(1234);
                     }
                 });
             }

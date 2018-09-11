@@ -209,7 +209,7 @@ export default new Router({
 			name: 'myPoint',
 			component: MyPoint,
 			meta:{
-				title:'积分明细'
+				title:'我的积分'
 			}
 		},
 		//我的收藏

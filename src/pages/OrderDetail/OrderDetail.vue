@@ -9,6 +9,14 @@
                 <p class="z-toast-pay-footer" @click="paySuccessMethod">我知道了</p>
             </div>
         </div>
+        <!-- toas提示(loading) -->
+        <div id="orderListToast" v-show="loading">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-loading weui-icon_toast"></i>
+                <p class="weui-toast__content">{{loadingTxt}} </p>
+            </div>
+        </div>
         <!-- 订单号 -->
         <div class="order-info">
             <div class="order-box">
@@ -38,6 +46,10 @@
                 <li class="li">
                     <label class="lab">入住房型</label>
                     <span class="span">{{order_id_info.room_name}}</span>
+                </li>
+                <li class="li">
+                    <label class="lab">入住间数</label>
+                    <span class="span">{{order_id_info.room_sum}}</span>
                 </li>
                 <li class="li">
                     <label class="lab">住店日期</label>
@@ -86,7 +98,7 @@
                     <p class="weui-actionsheet__title-text zb-weui-actionsheet__title-text">费用明细</p>
                 </div>
                 <!-- 交易明细弹框的内容 -->
-                <div class="weui-actionsheet__menu">
+                <div class="weui-actionsheet__menu" style="max-height:300px;overflow:auto;">
                     <div class="zb-actionsheet__bd">
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
                             <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
@@ -144,7 +156,12 @@
 </template>
 
 <script>
-import { order_detail, order_cost_detail,cancel_orderform , wx_pay } from "@/api/api";
+import {
+    order_detail,
+    order_cost_detail,
+    cancel_orderform,
+    wx_pay
+} from "@/api/api";
 export default {
     name: "order-detail",
     components: {},
@@ -154,11 +171,14 @@ export default {
             order_id: "", //接收路由传过来的order_id
             order_id_info: "", // 接收http请求的order_detail数据
             order_cost_info: "", // 接收http请求的明细接口（order_cost_info）数据
-            paySuccessToast: false
+            paySuccessToast: false,
+            loading: false,
+            loadingTxt: "数据加载中"
         };
     },
     created() {
-        this.order_id = this.$route.query.order_id;
+        let order_id = this.$route.query.order_id;
+        this.order_id = order_id;
     },
     mounted() {
         // 拉取订单详情
@@ -185,6 +205,7 @@ export default {
         },
         // 订单详情
         fetchOrderDetail() {
+            this.loading = true;
             this.$http({
                 method: "POST",
                 url: order_detail,
@@ -195,7 +216,7 @@ export default {
                 .then(res => {
                     if (res.data.status == 1) {
                         this.order_id_info = res.data.data;
-                        this.order_detail = res.data.data.order_detail;
+                        this.fetchOrderCostDetail();
                     }
                 })
                 .catch();
@@ -211,6 +232,7 @@ export default {
             })
                 .then(res => {
                     if (res.data.status == 1) {
+                        this.loading = false;
                         this.order_cost_info = res.data.data;
                     }
                 })
@@ -218,11 +240,19 @@ export default {
         },
 
         // 支付成功回调执行方法
-        paySuccessMethod(){
+        paySuccessMethod() {
             this.paySuccessToast = false;
+            this.$router.push({
+                path: "orderList",
+                query: {
+                    status: "ing"
+                }
+            });
         },
         // 立即支付按钮
         payMethod(order_id) {
+            this.loadingTxt = "微信支付调取中";
+            this.loading = true;
             let _this = this;
             let jsApiParameters = {};
             let onBridgeReady = function() {
@@ -234,7 +264,7 @@ export default {
                             _this.paySuccessToast = true;
                         }
                         if (res.err_msg == "get_brand_wcpay_request:cancel") {
-                            // alert("取消支付");
+                            alert("取消支付");
                             // window.location.reload();
                         }
                     }
@@ -271,6 +301,7 @@ export default {
                 }
             }).then(res => {
                 if (res.data.status == 1) {
+                    this.loading = false;
                     jsApiParameters = JSON.parse(res.data.data);
                     callpay();
                 } else {
@@ -280,6 +311,7 @@ export default {
         },
         // 取消订单
         cancal() {
+            this.loading = true;
             this.$http({
                 method: "POST",
                 url: cancel_orderform,
@@ -290,15 +322,12 @@ export default {
             })
                 .then(res => {
                     if (res.data.status == 1) {
-                        this.delayToastShow = true;
-                        setTimeout(() => {
-                            this.delayToastShow = false;
-                        }, 2000);
-                        this.fetchData(this.condition);
+                        this.loading = false;
+                        this.$router.go(-1);
                     }
                 })
                 .catch();
-        },
+        }
     }
 };
 </script>

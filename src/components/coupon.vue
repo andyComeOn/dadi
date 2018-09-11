@@ -173,7 +173,7 @@ export default {
                 color: #cccccc;
             }
             .btn {
-                border: 1px solid #cccccc;
+                border: 1px solid #e5e5e5;
                 color: #ccc;
             }
         }
@@ -183,11 +183,11 @@ export default {
                 background: #cccccc;
             }
             .price {
-                color: #999;
+                color: #ccc;
             }
             .btn {
                 border: 1px solid #e5e5e5;
-                color: #999;
+                color: #ccc;
             }
         }
     }

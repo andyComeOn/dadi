@@ -1,10 +1,9 @@
 <template>
     <div class="login">
         <div class="avatar">
-            <img v-if="default_avatar !=''" :src="default_avatar" alt="">
+            <img v-if="avatarSrc !=''" :src="avatarSrc" alt="">
             <img v-else src="../../assets/images/default_avatar.png" />
         </div>
-        <!-- <div class="welcome">欢迎来到秋果酒店</div> -->
         <ul class="list">
             <li>
                 <input type="text" class="txt" v-model="userName" placeholder="请输入真实姓名" @focus="userNameFocus" @blur="userNameBlur">
@@ -19,13 +18,11 @@
                 </span>
             </li>
             <li>
-                <input type="tel" class="txt" v-model="userCode" placeholder="请输入验证码" @focus="userCodeFocus" @blur="userCodeBlur">
-                <span class="getCode-aaa" v-if="coder_show_aaa">获取验证码</span>
-                <span class="getCode" v-if="coder_show" @click="getCodeEv">获取验证码</span>
-                <span class="test-code-btn" v-if="get_code_btn == true">{{getTime}}s后重新获取</span>
+                <input type="tel" class="txt" v-model="userCode" placeholder="请输入验证码" @keyup="userCodeKeyUp">
+                <!-- @blur="userCodeBlur"  -->
+                <span class="getCode" @click="getCodeEv" :class="{getCodeActive:userTelLen==true}">{{codeBtnTxt}}</span>
             </li>
-            <div class="bind" @click='bindMobile' v-if='bind_show'>绑定手机号</div>
-            <div class="bind_aaa" v-if='bind_aaa_show'>绑定手机号</div>
+            <div class="submit" @click="bindMobile" :class="{submitActive: userCodeLen==true}">绑定手机号</div>
             <div class="tips">未登录过的手机号，将自动创建秋果酒店帐号</div>
         </ul>
         <!-- 用户协议 -->
@@ -33,43 +30,55 @@
             <span>绑定手机号代表您已同意</span>
             <a class="" href="javascript:;">《秋果酒店服务条款》</a>
         </div>
-        <!-- hint str -->
-        <span class="hint_box" v-if='hint_box_show == true'>{{hint_box_content}}</span>
-        <!-- hint end -->
+        <!-- toast -->
+        <div v-show="isToastShow">
+            <div class="z-mask-transparent"></div>
+            <div class="z-toast">
+                <i class="z-toast-icon"></i>
+                <p class="z-toast-content">{{toastTxt}}</p>
+            </div>
+        </div>
+        <!-- dialog(支付成功避免二次显示倒计时支付) -->
+        <div v-show="hasLoginToast">
+            <div class="z-mask-transparent-pay"></div>
+            <div class="z-toast-pay">
+                <p class="z-toast-pay-head">提示</p>
+                <p class="z-toast-pay-body">您已注册过手机</p>
+                <p class="z-toast-pay-footer" @click="hasLoginMethod">我知道了</p>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
-import { login, sendMobile,storeLogo } from "../../api/api.js";
-import { getCookie,setCookie } from '../../utils/util.js';
+import { login, sendMobile, storeLogo } from "@/api/api";
+import { getCookie, setCookie } from "@/utils/util";
 
 export default {
     name: "login",
     components: {},
     data() {
         return {
+            avatarSrc: "", //头像
+            isToastShow: false,
+            toastTxt: "",
             //用户姓名相关
             userName: "",
             userNameBtn: false,
-            userNameErrVisible: false,
-            userNameErrTxt: "",
             //用户手机号相关
             userTel: "",
             userTelBtn: false,
-            userTelErrVisible: false,
-            userTelErrTxt: "",
-            // 验证码相关
+            userTelLen: false,
+            // 验证码
             userCode: "",
-            hint_box_show: false, //提示信息显示、隐藏
-            hint_box_content: "", //提示信息
-            coder_show_aaa: true,
-            coder_show: false,
-            get_code_btn: false,
-            setTime: 58,
-            getTime: "59",
-            bind_show: false,
-            bind_aaa_show: true,
-            default_avatar:'',      //头像
+            userCodeLen: false,
+            // 获取验证码btn
+            codeBtnTxt: "获取验证码",
+            codeBtnClickCtrl: true,
+
+            // 时间设置
+            setTime: 59,
+            hasLoginToast: false
         };
     },
     watch: {
@@ -102,32 +111,31 @@ export default {
         // 用户姓名失焦
         userNameBlur() {
             this.userNameBtn = false; //删除按钮隐藏
-            if (this.userName == "") {
-                this.bind_aaa_show = true;
-                this.bind_show = false;
-                this.hint_box_show = true;
-                this.hint_box_content = "姓名不能为空";
+            if (this.userName.trim() == "") {
+                this.toastTxt = "姓名不能为空";
+                this.isToastShow = true;
                 setTimeout(() => {
-                    this.hint_box_show = false;
-                    this.hint_box_content = "";
-                }, 2000);
+                    this.isToastShow = false;
+                }, 1500);
+                return false;
             } else {
                 let reg = new RegExp(/^[\u4E00-\u9FA5A-Za-z]+$/);
                 if (!reg.test(this.userName)) {
-                    this.hint_box_show = true;
-                    this.hint_box_content = "姓名格式不正确";
+                    this.toastTxt = "姓名格式不正确";
+                    this.isToastShow = true;
                     setTimeout(() => {
-                        this.hint_box_show = false;
-                        this.hint_box_content = "";
-                    }, 2000);
+                        this.isToastShow = false;
+                    }, 1500);
+                    return false;
+                } else if (this.userName.trim().length > 12) {
+                    this.toastTxt = "姓名字数超过最大长度";
+                    this.isToastShow = true;
+                    setTimeout(() => {
+                        this.isToastShow = false;
+                    }, 1500);
+                    return false;
                 } else {
-                    if (this.userTel == "" || this.userCode == "") {
-                        this.bind_aaa_show = true;
-                        this.bind_show = false;
-                    } else {
-                        this.bind_aaa_show = false;
-                        this.bind_show = true;
-                    }
+                    return true;
                 }
             }
         },
@@ -135,7 +143,6 @@ export default {
         userNameClose() {
             this.userName = "";
         },
-        // ------分割线-------
         // 用户手机号获焦
         userTelFocus() {
             this.userTelBtn = true; //删除按钮显示
@@ -144,57 +151,43 @@ export default {
         userTelBlur() {
             this.userTelBtn = false; //删除按钮隐藏
             if (this.userTel == "") {
-                this.bind_aaa_show = true;
-                this.bind_show = false;
-                this.hint_box_show = true;
-                this.hint_box_content = "输入手机号不能为空";
+                this.toastTxt = "输入手机号不能为空";
+                this.isToastShow = true;
                 setTimeout(() => {
-                    this.hint_box_show = false;
-                    this.hint_box_content = "";
-                }, 2000);
-                this.coder_show_aaa = true;
-                this.coder_show = false;
+                    this.isToastShow = false;
+                }, 1500);
+                return false;
             } else {
                 var myreg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
                 if (!myreg.test(this.userTel)) {
-                    this.hint_box_show = true;
-                    this.hint_box_content = "输入手机号格式有误";
+                    this.toastTxt = "输入手机号格式有误";
+                    this.isToastShow = true;
                     setTimeout(() => {
-                        this.hint_box_show = false;
-                        this.hint_box_content = "";
-                    }, 2000);
-                    this.coder_show_aaa = true;
-                    this.coder_show = false;
+                        this.isToastShow = false;
+                    }, 1500);
+                    return false;
                 } else {
-                    if (this.userName == "" || this.userCode == "") {
-                        this.bind_aaa_show = true;
-                        this.bind_show = false;
-                    } else {
-                        this.bind_aaa_show = false;
-                        this.bind_show = true;
-                    }
-                    this.coder_show_aaa = false;
-                    this.coder_show = true;
+                    return true;
                 }
             }
         },
-        // 用户手机号关闭按钮
+        // 用户手机号关闭小按钮
         userTelClose() {
             this.userTel = "";
+            this.userTelLen = false;
         },
-        // ------分割线-----
-        // 验证码获焦
-        userCodeFocus() {},
         // 点击按钮获取验证码
         getCodeEv() {
-            if (this.userTel == "") {
-                this.hint_box_show = true;
-                this.hint_box_content = "手机号不能为空";
+            if (this.codeBtnClickCtrl == false) {
+                this.toastTxt = "验证码已发送，请稍后再试";
+                this.isToastShow = true;
                 setTimeout(() => {
-                    this.hint_box_show = false;
-                    this.hint_box_content = "";
-                }, 2000);
-            } else {
+                    this.isToastShow = false;
+                }, 1000);
+                return;
+            }
+            if (this.userTelBlur()) {
+                this.codeBtnClickCtrl = false;
                 this.$http({
                     method: "POST",
                     url: sendMobile,
@@ -203,25 +196,18 @@ export default {
                     }
                 }).then(res => {
                     if (res.data.status == 1) {
-                        //倒计时
-                        this.get_code_btn = true;
-                        this.coder_show_aaa = false;
-                        this.coder_show = false;
+                        this.setTime = 59; // 重新赋值
                         let timer = setInterval(() => {
                             if (this.setTime >= 0) {
-                                let tmpMin = Math.floor(this.setTime / 60);
-                                let min = tmpMin < 10 ? "0" + tmpMin : tmpMin;
-                                let tmpSec = Math.floor(this.setTime % 60);
-                                let sec = tmpSec < 10 ? "0" + tmpSec : tmpSec;
-                                this.getTime = sec;
+                                this.codeBtnClickCtrl = false;
+                                let tmpSec = parseInt(this.setTime);
+                                // this.getTime = tmpSec;
+                                this.codeBtnTxt = tmpSec + "s后重发";
                                 this.setTime--;
                             } else {
+                                this.codeBtnTxt = "重新获取";
+                                this.codeBtnClickCtrl = true;
                                 clearInterval(timer);
-                                this.get_code_btn = false;
-                                this.coder_show_aaa = false;
-                                this.coder_show = true;
-                                this.setTime = 58;
-                                this.getTime = 59;
                             }
                         }, 1000);
                     } else {
@@ -232,74 +218,94 @@ export default {
         // 验证码失焦
         userCodeBlur() {
             if (this.userCode == "") {
-                this.bind_aaa_show = true;
-                this.bind_show = false;
-                this.hint_box_show = true;
-                this.hint_box_content = "验证码不能为空";
+                this.toastTxt = "验证码不能为空";
+                this.isToastShow = true;
                 setTimeout(() => {
-                    this.hint_box_show = false;
-                    this.hint_box_content = "";
-                }, 2000);
+                    this.isToastShow = false;
+                }, 1500);
+                return false;
             } else {
-                var myreg = /^[0-9]{4}$/;
-                if (!myreg.test(this.userCode)) {
-                    this.hint_box_show = true;
-                    this.hint_box_content = "验证码格式不正确";
+                let myReg = /^[0-9]{4}$/;
+                if (!myReg.test(this.userCode)) {
+                    this.toastTxt = "验证码格式不正确";
+                    this.isToastShow = true;
                     setTimeout(() => {
-                        this.hint_box_show = false;
-                        this.hint_box_content = "";
-                    }, 2000);
+                        this.isToastShow = false;
+                    }, 1500);
+                    return false;
                 } else {
-                    if (this.userTel == "" || this.userName == "") {
-                        this.bind_aaa_show = true;
-                        this.bind_show = false;
-                    } else {
-                        this.bind_aaa_show = false;
-                        this.bind_show = true;
-                    }
+                    return true;
                 }
+            }
+        },
+        userCodeKeyUp() {
+            let codeReg = /^[0-9]{4}$/;
+            if (codeReg.test(this.userCode) && this.userCode.length == 4) {
+                this.userCodeLen = true;
+            } else {
+                this.userCodeLen = false;
             }
         },
         // 总的提交
         bindMobile() {
-            let openId = this.$route.query.openId;
-            this.$http({
-                method: "POST",
-                url: login,
-                data: {
-                    mobile: this.userTel,
-                    openid: openId,
-                    code: this.userCode,
-                    realname: this.userName
-                }
-            }).then(res => {
-                if (res.data.status == 1) {
-                    setCookie("userInfoTel", this.userTel); //手机号
-                    // 路由跳转逻辑
-                    if (this.$route.query.loginPage == 2) {
-                        this.$router.push({ path: "/personalCenter" });
-                    } else if (this.$route.query.loginPage == 1) {
-                        this.$router.push({
-                            path: "/hotelDetail",
-                            query: {
-                                store_id: this.$route.query.store_id
-                            }
-                        });
+            if (
+                this.userNameBlur() &&
+                this.userTelBlur() &&
+                this.userCodeBlur()
+            ) {
+                let openId = this.$route.query.openId;
+                this.$http({
+                    method: "POST",
+                    url: login,
+                    data: {
+                        mobile: this.userTel,
+                        openid: openId,
+                        code: this.userCode,
+                        realname: this.userName
                     }
-                } else {
-                    this.hint_box_show = true;
-                    this.hint_box_content = res.data.msg;
-                    setTimeout(() => {
-                        this.hint_box_show = false;
-                        this.hint_box_content = "";
-                    }, 2000);
-                }
+                }).then(res => {
+                    if (res.data.status == 1) {
+                        setCookie("userInfoTel", this.userTel); //手机号
+                        // 路由跳转逻辑
+                        if (this.$route.query.loginPage == 2) {
+                            this.$router.push({ path: "/personalCenter" });
+                        } else if (this.$route.query.loginPage == 1) {
+                            this.$router.push({
+                                path: "/hotelDetail",
+                                query: {
+                                    store_id: this.$route.query.store_id
+                                }
+                            });
+                        }
+                    } else {
+                        this.toastTxt = res.data.msg;
+                        this.isToastShow = true;
+                        setTimeout(() => {
+                            this.isToastShow = false;
+                        }, 1500);
+                    }
+                });
+            }
+        },
+        // 注册过二次提示toast中下面的跳转首页按妞
+        hasLoginMethod() {
+            this.hasLoginToast = false;
+            this.$router.push({
+                path: "index",
+                query: {}
             });
         }
     },
-    mounted(){
+    mounted() {
         //头像default_avatar
-        this.default_avatar = decodeURIComponent(decodeURIComponent(getCookie('avatar')));
+        this.avatarSrc = decodeURIComponent(
+            decodeURIComponent(getCookie("avatar"))
+        );
+
+        let userTelInfo = getCookie("userInfoTel");
+        if (userTelInfo) {
+            this.hasLoginToast = true;
+        }
     }
 };
 </script>
@@ -318,14 +324,6 @@ export default {
             margin: 0 auto;
         }
     }
-    // 欢迎语
-    .welcome {
-        line-height: 14px;
-        margin-bottom: 24px;
-        font-size: 10px;
-        text-align: center;
-        color: #666;
-    }
     .list {
         padding: 0 15px;
         li {
@@ -340,13 +338,6 @@ export default {
                 bottom: 0;
                 background: #e5e5e5;
                 transform: scaleY(0.5);
-            }
-            .errTips {
-                position: absolute;
-                top: 31px;
-                left: 0px;
-                color: red;
-                font-size: 8px;
             }
             .txt {
                 width: 200px;
@@ -373,58 +364,34 @@ export default {
             .getCode {
                 line-height: 30px;
                 padding: 0 13px;
-                color: #fff;
-                border: 1px solid #30b097;
                 border-radius: 5px;
                 position: absolute;
                 top: 9px;
                 right: 0;
                 font-size: 12px;
+                color: #999;
+                border: 1px solid #e5e5e5;
+                background: #fff;
+                &.getCodeActive {
+                    color: #fff;
+                    border: 1px solid #30b097;
+                    background: #30b097;
+                }
+            }
+        }
+        .submit {
+            line-height: 44px;
+            text-align: center;
+            color: #ffffff;
+            font-size: 16px;
+            border-radius: 5px;
+            margin: 15px auto 8px;
+            background: #e5e5e5;
+            &.submitActive {
                 background: #30b097;
             }
-            .getCode-aaa {
-                line-height: 30px;
-                padding: 0 13px;
-                color: #999;
-                border: 1px solid #e5e5e5;
-                border-radius: 5px;
-                position: absolute;
-                top: 9px;
-                right: 0;
-                font-size: 12px;
-                background: #fff;
-            }
-            .test-code-btn {
-                line-height: 30px;
-                padding: 0 13px;
-                color: #999;
-                border: 1px solid #e5e5e5;
-                border-radius: 5px;
-                position: absolute;
-                top: 9px;
-                right: 0;
-                font-size: 12px;
-                background: #fff;
-            }
         }
-        .bind {
-            line-height: 44px;
-            background: #30b097;
-            text-align: center;
-            color: #ffffff;
-            font-size: 16px;
-            border-radius: 5px;
-            margin: 15px auto 8px;
-        }
-        .bind_aaa {
-            line-height: 44px;
-            background: #e5e5e5;
-            text-align: center;
-            color: #ffffff;
-            font-size: 16px;
-            border-radius: 5px;
-            margin: 15px auto 8px;
-        }
+
         .tips {
             line-height: 16px;
             font-size: 12px;
@@ -433,19 +400,7 @@ export default {
         }
     }
 }
-.hint_box {
-    background: rgba(75, 75, 75, 0.7);
-    color: #fff;
-    padding: 5px 20px;
-    font-size: 14px;
-    line-height: 44px;
-    border-radius: 13px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    margin-top: -13px;
-    transform: translateX(-50%);
-}
+
 .user_agreement {
     width: 100%;
     font-size: 12px;
@@ -459,5 +414,19 @@ export default {
     a {
         color: #30b097;
     }
+}
+
+.hint_box {
+    background: rgba(75, 75, 75, 0.7);
+    color: #fff;
+    padding: 5px 20px;
+    font-size: 14px;
+    line-height: 44px;
+    border-radius: 13px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -13px;
+    transform: translateX(-50%);
 }
 </style>

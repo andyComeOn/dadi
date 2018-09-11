@@ -28,21 +28,48 @@ export default {
             watchObj: {
                 type: "", // 订单状态区分
                 pay_status: "" //支付状态
-            },
+            }
         };
     },
     created() {
+        var that = this;
         let urlPara = this.$route.query.status;
         if (urlPara == "ing") {
             this.tab(1);
         } else {
             this.tab(2);
         }
+
+        // this.pushHistory();
+        // let bool = false;
+        // setTimeout(() => {
+        //     bool = true;
+        // }, 1500);
+        // if (bool == true) {
+        //     window.addEventListener(
+        //         "popstate",
+        //         function(e) {
+        //             that.$router.push({
+        //                 path: "index",
+        //                 query: {}
+        //             });
+                    
+        //         },
+        //         false
+        //     );
+        // }
     },
     methods: {
         tab(index) {
             this.isActive = index;
             this.watchObj.type = index;
+        },
+        pushHistory() {
+            var state = {
+                title: "",
+                url: "#"
+            };
+            window.history.pushState(state, state.title, state.url);
         }
     }
 };

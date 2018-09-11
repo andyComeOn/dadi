@@ -18,7 +18,7 @@
         </div>
         <div class="main" v-if="data_store">
             <!-- 广告 -->
-            <div class="banner-box">
+            <div class="banner-box" id="hotelDetailBanner" :style="{height: hotelDetailBannerH + 'px'}">
                 <swiper class="zb-swiper" :options="swiperOption" ref="mySwiper" @someSwiperEvent="swiperCallback(1)">
                     <swiper-slide v-for="(item,index) in data_store.img_logo" :key="index" @click="swiperSlideFun(index)">
                         <router-link :to="{path:'hotelDetailBannerLink',query:{store_id:watchObj.store_id}}" class="hotel-detail-banner-link">
@@ -30,7 +30,7 @@
                 <div class="z-swiper-intro" v-if="data_store.img_logo">
                     <img src="../../assets/images/icon/ic-hotel-detail.png" alt="">共{{data_store.img_logo.length}}张
                 </div>
-                <div class="collect" @click="addCollect">
+                <div class="collect" @click="collectCtrl">
                     <img v-if="is_collect==1" :src="collectIconActive" alt="">
                     <img v-if="is_collect==0" :src="collectIcon" alt="">
                 </div>
@@ -50,8 +50,8 @@
             <div class="detail-more-container">
                 <div class="detail-more-wrapper">
                     <div class="lf">
+                        <span class="all-hours">24小时前台</span>
                         <span class="wifi">免费wifi</span>
-                        <span class="luggage">行李寄存</span>
                     </div>
                     <div class="rg">
                         <router-link :to=" { path: 'hotelLabel', query: { store_id: watchObj.store_id }}" tag="div">
@@ -114,7 +114,7 @@
             </div>
         </div>
         <!-- 该门店下架时候展示 -->
-        <div v-else v-show="isShow" class="no-store">
+        <div v-else class="no-store">
             <img src="../../assets/images/404/xiajia.png" alt="">
             <p>该酒店已下架</p>
         </div>
@@ -122,14 +122,12 @@
 </template>
 
 <script>
-import {
-    store_detail,
-    add_collect
-} from "@/api/api";
+import { store_detail, add_collect, del_collect, wxShare } from "@/api/api";
 import { getCookie } from "@/utils/util";
 import { f, dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
 import Calendar from "@/components/calendar/calendar.vue"; // 引入日历组件
 import { swiper, swiperSlide } from "vue-awesome-swiper"; // 引入swipe组件
+import wx from "weixin-js-sdk";
 export default {
     name: "hotel-detail",
     components: {
@@ -173,9 +171,9 @@ export default {
                 debugger: true
             },
             loading: true,
-            isShow: false,
-            delayToast:false,
-            delayToastTxt:"",
+
+            delayToast: false,
+            delayToastTxt: "",
             // 请求数据需要传的参数
             watchObj: {
                 store_id: "",
@@ -189,6 +187,7 @@ export default {
             begin: "",
             finish: "",
             is_collect: "", //该门店是否被收藏
+            collectId: "", //收藏id
             collectIcon: require("../../assets/images/collect.png"),
             collectIconActive: require("../../assets/images/collect-active.png"),
 
@@ -206,7 +205,13 @@ export default {
                     mm: "",
                     dd: ""
                 }
-            }
+            },
+            appId: "", // 必填，公众号的唯一标识
+            timestamp: "", // 必填，生成签名的时间戳
+            nonceStr: "", // 必填，生成签名的随机串
+            signature: "", // 必填，签名
+
+            hotelDetailBannerH: "" //酒店详情banner的高
         };
     },
     created() {
@@ -247,14 +252,13 @@ export default {
         }
 
         // 拉取数据
-        this.fetchData(this.watchObj);
+        // this.fetchData(this.watchObj);
     },
     computed: {
         swiper() {
             return this.$refs.mySwiper.swiper;
         }
     },
-    mounted() {},
     watch: {
         watchObj: {
             handler(newValue, oldValue) {
@@ -284,15 +288,19 @@ export default {
                     this.count = res.data.data.count;
                     // 是否收藏
                     this.is_collect = res.data.data.is_collect;
+                    // 收藏的id
+                    this.collectId = res.data.data.collect_id;
                 } else {
-                    this.isShow = true;
+                    this.data_store = "";
                 }
             });
         },
         // 点击预定
         bookFun(isHasRoom, store_id, room_id, begin, finish) {
             let tmp = getCookie("userInfoTel");
+            let tmpVipStatus = getCookie("userVipStatus");
             let tmpOpenid = getCookie("openid");
+            // 判断该用户否有有手机号
             if (!tmp) {
                 this.$router.push({
                     path: "/login",
@@ -304,6 +312,16 @@ export default {
                 });
                 return;
             }
+            // 判断用户的会员的是否是1
+            if (tmpVipStatus != 1) {
+                this.delayToastTxt = "正处于禁用状态，不可预订";
+                this.delayToast = true;
+                setTimeout(() => {
+                    this.delayToast = false;
+                }, 2000);
+                return;
+            }
+
             if (isHasRoom == 1) {
                 this.$router.push({
                     path: "/order",
@@ -365,9 +383,15 @@ export default {
             console.log(val);
         },
 
-        // 点击收藏按钮
+        // 点击收藏按钮逻辑
+        collectCtrl() {
+            if (this.is_collect == 0) {
+                this.addCollect();
+            } else {
+                this.delCollect();
+            }
+        },
         addCollect() {
-            if (this.is_collect == 1) return;
             let p = {
                 store_id: this.watchObj.store_id
             };
@@ -377,10 +401,88 @@ export default {
                 data: p
             }).then(res => {
                 if (res.data.status == 1) {
+                    this.delayToastTxt = "已收藏";
+                    this.delayToast = true;
+                    setTimeout(() => {
+                        this.delayToast = false;
+                    }, 2000);
                     this.fetchData(this.watchObj);
                 }
             });
+        },
+        delCollect() {
+            this.$http({
+                method: "POST",
+                url: del_collect,
+                data: { collect_id: this.collectId }
+            }).then(res => {
+                if (res.data.status == 1) {
+                    this.delayToastTxt = "已取消";
+                    this.delayToast = true;
+                    setTimeout(() => {
+                        this.delayToast = false;
+                    }, 2000);
+                    this.fetchData(this.watchObj);
+                }
+            });
+        },
+        share(url, shareImg) {
+            wx.config({
+                debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                appId: this.appId, // 必填，公众号的唯一标识
+                timestamp: this.timestamp, // 必填，生成签名的时间戳
+                nonceStr: this.nonceStr, // 必填，生成签名的随机串
+                signature: this.signature, // 必填，签名
+                jsApiList: ["onMenuShareAppMessage", "onMenuShareTimeline"] // 必填，需要使用的JS接口列表
+            });
+            wx.onMenuShareAppMessage({
+                title: "秋果人文精品酒店", // 分享标题
+                desc: "拿奖金，拿奖金，拿奖金，点开拿奖金", // 分享描述
+                link: url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: shareImg, // 分享图标
+                type: "", // 分享类型,music、video或link，不填默认为link
+                dataUrl: "", // 如果type是music或video，则要提供数据链接，默认为空
+                success: function() {
+                    // 用户点击了分享后执行的回调函数
+                    // alert(1234);
+                }
+            });
+        },
+
+        setBannerSize() {
+            let hotelDetailBanner = document.querySelector(
+                "#hotelDetailBanner"
+            );
+            let hotelDetailBannerW = hotelDetailBanner.clientWidth;
+            let hotelDetailBannerH = hotelDetailBannerW * 380 / 750;
+            this.hotelDetailBannerH = hotelDetailBannerH;
         }
+    },
+    mounted() {
+        //获取分享信息
+        //获取参数
+        var dataObj = {
+            url: location.href.split("#")[0]
+        };
+        this.$http({
+            url: wxShare,
+            method: "POST",
+            data: dataObj
+        })
+            .then(res => {
+                console.log(res);
+                this.appId = res.data.data.appid;
+                this.timestamp = res.data.data.timestamp;
+                this.nonceStr = res.data.data.noncestr;
+                this.signature = res.data.data.signature;
+                this.url = res.data.data.url;
+                this.share(res.data.data.url, res.data.data.share_img);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+        // 调取banner赋值函数
+        this.setBannerSize();
     }
 };
 </script>
@@ -496,13 +598,14 @@ export default {
                 line-height: 20px;
                 padding-left: 26px;
                 margin-right: 12px;
-                &.wifi {
-                    background: url("../../assets/images/hotel-label/lab1.png")
+
+                &.all-hours {
+                    background: url("../../assets/images/hotel-label/lab8.png")
                         no-repeat left center;
                     background-size: 18px 18px;
                 }
-                &.luggage {
-                    background: url("../../assets/images/hotel-label/lab3.png")
+                &.wifi {
+                    background: url("../../assets/images/hotel-label/lab1.png")
                         no-repeat left center;
                     background-size: 18px 18px;
                 }
@@ -656,7 +759,7 @@ export default {
                     background: rgba(48, 176, 151, 1);
                     border-radius: 5px;
                     &.isHasRoom {
-                        background: #CCCCCC;
+                        background: #cccccc;
                     }
                 }
             }

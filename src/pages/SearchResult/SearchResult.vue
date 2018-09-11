@@ -1,23 +1,18 @@
 <template>
     <div class="search-result">
         <!-- 搜索条 -->
-        <searchbar 
-            @triggerCityDialogEmit="triggerCityDialogEmitFun" 
-            @triggerCalendarDialogEmit="triggerCalendarDialogEmitFun" 
-            @inputValEmit="inputValEmitFun" 
-            :searchbarObj="toSearchbarObj">
+        <searchbar @triggerCityDialogEmit="triggerCityDialogEmitFun" @triggerCalendarDialogEmit="triggerCalendarDialogEmitFun" @inputValEmit="inputValEmitFun" :searchbarObj="toSearchbarObj">
         </searchbar>
 
         <!-- @triggerSearchbarInputFocusEmit="triggerSearchbarInputFocusEmitFun" -->
         <!-- searchbar中输入框获焦的emit的函数-暂不使用-注释 -->
-        
 
         <!-- 排序 -->
         <sortbar @sortbarEmit="sortbarEmitFun">
         </sortbar>
 
         <!-- 刷新用户所在地理位置 -->
-        <refreshbar></refreshbar>
+        <refreshbar @refreshEmit="refreshEmitFun"></refreshbar>
 
         <!-- 酒店组件 -->
         <roomItem :condition="watchObj"></roomItem>
@@ -36,8 +31,8 @@
 
         <!-- 搜索弹框组件dialog -->
         <!-- <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbSearchVisible"> -->
-            <!-- <Search @cancelSearchEmit="cancelSearchEmitFun"> -->
-            <!-- </Search> -->
+        <!-- <Search @cancelSearchEmit="cancelSearchEmitFun"> -->
+        <!-- </Search> -->
         <!-- </mu-dialog> -->
     </div>
 </template>
@@ -71,11 +66,11 @@ export default {
 
             // 监听数据的变化，用来筛选满足条件的酒店列表
             watchObj: {
-                type: "", //正序、降序排列
+                type: "SORT_ASC", //正序、降序排列
                 longitude: "", // 经度
                 latitude: "", //维度
                 city: "", //城市id
-                px_rule: "", //排序（价格，距离）
+                px_rule: "sort", //排序（价格，距离）
                 name: "", //门店名称
                 begin: "", // 入住时间
                 finish: "" // 离店时间
@@ -141,24 +136,11 @@ export default {
             urlPara.liveoutMM +
             "-" +
             urlPara.liveoutDD;
-        this.watchObj.city = urlPara.cityid
+        this.watchObj.city = urlPara.cityid;
+        this.watchObj.name = urlPara.abstract;
     },
-    mounted() {
-        var param = this.watchObj;
-        // this.fetchData(param);
-    },
+    mounted() {},
     methods: {
-        // 加载数据
-        fetchData(param) {
-            this.$http({
-                method: "POST",
-                url: store_list,
-                data: param
-            }).then(res => {
-                this.resData = res.data;
-            });
-        },
-
         // 搜索条组件中城市选择逻辑，子组件emit之后，执行的方法
         triggerCityDialogEmitFun() {
             this.zbCityVisible = true;
@@ -236,13 +218,20 @@ export default {
         // },
 
         // 搜索条组件传过来的emit方法执行的函数
-        inputValEmitFun(val){
-            console.log(val);
+        inputValEmitFun(val) {
+            this.watchObj.name = val;
         },
 
         //排序sortbar组件emit之后执行的函数
-        sortbarEmitFun(val) {
-            this.watchObj.px_rule = val;
+        sortbarEmitFun(px_rule, priceSort) {
+            this.watchObj.px_rule = px_rule;
+            this.watchObj.type = priceSort;
+        },
+
+        // 刷新按钮通过emit传过来的方法
+        refreshEmitFun(longitude, latitude) {
+            this.watchObj.longitude = longitude;
+            this.watchObj.latitude = latitude;
         }
     }
 };

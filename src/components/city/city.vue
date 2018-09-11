@@ -1,51 +1,56 @@
 
 <template>
-	<div class="city-wendor m-position-ab">
-		<div class="city-title">
-			<div class="lf" @click="cityTitleBackfun">返回</div>
+    <div class="city-wendor m-position-ab">
+        <div class="city-title">
+            <div class="lf" @click="cityTitleBackfun">返回</div>
             请选择城市
         </div>
-		<div class="city-content">
-			<div class="city-head">搜索条</div>
-			<div class="city-body">
-				<!-- 定位城市和热门城市 -->
-				<div class="location-hot">
-					<ul class="location">
-						<h4>定位城市</h4>
-						<li>
-							<span>暂无定位...</span>
-						</li>
-					</ul>
-					<ul class="hot">
-						<h4>热门城市</h4>
-						<li>
-							<span v-for="(item,index) in hotCityList" :key="index" @click="cityItem(item.name, item.id)">{{item.name}}</span>
-						</li>
-					</ul>
-				</div>
-
-				<!-- 城市列表 -->
-				<div class="city-lists-box">
-					<h4>城市列表</h4>
-					<ul class="list">
-						<li v-for="(item, index) in cityList" :key="index" @click="cityItem(item.shortname, item.id)">{{item.shortname}}</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
+        <div class="city-content">
+            <!-- <div class="city-head">搜索条</div> -->
+            <div class="city-body">
+                <!-- 定位城市和热门城市 -->
+                <div class="location-hot">
+                    <ul class="location">
+                        <h4>定位城市</h4>
+                        <li>
+                            <span @click="cityItem(cityname, cityid)">{{cityname}}</span>
+                        </li>
+                    </ul>
+                    <ul class="hot">
+                        <h4>热门城市</h4>
+                        <li>
+                            <span v-for="(item,index) in hotCityList" :key="index" @click="cityItem(item.name, item.id)">{{item.name}}</span>
+                        </li>
+                    </ul>
+                </div>
+                <!-- 城市列表 -->
+                <div class="city-lists-box">
+                    <h4>城市列表</h4>
+                    <ul class="list">
+                        <li v-for="(item, index) in cityList" :key="index" @click="cityItem(item.shortname, item.id)">{{item.shortname}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 <script>
-import { getStorecity, getCityList } from "@/api/api";
+import { getStorecity, getCityList, slt_location } from "@/api/api";
 export default {
     data() {
         return {
             cityList: [], //拉取城市的信息
-            hotCityList: []
+            hotCityList: [],
+            myLocation: "",
+            longitudeTmp: this.longitude,
+            latitudeTmp: this.latitude,
+            cityid: "",
+            cityname: ""
         };
     },
-    props: {},
+    props: ['longitude','latitude'],
     created() {
+        this.getLocation();
         this.fetchHotCityList();
         this.fetchCityList();
     },
@@ -54,15 +59,23 @@ export default {
         cityTitleBackfun() {
             this.$emit("cityTitleBackEmit");
         },
-        //城市列表
-        fetchCityList() {
+        getLocation() {
+            this.cityname = "定位中...";
             this.$http({
                 method: "POST",
-                url: getCityList,
-                data: {}
+                url: slt_location,
+                data: {
+                    longitude: this.longitude, // 经度
+                    latitude: this.latitude //维度
+                }
             }).then(res => {
                 if (res.data.status == 1) {
-                    this.cityList = res.data.data;
+                    let locationTmp = res.data.data;
+                    this.cityname = locationTmp.city;
+                    this.cityid = locationTmp.id;
+                } else {
+                    this.cityname = "定位失败...";
+                    this.cityid = -1;
                 }
             });
         },
@@ -78,9 +91,21 @@ export default {
                 }
             });
         },
-
+        //城市列表
+        fetchCityList() {
+            this.$http({
+                method: "POST",
+                url: getCityList,
+                data: {}
+            }).then(res => {
+                if (res.data.status == 1) {
+                    this.cityList = res.data.data;
+                }
+            });
+        },
         // 点击城市item
         cityItem(name, id) {
+            if (name == "定位失败..." || id == -1) return;
             this.$emit("cityItemEmit", name, id);
         }
     },
@@ -122,7 +147,7 @@ export default {
                 padding: 0 15px 10px;
                 color: #666;
                 h4 {
-                   	line-height: 16px;
+                    line-height: 16px;
                     margin: 10px 0;
                     font-size: 13px;
                     font-weight: 400;
@@ -146,8 +171,8 @@ export default {
             .city-lists-box {
                 h4 {
                     line-height: 16px;
-					padding: 10px 15px;
-					font-size: 13px;
+                    padding: 10px 15px;
+                    font-size: 13px;
                     font-weight: 400;
                 }
                 .list {

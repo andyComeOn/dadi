@@ -5,7 +5,7 @@
             <div class="weui-mask_transparent"></div>
             <div class="weui-toast">
                 <i class="weui-loading weui-icon_toast"></i>
-                <p class="weui-toast__content">数据加载中</p>
+                <p class="weui-toast__content">{{loadingTxt}}</p>
             </div>
         </div>
         <!-- dialog(支付成功) -->
@@ -17,9 +17,18 @@
                 <p class="z-toast-pay-footer" @click="paySuccessMethod">我知道了</p>
             </div>
         </div>
+        <!-- dialog(支付成功避免二次显示倒计时支付) -->
+        <div v-show="paySuccessTwoToast">
+            <div class="z-mask-transparent-pay"></div>
+            <div class="z-toast-pay">
+                <p class="z-toast-pay-head">提示</p>
+                <p class="z-toast-pay-body">您已经支付了</p>
+                <p class="z-toast-pay-footer" @click="paySuccessTwoMethod">我知道了</p>
+            </div>
+        </div>
         <!-- 支付剩余时间 -->
         <div class="olinePay_box_time">
-            <h1>{{getTime}}</h1>
+            <h1 v-text="getTime"></h1>
             <p>支付剩余时间</p>
         </div>
         <div class="olinePay_box_content" v-if="order_id_info">
@@ -38,7 +47,7 @@
                 <span>共{{order_id_info.occupancy_day_num}}晚</span>
             </div>
         </div>
-        <div v-if="this.setTime >= 0" class="onlinePay_btn" @click="payMethod">确认支付</div>
+        <div v-if="this.setTime >= 0" class="onlinePay_btn" @click.once="payMethod">确认支付</div>
         <div v-else class="onlinePay_btn_old">已超时，请重新下单</div>
     </div>
 </template>
@@ -54,10 +63,11 @@ export default {
             order_id_info: "",
             loading: true,
             paySuccessToast: false, //支付成功toast
-            timer: ""
+            paySuccessTwoToast: false, // 支付后toast二次提示，引导进入首页
+            timer: "",
+            loadingTxt: "数据加载中"
         };
     },
-    methods: {},
     created() {
         let para = this.$route.query.order_id;
         this.order_id = para;
@@ -91,12 +101,18 @@ export default {
                         this.loading = false;
                         this.order_id_info = res.data.data;
                         this.setTime = res.data.data.count_down;
+                        let status = res.data.data.status;
+                        if (status != 0) {
+                            this.paySuccessTwoToast = true;
+                        }
                     }
                 })
                 .catch();
         },
         // 立即支付按钮
         payMethod() {
+            this.loadingTxt = "微信支付调取中";
+            this.loading = true;
             let _this = this;
             let jsApiParameters = {};
             let onBridgeReady = function() {
@@ -108,7 +124,7 @@ export default {
                             _this.paySuccessToast = true;
                         }
                         if (res.err_msg == "get_brand_wcpay_request:cancel") {
-                            _this.alert("取消支付");
+                            alert("取消支付");
                             // window.location.reload();
                         }
                     }
@@ -145,6 +161,7 @@ export default {
                 }
             }).then(res => {
                 if (res.data.status == 1) {
+                    this.loading = false;
                     jsApiParameters = JSON.parse(res.data.data);
                     callpay();
                 } else {
@@ -161,6 +178,15 @@ export default {
                 query: {
                     status: "ing"
                 }
+            });
+        },
+        // 支付成功二次提示toast中下面的跳转首页按妞
+        paySuccessTwoMethod() {
+            this.paySuccessTwoToast = false;
+            clearInterval(this.timer);
+            this.$router.push({
+                path: "index",
+                query: {}
             });
         }
     }
@@ -185,6 +211,7 @@ export default {
     color: #666;
     text-align: center;
     font-size: 24px;
+    height: 24px;
     line-height: 24px;
 }
 .olinePay_box_time p {

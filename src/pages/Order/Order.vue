@@ -42,9 +42,9 @@
                 <label class="label">入住人姓名</label>
                 <div class="item-rg">
                     <div class="name-div">
-                        <input type="text" class="input-name" id="name" placeholder="请输入姓名" @blur="orderNameBlur" @focus="orderNameFocus" v-model="orderName">
+                        <input type="text" class="input-name" id="name" placeholder="请输入姓名" v-model="orderName">
+                        <!-- @blur="orderNameBlur" -->
                     </div>
-                    <!-- <span v-show="orderNameTipsVisible" class="errTips">{{orderNameTxt}}</span> -->
                 </div>
             </li>
 
@@ -53,8 +53,8 @@
                 <label class="label">手机号</label>
                 <div class="item-rg">
                     <div class="tel-div">
-                        <input type="tel" class="input-tel" id="tel" placeholder="请输入手机号" @blur="orderTelBlur" @focus="orderTelFocus" v-model="orderTel">
-                        <!-- <span v-show="orderTelTipsVisible" class="errTips">{{orderTelTxt}}</span> -->
+                        <input type="tel" class="input-tel" id="tel" placeholder="请输入手机号" v-model="orderTel">
+                        <!-- @blur="orderTelBlur" -->
                     </div>
                 </div>
             </li>
@@ -110,9 +110,9 @@
                     <p class="weui-actionsheet__title-text zb-weui-actionsheet__title-text">优惠券</p>
                 </div>
                 <!-- 弹框的内容 -->
-                <div class="weui-actionsheet__menu">
+                <div class="weui-actionsheet__menu" v-if="coupon">
                     <!-- 循环下面的整体 -->
-                    <div class="zb-actionsheet__bd" v-if="coupon" v-for="(item,index) in coupon" :key="index">
+                    <div class="zb-actionsheet__bd" v-for="(item,index) in coupon" :key="index">
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
                             <label class="weui-cell zb-weui-cell weui-check__label" :for="item.id">
                                 <div class="weui-cell__bd div zb-weui-cell__hd">
@@ -127,12 +127,8 @@
                             </label>
                         </div>
                     </div>
-                    <div v-else style="line-height: 55px;background: #fff;font-size:17px;text-center:center;">暂无优惠券可用</div>
                 </div>
-                <!-- 弹框的取消-ui说不需要此交互 -->
-                <!-- <div class="weui-actionsheet__action" style="background:#fff;"> -->
-                <!-- <div class="weui-actionsheet__cell" id="coupon_actionsheet_cancel" style="font-size:16px;" @click="hideCouponMask">取消</div> -->
-                <!-- </div> -->
+                <div v-else style="line-height: 55px;background: #fff;font-size:17px;text-align:center;">暂无优惠券可用</div>
             </div>
         </div>
 
@@ -145,7 +141,7 @@
                     <p class="weui-actionsheet__title-text zb-weui-actionsheet__title-text">费用明细</p>
                 </div>
                 <!-- 交易明细弹框的内容 -->
-                <div class="weui-actionsheet__menu">
+                <div class="weui-actionsheet__menu" style="max-height:300px;overflow:auto;">
                     <!-- 循环下面的整体 -->
                     <div class="zb-actionsheet__bd">
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
@@ -198,13 +194,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- 弹框的取消 -->
-                <!-- <div class="weui-actionsheet__action" style="background:#fff;">
-                    <div class="weui-actionsheet__cell" 
-                        id="deal_detail_actionsheet_cancel" 
-                        style="font-size:16px;" 
-                        @click="hideDealDetailMask">取消</div>
-                </div> -->
             </div>
         </div>
         <!-- toast（delay=>z） -->
@@ -285,8 +274,8 @@ export default {
             quantity: "", //该用户还能再定房间数的上限
             isActive: 1,
             loading: true, //
-            loadingTxt:"数据加载中",
-            couponBarShow : true
+            loadingTxt: "数据加载中",
+            couponBarShow: true
         };
     },
     created() {
@@ -399,43 +388,19 @@ export default {
             this.isSelectRoom = false;
             this.fetchOrderForm();
         },
-        // 订房人input姓名获焦
-        orderNameFocus() {
-            // this.orderNameTipsVisible = false;
-        },
         // 订房人input姓名失焦
         orderNameBlur() {
             if (this.orderName.trim() == "") {
-                // this.orderNameTipsVisible = true;
-                // this.orderNameTxt = "输入姓名不能为空";
                 this.orderDelayToastTxt = "输入姓名不能为空";
-                this.orderDelayToast = true;
-                setTimeout(() => {
-                    this.orderDelayToast = false;
-                }, 2000);
-                return false;
-            } else {
-                return true;
-            }
-        },
-
-        // 订房人input手机失焦
-        orderTelBlur() {
-            if (this.orderTel.trim() == "") {
-                // this.orderTelTipsVisible = true;
-                // this.orderTelTxt = "输入手机号不能为空";
-                this.orderDelayToastTxt = "输入手机号不能为空";
                 this.orderDelayToast = true;
                 setTimeout(() => {
                     this.orderDelayToast = false;
                 }, 1500);
                 return false;
-            } else if (this.orderTel != "") {
-                var myreg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
-                if (!myreg.test(this.orderTel.trim())) {
-                    // this.orderTelTxt = "输入手机号格式有误";
-                    // this.orderTelTipsVisible = true;
-                    this.orderDelayToastTxt = "输入手机号不能为空";
+            } else {
+                let reg = new RegExp(/^[\u4E00-\u9FA5A-Za-z]+$/);
+                if (!reg.test(this.orderName)) {
+                    this.orderDelayToastTxt = "姓名格式不正确";
                     this.orderDelayToast = true;
                     setTimeout(() => {
                         this.orderDelayToast = false;
@@ -446,34 +411,41 @@ export default {
                 }
             }
         },
-        // 订房人input手机获焦
-        orderTelFocus() {
-            // this.orderTelTipsVisible = false;
+        // 订房人input手机失焦
+        orderTelBlur() {
+            if (this.orderTel.trim() == "") {
+                this.orderDelayToastTxt = "输入手机号不能为空";
+                this.orderDelayToast = true;
+                setTimeout(() => {
+                    this.orderDelayToast = false;
+                }, 1500);
+                return false;
+            } else if (this.orderTel.trim() != "") {
+                var myreg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
+                if (!myreg.test(this.orderTel.trim())) {
+                    this.orderDelayToastTxt = "输入手机号格式有误";
+                    this.orderDelayToast = true;
+                    setTimeout(() => {
+                        this.orderDelayToast = false;
+                    }, 1500);
+                    return false;
+                } else {
+                    return true;
+                }
+            }
         },
+
         // 支付逻辑
         pay() {
-            // 再次判断预定人input输入框的手机号是都为空
-            if (this.orderTel.trim() == "") {
-                // this.orderTelTipsVisible = true;
-                // this.orderTelTxt = "输入手机号不能为空";
-                this.orderDelayToastTxt = "输入手机号不能为空0";
+            // 当今日可订限额已用完，禁止提交
+            if (this.watchObj.room_sum==0){
+                this.orderDelayToastTxt = "您今日可订限额已用完，请明天再来";
                 this.orderDelayToast = true;
                 setTimeout(() => {
                     this.orderDelayToast = false;
                 }, 1500);
-
+                return false;
             }
-            // 再次判断入住人input输入框的名字是否为空
-            if (this.orderName.trim() == "") {
-                // this.orderNameTipsVisible = true;
-                // this.orderNameTxt = "输入姓名不能为空";
-                this.orderDelayToastTxt = "输入姓名不能为空";
-                this.orderDelayToast = true;
-                setTimeout(() => {
-                    this.orderDelayToast = false;
-                }, 1500);
-            }
-            // 总的判断
             if (this.orderNameBlur() && this.orderTelBlur()) {
                 this.loadingTxt = "支付中...";
                 this.loading = true;
@@ -579,7 +551,7 @@ export default {
 
 // order页的样式
 .order {
-    padding-bottom:50px; 
+    padding-bottom: 50px;
     // 相同的样式提取
     .label {
         float: left;

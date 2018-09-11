@@ -1,38 +1,44 @@
 <template>
     <div class="my-collect-page m-position-ab">
         <!-- toast提示 -->
-        <div v-show="isMyCollectToastVisible">
+        <div v-show="loading">
             <div class="weui-mask_transparent"></div>
             <div class="weui-toast">
                 <i class="weui-loading weui-icon_toast"></i>
                 <p class="weui-toast__content">数据加载中</p>
             </div>
         </div>
-        <ul class="list" v-if="list">
+        <ul v-if="list" class="list" id="list">
             <li v-for="(item,index) in list" :key="index">
                 <div class="head">{{item.time|filterTimeYY}}年{{item.time|filterTimeMM}}月</div>
                 <div class="body" v-if="item.list.length>0">
-                    <div class="body-box" v-for="(itemSon,ind) in item.list" :key="ind" @click="collectItemJump(itemSon.store_id)">
-                        <div class="lf">
-                            <img :src="itemSon.logo" alt="">
-                        </div>
-                        <div class="rg">
-                            <p class="name m-ellipsis">{{itemSon.name}}</p>
-                            <p class="info m-ellipsis-2">{{itemSon.introduce}}</p>
-                            <div class="price-wrap">
-                                <div class="price">
-                                    <span style="color:#30B097;font-size:10px;">&yen;</span>
-                                    <span style="color:#30B097;font-size:15px;">{{itemSon.market_amount}}</span>
-                                    起
-                                    <span style="color:#30B097;">{{itemSon.province}}</span>
+                    <!-- 下面这个才是需要侧滑的item -->
+                    <slip-del class="body-box" v-for="(itemSon,ind) in item.list" :key="ind" ref="slipDel" del-text="删除" @slip-open="slipOpen(itemSon.store_id)" @del-click="del(itemSon.collect_id)">
+                        <div class="body-content" @click="collectItemJump(itemSon.store_id)">
+                            <div class="lf">
+                                <img :src="itemSon.logo" alt="">
+                            </div>
+                            <div class="rg">
+                                <p class="name m-ellipsis">{{itemSon.name}}</p>
+                                <p class="info m-ellipsis-2">{{itemSon.introduce}}</p>
+                                <div class="price-wrap">
+                                    <div class="price">
+                                        <span style="color:#30B097;font-size:10px;">&yen;</span>
+                                        <span style="color:#30B097;font-size:15px;">{{itemSon.market_amount}}</span>
+                                        起
+                                        <span style="color:#30B097;">{{itemSon.city}}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        <!-- 侧滑的按钮 -->
+                        <div slot="del" class="body-slide">删除</div>
+                    </slip-del>
                 </div>
-                <div v-else class="body-box-no-data">
-                    {{item.time|filterTimeYY}}年{{item.time|filterTimeMM}}月没有收藏列表，希望后台过滤！
-                </div>
+                <!-- 这是之前提示后台过滤写的逻辑 -->
+                <!-- <div v-else class="body-box-no-data"> -->
+                <!-- {{item.time|filterTimeYY}}年{{item.time|filterTimeMM}}月没有收藏列表，希望后台过滤！ -->
+                <!-- </div> -->
                 <!-- 右侧label"暂停业"是否展示，问产品 -->
             </li>
         </ul>
@@ -40,19 +46,35 @@
             <img src="../../assets/images/404/404-no-order.png" alt="">
             <p>暂无收藏记录</p>
         </div>
+
     </div>
 </template>
 
 <script>
-import { collect_list, login_test } from "@/api/api";
+import { collect_list } from "@/api/api";
+import SlipDel from "vue-slip-delete";
 export default {
     name: "my-collect",
-    components: {},
+    components: {
+        SlipDel
+    },
     data() {
         return {
             list: "",
             isShow: false, //toast
-            isMyCollectToastVisible: true
+            loading: true,
+
+            listDemo: [
+                {
+                    ad: 1
+                },
+                {
+                    ad: 2
+                },
+                {
+                    ad: 3
+                }
+            ]
         };
     },
     mounted() {
@@ -67,7 +89,7 @@ export default {
                 data: {}
             })
                 .then(res => {
-                    this.isMyCollectToastVisible = false;
+                    this.loading = false;
                     if (res.data.status == 1) {
                         this.list = res.data.data;
                     } else {
@@ -77,13 +99,23 @@ export default {
                 .catch(err => {});
         },
         // 收藏item点击跳转该门店详情
-        collectItemJump(store_id){
-            this.$router.push({path:"hotelDetail",query:{store_id:store_id}});
+        collectItemJump(store_id) {
+            this.$router.push({
+                path: "hotelDetail",
+                query: { store_id: store_id }
+            });
+        },
+        // 滑动打开后的回调
+        slipOpen(vm) {
+            console.log(vm);
+        },
+        // 点击删除的回调
+        del(collect_id) {
+            console.log(collect_id);
         }
     }
 };
 </script>
-
 
 <style lang="less" scoped>
 .list {
@@ -93,12 +125,12 @@ export default {
             padding-left: 15px;
         }
         .body {
-            padding: 0 15px;
             background: #fff;
             .body-box {
                 position: relative;
-                padding: 10px 0;
-                &:after {
+                height: 93px;
+                user-select: none;
+                &::before {
                     content: "";
                     position: absolute;
                     left: 0;
@@ -107,42 +139,53 @@ export default {
                     height: 1px;
                     background: #e5e5e5;
                     transform: scaleY(0.5);
+                    z-index: 10;
                 }
-                .lf {
-                    width: 83px;
-                    height: 73px;
-                    float: left;
-                    background: url("../../assets/images/default/fangxing.jpg")
-                        no-repeat right center;
-                    background-size: 83px 73px;
-                    img {
+                .body-content {
+                    padding: 10px 15px;
+                    background: #fff;
+                    .lf {
                         width: 83px;
                         height: 73px;
-                    }
-                }
-                .rg {
-                    margin-left: 93px;
-                    color: #666;
-                    .name {
-                        height: 21px;
-                        font-size: 15px;
-                        color: #333333;
-                        line-height: 21px;
-                    }
-                    .info {
-                        line-height: 16px;
-                        height: 32px;
-                        font-size: 12px;
-                        margin-bottom: 3px;
-                    }
-                    .price-wrap {
-                        height: 20px;
-                        .price {
-                            height: 20px;
-                            vertical-align: bottom;
-                            font-size: 10px;
+                        float: left;
+                        background: url("../../assets/images/default/fangxing.jpg")
+                            no-repeat right center;
+                        background-size: 83px 73px;
+                        img {
+                            width: 83px;
+                            height: 73px;
                         }
                     }
+                    .rg {
+                        margin-left: 93px;
+                        color: #666;
+                        .name {
+                            height: 21px;
+                            font-size: 15px;
+                            color: #333333;
+                            line-height: 21px;
+                        }
+                        .info {
+                            line-height: 16px;
+                            height: 32px;
+                            font-size: 12px;
+                        }
+                        .price-wrap {
+                            height: 20px;
+                            .price {
+                                height: 20px;
+                                vertical-align: bottom;
+                                font-size: 10px;
+                            }
+                        }
+                    }
+                }
+                .body-slide {
+                    line-height: 93px;
+                    width: 60px;
+                    text-align: center;
+                    background: red;
+                    color: #fff;
                 }
             }
         }

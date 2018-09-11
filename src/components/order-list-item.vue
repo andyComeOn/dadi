@@ -1,11 +1,11 @@
 <template>
     <div class="order-list-item-page">
         <!-- toas提示(loading) -->
-        <div id="orderListToast" v-show="isOrderListToastVisible">
+        <div id="orderListToast" v-show="loading">
             <div class="weui-mask_transparent"></div>
             <div class="weui-toast">
                 <i class="weui-loading weui-icon_toast"></i>
-                <p class="weui-toast__content">数据加载中</p>
+                <p class="weui-toast__content">{{loadingTxt}}</p>
             </div>
         </div>
         <ul class="list" v-if="list.length>0">
@@ -20,7 +20,7 @@
                         </div>
                         <div class="rg">
                             <p class="order-status" v-html="$options.filters.filterStatus(item.status)"></p>
-                            <p class="order-price">&yen; {{item.marker_amount}}</p>
+                            <p class="order-price">&yen; {{item.amount}}</p>
                         </div>
                     </div>
                 </router-link>
@@ -29,7 +29,12 @@
                 <div class="ft">
                     <span class="btn black" v-if="item.status==10" @click="del(item.id)">删除</span>
                     <span class="btn grey" v-if="item.status==0" @click="cancal(item.id,item.status)">取消订单</span>
+                    <span class="btn mcolor" v-if="item.status==1" @click="applyMoney(item.id)">申请退款</span>
+                    <span class="btn mcolor" v-if="item.status==2" @click="applyMoney(item.id)">申请退款</span>
+                    <span class="btn mcolor" v-if="item.status==3" @click="applyMoney(item.id)">申请退款</span>
                     <span class="btn mcolor" v-if="item.status==4" @click="applyMoney(item.id)">申请退款</span>
+                    <!-- 这个“申请退款中”按钮不应该展示 -->
+                    <!-- <span class="btn mcolor" v-if="item.status==6" @click="applyMoney(item.id)">申请退款中</span> -->
                     <span class="btn orange" v-show="!item.status==0" @click="reOrder(item.store_id)">再次预定</span>
                     <span class="btn mcolor" v-if="item.status==0" @click="payMethod(item.id)">付款</span>
                 </div>
@@ -39,8 +44,8 @@
             <img src="../assets/images/404/404-no-order.png" alt="">
             <p>{{noOrderStatusTxt}}</p>
         </div>
-        
-        <!-- toas提示(包含2s延时) -->
+
+        <!-- toast提示(包含2s延时) -->
         <div v-show="delayToastShow">
             <div class="weui-mask_transparent"></div>
             <div class="weui-toast">
@@ -61,7 +66,7 @@
 </template>
 
 <script>
-import { order_list, cancel_orderform, delete_order,wx_pay } from "@/api/api";
+import { order_list, cancel_orderform, delete_order, wx_pay } from "@/api/api";
 export default {
     name: "order-list-item",
     props: ["condition"],
@@ -73,7 +78,7 @@ export default {
                 } else {
                     this.noOrderStatusTxt = "暂无进行中订单";
                 }
-                this.isOrderListToastVisible = true;
+                this.loading = true;
                 this.fetchData(newValue);
             },
             deep: true,
@@ -84,10 +89,11 @@ export default {
         return {
             list: [],
             noOrderStatusTxt: "",
-            isOrderListToastVisible: false,
+            loading: false,
+            loadingTxt: "数据加载中",
             delayToastShow: false, //延时toast的开关
             delayToastTxt: "取消成功", //延时toast的txt提示
-            paySuccessToast:false
+            paySuccessToast: false
         };
     },
     created() {},
@@ -99,7 +105,7 @@ export default {
                 url: order_list,
                 data: param
             }).then(res => {
-                this.isOrderListToastVisible = false;
+                this.loading = false;
                 if (res.data.status == 1) {
                     this.list = res.data.data;
                 } else if (res.data.status == -3) {
@@ -165,12 +171,14 @@ export default {
                 .catch(err => {});
         },
         // 支付成功回调执行方法
-        paySuccessMethod(){
+        paySuccessMethod() {
             this.paySuccessToast = false;
             this.fetchData(this.condition);
         },
         // 立即支付按钮
         payMethod(order_id) {
+            this.loadingTxt = "微信支付调取中";
+            this.loading = true;
             let _this = this;
             let jsApiParameters = {};
             let onBridgeReady = function() {
@@ -182,7 +190,7 @@ export default {
                             _this.paySuccessToast = true;
                         }
                         if (res.err_msg == "get_brand_wcpay_request:cancel") {
-                            // alert("取消支付");
+                            alert("取消支付");
                             // window.location.reload();
                         }
                     }
@@ -219,6 +227,7 @@ export default {
                 }
             }).then(res => {
                 if (res.data.status == 1) {
+                    this.loading = false;
                     jsApiParameters = JSON.parse(res.data.data);
                     callpay();
                 } else {

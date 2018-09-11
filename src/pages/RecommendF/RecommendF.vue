@@ -1,14 +1,13 @@
 <template>
     <div class="recommend-f-page">
-        <!-- 头部 -->
-        <!-- <m-header title="推荐好友" fixed class="is-fixed" leftShow>
-			<a href="javascript:;" slot="left">
-				<img class="m-icon-img margin-right-10" src="../../assets/images/bak/ic_actionbar_search_icon.png" />
-			</a>
-			<a href="javascript:;" slot="right">
-				<img class="m-icon-img" src="../../assets/images/bak/ic_chat_green.png" />
-			</a>
-		</m-header> -->
+        <!-- toast提示 -->
+        <div id="orderListToast" v-show="loading">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-loading weui-icon_toast"></i>
+                <p class="weui-toast__content">{{loadingTxt}}</p>
+            </div>
+        </div>
         <!-- 主内容区 -->
         <div class="page-content">
             <!-- 个人info -->
@@ -17,7 +16,7 @@
                     <div class="weui-media-box mine-info-media-box weui-media-box_appmsg">
                         <div class="weui-media-box__hd mine-info-media-box__hd">
                             <img v-if='avatar_head != ""' class="weui-media-box__thumb mine-info-media-box__thumb" :src="avatar_head" alt="">
-							<img v-else class="weui-media-box__thumb mine-info-media-box__thumb" src="../../assets/images/default_avatar.png" alt="">
+                            <img v-else class="weui-media-box__thumb mine-info-media-box__thumb" src="../../assets/images/default_avatar.png" alt="">
                         </div>
                         <div class="weui-media-box__bd mine-info-media-box__bd">
                             <h4 class="weui-media-box__title mine-info-media-box__title">{{nikeName}}</h4>
@@ -58,7 +57,6 @@
                             <p>奖励明细</p>
                         </li>
                     </router-link>
-
                     <!-- 跳到提现明细 -->
                     <router-link to="pickCash">
                         <li class="pickCash">
@@ -66,7 +64,6 @@
                             <p>提现明细</p>
                         </li>
                     </router-link>
-
                     <!-- 跳到二维码 -->
                     <router-link to="qsPush">
                         <li class="qsPush">
@@ -74,7 +71,6 @@
                             <p>点我推广</p>
                         </li>
                     </router-link>
-
                     <!-- 助力好友 -->
                     <router-link to="helpFriend">
                         <li class="helpFriend">
@@ -85,19 +81,19 @@
                 </ul>
             </div>
         </div>
-        <!-- toast提示 -->
-        <div id="orderListToast" v-if='toash_show == true'>
-            <div class="weui-mask_transparent"></div>
-            <div class="weui-toast">
-                <i class="weui-loading weui-icon_toast"></i>
-                <p class="weui-toast__content">数据加载中</p>
+        <!-- toast（delay=>z） -->
+        <div v-show="delayToast">
+            <div class="z-mask-transparent"></div>
+            <div class="z-toast">
+                <i class="z-toast-icon"></i>
+                <p class="z-toast-content">{{delayToastTxt}}</p>
             </div>
         </div>
     </div>
 </template>
 <script>
 import { user_distribution } from "../../api/api.js";
-import {getCookie} from '../../utils/util.js';
+import { getCookie } from "../../utils/util.js";
 export default {
     name: "recommend-f",
     components: {},
@@ -108,13 +104,24 @@ export default {
             reward_amount: "", //累计金额
             await_amount: "", //待领取
             nikeName: "", //昵称
-            toash_show: true, //loadingShow
-            avatar_head:'',     //头像
+            loading: true,
+            loadingTxt: "数据加载中",
+            avatar_head: "", //头像
+            delayToast: false,
+            delayToastTxt: ""
         };
     },
     computed: {},
     methods: {
         extractHash() {
+            // if (this.use_amount - 0 == 0) {
+            //     this.delayToastTxt = "您的可提现额度为空噢";
+            //     this.delayToast = true;
+            //     setTimeout(() => {
+            //         this.delayToast = false;
+            //     }, 1500);
+            //     return;
+            // }
             this.$router.push({
                 path: "/extractMoney?use_amount=" + this.use_amount
             });
@@ -122,7 +129,7 @@ export default {
     },
     mounted() {
         //头像
-        this.avatar_head = decodeURIComponent(getCookie('avatar'));
+        this.avatar_head = decodeURIComponent(getCookie("avatar"));
         //昵称
         this.nikeName = this.$route.query.nikeName;
         this.$http({
@@ -131,13 +138,13 @@ export default {
             data: {}
         }).then(res => {
             if (res.data.status == 1) {
-                this.toash_show = false;
+                this.loading = false;
                 this.await_amount = res.data.data.await_amount; //待领取
                 this.use_amount = res.data.data.use_amount; //可提现
                 this.freeze_amount = res.data.data.freeze_amount; //冻结金额
                 this.reward_amount = res.data.data.reward_amount; //累计金额
             } else {
-                this.toash_show = false;
+                this.loading = false;
             }
         });
     }
@@ -203,7 +210,7 @@ export default {
         position: relative;
         border-radius: 10px;
         color: #fff;
-        box-shadow: 0px 9px 20px #FCC77B;
+        box-shadow: 0px 9px 20px #fcc77b;
         // 提现标题
         .tixian-title {
             line-height: 21px;

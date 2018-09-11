@@ -2,8 +2,8 @@
     <div class="refund_bd">
         <!-- refund money str -->
         <p class="refund_money_title">退款金额</p>
-        <div class="refund_money" v-if="orderInfo">
-            <span>￥{{orderInfo.amount}}</span>
+        <div class="refund_money" v-if="order_id_info">
+            <span>￥{{order_id_info.amount}}</span>
             <span @click="showDealDetailMask">明细</span>
             <img src="../../assets/images/arrows/list－更多icon@1x.png" />
         </div>
@@ -43,7 +43,7 @@
                     <p class="weui-actionsheet__title-text zb-weui-actionsheet__title-text">费用明细</p>
                 </div>
                 <!-- 交易明细弹框的内容 -->
-                <div class="weui-actionsheet__menu">
+                <div class="weui-actionsheet__menu" style="max-height:300px;overflow:auto;">
                     <div class="zb-actionsheet__bd">
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
                             <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
@@ -62,7 +62,7 @@
                                     <h4>{{item.order_time}}</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <span style="color:#666;">{{order_cost_info.room_sum}}间 * </span> &yen;{{item.money|Fixto2}}
+                                    <span style="color:#666;">{{order_cost_info.room_sum}}间 * </span> &yen;{{item.money | Fixto2}}
                                 </div>
                             </label>
                         </div>
@@ -89,7 +89,7 @@
                                 </div>
                                 <div class="weui-cell__hd div">
                                     <span style="color:#666;">实付金额：</span>
-                                     &yen;{{orderInfo.amount}}
+                                    &yen;{{order_cost_info.order_money}}
                                 </div>
                             </label>
                         </div>
@@ -100,7 +100,12 @@
     </div>
 </template>
 <script>
-import { order_detail, order_cost_detail, order_preserver } from "@/api/api";
+import {
+    order_detail,
+    order_cost_detail,
+    order_preserver,
+    cancel_orderform
+} from "@/api/api";
 export default {
     name: "applyMoney",
     components: {},
@@ -108,18 +113,19 @@ export default {
         return {
             isDealDetailMask: false,
             refund_cause: "", //退款原因
-            order_id: "",
-            orderInfo: "", //订单信息
-            isCoupon: "", //  该订单是否使用优惠券
+            order_id: "", //接收路由传过来的order_id
+            order_id_info: "", //接收http请求的order_detail数据
+            order_cost_info: "", //接收http请求的明细接口（order_cost_info）数据
             submitSucToast: false, // Toast开关
-            isTipsShow: false,
-            order_cost_info: ""
+            isTipsShow: false
         };
     },
     mounted() {
         let order_id = this.$route.query.order_id;
         this.order_id = order_id;
         this.fetchOrderDetail();
+        // 拉取明细详情
+        this.fetchOrderCostDetail();
     },
     watch: {
         refund_cause: {
@@ -152,11 +158,7 @@ export default {
             })
                 .then(res => {
                     if (res.data.status == 1) {
-                        this.orderInfo = res.data.data;
-                        this.isCoupon = res.data.data.coupon_id;
-                        if (this.isCoupon != 0) {
-                            this.fetchOrderCostDetail();
-                        }
+                        this.order_id_info = res.data.data;
                     }
                 })
                 .catch();
@@ -173,9 +175,6 @@ export default {
             })
                 .then(res => {
                     if (res.data.status == 1) {
-                        // this.totalBakMoney =
-                        //     res.data.data.order_money -
-                        //     res.data.data.coupon_amount;
                         this.order_cost_info = res.data.data;
                     }
                 })
@@ -186,30 +185,58 @@ export default {
             this.isTipsShow = false;
         },
 
-        // 提交维权
+        // 提交退款维权
         submit() {
-            if (this.refund_cause == "") {
-                this.isTipsShow = true;
-                return;
-            }
-            this.$http({
-                method: "POST",
-                url: order_preserver,
-                data: {
-                    order_id: this.order_id,
-                    preserve_content: this.refund_cause
-                }
-            })
-                .then(res => {
-                    if (res.data.status == 1) {
-                        this.submitSucToast = true;
-                        setTimeout(() => {
-                            this.submitSucToast = false;
-                        }, 2000);
-                        this.$router.go(-1);
+            // 工作人员没有接单，用户已经付款
+            if (this.order_id_info.status == 1) {
+                this.$http({
+                    method: "POST",
+                    url: cancel_orderform,
+                    data: {
+                        order_id: this.order_id_info.id,
+                        status: this.order_id_info.status
                     }
                 })
-                .catch();
+                    .then(res => {
+                        if (res.data.status == 1) {
+                            this.submitSucToast = true;
+                            setTimeout(() => {
+                                this.submitSucToast = false;
+                            }, 2000);
+                            this.$router.push({
+                                path: "orderList",
+                                query: {
+                                    status: "ing"
+                                }
+                            });
+                        }
+                    })
+                    .catch();
+            } else {
+                // 工作人员没有接单，用户已经付款
+                if (this.refund_cause == "") {
+                    this.isTipsShow = true;
+                    return;
+                }
+                this.$http({
+                    method: "POST",
+                    url: order_preserver,
+                    data: {
+                        order_id: this.order_id,
+                        preserve_content: this.refund_cause
+                    }
+                })
+                    .then(res => {
+                        if (res.data.status == 1) {
+                            this.submitSucToast = true;
+                            setTimeout(() => {
+                                this.submitSucToast = false;
+                            }, 2000);
+                            this.$router.go(-1);
+                        }
+                    })
+                    .catch();
+            }
         }
     }
 };

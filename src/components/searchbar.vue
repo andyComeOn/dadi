@@ -65,8 +65,8 @@ export default {
             howManyNight: ""
         };
     },
-    created() {},
-    mounted() {},
+    // created() {},
+    // mounted() {},
     methods: {
         //城市组件dialog控制
         triggerCityDialog() {
@@ -78,17 +78,20 @@ export default {
             this.$emit("triggerCalendarDialogEmit");
         },
 
-        // 搜素框出发焦点事件
-        triggerSearchbarInputFocus() {
-            this.$emit("triggerSearchbarInputFocusEmit");
-        },
+        // 搜素框出发焦点事件（ui说该输入框做的简单一些，不像其他产品一样点击之后出现了dialog，
+        //这个方法是对组件写的获焦事件，现在没有用这个方法）
+        // triggerSearchbarInputFocus() {
+        //     this.$emit("triggerSearchbarInputFocusEmit");
+        // },
 
         // 最后产品要求不加此功能
         inputFun() {
-            this.$emit("inputValEmit", o.abstract);
+            this.$emit("inputValEmit", this.o.abstract);
         }
-    }
-};
+    },
+    
+    
+}
 </script>
 <style lang="less" scoped>
 .search-container {

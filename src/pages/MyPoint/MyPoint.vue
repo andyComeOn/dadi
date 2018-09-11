@@ -124,6 +124,8 @@
 					height: 60px;
 					line-height: 60px;
 					text-align: right;
+					font-weight: 600;
+					color: #FFBA56;
 					
 				}
 			}
