@@ -211,6 +211,12 @@ export default {
                             }
                         }, 1000);
                     } else {
+                        this.codeBtnClickCtrl = true;
+                        this.toastTxt =  res.data.msg + "，请稍后再试";
+                        this.isToastShow = true;
+                        setTimeout(() => {
+                            this.isToastShow = false;
+                        }, 1000);
                     }
                 });
             }

@@ -8,12 +8,20 @@
                 <p class="weui-toast__content">数据加载中</p>
             </div>
         </div>
+        <!-- toast（delay=>z） -->
+        <div v-show="delayToast">
+            <div class="z-mask-transparent"></div>
+            <div class="z-toast">
+                <i class="z-toast-icon"></i>
+                <p class="z-toast-content">{{delayToastTxt}}</p>
+            </div>
+        </div>
         <ul v-if="list" class="list" id="list">
             <li v-for="(item,index) in list" :key="index">
                 <div class="head">{{item.time|filterTimeYY}}年{{item.time|filterTimeMM}}月</div>
                 <div class="body" v-if="item.list.length>0">
                     <!-- 下面这个才是需要侧滑的item -->
-                    <slip-del class="body-box" v-for="(itemSon,ind) in item.list" :key="ind" ref="slipDel" del-text="删除" @slip-open="slipOpen(itemSon.store_id)" @del-click="del(itemSon.collect_id)">
+                    <slip-del class="body-box" v-for="(itemSon) in item.list" :key="itemSon.collect_id" ref="slipDel" del-text="删除" @slip-open="slipOpen(itemSon.store_id)" @del-click="delCollect(itemSon.collect_id)">
                         <div class="body-content" @click="collectItemJump(itemSon.store_id)">
                             <div class="lf">
                                 <img :src="itemSon.logo" alt="">
@@ -31,7 +39,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- 侧滑的按钮 -->
                         <div slot="del" class="body-slide">删除</div>
                     </slip-del>
                 </div>
@@ -46,12 +53,23 @@
             <img src="../../assets/images/404/404-no-order.png" alt="">
             <p>暂无收藏记录</p>
         </div>
+        <!-- <ul class="listDemo">
+            <li v-for="(item,index) in listDemo" :key="index">
+                <div class="title">{{item.time}}</div>
+                <div class="content" >
+                    <slip-del v-for="(itemSon, index) in item.list" :key="index" ref="slipDel" del-text="删除" @slip-open="slipOpen(itemSon.store_id)" @del-click="del(itemSon.collect_id)">
+                        <div>{{itemSon.ad}}</div>
+                        <div slot="del" class="body-slide">删除</div>
+                    </slip-del>
+                </div>
 
+            </li>
+        </ul> -->
     </div>
 </template>
 
 <script>
-import { collect_list } from "@/api/api";
+import { collect_list, del_collect } from "@/api/api";
 import SlipDel from "vue-slip-delete";
 export default {
     name: "my-collect",
@@ -63,16 +81,17 @@ export default {
             list: "",
             isShow: false, //toast
             loading: true,
+            delayToast:"",
+            delayToastTxt:"",
 
             listDemo: [
                 {
-                    ad: 1
+                    time: "2018-08",
+                    list: [{ ad: 1 }, { ad: 2 }]
                 },
                 {
-                    ad: 2
-                },
-                {
-                    ad: 3
+                    time: "2018-09",
+                    list: [{ ad: 3 }, { ad: 4 }]
                 }
             ]
         };
@@ -93,6 +112,7 @@ export default {
                     if (res.data.status == 1) {
                         this.list = res.data.data;
                     } else {
+                        this.list = "";
                         this.isShow = true;
                     }
                 })
@@ -106,12 +126,24 @@ export default {
             });
         },
         // 滑动打开后的回调
-        slipOpen(vm) {
-            console.log(vm);
-        },
+        slipOpen(vm) {},
         // 点击删除的回调
-        del(collect_id) {
-            console.log(collect_id);
+        delCollect(collect_id) {
+            this.$http({
+                method: "POST",
+                url: del_collect,
+                data: { collect_id: collect_id }
+            }).then(res => {
+                if (res.data.status == 1) {
+                    this.delayToastTxt = "已取消收藏";
+                    this.delayToast = true;
+                    setTimeout(() => {
+                        this.delayToast = false;
+                        this.fetchData();
+                    }, 2000);
+                    
+                }
+            });
         }
     }
 };

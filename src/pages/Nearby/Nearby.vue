@@ -1,15 +1,5 @@
 <template>
     <div class="nearby-page">
-        <!-- 头部 -->
-        <!-- <m-header title="附近的酒店" fixed class="is-fixed">
-			<a href="javascript:;" slot="left">
-				<img class="m-icon-img margin-right-10" src="../../assets/images/bak/ic_actionbar_search_icon.png" />
-			</a>
-			<a href="javascript:;" slot="right">
-				<img class="m-icon-img" src="../../assets/images/bak/ic_chat_green.png" />
-			</a>
-		</m-header> -->
-
         <!-- 主内容区 -->
         <div class="page-content">
             <!-- 搜素条 -->
@@ -17,7 +7,7 @@
             </searchbar>
 
             <!-- 刷新用户所在地理位置 -->
-            <refreshbar></refreshbar>
+            <refreshbar @refreshEmit="refreshEmitFun"></refreshbar>
 
             <!-- 酒店组件 -->
             <roomItem :condition="watchObj"></roomItem>
@@ -209,14 +199,19 @@ export default {
         inputValEmitFun(val) {
             this.watchObj.name = val;
         },
+        // 刷新按钮通过emit传过来的方法
+        refreshEmitFun(longitude, latitude) {
+            this.watchObj.longitude = longitude;
+            this.watchObj.latitude = latitude;
+        }
     }
 };
 </script>
 
 
 <style lang="less">
-.is-fixed ~ .page-content {
-    padding-top: 44px;
+.page-content {
+    // padding-top: 44px;
     padding-bottom: 50px;
     height: 100%;
 }

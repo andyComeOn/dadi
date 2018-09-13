@@ -98,7 +98,7 @@
                             <!-- 酒店设施集合 -->
                             <div class="labels">{{item.introduce}}</div>
                             <!-- 价格（新、旧） -->
-                            <div class="price">
+                            <div class="price din">
                                 <span class="price-new">&yen;{{item.discount_price}}</span>
                                 <span class="price-old">&yen;{{item.market_amount}}</span>
                             </div>
@@ -558,10 +558,10 @@ export default {
     }
     .location-wrapper {
         width: 100%;
-        padding-left: 22px;
-        background: url("../../assets/images/hotel-label/ic_dingwei.png")
-            no-repeat 3px 3px;
-        background-size: 13px 15px;
+        // padding-left: 22px;
+        // background: url("../../assets/images/hotel-label/ic_dingwei.png")
+            // no-repeat 3px 3px;
+        // background-size: 13px 15px;
     }
     .call {
         width: 32px;

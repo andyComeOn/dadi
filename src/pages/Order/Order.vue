@@ -438,7 +438,7 @@ export default {
         // 支付逻辑
         pay() {
             // 当今日可订限额已用完，禁止提交
-            if (this.watchObj.room_sum==0){
+            if (this.watchObj.room_sum == 0) {
                 this.orderDelayToastTxt = "您今日可订限额已用完，请明天再来";
                 this.orderDelayToast = true;
                 setTimeout(() => {
@@ -472,6 +472,14 @@ export default {
                                     order_id: res.data.data.order_id
                                 }
                             });
+                        } else {
+                            this.orderDelayToastTxt =
+                                "在您支付过程中，房被小伙伴抢光了";
+                            this.orderDelayToast = true;
+                            this.fetchOrderForm();
+                            setTimeout(() => {
+                                this.orderDelayToast = false;
+                            }, 1500);
                         }
                     })
                     .catch(err => {
