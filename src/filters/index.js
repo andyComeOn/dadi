@@ -37,7 +37,7 @@ export function filterStatus(b) {
 		return '<span style="color:#30B097">入住中</span>';
 	} else if (b == 4 || b == 5) {
 		return '<span style="color:#30B097">已完成</span>';
-	} else if (b == 6) {
+	} else if (b == 6 || b == 15) {
 		return "申请退款中";
 	} else if (b == 7) {
 		return '<span style="color:#F7543E">已拒单</span>';

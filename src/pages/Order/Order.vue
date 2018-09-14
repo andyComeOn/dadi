@@ -119,7 +119,7 @@
                                     <h4>满{{item.min_amount}}元减{{item.amount}}元</h4>
                                     <p>截止日期：{{item.validity_end_time}}</p>
                                 </div>
-                                <div class="weui-cell__hd div" style="font-family:DIN;">
+                                <div class="weui-cell__hd div din">
                                     &yen;{{item.amount}}
                                     <input type="radio" class="weui-check" :id="item.id" :value="{id:item.id,min_amount:item.min_amount,amount:item.amount}" v-model="initCoupon">
                                     <i class="weui-icon-checked"></i>
@@ -183,7 +183,7 @@
                     <!-- 交易明细实付 -->
                     <div class="zb-actionsheet__bd">
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
-                            <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
+                            <label class="weui-cell zb-weui-cell weui-check__label" for="deal1">
                                 <div class="weui-cell__bd div zb-weui-cell__hd">
                                     <h4>总计</h4>
                                 </div>
@@ -218,6 +218,7 @@
 <script>
 import { dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
 import { order_form, increase_room_num, create_order } from "@/api/api";
+import { getCookie } from "@/utils/util";
 export default {
     name: "order",
     data() {
@@ -307,6 +308,8 @@ export default {
 
         // 拉取订单信息接口
         this.fetchOrderForm();
+        // 拉取socket方法
+        this.socketMethod();
     },
     watch: {
         initCoupon: {
@@ -337,6 +340,23 @@ export default {
         // 隐藏交易明细遮罩-ui没有设计这个交互逻辑
         hideDealDetailMask() {
             this.isDealDetailMask = false;
+        },
+
+        // 订单socket
+        socketMethod() {
+            let  ws = new WebSocket("ws://172.16.0.252:2623");
+            ws.onopen = function() {
+                ws.send("uid" + getCookie("userUid"));
+                console.log('999')
+                // alert("给服务端发送一个字符串：tom");
+            };
+            ws.onmessage = function(e) {
+                console.log("收到服务端的消息：" + e.data);
+                // if(e){
+                    
+                // }
+                // alert("收到服务端的消息：" + e.data);
+            };
         },
         // 拉取订单预览数据
         fetchOrderForm() {
@@ -473,9 +493,11 @@ export default {
                                 }
                             });
                         } else {
+                            this.loading = false;
                             this.orderDelayToastTxt =
                                 "在您支付过程中，房被小伙伴抢光了";
                             this.orderDelayToast = true;
+                            this.watchObj.room_sum = 1;
                             this.fetchOrderForm();
                             setTimeout(() => {
                                 this.orderDelayToast = false;

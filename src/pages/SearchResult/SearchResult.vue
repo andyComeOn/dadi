@@ -12,7 +12,7 @@
         </sortbar>
 
         <!-- 刷新用户所在地理位置 -->
-        <refreshbar @refreshEmit="refreshEmitFun"></refreshbar>
+        <refreshbar @refreshEmit="refreshEmitFun" :refreshBarObj="toRefreshBarObj"> </refreshbar>
 
         <!-- 酒店组件 -->
         <roomItem :condition="watchObj"></roomItem>
@@ -61,9 +61,8 @@ export default {
     props: {},
     data() {
         return {
-            // 最终传给searchbar的对象
-            toSearchbarObj: {},
-
+            toSearchbarObj: {}, // 最终传给searchbar的对象
+            toRefreshBarObj:{longitude:"",latitude:""}, // 最终传给refreshBar的对象
             // 监听数据的变化，用来筛选满足条件的酒店列表
             watchObj: {
                 type: "SORT_ASC", //正序、降序排列
@@ -110,10 +109,14 @@ export default {
             liveoutYYYY: this.$route.query.liveoutYYYY,
             liveoutMM: this.$route.query.liveoutMM,
             liveoutDD: this.$route.query.liveoutDD,
-            abstract: this.$route.query.abstract
+            abstract: this.$route.query.abstract,
+            longitude: this.$route.query.longitude,
+            latitude: this.$route.query.latitude,
         };
         // 将路由获得的一系列参数赋值给data()中的一个变量-getUrlPara
         this.toSearchbarObj = urlPara;
+        this.toRefreshBarObj.longitude = urlPara.longitude;
+        this.toRefreshBarObj.latitude = urlPara.latitude;
 
         // 日历初始赋值
         this.zbInitCalendar.start.yyyy = urlPara.liveinYYYY;
@@ -138,6 +141,8 @@ export default {
             urlPara.liveoutDD;
         this.watchObj.city = urlPara.cityid;
         this.watchObj.name = urlPara.abstract;
+        this.watchObj.longitude = urlPara.longitude;
+        this.watchObj.latitude = urlPara.latitude;
     },
     mounted() {},
     methods: {
@@ -173,17 +178,14 @@ export default {
         // 入住-离店
         clickToday(value) {
             this.zbCalendarVisible = false;
-
             // 入住时间
             this.zbInitCalendar.start.yyyy = value[0].split("/")[0];
             this.zbInitCalendar.start.mm = value[0].split("/")[1];
             this.zbInitCalendar.start.dd = value[0].split("/")[2];
-
             // 离店时间
             this.zbInitCalendar.end.yyyy = value[1].split("/")[0];
             this.zbInitCalendar.end.mm = value[1].split("/")[1];
             this.zbInitCalendar.end.dd = value[1].split("/")[2];
-
             // 给searchbar重新赋值
             this.toSearchbarObj.liveinYYYY = value[0].split("/")[0];
             this.toSearchbarObj.liveinMM = value[0].split("/")[1];
@@ -191,7 +193,6 @@ export default {
             this.toSearchbarObj.liveoutYYYY = value[1].split("/")[0];
             this.toSearchbarObj.liveoutMM = value[1].split("/")[1];
             this.toSearchbarObj.liveoutDD = value[1].split("/")[2];
-
             // 给监听的watchObj，重新赋值
             this.watchObj.begin =
                 value[0].split("/")[0] +

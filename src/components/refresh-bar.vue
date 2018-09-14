@@ -1,7 +1,7 @@
 <template>
     <div class="refreshbar-container">
         <div class="refreshbar-wrapper">
-            <div class="lf m-ellipsis">当前位置：{{address}}</div>
+            <div class="lf m-ellipsis">当前位置：{{address}} </div>
             <div class="rg" @click="refresh">
                 <img src="../assets/images/icon/ic-refresh.png" alt="">
             </div>
@@ -12,26 +12,25 @@
 import { slt_location, wxShare } from "@/api/api";
 import wx from "weixin-js-sdk";
 export default {
+    props: ["refreshBarObj"],
     data() {
         return {
             myLocation: "",
             address: "",
-            longitude: "116.309408",
-            latitude: "39.966051",
-            speed: "",
-            accuracy: "",
+            // longitude: "117.153959", //天津
+            // latitude: "39.10149", //天津
+            longitude: this.refreshBarObj.longitude,
+            latitude: this.refreshBarObj.latitude,
             cityid: "",
             cityname: ""
         };
     },
     mounted() {
-        // this.wxConfig();
-        this.wxShareHttp();
-        // this.refresh();
+        this.getAddr(); // 首先通过路由带过来的经纬度拉取详细地址
     },
     methods: {
         // wx分享接口调取
-        wxShareHttp() {
+        getAppInfo() {
             var dataObj = {
                 url: location.href.split("#")[0]
             };
@@ -46,9 +45,7 @@ export default {
                     let nonceStr = res.data.data.noncestr;
                     let signature = res.data.data.signature;
                     let tmpUrl = res.data.data.url;
-                    // wx分享config配置
-                    // this.share(res.data.data.url, res.data.data.share_img);
-                    this.wxConfig(
+                    this.wxConfigMethod(
                         appId,
                         timestamp,
                         nonceStr,
@@ -59,7 +56,7 @@ export default {
                 .catch(err => {});
         },
         // 刷新地理位置需要进行wx.config
-        wxConfig(appId, timestamp, nonceStr, signature, tmpUrl) {
+        wxConfigMethod(appId, timestamp, nonceStr, signature, tmpUrl) {
             let that = this;
             wx.config({
                 debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -76,16 +73,16 @@ export default {
                     that.latitude = latitude;
                     var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
                     that.longitude = longitude;
-                    var speed = res.speed; // 速度，以米/每秒计
-                    that.speed = speed;
-                    var accuracy = res.accuracy; // 位置精度
-                    that.accuracy = accuracy;
-                    that.refresh(); // wxconfig成功之后再拉取刷新接口
+                    that.getAddr(); // 拉取获取详细地址
                 }
             });
         },
         // 刷新
         refresh() {
+            this.getAppInfo();
+        },
+        // 根据经纬度获取详细地址
+        getAddr() {
             this.address = "定位中...";
             this.$http({
                 method: "POST",
@@ -97,6 +94,9 @@ export default {
             }).then(res => {
                 if (res.data.status == 1) {
                     let locationTmp = res.data.data;
+                    if (locationTmp.address == "") {
+                        this.getAddr();
+                    }
                     this.cityname = locationTmp.city;
                     this.cityid = locationTmp.id;
                     this.address = locationTmp.address;
@@ -113,19 +113,21 @@ export default {
 <style lang="less" scoped>
 .refreshbar-container {
     height: 32px;
-    padding: 0 15px;
+    padding: 0 10px;
     background: #eff1f0;
     .refreshbar-wrapper {
+        height: 32px;
         font-size: 13px;
+        display: flex;
+        flex-direction: row;
         .lf {
-            float: left;
             line-height: 32px;
             color: #999999;
+            flex: 1;
         }
         .rg {
             width: 32px;
             height: 32px;
-            float: right;
             display: flex;
             justify-content: center;
             align-items: center;

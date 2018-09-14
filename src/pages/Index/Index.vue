@@ -23,6 +23,7 @@
                             <div class="dest-city">
                                 <span class="dest">目的地</span>
                                 <span class="city">{{cityname}}</span>
+
                             </div>
                             <div class="dest-city-arrow">
                                 <img src="../../assets/images/arrows/ic-arrow_10_18.png" alt="">
@@ -44,10 +45,8 @@
                                 {{zbInitCalendar.start.mm}}月{{zbInitCalendar.start.dd}}日
                             </span>
                         </div>
-
                         <!-- 入住几晚 -->
                         <div class="md">共{{howManyNight}}晚</div>
-
                         <!-- 离店模块 -->
                         <div class="rg">
                             <span class="instr">离店</span>
@@ -56,16 +55,12 @@
                             </span>
                         </div>
                     </div>
-
                     <!-- 关键词搜索 -->
                     <div class="search">
                         <input type="text" class="txt" v-model="abstract" placeholder="请输入关键词／地址／商圈">
                     </div>
-
                     <!-- 提交按钮 -->
-                    <div class="submit" @click="submitFun">
-                        酒店预订
-                    </div>
+                    <div class="submit" @click="submitFun">酒店预订</div>
                 </div>
             </div>
         </div>
@@ -108,7 +103,6 @@ export default {
     props: {},
     data() {
         return {
-            // swiper相关参数
             swiperOption: {
                 notNextTick: true,
                 autoplay: false,
@@ -164,8 +158,7 @@ export default {
                     dd: ""
                 }
             },
-            // 入住-离店共几晚
-            howManyNight: "",
+            howManyNight: "", // 入住-离店共几晚
             appId: "", // 必填，公众号的唯一标识
             timestamp: "", // 必填，生成签名的时间戳
             nonceStr: "", // 必填，生成签名的随机串
@@ -175,8 +168,6 @@ export default {
             longitude: "116.309408",
             latitude: "39.966051",
             address: "", // 地址精确到街道
-            speed: "",
-            accuracy: ""
         };
     },
     created() {
@@ -237,13 +228,15 @@ export default {
                 data: dataObj
             })
                 .then(res => {
-                    this.appId = res.data.data.appid;
-                    this.timestamp = res.data.data.timestamp;
-                    this.nonceStr = res.data.data.noncestr;
-                    this.signature = res.data.data.signature;
-                    this.url = res.data.data.url;
-                    // wx分享config配置
-                    this.share(res.data.data.url, res.data.data.share_img);
+                    if (res.data.status == 1) {
+                        this.appId = res.data.data.appid;
+                        this.timestamp = res.data.data.timestamp;
+                        this.nonceStr = res.data.data.noncestr;
+                        this.signature = res.data.data.signature;
+                        this.url = res.data.data.url;
+                        // wx分享config配置
+                        this.share(res.data.data.url, res.data.data.share_img);
+                    }
                 })
                 .catch(err => {});
         },
@@ -297,13 +290,15 @@ export default {
         clickToday(value) {
             this.zbCalendarVisible = false;
             // 入住时间
-            this.zbInitCalendar.start.yyyy = value[0].split("/")[0];
-            this.zbInitCalendar.start.mm = value[0].split("/")[1];
-            this.zbInitCalendar.start.dd = value[0].split("/")[2];
+            let tmpStart = value[0].split("/");
+            this.zbInitCalendar.start.yyyy = tmpStart[0];
+            this.zbInitCalendar.start.mm = tmpStart[1];
+            this.zbInitCalendar.start.dd = tmpStart[2];
             // 离店时间
-            this.zbInitCalendar.end.yyyy = value[1].split("/")[0];
-            this.zbInitCalendar.end.mm = value[1].split("/")[1];
-            this.zbInitCalendar.end.dd = value[1].split("/")[2];
+            let tmpEnd = value[1].split("/");
+            this.zbInitCalendar.end.yyyy = tmpEnd[0];
+            this.zbInitCalendar.end.mm = tmpEnd[1];
+            this.zbInitCalendar.end.dd = tmpEnd[2];
             //共几晚
             this.howManyNight = dateEndMinusStart(value[0], value[1]);
         },
@@ -325,7 +320,9 @@ export default {
                     liveoutYYYY: this.zbInitCalendar.end.yyyy,
                     liveoutMM: this.zbInitCalendar.end.mm,
                     liveoutDD: this.zbInitCalendar.end.dd,
-                    abstract: this.abstract
+                    abstract: this.abstract,
+                    longitude: this.longitude,
+                    latitude: this.latitude
                 }
             });
         },
@@ -356,6 +353,15 @@ export default {
                     // alert(1234);
                 }
             });
+            wx.onMenuShareTimeline({
+                title: "秋果人文精品酒店",
+                desc: "拿奖金，拿奖金，拿奖金，点开拿奖金",
+                link: url,
+                imgUrl: shareImg,
+                type: "",
+                dataUrl: "",
+                success: function() {}
+            });
             wx.getLocation({
                 type: "wgs84", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
                 success: function(res) {
@@ -363,10 +369,6 @@ export default {
                     that.latitude = latitude;
                     var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
                     that.longitude = longitude;
-                    var speed = res.speed; // 速度，以米/每秒计
-                    that.speed = speed;
-                    var accuracy = res.accuracy; // 位置精度
-                    that.accuracy = accuracy;
                 }
             });
         }

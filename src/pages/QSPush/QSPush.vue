@@ -3,8 +3,8 @@
         <div class="qsPush_box">
             <img src="../../assets/images/distribution/bg_erweima.png" />
             <div class="qsPush_msg">
-                <img class='qsPush_head' src="../../assets/images/img/hotel.png">
-                <p class="qsPush_nickname">乘风破浪</p>
+                <img class='qsPush_head' :src="headUrl">
+                <p class="qsPush_nickname">{{nickname}}</p>
                 <p class="qsPush_invite">邀请好友赚奖励</p>
                 <div class="qsPush_QRCode">
                     <img :src="this.imgurl" alt="">
@@ -21,6 +21,7 @@
 <script>
     import wx from 'weixin-js-sdk';
     import { showQsCode,login_test,wxShare } from '../../api/api.js';
+    import { getCookie } from '@/utils/util';
     export default {
         name: "praise",
         components: {
@@ -35,12 +36,18 @@
                 signature:'',
                 jsApiList:[],
                 url:'',
+                headUrl:'',     //头像
+                nickname:'',    //昵称
             }
         },
         computed: {
             
         },
         mounted() {
+            //获取头像
+            this.headUrl = decodeURIComponent(getCookie('avatar'));
+            //获取姓名
+            this.nickname = decodeURI(decodeURI(getCookie('nickname')));
             //获取二维码
             this.$http({
                 method: "POST",

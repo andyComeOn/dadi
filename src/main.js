@@ -55,10 +55,13 @@ axios.post(check_login, param).then((res) => {
 	if (res.data.status == 0) {
 		window.location.href = res.data.data;
 	} else {
+		console.log(res);
 		setCookie("userInfoTel", res.data.data.mobile);  //手机号
-		setCookie("userVipStatus", res.data.data.status);  //手机号
+		setCookie("userVipStatus", res.data.data.status);  //会员状态（0待审、1正常、2锁定）
+		setCookie("userUid", res.data.data.uid);
 		setCookie("userInfoIsRealname", res.data.data.is_realname); //真实姓名
 		setCookie("userInfoGroupid", res.data.data.group_id);  //会员组id
+		setCookie('nickname',encodeURI(res.data.data.nickname));		//昵称
 		setCookie("openid", res.data.data.openid);  //openid
 		setCookie("avatar", res.data.data.avatar);  //avatar
 	}

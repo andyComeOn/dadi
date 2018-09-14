@@ -194,7 +194,8 @@ export default {
                     url: cancel_orderform,
                     data: {
                         order_id: this.order_id_info.id,
-                        status: this.order_id_info.status
+                        status: this.order_id_info.status,
+                        remarks: this.refund_cause
                     }
                 })
                     .then(res => {

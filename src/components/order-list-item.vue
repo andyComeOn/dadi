@@ -67,6 +67,7 @@
 
 <script>
 import { order_list, cancel_orderform, delete_order, wx_pay } from "@/api/api";
+import { getCookie } from "@/utils/util";
 export default {
     name: "order-list-item",
     props: ["condition"],
@@ -97,7 +98,7 @@ export default {
         };
     },
     created() {},
-    mounted() {},
+    mounted() {this.socketMethod()},
     methods: {
         fetchData(param) {
             this.$http({
@@ -114,7 +115,20 @@ export default {
                 }
             });
         },
-
+        // 订单socket
+        socketMethod() {
+            var that = this;
+            let  ws = new WebSocket("ws://172.16.0.252:2623");
+            ws.onopen = function() {
+                ws.send("uid" + getCookie("userUid"));
+            };
+            ws.onmessage = function(e) {
+                console.log("收到服务端的消息：" + e.data);
+                if(e){
+                    that.fetchData(that.condition);
+                }
+            };
+        },
         // 申请退款
         applyMoney(order_id) {
             this.$router.push({
@@ -293,7 +307,7 @@ export default {
                 }
             }
             .rg {
-                width: 70px;
+                // width: 70px;
                 height: 80px;
                 padding-top: 4px;
                 text-align: right;
