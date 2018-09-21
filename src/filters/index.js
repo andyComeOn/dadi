@@ -84,6 +84,16 @@ export function filterIsHasRoom(a) {
 		return "满房";
 	}
 }
+// 会员等级（0,1,2）文案不同
+export function filterVipTxt(a){
+	if (a==1) {
+		return "酒店与住店当天13:00办理入住，离店13:00办理退房，如您在13:00前未到达，可能需要等待方能入住，具体以酒店安排为准。"
+	} else if (a==2){
+		return "酒店与住店当天15:00办理入住，离店15:00办理退房，如您在15:00前未到达，可能需要等待方能入住，具体以酒店安排为准。"
+	} else {
+		return "酒店与住店当天12:00办理入住，离店12:00之前办理退房。"
+	}
+}
 // 过滤酒店设施
 export function filterLabel(a) {
 	if (a == 1) {

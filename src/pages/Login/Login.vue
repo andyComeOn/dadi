@@ -192,7 +192,8 @@ export default {
                     method: "POST",
                     url: sendMobile,
                     data: {
-                        mobile: this.userTel
+                        mobile: this.userTel,
+                        type: 4
                     }
                 }).then(res => {
                     if (res.data.status == 1) {
@@ -212,7 +213,7 @@ export default {
                         }, 1000);
                     } else {
                         this.codeBtnClickCtrl = true;
-                        this.toastTxt =  res.data.msg + "，请稍后再试";
+                        this.toastTxt = res.data.msg + "，请稍后再试";
                         this.isToastShow = true;
                         setTimeout(() => {
                             this.isToastShow = false;

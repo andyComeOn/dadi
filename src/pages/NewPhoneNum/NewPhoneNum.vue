@@ -109,7 +109,8 @@
 					},2000);
 				}else{				
 					var param = {
-						mobile:this.newMobile
+						mobile:this.newMobile,
+						type:4
 					};
 					this.$http({
 						url:sendMobile,

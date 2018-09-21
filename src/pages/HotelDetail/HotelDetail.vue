@@ -34,18 +34,16 @@
                     <img v-if="is_collect==1" :src="collectIconActive" alt="">
                     <img v-if="is_collect==0" :src="collectIcon" alt="">
                 </div>
-
             </div>
             <!-- 酒店位置说明 -->
             <div class="detail">
                 <div class="name m-ellipsis">{{data_store.store_name}}</div>
-                <ul class="location-wrapper">
+                <ul class="location-wrapper" @click="openMap">
                     <li class="location m-ellipsis">{{data_store.address}}</li>
                     <li class="location-info m-ellipsis"> {{data_store.introduce}}</li>
                 </ul>
                 <a :href="'tel:' + data_store.tel" class="call"><img src="../../assets/images/icon/ic-call.png" alt=""></a>
             </div>
-
             <!-- 酒店详情查看更多 -->
             <div class="detail-more-container">
                 <div class="detail-more-wrapper">
@@ -60,7 +58,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- 入离时间展示 -->
             <div class="come-go-box">
                 <div class="come-go">
@@ -88,7 +85,7 @@
             <!-- 搜索到list -->
             <div class="reverse-wrapper">
                 <ul class="list">
-                    <li v-for="(item,index) in data_room" :key="index">
+                    <li v-for="(item,index) in data_room" :key="index" @click.stop="showToastMethod(item.id)">
                         <!-- 左边图片展示 -->
                         <div class="lf"><img :src="item.room_img" alt=""></div>
                         <!-- 中间 -->
@@ -96,7 +93,7 @@
                             <!-- 大标题 -->
                             <p class="name m-ellipsis">{{item.name}}</p>
                             <!-- 酒店设施集合 -->
-                            <div class="labels">{{item.introduce}}</div>
+                            <div class="labels m-ellipsis">{{item.tags}}</div>
                             <!-- 价格（新、旧） -->
                             <div class="price din">
                                 <span class="price-new">&yen;{{item.discount_price}}</span>
@@ -105,12 +102,67 @@
                         </div>
                         <!-- 右侧预定按钮 -->
                         <div class="rg">
-                            <span class="book" :class="{isHasRoom: item.is==2 ? true : false}" @click="bookFun(item.is, item.store_id,item.id, begin, finish)">
+                            <span class="book" :class="{isHasRoom: item.is==2 ? true : false}" @click.stop="bookFun(item.is, item.store_id,item.id, begin, finish)">
                                 {{item.is|filterIsHasRoom}}
                             </span>
                         </div>
+
                     </li>
                 </ul>
+            </div>
+            <!-- 每个item点击之后出现toast，展示其详情 -->
+            <div class="item-toast-container">
+                <div class="item-toast" v-for="(item,index) in itemToastArr" :key="index" v-show="item.isShow">
+                    <div class="item-toast-wrapper">
+                        <div class="item-toast-title">
+                            <div class="item-toast-title-wrapper">
+                                <div class="content">{{item.name}}-{{item.id}}</div>
+                                <div class="close-btn" @click="closeToast(item.id)"><img class="img" src="../../assets/images/icon/ic-close-toast.png" alt=""></div>
+                            </div>
+                        </div>
+                        <div class="item-toast-banner"></div>
+                        <div class="item-toast-info">
+                            <div class="item-toast-tags">
+                                <div class="item-toast-tags-wrapper">
+                                    <span class="tag">面积&nbsp;&nbsp;
+                                        <span class="ftc333">24-26平</span>
+                                    </span>
+                                    <span class="tag">楼层&nbsp;&nbsp;
+                                        <span class="ftc333">3-5层</span>
+                                    </span>
+                                    <span class="tag">房型&nbsp;&nbsp;
+                                        <span class="ftc333">明星商务间</span>
+                                    </span>
+                                    <span class="tag">无烟&nbsp;&nbsp;
+                                        <span class="ftc333">不可吸烟</span>
+                                    </span>
+                                    <span class="tag">窗户&nbsp;&nbsp;
+                                        <span class="ftc333">有窗</span>
+                                    </span>
+                                    <span class="tag">加床&nbsp;&nbsp;
+                                        <span class="ftc333">不可加床</span>
+                                    </span>
+                                    <span class="tag">宽带&nbsp;&nbsp;
+                                        <span class="ftc333">免费wifi</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <ul class="item-toast-labels">
+                                <li class="label-item">
+                                    <div class="label-item-head">
+                                        媒体科技
+                                    </div>
+                                    <div class="label-item-body">
+                                        电视机、电脑、音乐影音、电脑、音乐影音、电脑、音乐影音、电脑、
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="item-toast-foot">
+                                <div class="item-toast-foot-wrapper" @click="closeToast(item.id)">查看其它房型</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- 该门店下架时候展示 -->
@@ -118,6 +170,7 @@
             <img src="../../assets/images/404/xiajia.png" alt="">
             <p>该酒店已下架</p>
         </div>
+
     </div>
 </template>
 
@@ -171,9 +224,9 @@ export default {
                 debugger: true
             },
             loading: true,
-
             delayToast: false,
             delayToastTxt: "",
+            itemToast: false, //itemToast是否展示
             // 请求数据需要传的参数
             watchObj: {
                 store_id: "",
@@ -190,7 +243,6 @@ export default {
             collectId: "", //收藏id
             collectIcon: require("../../assets/images/collect.png"),
             collectIconActive: require("../../assets/images/collect-active.png"),
-
             // 日历组件dialog是否显示
             zbCalendarVisible: false,
             // 初始化日历日期
@@ -210,8 +262,10 @@ export default {
             timestamp: "", // 必填，生成签名的时间戳
             nonceStr: "", // 必填，生成签名的随机串
             signature: "", // 必填，签名
-
-            hotelDetailBannerH: "" //酒店详情banner的高
+            longitude: getCookie("userLongitude"),
+            latitude: getCookie("userLatitude"),
+            hotelDetailBannerH: "", //酒店详情banner的高
+            itemToastArr: [],   
         };
     },
     created() {
@@ -250,7 +304,6 @@ export default {
             this.zbInitCalendar.end.mm = endArr[1];
             this.zbInitCalendar.end.dd = endArr[2];
         }
-
         // 拉取数据
         // this.fetchData(this.watchObj);
     },
@@ -268,6 +321,12 @@ export default {
             immediate: true
         }
     },
+    mounted() {
+        // 调取getAppInfo
+        this.getAppInfo();
+        // 调取banner赋值函数
+        this.setBannerSize();
+    },
     methods: {
         // 拉取门店详情
         fetchData(param) {
@@ -280,6 +339,8 @@ export default {
                 if (res.data.status == 1) {
                     // 房间类型list
                     this.data_room = res.data.data.data_room;
+                    let tmpItemToastArr = res.data.data.data_room;
+                    this.ItemToastArrMethod();
                     // 房间介绍
                     this.data_store = res.data.data.data_store;
                     // 入店、离店、共几晚
@@ -295,6 +356,19 @@ export default {
                 }
             });
         },
+
+        ItemToastArrMethod(){
+            this.itemToastArr = [];
+            for(let i = 0; i < this.data_room.length; i++){
+                this.itemToastArr.push({
+                    isShow: false,
+                    id:this.data_room[i].id,
+                    name:this.data_room[i].name
+                })
+            }
+            console.log(this.itemToastArr);
+        },
+        
         // 点击预定
         bookFun(isHasRoom, store_id, room_id, begin, finish) {
             let tmp = getCookie("userInfoTel");
@@ -321,7 +395,6 @@ export default {
                 }, 2000);
                 return;
             }
-
             if (isHasRoom == 1) {
                 this.$router.push({
                     path: "/order",
@@ -340,49 +413,40 @@ export default {
                 }, 2000);
             }
         },
-
         // 触发日历dialog
         triggerCalendar() {
             this.zbCalendarVisible = true;
         },
-
         // 入住-离店
         clickToday(value) {
             this.zbCalendarVisible = false;
-
             // 入住时间
             let tmpB = value[0].split("/");
             this.zbInitCalendar.start.yyyy = tmpB[0];
             this.zbInitCalendar.start.mm = tmpB[1];
             this.zbInitCalendar.start.dd = tmpB[2];
             this.watchObj.begin = tmpB[0] + "-" + tmpB[1] + "-" + tmpB[2];
-
             // 离店时间
             let tmpF = value[1].split("/");
             this.zbInitCalendar.end.yyyy = tmpF[0];
             this.zbInitCalendar.end.mm = tmpF[1];
             this.zbInitCalendar.end.dd = tmpF[2];
             this.watchObj.finish = tmpF[0] + "-" + tmpF[1] + "-" + tmpF[2];
-
             //共几晚
             this.count = dateEndMinusStart(value[0], value[1]);
         },
-
         // 日历组件的title-若用户不选取日历，点击返回使日历弹窗消失
         calendarTitleBackEmitFun() {
             this.zbCalendarVisible = false;
         },
-
         // swiper回调
         swiperCallback(val) {
             console.log(val);
         },
-
         // swiper-slide的点击
         swiperSlideFun(val) {
             console.log(val);
         },
-
         // 点击收藏按钮逻辑
         collectCtrl() {
             if (this.is_collect == 0) {
@@ -426,29 +490,87 @@ export default {
                 }
             });
         },
-        share(url, shareImg) {
+        // 拉取公众号info进行wx.config
+        getAppInfo() {
+            var dataObj = {
+                url: location.href.split("#")[0]
+            };
+            this.$http({
+                url: wxShare,
+                method: "POST",
+                data: dataObj
+            })
+                .then(res => {
+                    let appId = res.data.data.appid;
+                    let timestamp = res.data.data.timestamp;
+                    let nonceStr = res.data.data.noncestr;
+                    let signature = res.data.data.signature;
+                    let tmpUrl = res.data.data.url;
+                    let tmpShareImg = res.data.data.share_img;
+                    this.wxConfigMethod(
+                        appId,
+                        timestamp,
+                        nonceStr,
+                        signature,
+                        tmpUrl,
+                        tmpShareImg
+                    );
+                })
+                .catch(err => {});
+        },
+        // wx.config
+        wxConfigMethod(
+            appId,
+            timestamp,
+            nonceStr,
+            signature,
+            tmpUrl,
+            tmpShareImg
+        ) {
             wx.config({
                 debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-                appId: this.appId, // 必填，公众号的唯一标识
-                timestamp: this.timestamp, // 必填，生成签名的时间戳
-                nonceStr: this.nonceStr, // 必填，生成签名的随机串
-                signature: this.signature, // 必填，签名
-                jsApiList: ["onMenuShareAppMessage", "onMenuShareTimeline"] // 必填，需要使用的JS接口列表
+                appId: appId, // 必填，公众号的唯一标识
+                timestamp: timestamp, // 必填，生成签名的时间戳
+                nonceStr: nonceStr, // 必填，生成签名的随机串
+                signature: signature, // 必填，签名
+                jsApiList: [
+                    "onMenuShareAppMessage",
+                    "onMenuShareTimeline",
+                    "openLocation"
+                ] // 必填，需要使用的JS接口列表
             });
             wx.onMenuShareAppMessage({
-                title: "秋果人文精品酒店", // 分享标题
-                desc: "拿奖金，拿奖金，拿奖金，点开拿奖金", // 分享描述
-                link: url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                imgUrl: shareImg, // 分享图标
-                type: "", // 分享类型,music、video或link，不填默认为link
-                dataUrl: "", // 如果type是music或video，则要提供数据链接，默认为空
-                success: function() {
-                    // 用户点击了分享后执行的回调函数
-                    // alert(1234);
-                }
+                title: "秋果人文精品酒店",
+                desc: "拿奖金，拿奖金，拿奖金，点开拿奖金",
+                link: tmpUrl,
+                imgUrl: tmpShareImg,
+                type: "",
+                dataUrl: "",
+                success: function() {}
+            });
+            wx.onMenuShareTimeline({
+                title: "秋果人文精品酒店",
+                desc: "拿奖金，拿奖金，拿奖金，点开拿奖金",
+                link: tmpUrl,
+                imgUrl: tmpShareImg,
+                type: "",
+                dataUrl: "",
+                success: function() {}
             });
         },
-
+        // 打开wx的map
+        openMap() {
+            // var that = this;
+            wx.openLocation({
+                latitude: Number(this.latitude), // 纬度，浮点数，范围为90 ~ -90
+                longitude: Number(this.longitude), // 经度，浮点数，范围为180 ~ -180。
+                name: this.data_store.store_name, // 位置名
+                address: this.data_store.address, // 地址详情说明
+                scale: 10, // 地图缩放级别,整形值,范围从1~28。默认为最大
+                infoUrl: "" // 在查看位置界面底部显示的超链接,可点击跳转
+            });
+        },
+        // banner重置宽高
         setBannerSize() {
             let hotelDetailBanner = document.querySelector(
                 "#hotelDetailBanner"
@@ -456,33 +578,22 @@ export default {
             let hotelDetailBannerW = hotelDetailBanner.clientWidth;
             let hotelDetailBannerH = hotelDetailBannerW * 380 / 750;
             this.hotelDetailBannerH = hotelDetailBannerH;
-        }
-    },
-    mounted() {
-        //获取分享信息
-        //获取参数
-        var dataObj = {
-            url: location.href.split("#")[0]
-        };
-        this.$http({
-            url: wxShare,
-            method: "POST",
-            data: dataObj
-        })
-            .then(res => {
-                console.log(res);
-                this.appId = res.data.data.appid;
-                this.timestamp = res.data.data.timestamp;
-                this.nonceStr = res.data.data.noncestr;
-                this.signature = res.data.data.signature;
-                this.url = res.data.data.url;
-                this.share(res.data.data.url, res.data.data.share_img);
-            })
-            .catch(err => {
-                console.log(err);
-            });
-        // 调取banner赋值函数
-        this.setBannerSize();
+        },
+        showToastMethod(id) {
+            let tmp = this.itemToastArr;
+            for (let i = 0; i < tmp.length; i++){
+                tmp[i].isShow = false;
+                if (tmp[i].id==id){
+                    tmp[i].isShow = true;
+                }
+            }
+        },
+        closeToast(id){
+            let tmp = this.itemToastArr;
+            for (let i = 0; i < tmp.length; i++){
+                tmp[i].isShow = false;    
+            }
+        },
     }
 };
 </script>
@@ -560,7 +671,7 @@ export default {
         width: 100%;
         // padding-left: 22px;
         // background: url("../../assets/images/hotel-label/ic_dingwei.png")
-            // no-repeat 3px 3px;
+        // no-repeat 3px 3px;
         // background-size: 13px 15px;
     }
     .call {
@@ -598,7 +709,6 @@ export default {
                 line-height: 20px;
                 padding-left: 26px;
                 margin-right: 12px;
-
                 &.all-hours {
                     background: url("../../assets/images/hotel-label/lab8.png")
                         no-repeat left center;
@@ -781,6 +891,129 @@ export default {
         font-size: 14px;
         color: #666;
         text-align: center;
+    }
+}
+
+// 酒店list中的item的css
+.item-toast {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    .item-toast-wrapper {
+        background: #eff1f0;
+        width: 100%;
+        top: 40px;
+        position: absolute;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        .item-toast-title {
+            padding-left: 15px;
+            background: #fff;
+            .item-toast-title-wrapper {
+                position: relative;
+                .content {
+                    line-height: 40px;
+                    font-family: "PingFang SC";
+                    color: #333;
+                    font-size: 16px;
+                }
+                .close-btn {
+                    width: 32px;
+                    height: 32px;
+                    position: absolute;
+                    right: 0;
+                    top: 4px;
+                    .img {
+                        width: 32px;
+                        height: 32px;
+                    }
+                }
+            }
+        }
+        .item-toast-banner {
+            height: 190px;
+            background: #ffba56;
+        }
+        .item-toast-info {
+            flex: 1;
+            overflow: auto;
+            padding-bottom: 70px;
+        }
+        .item-toast-tags {
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 5px;
+            .item-toast-tags-wrapper {
+                &::after {
+                    display: table;
+                    content: "";
+                    clear: both;
+                }
+                .tag {
+                    width: 50%;
+                    line-height: 19px;
+                    margin-bottom: 8px;
+                    float: left;
+                    color: #666;
+                    &:nth-last-child(1) {
+                        margin-bottom: 0;
+                    }
+                    &:nth-last-child(1) {
+                        margin-bottom: 0;
+                    }
+                }
+            }
+        }
+        .item-toast-labels {
+            background: #fff;
+            padding-left: 15px;
+            .label-item {
+                padding: 10px 0;
+                position: relative;
+                display: flex;
+                &::after {
+                    content: "";
+                    width: 100%;
+                    height: 1px;
+                    background: #e5e5e5;
+                    position: absolute;
+                    bottom: 0;
+                    transform: scaleY(0.5);
+                }
+                .label-item-head {
+                    // width: 70px;
+                    margin-right: 15px;
+                    color: #666;
+                    letter-spacing: 1px;
+                }
+                .label-item-body {
+                    flex: 1;
+                    line-height: 20px;
+                    color: #333333;
+                }
+            }
+        }
+        .item-toast-foot {
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            height: 70px;
+            padding: 10px 15px;
+            background: #fff;
+            box-shadow: 0 0 2px #888888;
+            .item-toast-foot-wrapper {
+                line-height: 50px;
+                border: 1px solid #30b097;
+                font-size: 16px;
+                color: #30b097;
+                text-align: center;
+            }
+        }
     }
 }
 </style>

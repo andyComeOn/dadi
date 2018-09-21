@@ -55,7 +55,7 @@ axios.post(check_login, param).then((res) => {
 	if (res.data.status == 0) {
 		window.location.href = res.data.data;
 	} else {
-		console.log(res);
+		// console.log(res);
 		setCookie("userInfoTel", res.data.data.mobile);  //手机号
 		setCookie("userVipStatus", res.data.data.status);  //会员状态（0待审、1正常、2锁定）
 		setCookie("userUid", res.data.data.uid);

@@ -89,9 +89,9 @@
         </ul>
         <!-- 文字提示 -->
         <div class="tips">
-            <h3>温馨提示</h3>
-            <p>1.酒店与住店当天13:00办理入住，离店13:00办理退房，如您在13:00前未到达，可能需要等待方能入住，具体以酒店安排为准。 </p>
-            <p>2.发票由酒店开具。</p>
+            <!-- <h3>温馨提示</h3> -->
+            <p>退订规则：仅可在预定15分钟内取消订单</p>
+            <p>温馨提示：{{$options.filters.filterVipTxt(userVipStatus)}}</p>
         </div>
         <!-- 确认支付bar -->
         <div class="paybar">
@@ -233,14 +233,12 @@ export default {
                 finish: "",
                 room_sum: 1 //默认的房间数
             },
-
             beginY: "",
             beginM: "",
             beginD: "",
             finishY: "",
             finishM: "",
             finishD: "",
-
             howManyNight: "",
             // 优惠券
             initCoupon: "",
@@ -276,7 +274,8 @@ export default {
             isActive: 1,
             loading: true, //
             loadingTxt: "数据加载中",
-            couponBarShow: true
+            couponBarShow: true,
+            userVipStatus: getCookie("userVipStatus") 
         };
     },
     created() {
@@ -308,8 +307,8 @@ export default {
 
         // 拉取订单信息接口
         this.fetchOrderForm();
-        // 拉取socket方法
-        this.socketMethod();
+        // 拉取socket方法-暂且用不到
+        // this.socketMethod();
     },
     watch: {
         initCoupon: {
@@ -341,21 +340,16 @@ export default {
         hideDealDetailMask() {
             this.isDealDetailMask = false;
         },
-
         // 订单socket
         socketMethod() {
-            let  ws = new WebSocket("ws://172.16.0.252:2623");
+            let ws = new WebSocket("ws://172.16.0.252:2623");
             ws.onopen = function() {
                 ws.send("uid" + getCookie("userUid"));
-                console.log('999')
-                // alert("给服务端发送一个字符串：tom");
             };
             ws.onmessage = function(e) {
                 console.log("收到服务端的消息：" + e.data);
-                // if(e){
-                    
-                // }
-                // alert("收到服务端的消息：" + e.data);
+                if (e) {
+                }
             };
         },
         // 拉取订单预览数据

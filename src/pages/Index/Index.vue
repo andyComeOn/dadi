@@ -35,7 +35,6 @@
                             </span>
                         </div>
                     </div>
-
                     <!-- 入住和离店 -->
                     <div class="time">
                         <!-- 入住模块 -->
@@ -64,16 +63,13 @@
                 </div>
             </div>
         </div>
-
         <!-- 引入底部tabbar -->
         <mTabbarFa></mTabbarFa>
-
         <!-- 城市组件dialog -->
         <mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCityVisible">
             <City @cityTitleBackEmit="cityTitleBackEmitFun" @cityItemEmit="cityItemEmitFun" :longitude="longitude" :latitude="latitude">
             </City>
         </mu-dialog>
-
         <!-- 日历组件dialog -->
         <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbCalendarVisible">
             <Calendar ref="Calendar" :markDateMore="zbInitCalendar" @isToday="clickToday" @calendarTitleBackEmit="calendarTitleBackEmitFun">
@@ -85,12 +81,14 @@
 <script>
 import { DistributionBanner, slt_location, wxShare } from "@/api/api"; // 引入api
 import { f, dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
+import { getCookie, setCookie } from "@/utils/util";
 import mTabbarFa from "@/components/tabbarfa";
 import { swiper, swiperSlide } from "vue-awesome-swiper"; // 引入swipe组件
 import City from "@/components/city/city.vue"; // 引入城市组件
 import Calendar from "@/components/calendar/calendar.vue"; // 引入日历组件
 import { getUrlParam } from "@/utils/util.js";
 import wx from "weixin-js-sdk";
+
 export default {
     name: "index",
     components: {
@@ -137,10 +135,6 @@ export default {
             },
             bannerList: "", // 拉取banner信息
             indexBannerH: "",
-            cityname: "北京市", // 城市名称
-            cityid: "2", // 城市id
-            abstract: "", //搜索关键字
-            appid: "", // 公众号id
             // 城市组件dialog是否显示
             zbCityVisible: false,
             // 日历组件dialog是否显示
@@ -164,10 +158,13 @@ export default {
             nonceStr: "", // 必填，生成签名的随机串
             signature: "", // 必填，签名
             url: "", //分享之后link的url
+            cityname: "北京市", // 城市名称
+            cityid: "2", // 城市id
+            abstract: "", //搜索关键字
             myLocation: "", // 获取地址
             longitude: "116.309408",
             latitude: "39.966051",
-            address: "", // 地址精确到街道
+            address: "" // 地址精确到街道
         };
     },
     created() {
@@ -193,8 +190,8 @@ export default {
     mounted() {
         // banner用js设置宽高
         this.setBannerSize();
-        // wx分享接口的拉取
-        this.wxShareHttp();
+        // 获取公众号的配置info
+        this.getAppInfo();
     },
     methods: {
         // banner方法
@@ -217,8 +214,8 @@ export default {
             let indexBannerH = indexBannerW * 380 / 750;
             this.indexBannerH = indexBannerH;
         },
-        // wx分享接口调取
-        wxShareHttp() {
+        // 获取公众号的配置info
+        getAppInfo() {
             var dataObj = {
                 url: location.href.split("#")[0]
             };
@@ -235,99 +232,16 @@ export default {
                         this.signature = res.data.data.signature;
                         this.url = res.data.data.url;
                         // wx分享config配置
-                        this.share(res.data.data.url, res.data.data.share_img);
+                        this.wxConfigMethod(
+                            res.data.data.url,
+                            res.data.data.share_img
+                        );
                     }
                 })
                 .catch(err => {});
         },
-        // 获取当前位置
-        getLocation() {
-            this.cityname = "定位中...";
-            this.$http({
-                method: "POST",
-                url: slt_location,
-                data: {
-                    longitude: this.longitude, // 经度
-                    latitude: this.latitude //维度
-                }
-            }).then(res => {
-                if (res.data.status == 1) {
-                    let locationTmp = res.data.data;
-                    this.cityname = locationTmp.city;
-                    this.cityid = locationTmp.id;
-                    this.address = locationTmp.address;
-                } else {
-                    this.cityname = "北京市";
-                    this.myLocation = "定位失败...";
-                }
-            });
-        },
-
-        // city组件显示与否
-        triggerCityDialog() {
-            this.zbCityVisible = true;
-        },
-
-        // city组件中titlebar点击返回执行的函数
-        cityTitleBackEmitFun() {
-            this.zbCityVisible = false;
-        },
-
-        // 城市item被点击之后通过emit传过来执行的方法
-        cityItemEmitFun(name, id) {
-            this.zbCityVisible = false;
-            // 给city相关数据重新赋值
-            this.cityname = name;
-            this.cityid = id;
-        },
-
-        // 触发日历dialog显示
-        triggerCalendar() {
-            this.zbCalendarVisible = true;
-        },
-
-        // 入住-离店
-        clickToday(value) {
-            this.zbCalendarVisible = false;
-            // 入住时间
-            let tmpStart = value[0].split("/");
-            this.zbInitCalendar.start.yyyy = tmpStart[0];
-            this.zbInitCalendar.start.mm = tmpStart[1];
-            this.zbInitCalendar.start.dd = tmpStart[2];
-            // 离店时间
-            let tmpEnd = value[1].split("/");
-            this.zbInitCalendar.end.yyyy = tmpEnd[0];
-            this.zbInitCalendar.end.mm = tmpEnd[1];
-            this.zbInitCalendar.end.dd = tmpEnd[2];
-            //共几晚
-            this.howManyNight = dateEndMinusStart(value[0], value[1]);
-        },
-
-        // 日历组件的title-若用户不选取日历，点击返回使日历弹窗消失
-        calendarTitleBackEmitFun() {
-            this.zbCalendarVisible = false;
-        },
-        // 提交
-        submitFun() {
-            this.$router.push({
-                path: "/searchResult",
-                query: {
-                    cityname: this.cityname,
-                    cityid: this.cityid,
-                    liveinYYYY: this.zbInitCalendar.start.yyyy,
-                    liveinMM: this.zbInitCalendar.start.mm,
-                    liveinDD: this.zbInitCalendar.start.dd,
-                    liveoutYYYY: this.zbInitCalendar.end.yyyy,
-                    liveoutMM: this.zbInitCalendar.end.mm,
-                    liveoutDD: this.zbInitCalendar.end.dd,
-                    abstract: this.abstract,
-                    longitude: this.longitude,
-                    latitude: this.latitude
-                }
-            });
-        },
-        //分享
-        share(url, shareImg) {
+        // wx分享config配置
+        wxConfigMethod(url, shareImg) {
             let that = this;
             wx.config({
                 debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -338,7 +252,7 @@ export default {
                 jsApiList: [
                     "onMenuShareAppMessage",
                     "onMenuShareTimeline",
-                    "getLocation"
+                    "getLocation",
                 ] // 必填，需要使用的JS接口列表
             });
             wx.onMenuShareAppMessage({
@@ -365,10 +279,92 @@ export default {
             wx.getLocation({
                 type: "wgs84", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
                 success: function(res) {
-                    var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-                    that.latitude = latitude;
                     var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                    setCookie("userLongitude", longitude);
                     that.longitude = longitude;
+                    var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                    setCookie("userLatitude", latitude);
+                    that.latitude = latitude;
+                }
+            });
+        },
+        // 获取当前位置
+        getLocation() {
+            this.cityname = "定位中...";
+            this.$http({
+                method: "POST",
+                url: slt_location,
+                data: {
+                    longitude: this.longitude, // 经度
+                    latitude: this.latitude //维度
+                }
+            }).then(res => {
+                if (res.data.status == 1) {
+                    let locationTmp = res.data.data;
+                    this.cityname = locationTmp.city;
+                    this.cityid = locationTmp.id;
+                    this.address = locationTmp.address;
+                } else {
+                    this.cityname = "北京市";
+                    this.myLocation = "定位失败...";
+                }
+            });
+        },
+        // city组件显示与否
+        triggerCityDialog() {
+            this.zbCityVisible = true;
+        },
+        // city组件中titlebar点击返回执行的函数
+        cityTitleBackEmitFun() {
+            this.zbCityVisible = false;
+        },
+        // 城市item被点击之后通过emit传过来执行的方法
+        cityItemEmitFun(name, id) {
+            this.zbCityVisible = false;
+            // 给city相关数据重新赋值
+            this.cityname = name;
+            this.cityid = id;
+        },
+        // 触发日历dialog显示
+        triggerCalendar() {
+            this.zbCalendarVisible = true;
+        },
+        // 入住-离店
+        clickToday(value) {
+            this.zbCalendarVisible = false;
+            // 入住时间
+            let tmpStart = value[0].split("/");
+            this.zbInitCalendar.start.yyyy = tmpStart[0];
+            this.zbInitCalendar.start.mm = tmpStart[1];
+            this.zbInitCalendar.start.dd = tmpStart[2];
+            // 离店时间
+            let tmpEnd = value[1].split("/");
+            this.zbInitCalendar.end.yyyy = tmpEnd[0];
+            this.zbInitCalendar.end.mm = tmpEnd[1];
+            this.zbInitCalendar.end.dd = tmpEnd[2];
+            //共几晚
+            this.howManyNight = dateEndMinusStart(value[0], value[1]);
+        },
+        // 日历组件的title-若用户不选取日历，点击返回使日历弹窗消失
+        calendarTitleBackEmitFun() {
+            this.zbCalendarVisible = false;
+        },
+        // 提交
+        submitFun() {
+            this.$router.push({
+                path: "/searchResult",
+                query: {
+                    cityname: this.cityname,
+                    cityid: this.cityid,
+                    liveinYYYY: this.zbInitCalendar.start.yyyy,
+                    liveinMM: this.zbInitCalendar.start.mm,
+                    liveinDD: this.zbInitCalendar.start.dd,
+                    liveoutYYYY: this.zbInitCalendar.end.yyyy,
+                    liveoutMM: this.zbInitCalendar.end.mm,
+                    liveoutDD: this.zbInitCalendar.end.dd,
+                    abstract: this.abstract,
+                    longitude: this.longitude,
+                    latitude: this.latitude
                 }
             });
         }

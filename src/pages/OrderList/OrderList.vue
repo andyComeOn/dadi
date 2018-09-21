@@ -64,13 +64,13 @@ export default {
             this.isActive = index;
             this.watchObj.type = index;
         },
-        pushHistory() {
-            var state = {
-                title: "",
-                url: "#"
-            };
-            window.history.pushState(state, state.title, state.url);
-        }
+        // pushHistory() {
+        //     var state = {
+        //         title: "",
+        //         url: "#"
+        //     };
+        //     window.history.pushState(state, state.title, state.url);
+        // }
     }
 };
 </script>

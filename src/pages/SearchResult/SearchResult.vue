@@ -19,7 +19,7 @@
 
         <!-- 城市组件dialog -->
         <mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCityVisible">
-            <City v-on:cityTitleBackEmit="cityTitleBackEmitFun" v-on:cityItemEmit="cityItemEmitFun">
+            <City @cityTitleBackEmit="cityTitleBackEmitFun" @cityItemEmit="cityItemEmitFun" :longitude="toRefreshBarObj.longitude" :latitude="toRefreshBarObj.latitude">
             </City>
         </mu-dialog>
 
@@ -74,16 +74,12 @@ export default {
                 begin: "", // 入住时间
                 finish: "" // 离店时间
             },
-
             // 城市组件是否显示
             zbCityVisible: false,
-
             // 日历组件是否显示
             zbCalendarVisible: false,
-
             // 搜索组件是否显示
             zbSearchVisible: false,
-
             // 初始化日历日期
             zbInitCalendar: {
                 start: {
@@ -113,11 +109,11 @@ export default {
             longitude: this.$route.query.longitude,
             latitude: this.$route.query.latitude,
         };
-        // 将路由获得的一系列参数赋值给data()中的一个变量-getUrlPara
+        // searchbar组件的赋值
         this.toSearchbarObj = urlPara;
+        // refreshBar组件赋值
         this.toRefreshBarObj.longitude = urlPara.longitude;
         this.toRefreshBarObj.latitude = urlPara.latitude;
-
         // 日历初始赋值
         this.zbInitCalendar.start.yyyy = urlPara.liveinYYYY;
         this.zbInitCalendar.start.mm = urlPara.liveinMM;
@@ -150,12 +146,10 @@ export default {
         triggerCityDialogEmitFun() {
             this.zbCityVisible = true;
         },
-
         // 城市组件的title通过emit执行的方法
         cityTitleBackEmitFun() {
             this.zbCityVisible = false;
         },
-
         // 城市item被点击之后通过emit传过来执行的方法
         cityItemEmitFun(name, id) {
             this.zbCityVisible = false;
@@ -164,7 +158,6 @@ export default {
             // 给searchbar传值更新组件内容
             this.toSearchbarObj.cityname = name;
         },
-
         // 此页面中的searchbar组件的子组件emit之后执行的方法
         triggerCalendarDialogEmitFun() {
             this.zbCalendarVisible = true;

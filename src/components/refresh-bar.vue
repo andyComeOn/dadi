@@ -10,6 +10,7 @@
 </template>
 <script>
 import { slt_location, wxShare } from "@/api/api";
+import { getCookie, setCookie } from "@/utils/util";
 import wx from "weixin-js-sdk";
 export default {
     props: ["refreshBarObj"],
@@ -29,7 +30,7 @@ export default {
         this.getAddr(); // 首先通过路由带过来的经纬度拉取详细地址
     },
     methods: {
-        // wx分享接口调取
+        // 获取公众号的配置info
         getAppInfo() {
             var dataObj = {
                 url: location.href.split("#")[0]
@@ -70,8 +71,10 @@ export default {
                 type: "wgs84", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
                 success: function(res) {
                     var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                    setCookie("userLatitude", latitude);
                     that.latitude = latitude;
                     var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                    setCookie("userLongitude", longitude);
                     that.longitude = longitude;
                     that.getAddr(); // 拉取获取详细地址
                 }

@@ -81,6 +81,7 @@ export default {
                 }
                 this.loading = true;
                 this.fetchData(newValue);
+                this.socketMethod();
             },
             deep: true,
             immediate: true
@@ -98,7 +99,7 @@ export default {
         };
     },
     created() {},
-    mounted() {this.socketMethod()},
+    mounted() {},
     methods: {
         fetchData(param) {
             this.$http({
@@ -118,13 +119,17 @@ export default {
         // 订单socket
         socketMethod() {
             var that = this;
-            let  ws = new WebSocket("ws://172.16.0.252:2623");
+            let  ws = new WebSocket("ws://172.16.0.252:8081");
             ws.onopen = function() {
+                // console.log("连接成功");
+                // alert("连接成功");
                 ws.send("uid" + getCookie("userUid"));
             };
             ws.onmessage = function(e) {
-                console.log("收到服务端的消息：" + e.data);
+                // console.log("收到服务端的消息：" + e.data);
+                // alert("收到服务端的消息：" + e.data);
                 if(e){
+                    // alert("拉取接口");
                     that.fetchData(that.condition);
                 }
             };
