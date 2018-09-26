@@ -13,6 +13,7 @@
     "less": "^2.7.2",
     "less-loader": "^2.2.3",
     "mint-ui": "^2.1.1",
+    "mta-h5-analysis": "^2.0.15",
     "muse-ui": "^3.0.0-rc.4",
     "vue": "^2.1.10",
     "vue-awesome-swiper": "^3.1.3",

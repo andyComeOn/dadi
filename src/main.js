@@ -30,6 +30,9 @@ import './assets/less/app.less'
 // 引入weui
 import 'weui/dist/style/weui.min.css';
 
+// 引入腾讯移动统计
+import MtaH5 from 'mta-h5-analysis';
+
 // 引入cookie、获取url参数的接口
 import { getCookie, setCookie, getUrlParam } from '@/utils/util';
 
@@ -48,7 +51,7 @@ Vue.use(MuseUI);
 //登录检查
 let tg = getUrlParam('tg');
 var param = {
-	tg:tg
+	tg: tg
 }
 
 axios.post(check_login, param).then((res) => {
@@ -61,21 +64,30 @@ axios.post(check_login, param).then((res) => {
 		setCookie("userUid", res.data.data.uid);
 		setCookie("userInfoIsRealname", res.data.data.is_realname); //真实姓名
 		setCookie("userInfoGroupid", res.data.data.group_id);  //会员组id
-		setCookie('nickname',encodeURI(res.data.data.nickname));		//昵称
+		setCookie('nickname', encodeURI(res.data.data.nickname));		//昵称
 		setCookie("openid", res.data.data.openid);  //openid
 		setCookie("avatar", res.data.data.avatar);  //avatar
 	}
 });
 
+MtaH5.init({
+	"sid": 500647079, //必填，统计用的appid
+	"cid": "", //如果开启自定义事件，此项目为必填，否则不填
+	"autoReport": 0,//是否开启自动上报(1:init完成则上报一次,0:使用pgv方法才上报)
+	"senseHash": 0, //hash锚点是否进入url统计
+	"senseQuery": 0, //url参数是否进入url统计
+	"performanceMonitor": 0,//是否开启性能监控
+	"ignoreParams": [] //开启url参数上报时，可忽略部分参数拼接上报
+});
+MtaH5.pgv();
 
 router.beforeEach((to, from, next) => {
 	//路由改变，改变页面title
 	if (to.meta.title) {
 		document.title = to.meta.title;
+		MtaH5.pgv();
 	}
 	next();
-
-
 	// NProgress.start();
 	// console.log(sessionStorage);
 	// if (to.path == '/login') {

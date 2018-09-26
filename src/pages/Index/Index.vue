@@ -578,6 +578,7 @@ export default {
             font-size: 16px;
             text-align: center;
             color: rgba(255, 255, 255, 1);
+            box-shadow: 0 4px 4px 0 #e5e5e5;
         }
     }
 }
