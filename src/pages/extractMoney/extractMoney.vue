@@ -7,7 +7,7 @@
                     <span>￥</span>
                     <input type="text" v-model="extractVal" value='' placeholder="请输入金额..." />
                 </div>
-                <p class="extract_money">可提现金额：¥{{use_amount}}</p>
+                <p class="extract_money" style="color:#666;">可提现金额：¥{{use_amount}}</p>
                 <!-- <router-link to='/extractCheck'> -->
                 <div class='extract_btn' @click="extractBtn">提现</div>
                 <!-- </router-link> -->
@@ -98,7 +98,7 @@ export default {
     padding: 20px 15px 25px;
     border-radius: 2.5px;
     p {
-        font-size: 10px;
+        font-size: 13px;
         color: #999;
         margin-bottom: 5px;
         line-height: 20px;

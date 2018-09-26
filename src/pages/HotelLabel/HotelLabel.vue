@@ -86,6 +86,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.hotel-label-page {
+    overflow: auto;
+}
 // 共有的样式
 .item {
     padding-top: 10px;

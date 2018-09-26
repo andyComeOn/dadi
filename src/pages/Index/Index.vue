@@ -1,7 +1,7 @@
 <template>
     <div class="index-page">
         <!-- 主内容-->
-        <div class="page-content">
+        <div class="page-content pdbottom50 m-position-ab">
             <!-- 轮播 -->
             <div class="banner-box" id="indexBanner" :style="{height: indexBannerH + 'px'}">
                 <swiper class="zb-swiper" :options="swiperOption" ref="mySwiper" @someSwiperEvent="swiperCallback(1)">
@@ -375,11 +375,8 @@ export default {
 <style lang="less" scoped>
 @import "../../assets/less/var.less";
 // 最外层容器
-.index-page {
-    padding-bottom: 50px;
-}
 .page-content {
-    height: auto;
+    overflow: auto;
 }
 .banner-box {
     position: relative;
@@ -473,7 +470,6 @@ export default {
                 transform: scaleY(0.5);
             }
         }
-
         /* 入住离店区域的css */
         .time {
             height: 67px;

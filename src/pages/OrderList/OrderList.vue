@@ -53,7 +53,7 @@ export default {
         //                 path: "index",
         //                 query: {}
         //             });
-                    
+
         //         },
         //         false
         //     );
@@ -63,7 +63,7 @@ export default {
         tab(index) {
             this.isActive = index;
             this.watchObj.type = index;
-        },
+        }
         // pushHistory() {
         //     var state = {
         //         title: "",
@@ -76,19 +76,22 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.head {
-    height: 44px;
-    background-color: #fff;
-    display: flex;
-    flex-direction: row;
-    font-size: 15px;
-    div {
-        flex: 1;
+.order-list-page {
+    overflow: auto;
+    .head {
         height: 44px;
-        text-align: center;
-        line-height: 44px;
-        &.active {
-            color: #30b097;
+        background-color: #fff;
+        display: flex;
+        flex-direction: row;
+        font-size: 15px;
+        div {
+            flex: 1;
+            height: 44px;
+            text-align: center;
+            line-height: 44px;
+            &.active {
+                color: #30b097;
+            }
         }
     }
 }

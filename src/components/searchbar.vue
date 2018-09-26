@@ -88,15 +88,14 @@ export default {
         inputFun() {
             this.$emit("inputValEmit", this.o.abstract);
         }
-    },
-    
-    
+    }, 
 }
 </script>
 <style lang="less" scoped>
 .search-container {
     height: 48px;
     padding: 8px 15px;
+    background: #fff;
     .search-wrapper {
         height: 32px;
         display: flex;

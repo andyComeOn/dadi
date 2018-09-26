@@ -81,8 +81,8 @@ export default {
             list: "",
             isShow: false, //toast
             loading: true,
-            delayToast:"",
-            delayToastTxt:"",
+            delayToast: "",
+            delayToastTxt: "",
 
             listDemo: [
                 {
@@ -141,7 +141,6 @@ export default {
                         this.delayToast = false;
                         this.fetchData();
                     }, 2000);
-                    
                 }
             });
         }
@@ -150,6 +149,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.my-collect-page {
+    overflow: auto;
+}
 .list {
     li {
         .head {

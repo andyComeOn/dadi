@@ -69,8 +69,8 @@ import extractMoney from '../pages/extractMoney/extractMoney'
 // import extractCheck from '../pages/extractCheck/extractCheck'
 //在线支付
 import onlinePay from '../pages/onlinePay/onlinePay.vue'
-
-
+//秋果注册条款
+import Clause from '../pages/Clause/Clause.vue'
 
 Vue.use(Router)
 
@@ -341,7 +341,6 @@ export default new Router({
 				title:'手机号'
 			}
 		},
-
 		// 登录
 		{
 			path: '/login',
@@ -351,6 +350,16 @@ export default new Router({
 				title:'登录'
 			}
 		},
+		// 注册条款
+		{
+			path: '/clause',
+			name: 'clause',
+			component: Clause,
+			meta:{
+				title:'注册条款'
+			}
+		},
+		
 		{
 			path: '/error',
 			name: 'error',
@@ -365,7 +374,5 @@ export default new Router({
 			path: '*',
 			redirect: '/'
 		},
-		
-		
 	]
 })

@@ -27,7 +27,6 @@
                     </div>
                 </div>
             </div>
-
             <!--卡片 -->
             <div class="card-box">
                 <div class="box" id="cardBoxContent">
@@ -46,7 +45,6 @@
                     <!-- </router-link> -->
                 </div>
             </div>
-
             <!-- 四宫格 -->
             <div class="square-box">
                 <ul class="square clearflex">
@@ -293,7 +291,6 @@ export default {
         }
     }
 }
-
 .praise {
     border-right: 1px solid #e5e5e5;
     border-bottom: 1px solid #e5e5e5;

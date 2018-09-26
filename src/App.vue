@@ -16,11 +16,11 @@ export default {
     mounted() {
         const script = document.createElement("script");
         script.src =
-            "http://s22.cnzz.com/z_stat.php?id=1274834603&web_id=1274834603";
+            "http://s19.cnzz.com/z_stat.php?id=1274891158&web_id=1274891158";
         script.language = "JavaScript";
         document.body.appendChild(script);
         window._czc = [];
-        window._czc.push(["_setAccount", "1274834603"]);
+        window._czc.push(["_setAccount", "1274891158"]);
     },
     watch: {
         $route() {

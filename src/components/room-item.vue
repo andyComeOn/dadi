@@ -20,7 +20,9 @@
                     <p class="location">
                         <span>{{item.city}}</span>
                         <span class="wrapper">
-                            -<span style="color:#30B097;"> {{item.area}}</span> 距离您<span style="color:#30B097;">{{item.distance}}</span>
+                            -
+                            <span style="color:#30B097;"> {{item.area}}</span> 距离您
+                            <span style="color:#30B097;">{{item.distance}}</span>
                         </span>
                     </p>
                     <div class="price-wrap">
@@ -75,13 +77,12 @@ export default {
                 this.isRoomItemToastVisible = false;
                 if (res.data.status == 1) {
                     this.dataList = res.data.data;
-                } else if (res.data.status == -2){
+                } else if (res.data.status == -2) {
                     this.dataList = "";
                     this.isShow = true;
-                } 
+                }
             });
         },
-
         // 门店item的点击事件
         storeDetail(id, begin, finish) {
             this.$router.push({
@@ -121,6 +122,8 @@ export default {
 
 .list {
     padding: 8px 15px 0;
+    padding: 8px 15px;
+    background: #fff;
     li {
         padding: 5px 0;
         height: 130px;
@@ -134,6 +137,18 @@ export default {
             height: 1px;
             background: #e5e5e5;
             transform: scaleY(0.5);
+        }
+        &:nth-last-child(1) {
+            &:after {
+                content: "";
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                height: 0;
+                background: #e5e5e5;
+                transform: scaleY(0.5);
+            }
         }
         .lf {
             width: 100px;
@@ -179,7 +194,7 @@ export default {
                 .price {
                     font-size: 16px;
                     color: #ffba56;
-                    line-height: 1.0;
+                    line-height: 1;
                 }
             }
         }

@@ -51,6 +51,7 @@ export default {
 .sortbar-container {
     height: 44px;
     padding: 10px 0;
+    background: #fff;
     .sortbar-wrapper {
         li {
             width: 33.33%;

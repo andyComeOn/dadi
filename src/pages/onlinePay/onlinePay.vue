@@ -34,13 +34,13 @@
         <div class="olinePay_box_content" v-if="order_id_info">
             <p class="store_name">{{order_id_info.name}}</p>
             <div class="room_introduce">
-                <img src="../../assets/images/hotel-label/my_order_hotel.png" style="vertical-align: text-top;" />
+                <img src="../../assets/images/hotel-label/my_order_hotel.png" />
                 <span>{{order_id_info.room_name}}</span>
                 <span>{{order_id_info.room_sum}}间</span>
                 <span class="room_money">&yen; {{order_id_info.amount}}</span>
             </div>
             <div class="calendar">
-                <img src="../../assets/images/hotel-label/my_order_date.png" style="vertical-align: text-top;" />
+                <img src="../../assets/images/hotel-label/my_order_date.png" />
                 <span>
                     {{order_id_info.start_time|filterTimeMM}}月{{order_id_info.start_time|filterTimeDD}}日 - {{order_id_info.end_time|filterTimeMM}}月{{order_id_info.end_time|filterTimeDD}}日
                 </span>
@@ -245,6 +245,9 @@ export default {
     width: 15px;
     height: 15px;
 }
+.room_introduce * {
+    vertical-align: middle;
+}
 .calendar {
     line-height: 25px;
     font-size: 13px;
@@ -255,8 +258,11 @@ export default {
 }
 .calendar img {
     display: inline-block;
-    width: 13px;
-    height: 13px;
+    width: 15px;
+    height: 15px;
+}
+.calendar * {
+    vertical-align: middle;
 }
 .room_money {
     color: #30b097;

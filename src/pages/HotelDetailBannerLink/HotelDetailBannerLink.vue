@@ -1,5 +1,5 @@
 <template>
-    <div class="hotel-detail-banner-link-page">
+    <div class="hotel-detail-banner-link-page m-position-ab">
         <ul class="list" v-if="list.length>0">
             <li v-for="(item,index) in list" :key="index">
                 <div :style="{backgroundImage:'url('+ item +')'}"></div>
@@ -58,9 +58,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.hotel-detail-banner-link-page {
+    overflow: auto;
+}
 .list {
     background: #eff1f0;
-    padding: 8px 0 12px;
+    padding: 8px 0 8px;
     li {
         width: 50%;
         padding: 0 1.066% 0 4%;

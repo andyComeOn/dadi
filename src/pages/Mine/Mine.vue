@@ -11,11 +11,10 @@
                         <h4 class="weui-media-box__title mine-info-media-box__title">{{userInfoData.nickname}}</h4>
                         <p class="weui-media-box__desc mine-info-media-box__desc">Lv{{userInfoData.grade}}&nbsp;&nbsp;{{userInfoData.card}}</p>
                     </div>
-                    <span class="weui-cell__ft"></span>
+                    <span class="weui-cell__ft zb-weui-cell__ft"></span>
                 </router-link>
             </div>
         </div>
-
         <!-- 进行中订单、已完成订单 -->
         <div class="order-ing-ed clearflex">
             <router-link :to=" { path: 'orderList', query: { status: 'ing' }}">
@@ -32,7 +31,6 @@
                 </div>
             </router-link>
         </div>
-
         <!-- 我的问题的list -->
         <div class="weui-panel">
             <div class="weui-panel__bd">
@@ -136,9 +134,11 @@ export default {
 @import "../../assets/less/var.less";
 .mine {
     padding-bottom:50px; 
+    overflow: auto;
     .weui-cell {
         padding: 12px 15px;
     }
+    // zb-weui-cell__ft
     .weui-media-box {
         .weui-cell__ft {
             padding-right: 13px;
@@ -150,6 +150,26 @@ export default {
                 width: 6px;
                 border-width: 2px 2px 0 0;
                 border-color: #c8c8cd;
+                // c8c8cd
+                border-style: solid;
+                -webkit-transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+                transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+                position: relative;
+                top: -2px;
+                position: absolute;
+                top: 50%;
+                margin-top: -4px;
+                right: 2px;
+            }
+        }
+        .zb-weui-cell__ft {
+            &:after {
+                content: " ";
+                display: inline-block;
+                height: 6px;
+                width: 6px;
+                border-width: 2px 2px 0 0;
+                border-color: #fff;
                 border-style: solid;
                 -webkit-transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
                 transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
@@ -171,7 +191,6 @@ export default {
             }
         }
     }
-
     // 我的上面的个人icon的样式
     .mine-info-media-box {
         padding: 53px 15px;
@@ -184,6 +203,7 @@ export default {
             height: 44px;
             border-radius: 50%;
             margin-right: 10px;
+            border: 2px solid #fff;
             img {
                 width: 100%;
                 height: 100%;

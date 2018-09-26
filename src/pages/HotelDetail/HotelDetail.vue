@@ -777,7 +777,7 @@ export default {
             border-radius: 3px;
             top: 50%;
             left: 50%;
-            margin: -11px 0 0 -40px;
+            margin: -11px 0 0 -20px;
         }
     }
 }

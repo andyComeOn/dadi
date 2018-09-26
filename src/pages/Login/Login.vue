@@ -28,7 +28,7 @@
         <!-- 用户协议 -->
         <div class="user_agreement">
             <span>绑定手机号代表您已同意</span>
-            <a class="" href="javascript:;">《秋果酒店服务条款》</a>
+            <router-link to="/clause">《秋果酒店服务条款》</router-link>
         </div>
         <!-- toast -->
         <div v-show="isToastShow">

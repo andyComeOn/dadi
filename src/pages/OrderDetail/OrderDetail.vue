@@ -400,8 +400,8 @@ export default {
 // 重置weui样式
 .order-detail-page {
     padding: 10px 15px 0;
+    overflow: auto;
 }
-
 // 订单信息
 .order-info {
     .order-box {

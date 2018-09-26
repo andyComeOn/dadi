@@ -89,9 +89,10 @@
         </ul>
         <!-- 文字提示 -->
         <div class="tips">
-            <!-- <h3>温馨提示</h3> -->
-            <p>退订规则：仅可在预定15分钟内取消订单</p>
-            <p>温馨提示：{{$options.filters.filterVipTxt(userVipStatus)}}</p>
+            <!-- <h3>温馨提示仅可在预定15分钟内取消订单</h3> -->
+            <!-- {{$options.filters.filterVipTxt(userVipStatus)}} -->
+            <p>退订规则：入住当天12点之前均可取消订单</p>
+            <p>温馨提示：1、酒店入住时间14:00以后，离店时间12:00以前。如您在14:00以前未能到达，请以酒店安排为准。2、普卡会员入住当天12：00之前取消订单，不收取费用，逾期扣费。银卡、金卡会员14点前取消订单，不收取费用；铂金卡18点前取消订单，不收取费用。3、普通客户12点之前退房；普卡会员13点退房；银卡会员14点退房；金卡会员15点退房；铂金卡会员延迟到16点退房。</p>
         </div>
         <!-- 确认支付bar -->
         <div class="paybar">
@@ -576,6 +577,7 @@ export default {
 // order页的样式
 .order {
     padding-bottom: 50px;
+    overflow: auto;
     // 相同的样式提取
     .label {
         float: left;
@@ -589,7 +591,7 @@ export default {
         padding-right: 15px;
         height: 50px;
         position: relative;
-        font-size: 13px;
+        font-size: 14px;
         .errTips {
             position: absolute;
             top: 30px;
@@ -815,11 +817,10 @@ export default {
             font-size: 12px;
         }
         p {
-            line-height: 15px;
+            line-height: 17px;
             margin-bottom: 12px;
         }
     }
-
     // 支付bar
     .paybar {
         display: flex;
@@ -842,6 +843,8 @@ export default {
                 height: 49px;
                 line-height: 49px;
                 float: left;
+                font-size: 16px;
+                font-weight: bold; 
             }
             .arrow {
                 width: 49px;
@@ -860,7 +863,7 @@ export default {
         }
         .rg {
             width: 142px;
-            background: #269882;
+            background: #30B097;
             color: #fff;
             height: 49px;
             line-height: 49px;

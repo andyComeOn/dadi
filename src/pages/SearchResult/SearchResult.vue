@@ -1,5 +1,5 @@
 <template>
-    <div class="search-result">
+    <div class="search-result m-position-ab">
         <!-- 搜索条 -->
         <searchbar @triggerCityDialogEmit="triggerCityDialogEmitFun" @triggerCalendarDialogEmit="triggerCalendarDialogEmitFun" @inputValEmit="inputValEmitFun" :searchbarObj="toSearchbarObj">
         </searchbar>
@@ -232,4 +232,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+    .search-result {
+        overflow: auto;
+    }
 </style>

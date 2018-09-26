@@ -27,5 +27,6 @@ export default {
 <style lang="less" scoped>
 .my-coupon-page {
     padding: 10px 15px 0;
+    overflow: auto;
 }
 </style>

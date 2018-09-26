@@ -1,7 +1,9 @@
 <template>
     <div class="nearby-page">
+        <!--  -->
+        <!-- m-position-ab这个class没添加 -->
         <!-- 主内容区 -->
-        <div class="page-content">
+        <div class="page-content pdbottom50 m-position-ab">
             <!-- 搜素条 -->
             <searchbar @triggerCityDialogEmit="triggerCityDialogEmitFun" @triggerCalendarDialogEmit="triggerCalendarDialogEmitFun" @inputValEmit="inputValEmitFun" :searchbarObj="toSearchbarObj">
             </searchbar>
@@ -270,10 +272,8 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .page-content {
-    // padding-top: 44px;
-    padding-bottom: 50px;
-    height: 100%;
+    overflow: auto;
 }
 </style>
