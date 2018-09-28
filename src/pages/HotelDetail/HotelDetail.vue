@@ -106,13 +106,13 @@
                                 {{item.is|filterIsHasRoom}}
                             </span>
                         </div>
-
                     </li>
                 </ul>
             </div>
             <!-- 每个item点击之后出现toast，展示其详情 -->
             <div class="item-toast-container">
-                <div class="item-toast" v-for="(item,index) in itemToastArr" :key="index" v-show="item.isShow">
+                <div class="item-toast" v-for="(item,index) in itemToastArr" :key="index" v-show="item.isShow" @touchmove.prevent @scroll.prevent>
+                    <!-- ="touchmoveP"  -->
                     <div class="item-toast-wrapper">
                         <div class="item-toast-title">
                             <div class="item-toast-title-wrapper">
@@ -170,7 +170,6 @@
             <img src="../../assets/images/404/xiajia.png" alt="">
             <p>该酒店已下架</p>
         </div>
-
     </div>
 </template>
 
@@ -328,6 +327,7 @@ export default {
         this.setBannerSize();
     },
     methods: {
+        // touchmoveP(){},
         // 拉取门店详情
         fetchData(param) {
             this.$http({
@@ -669,10 +669,10 @@ export default {
     }
     .location-wrapper {
         width: 100%;
-        // padding-left: 22px;
-        // background: url("../../assets/images/hotel-label/ic_dingwei.png")
-        // no-repeat 3px 3px;
-        // background-size: 13px 15px;
+        padding-left: 22px;
+        background: url("../../assets/images/hotel-label/ic_dingwei.png")
+        no-repeat 3px 3px;
+        background-size: 13px 15px;
     }
     .call {
         width: 32px;

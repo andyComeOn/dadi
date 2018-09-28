@@ -15,9 +15,10 @@
                 <div class="weui-panel__bd mine-info-panel__bd">
                     <div class="weui-media-box mine-info-media-box weui-media-box_appmsg">
                         <div class="weui-media-box__hd mine-info-media-box__hd">
-                            <img v-if='avatar_head != ""' class="weui-media-box__thumb mine-info-media-box__thumb" :src="avatar_head" alt="">
-                            <img v-else class="weui-media-box__thumb mine-info-media-box__thumb" src="../../assets/images/default_avatar.png" alt="">
+                            <img v-if="avatar_head !=''" class="weui-media-box__thumb mine-info-media-box__thumb" :src="avatar_head" alt="" />
+                            <img v-else class="weui-media-box__thumb mine-info-media-box__thumb" src="../../assets/images/default_avatar.png" alt="" />
                         </div>
+
                         <div class="weui-media-box__bd mine-info-media-box__bd">
                             <h4 class="weui-media-box__title mine-info-media-box__title">{{nikeName}}</h4>
                         </div>
@@ -31,18 +32,28 @@
             <div class="card-box">
                 <div class="box" id="cardBoxContent">
                     <p class="tixian-title">可提现(元)</p>
-                    <p class="tixian-num">{{use_amount}}</p>
+                    <p class="tixian-num din">{{use_amount}}</p>
                     <ul class="tixian-info">
-                        <li class="tixian-get">待领取{{await_amount}}</li>
-                        累计奖励{{reward_amount}}
-                        <li class="tixian-lock">已冻结{{freeze_amount}}</li>
+                        <li class="tixian-get">
+                            <span>{{await_amount}}</span>
+                            <span>待领取</span>
+                        </li>
+
+                        <li class="tixian-praise">
+                            <span>{{reward_amount}}</span>
+                            <span>累计奖励</span>
+                        </li>
+
+                        <li class="tixian-lock">
+                            <span>{{freeze_amount}}</span>
+                            <span>已冻结</span>
+                        </li>
                     </ul>
-                    <!-- <router-link to="/extractMoney"> -->
+
                     <p @click='extractHash' class="tixian-btn">
                         <span>提现</span>
                         <img src="../../assets/images/arrows/tixian.png" alt="">
-                    </p>
-                    <!-- </router-link> -->
+                        </p>
                 </div>
             </div>
             <!-- 四宫格 -->
@@ -200,8 +211,7 @@ export default {
     padding: 0 15px;
     margin-bottom: 50px;
     .box {
-        padding: 16px 15px;
-        // height: 128px;
+        padding: 16px 0;
         background: url(../../assets/images/distribution/bg_fenxiao.png)
             no-repeat center center;
         background-size: 100% 100%;
@@ -211,27 +221,41 @@ export default {
         box-shadow: 0px 9px 20px #fcc77b;
         // 提现标题
         .tixian-title {
-            line-height: 21px;
-            font-size: 13px;
+            line-height: 13px;
+            font-size: 12px;
             margin-bottom: 4px;
+            text-align: center;
+            margin-bottom: 10px;
         }
         // 提现钱数
         .tixian-num {
-            line-height: 28px;
+            line-height: 24px;
             font-size: 24px;
-            margin-bottom: 54px;
+            margin-bottom: 35px;
             letter-spacing: 2px;
+            text-align: center;
         }
         // 提现详情
         .tixian-info {
-            line-height: 21px;
-            font-size: 13px;
-            text-align: center;
-            .tixian-get {
-                float: left;
-            }
-            .tixian-lock {
-                float: right;
+            display: flex;
+            flex-direction: row;
+            li {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                color: #fff;
+                span {
+                    text-align: center;
+                    &:nth-child(1) {
+                        line-height: 18px;
+                        margin-bottom: 5px;
+                        font-size: 14px;
+                    }
+                    &:nth-child(2) {
+                        line-height: 16px;
+                        font-size: 12px;
+                    }
+                }
             }
         }
         .tixian-btn {

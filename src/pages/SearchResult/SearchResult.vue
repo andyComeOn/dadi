@@ -111,9 +111,9 @@ export default {
         };
         // searchbar组件的赋值
         this.toSearchbarObj = urlPara;
-        // refreshBar组件赋值
-        this.toRefreshBarObj.longitude = urlPara.longitude;
-        this.toRefreshBarObj.latitude = urlPara.latitude;
+        // refreshBar组件赋值-使用cookie了
+        // this.toRefreshBarObj.longitude = urlPara.longitude;
+        // this.toRefreshBarObj.latitude = urlPara.latitude;
         // 日历初始赋值
         this.zbInitCalendar.start.yyyy = urlPara.liveinYYYY;
         this.zbInitCalendar.start.mm = urlPara.liveinMM;
@@ -121,7 +121,6 @@ export default {
         this.zbInitCalendar.end.yyyy = urlPara.liveoutYYYY;
         this.zbInitCalendar.end.mm = urlPara.liveoutMM;
         this.zbInitCalendar.end.dd = urlPara.liveoutDD;
-
         // 把路由带过来的入店-离店的时间info赋值给watchObj
         this.watchObj.begin =
             urlPara.liveinYYYY +

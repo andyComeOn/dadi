@@ -5,8 +5,8 @@
             <div class="rg" @click="refresh">
                 <img src="../assets/images/icon/ic-refresh.png" alt="">
             </div>
+            </div>
         </div>
-    </div>
 </template>
 <script>
 import { slt_location, wxShare } from "@/api/api";
@@ -20,8 +20,10 @@ export default {
             address: "",
             // longitude: "117.153959", //天津
             // latitude: "39.10149", //天津
-            longitude: this.refreshBarObj.longitude,
-            latitude: this.refreshBarObj.latitude,
+            // longitude: this.refreshBarObj.longitude,
+            // latitude: this.refreshBarObj.latitude,
+            longitude: getCookie("userLongitude"),  
+            latitude : getCookie("userLatitude"),
             cityid: "",
             cityname: ""
         };
@@ -67,17 +69,19 @@ export default {
                 signature: signature,
                 jsApiList: ["getLocation"]
             });
-            wx.getLocation({
-                type: "wgs84", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-                success: function(res) {
-                    var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-                    setCookie("userLatitude", latitude);
-                    that.latitude = latitude;
-                    var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-                    setCookie("userLongitude", longitude);
-                    that.longitude = longitude;
-                    that.getAddr(); // 拉取获取详细地址
-                }
+            wx.ready(function() {
+                wx.getLocation({
+                    type: "wgs84", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+                    success: function(res) {
+                        var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                        setCookie("userLatitude", latitude);
+                        that.latitude = latitude;
+                        var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                        setCookie("userLongitude", longitude);
+                        that.longitude = longitude;
+                        that.getAddr(); // 拉取获取详细地址
+                    }
+                });
             });
         },
         // 刷新
@@ -97,9 +101,9 @@ export default {
             }).then(res => {
                 if (res.data.status == 1) {
                     let locationTmp = res.data.data;
-                    if (locationTmp.address == "") {
-                        this.getAddr();
-                    }
+                    // if (locationTmp.address == "") {
+                        // this.getAddr();
+                    // }
                     this.cityname = locationTmp.city;
                     this.cityid = locationTmp.id;
                     this.address = locationTmp.address;

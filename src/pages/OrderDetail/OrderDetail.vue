@@ -88,7 +88,10 @@
             <div class="pay-cancel pay-bar" @click="payMethod(order_id)">立即支付</div>
             <div class="pay-cancel cancel-bar" @click="cancal">取消订单</div>
         </div>
-
+        <!-- 温馨提示 -->
+        <div class="tips">
+            <p>温馨提示：1、酒店入住时间14:00以后，离店时间12:00以前。如您在14:00以前未能到达，请以酒店安排为准。2、普卡会员入住当天12：00之前取消订单，不收取费用，逾期扣费。银卡、金卡会员14点前取消订单，不收取费用；铂金卡18点前取消订单，不收取费用。3、普通客户12点之前退房；普卡会员13点退房；银卡会员14点退房；金卡会员15点退房；铂金卡会员延迟到16点退房。</p>
+        </div>
         <!-- 交易明细弹框 -->
         <div class="deal-detail-mask-box">
             <div class="weui-mask zb-weui-mask" @click="hideDealDetailMask" :class="[{'weui-actionsheet_no_toggle_active':isDealDetailMask},{'weui-actionsheet_no_toggle':!isDealDetailMask}]"></div>
@@ -546,5 +549,15 @@ export default {
 .cancel-bar {
     border: 1px solid #cccccc;
     color: #333;
+}
+
+.tips {
+    padding: 12px 15px 10px;
+    color: #666;
+    font-size: 12px;
+    p {
+        line-height: 17px;
+        margin-bottom: 12px;
+    }
 }
 </style>

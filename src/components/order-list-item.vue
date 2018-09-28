@@ -95,11 +95,33 @@ export default {
             loadingTxt: "数据加载中",
             delayToastShow: false, //延时toast的开关
             delayToastTxt: "取消成功", //延时toast的txt提示
-            paySuccessToast: false
+            paySuccessToast: false,
+            routeName: "",
+            socketTimer: "",
+            ws: {}
         };
     },
-    created() {},
-    mounted() {},
+    created() {
+        this.routeName = this.$route.query.status;
+    },
+    mounted() {
+        var that = this;
+        // this.ws = new WebSocket("ws://172.16.0.252:8081");
+        this.socketTimer = setInterval(() => {
+            this.socketMethod();
+        }, 50000);
+    },
+    // distroyed() {
+    //     if (this.socketTimer) {
+    //         //如果定时器还在运行 或者直接关闭，不用判断
+    //         clearInterval(this.socketTimer); //关闭
+    //         this.socketTimer = null;
+    //     }
+    // },
+    beforeDestroy() {
+        window.clearInterval(this.socketTimer);
+        this.socketTimer = null;
+    },
     methods: {
         fetchData(param) {
             this.$http({
@@ -119,17 +141,16 @@ export default {
         // 订单socket
         socketMethod() {
             var that = this;
-            let  ws = new WebSocket("ws://172.16.0.252:8081");
+            let ws = new WebSocket("ws://172.16.0.252:8081");
+            // let  ws = this.ws;
             ws.onopen = function() {
-                // console.log("连接成功");
-                // alert("连接成功");
+                console.log("连接成功");
                 ws.send("uid" + getCookie("userUid"));
             };
+            console.log(77);
             ws.onmessage = function(e) {
-                // console.log("收到服务端的消息：" + e.data);
-                // alert("收到服务端的消息：" + e.data);
-                if(e){
-                    // alert("拉取接口");
+                console.log("收到服务端的消息：" + e.data);
+                if (e) {
                     that.fetchData(that.condition);
                 }
             };

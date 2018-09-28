@@ -23,59 +23,58 @@
                             <div class="dest-city">
                                 <span class="dest">目的地</span>
                                 <span class="city">{{cityname}}</span>
-
                             </div>
                             <div class="dest-city-arrow">
                                 <img src="../../assets/images/arrows/ic-arrow_10_18.png" alt="">
                             </div>
-                        </div>
-                        <div class="rg" @click="getLocation">
-                            <span class="my-location">
-                                <img src="../../assets/images/home_location.png" alt=""><br>我的位置
+                            </div>
+                            <div class="rg" @click="fetchLocation">
+                                <span class="my-location">
+                                    <img src="../../assets/images/home_location.png" alt=""><br>我的位置
                             </span>
+                            </div>
+                        </div>
+                        <!-- 入住和离店 -->
+                        <div class="time">
+                            <!-- 入住模块 -->
+                            <div class="lf">
+                                <span class="instr">入住</span>
+                                <span class="date" @click="triggerCalendar">
+                                    {{zbInitCalendar.start.mm}}月{{zbInitCalendar.start.dd}}日
+                                </span>
+                            </div>
+                            <!-- 入住几晚 -->
+                            <div class="md">共{{howManyNight}}晚</div>
+                            <!-- 离店模块 -->
+                            <div class="rg">
+                                <span class="instr">离店</span>
+                                <span class="date" @click="triggerCalendar">
+                                    {{zbInitCalendar.end.mm}}月{{zbInitCalendar.end.dd}}日
+                                </span>
+                            </div>
+                        </div>
+                        <!-- 关键词搜索 -->
+                        <div class="search">
+                            <input type="text" class="txt" v-model="abstract" placeholder="请输入关键词／地址／商圈">
+                    </div>
+                            <!-- 提交按钮 -->
+                            <div class="submit" @click="submitFun">酒店预订</div>
                         </div>
                     </div>
-                    <!-- 入住和离店 -->
-                    <div class="time">
-                        <!-- 入住模块 -->
-                        <div class="lf">
-                            <span class="instr">入住</span>
-                            <span class="date" @click="triggerCalendar">
-                                {{zbInitCalendar.start.mm}}月{{zbInitCalendar.start.dd}}日
-                            </span>
-                        </div>
-                        <!-- 入住几晚 -->
-                        <div class="md">共{{howManyNight}}晚</div>
-                        <!-- 离店模块 -->
-                        <div class="rg">
-                            <span class="instr">离店</span>
-                            <span class="date" @click="triggerCalendar">
-                                {{zbInitCalendar.end.mm}}月{{zbInitCalendar.end.dd}}日
-                            </span>
-                        </div>
-                    </div>
-                    <!-- 关键词搜索 -->
-                    <div class="search">
-                        <input type="text" class="txt" v-model="abstract" placeholder="请输入关键词／地址／商圈">
-                    </div>
-                    <!-- 提交按钮 -->
-                    <div class="submit" @click="submitFun">酒店预订</div>
                 </div>
+                <!-- 引入底部tabbar -->
+                <mTabbarFa></mTabbarFa>
+                <!-- 城市组件dialog -->
+                <mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCityVisible">
+                    <City @cityTitleBackEmit="cityTitleBackEmitFun" @cityItemEmit="cityItemEmitFun" :longitude="longitude" :latitude="latitude">
+                    </City>
+                </mu-dialog>
+                <!-- 日历组件dialog -->
+                <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbCalendarVisible">
+                    <Calendar ref="Calendar" :markDateMore="zbInitCalendar" @isToday="clickToday" @calendarTitleBackEmit="calendarTitleBackEmitFun">
+                    </Calendar>
+                </mu-dialog>
             </div>
-        </div>
-        <!-- 引入底部tabbar -->
-        <mTabbarFa></mTabbarFa>
-        <!-- 城市组件dialog -->
-        <mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCityVisible">
-            <City @cityTitleBackEmit="cityTitleBackEmitFun" @cityItemEmit="cityItemEmitFun" :longitude="longitude" :latitude="latitude">
-            </City>
-        </mu-dialog>
-        <!-- 日历组件dialog -->
-        <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbCalendarVisible">
-            <Calendar ref="Calendar" :markDateMore="zbInitCalendar" @isToday="clickToday" @calendarTitleBackEmit="calendarTitleBackEmitFun">
-            </Calendar>
-        </mu-dialog>
-    </div>
 </template>
 
 <script>
@@ -98,7 +97,6 @@ export default {
         City,
         Calendar
     },
-    props: {},
     data() {
         return {
             swiperOption: {
@@ -162,8 +160,8 @@ export default {
             cityid: "2", // 城市id
             abstract: "", //搜索关键字
             myLocation: "", // 获取地址
-            longitude: "116.309408",
-            latitude: "39.966051",
+            longitude: "", //116.309408
+            latitude: "", //39.966051
             address: "" // 地址精确到街道
         };
     },
@@ -211,7 +209,7 @@ export default {
         setBannerSize() {
             let indexBanner = document.querySelector("#indexBanner");
             let indexBannerW = indexBanner.clientWidth;
-            let indexBannerH = indexBannerW * 380 / 750;
+            let indexBannerH = (indexBannerW * 380) / 750;
             this.indexBannerH = indexBannerH;
         },
         // 获取公众号的配置info
@@ -252,44 +250,46 @@ export default {
                 jsApiList: [
                     "onMenuShareAppMessage",
                     "onMenuShareTimeline",
-                    "getLocation",
-                ] // 必填，需要使用的JS接口列表
+                    "getLocation"
+                ]
             });
-            wx.onMenuShareAppMessage({
-                title: "秋果人文精品酒店", // 分享标题
-                desc: "拿奖金，拿奖金，拿奖金，点开拿奖金", // 分享描述
-                link: url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                imgUrl: shareImg, // 分享图标
-                type: "", // 分享类型,music、video或link，不填默认为link
-                dataUrl: "", // 如果type是music或video，则要提供数据链接，默认为空
-                success: function() {
-                    // 用户点击了分享后执行的回调函数
-                    // alert(1234);
-                }
-            });
-            wx.onMenuShareTimeline({
-                title: "秋果人文精品酒店",
-                desc: "拿奖金，拿奖金，拿奖金，点开拿奖金",
-                link: url,
-                imgUrl: shareImg,
-                type: "",
-                dataUrl: "",
-                success: function() {}
-            });
-            wx.getLocation({
-                type: "wgs84", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-                success: function(res) {
-                    var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-                    setCookie("userLongitude", longitude);
-                    that.longitude = longitude;
-                    var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-                    setCookie("userLatitude", latitude);
-                    that.latitude = latitude;
-                }
+            wx.ready(function() {
+                wx.onMenuShareAppMessage({
+                    title: "秋果人文精品酒店", // 分享标题
+                    desc: "拿奖金，拿奖金，拿奖金，点开拿奖金", // 分享描述
+                    link: url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    imgUrl: shareImg, // 分享图标
+                    type: "", // 分享类型,music、video或link，不填默认为link
+                    dataUrl: "", // 如果type是music或video，则要提供数据链接，默认为空
+                    success: function() {
+                        // 用户点击了分享后执行的回调函数
+                        // alert(1234);
+                    }
+                });
+                wx.onMenuShareTimeline({
+                    title: "秋果人文精品酒店",
+                    desc: "拿奖金，拿奖金，拿奖金，点开拿奖金",
+                    link: url,
+                    imgUrl: shareImg,
+                    type: "",
+                    dataUrl: "",
+                    success: function() {}
+                });
+                wx.getLocation({
+                    type: "wgs84", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+                    success: function(res) {
+                        var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                        setCookie("userLongitude", longitude);
+                        that.longitude = longitude;
+                        var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                        setCookie("userLatitude", latitude);
+                        that.latitude = latitude;
+                    }
+                });
             });
         },
         // 获取当前位置
-        getLocation() {
+        fetchLocation() {
             this.cityname = "定位中...";
             this.$http({
                 method: "POST",
