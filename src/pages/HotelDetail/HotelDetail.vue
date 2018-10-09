@@ -116,34 +116,39 @@
                     <div class="item-toast-wrapper">
                         <div class="item-toast-title">
                             <div class="item-toast-title-wrapper">
-                                <div class="content">{{item.name}}-{{item.id}}</div>
+                                <div class="content">{{item.name}}</div>
                                 <div class="close-btn" @click="closeToast(item.id)"><img class="img" src="../../assets/images/icon/ic-close-toast.png" alt=""></div>
                             </div>
                         </div>
-                        <div class="item-toast-banner"></div>
+                        <div class="item-toast-banner" id="hotelDetailBanner" :style="{height: hotelDetailBannerH + 'px'}">
+                            <img :src="item.room_img" alt="">
+                        </div>
                         <div class="item-toast-info">
                             <div class="item-toast-tags">
                                 <div class="item-toast-tags-wrapper">
                                     <span class="tag">面积&nbsp;&nbsp;
-                                        <span class="ftc333">24-26平</span>
+                                        <span class="ftc333">{{item.area}}</span>
                                     </span>
                                     <span class="tag">楼层&nbsp;&nbsp;
-                                        <span class="ftc333">3-5层</span>
+                                        <span class="ftc333">{{item.floor}}层</span>
                                     </span>
                                     <span class="tag">房型&nbsp;&nbsp;
-                                        <span class="ftc333">明星商务间</span>
+                                        <span class="ftc333">{{item.name}}</span>
                                     </span>
                                     <span class="tag">无烟&nbsp;&nbsp;
-                                        <span class="ftc333">不可吸烟</span>
+                                        <span class="ftc333">{{item.cigarette}}</span>
                                     </span>
                                     <span class="tag">窗户&nbsp;&nbsp;
-                                        <span class="ftc333">有窗</span>
-                                    </span>
-                                    <span class="tag">加床&nbsp;&nbsp;
-                                        <span class="ftc333">不可加床</span>
+                                        <span class="ftc333">{{item.window}}</span>
                                     </span>
                                     <span class="tag">宽带&nbsp;&nbsp;
-                                        <span class="ftc333">免费wifi</span>
+                                        <span class="ftc333">{{item.broadband}}</span>
+                                    </span>
+                                    <span class="tag">床型&nbsp;&nbsp;
+                                        <span class="ftc333">{{item.bed_type}}</span>
+                                    </span>
+                                    <span class="tag">加床&nbsp;&nbsp;
+                                        <span class="ftc333">{{item.bed}}</span>
                                     </span>
                                 </div>
                             </div>
@@ -153,13 +158,54 @@
                                         媒体科技
                                     </div>
                                     <div class="label-item-body">
-                                        电视机、电脑、音乐影音、电脑、音乐影音、电脑、音乐影音、电脑、
+                                        {{item.media}}
+                                    </div>
+                                </li>
+                                <li class="label-item">
+                                    <div class="label-item-head">
+                                        食品饮品
+                                    </div>
+                                    <div class="label-item-body">
+                                        {{item.food}}
+                                    </div>
+                                </li>
+                                <li class="label-item">
+                                    <div class="label-item-head">
+                                        浴室
+                                    </div>
+                                    <div class="label-item-body">
+                                        {{item.bathroom}}
+                                    </div>
+                                </li>
+                                <li class="label-item">
+                                    <div class="label-item-head">
+                                        便利设施
+                                    </div>
+                                    <div class="label-item-body">
+                                        {{item.facility}}
+                                    </div>
+                                </li>
+                                <li class="label-item">
+                                    <div class="label-item-head">
+                                        床品
+                                    </div>
+                                    <div class="label-item-body">
+                                        {{item.bed}}
+                                    </div>
+                                </li>
+                                <li class="label-item">
+                                    <div class="label-item-head">
+                                        其它
+                                    </div>
+                                    <div class="label-item-body">
+                                        {{item.other}}
                                     </div>
                                 </li>
                             </ul>
-                            <div class="item-toast-foot">
+                            <!-- 电视机、电脑、音乐影音、电脑、音乐影音、电脑、音乐影音、电脑、 -->
+                            <!-- <div class="item-toast-foot">
                                 <div class="item-toast-foot-wrapper" @click="closeToast(item.id)">查看其它房型</div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -264,7 +310,7 @@ export default {
             longitude: getCookie("userLongitude"),
             latitude: getCookie("userLatitude"),
             hotelDetailBannerH: "", //酒店详情banner的高
-            itemToastArr: [],   
+            itemToastArr: []
         };
     },
     created() {
@@ -356,19 +402,31 @@ export default {
                 }
             });
         },
-
-        ItemToastArrMethod(){
+        ItemToastArrMethod() {
             this.itemToastArr = [];
-            for(let i = 0; i < this.data_room.length; i++){
+            for (let i = 0; i < this.data_room.length; i++) {
                 this.itemToastArr.push({
                     isShow: false,
-                    id:this.data_room[i].id,
-                    name:this.data_room[i].name
-                })
+                    id: this.data_room[i].id,
+                    room_img:this.data_room[i].room_img, // 房型图片
+                    name: this.data_room[i].name, // 房型
+                    area: this.data_room[i].area, // 面积
+                    floor: this.data_room[i].floor, // 楼层
+                    cigarette: this.data_room[i].cigarette, // 无烟
+                    window: this.data_room[i].window, // 有窗
+                    bed_type: this.data_room[i].bed_type, // 床型
+                    broadband: this.data_room[i].broadband, // 宽带
+                    media: this.data_room[i].media, // 媒体科技
+                    food: this.data_room[i].food, //食品饮品
+                    bathroom: this.data_room[i].bathroom, //浴室
+                    facility: this.data_room[i].facility, //便利设施
+                    bed: this.data_room[i].bed, //床品
+                    other: this.data_room[i].other, // 其它
+                });
             }
             console.log(this.itemToastArr);
         },
-        
+
         // 点击预定
         bookFun(isHasRoom, store_id, room_id, begin, finish) {
             let tmp = getCookie("userInfoTel");
@@ -576,24 +634,24 @@ export default {
                 "#hotelDetailBanner"
             );
             let hotelDetailBannerW = hotelDetailBanner.clientWidth;
-            let hotelDetailBannerH = hotelDetailBannerW * 380 / 750;
+            let hotelDetailBannerH = (hotelDetailBannerW * 380) / 750;
             this.hotelDetailBannerH = hotelDetailBannerH;
         },
         showToastMethod(id) {
             let tmp = this.itemToastArr;
-            for (let i = 0; i < tmp.length; i++){
+            for (let i = 0; i < tmp.length; i++) {
                 tmp[i].isShow = false;
-                if (tmp[i].id==id){
+                if (tmp[i].id == id) {
                     tmp[i].isShow = true;
                 }
             }
         },
-        closeToast(id){
+        closeToast(id) {
             let tmp = this.itemToastArr;
-            for (let i = 0; i < tmp.length; i++){
-                tmp[i].isShow = false;    
+            for (let i = 0; i < tmp.length; i++) {
+                tmp[i].isShow = false;
             }
-        },
+        }
     }
 };
 </script>
@@ -671,7 +729,7 @@ export default {
         width: 100%;
         padding-left: 22px;
         background: url("../../assets/images/hotel-label/ic_dingwei.png")
-        no-repeat 3px 3px;
+            no-repeat 3px 3px;
         background-size: 13px 15px;
     }
     .call {
@@ -823,6 +881,7 @@ export default {
                 color: rgba(153, 153, 153, 1);
                 // 酒店名称
                 .name {
+                    width: 155px;
                     height: 20px;
                     font-size: 14px;
                     color: rgba(51, 51, 51, 1);
@@ -830,6 +889,7 @@ export default {
                 }
                 // 酒店房间标签
                 .labels {
+                    width: 155px;
                     height: 16px;
                     line-height: 16px;
                     font-size: 12px;
@@ -906,7 +966,7 @@ export default {
     .item-toast-wrapper {
         background: #eff1f0;
         width: 100%;
-        top: 40px;
+        top: 65px;
         position: absolute;
         bottom: 0;
         display: flex;
@@ -936,13 +996,16 @@ export default {
             }
         }
         .item-toast-banner {
-            height: 190px;
-            background: #ffba56;
+            // height: 190px;
+            // background: #ffba56;
+            img {
+                width: 100%;
+            }
         }
         .item-toast-info {
             flex: 1;
             overflow: auto;
-            padding-bottom: 70px;
+            // padding-bottom: 70px;
         }
         .item-toast-tags {
             background: #fff;
