@@ -71,6 +71,10 @@ import extractMoney from '../pages/extractMoney/extractMoney'
 import onlinePay from '../pages/onlinePay/onlinePay.vue'
 //秋果注册条款
 import Clause from '../pages/Clause/Clause.vue'
+//用户用联系信息List
+import UserInfo from '../pages/UserInfo/UserInfo.vue'
+//添加常用联系人信息
+import AddContact from '../pages/AddContact/AddContact.vue'
 
 Vue.use(Router)
 
@@ -81,8 +85,8 @@ export default new Router({
 			path: '/index',
 			name: 'index',
 			component: Index,
-			meta:{
-				title:'秋果酒店'
+			meta: {
+				title: '秋果酒店'
 			}
 		},
 		// 搜素结果页
@@ -90,8 +94,8 @@ export default new Router({
 			path: '/searchResult',
 			name: 'searchResult',
 			component: SearchResult,
-			meta:{
-				title:'秋果酒店'
+			meta: {
+				title: '秋果酒店'
 			}
 		},
 		// 酒店详情页
@@ -99,8 +103,8 @@ export default new Router({
 			path: '/hotelDetail',
 			name: 'hotelDetail',
 			component: HotelDetail,
-			meta:{
-				title:'酒店详情'
+			meta: {
+				title: '酒店详情'
 			}
 		},
 		// 推荐好友-点我推广
@@ -108,8 +112,8 @@ export default new Router({
 			path: '/ad',
 			name: 'ad',
 			component: Ad,
-			meta:{
-				title:'广告'
+			meta: {
+				title: '广告'
 			}
 		},
 		// 酒店详情页-查看更多酒店标签
@@ -117,8 +121,8 @@ export default new Router({
 			path: '/hotelLabel',
 			name: 'hotelLabel',
 			component: HotelLabel,
-			meta:{
-				title:'酒店介绍'
+			meta: {
+				title: '酒店介绍'
 			}
 		},
 		// 酒店详情-banner-点击之后跳转到酒店图片集和页
@@ -126,8 +130,8 @@ export default new Router({
 			path: '/hotelDetailBannerLink',
 			name: 'hotelDetailBannerLink',
 			component: HotelDetailBannerLink,
-			meta:{
-				title:'酒店图片'
+			meta: {
+				title: '酒店图片'
 			}
 		},
 		// 附近的酒店
@@ -135,8 +139,8 @@ export default new Router({
 			path: '/nearby',
 			name: 'nearby',
 			component: Nearby,
-			meta:{
-				title:'附近的酒店'
+			meta: {
+				title: '附近的酒店'
 			}
 		},
 		// 订单页
@@ -144,8 +148,8 @@ export default new Router({
 			path: '/order',
 			name: 'order',
 			component: Order,
-			meta:{
-				title:'订单填写'
+			meta: {
+				title: '订单填写'
 			}
 		},
 		// 订单的列表页
@@ -153,8 +157,8 @@ export default new Router({
 			path: '/orderList',
 			name: 'orderList',
 			component: OrderList,
-			meta:{
-				title:'订单'
+			meta: {
+				title: '订单'
 			}
 		},
 
@@ -163,8 +167,8 @@ export default new Router({
 			path: '/orderDetail',
 			name: 'orderDetail',
 			component: OrderDetail,
-			meta:{
-				title:'订单详情'
+			meta: {
+				title: '订单详情'
 			}
 		},
 		// 我的
@@ -172,8 +176,8 @@ export default new Router({
 			path: '/mine',
 			name: 'mine',
 			component: Mine,
-			meta:{
-				title:'我的'
+			meta: {
+				title: '我的'
 			}
 		},
 		//个人中心
@@ -181,8 +185,8 @@ export default new Router({
 			path: '/personalCenter',
 			name: 'personalCenter',
 			component: PersonalCenter,
-			meta:{
-				title:'个人中心'
+			meta: {
+				title: '个人中心'
 			}
 		},
 		//推荐好友
@@ -190,8 +194,8 @@ export default new Router({
 			path: '/recommendF',
 			name: 'recommendF',
 			component: RecommendF,
-			meta:{
-				title:'邀请好友'
+			meta: {
+				title: '邀请好友'
 			}
 		},
 		//我的优惠券
@@ -199,8 +203,8 @@ export default new Router({
 			path: '/myCoupon',
 			name: 'myCoupon',
 			component: MyCoupon,
-			meta:{
-				title:'优惠券'
+			meta: {
+				title: '优惠券'
 			}
 		},
 		//我的积分
@@ -208,8 +212,8 @@ export default new Router({
 			path: '/myPoint',
 			name: 'myPoint',
 			component: MyPoint,
-			meta:{
-				title:'我的积分'
+			meta: {
+				title: '我的积分'
 			}
 		},
 		//我的收藏
@@ -217,8 +221,8 @@ export default new Router({
 			path: '/myCollect',
 			name: 'myCollect',
 			component: MyCollect,
-			meta:{
-				title:'我的收藏'
+			meta: {
+				title: '我的收藏'
 			}
 		},
 		//会员特权
@@ -226,8 +230,8 @@ export default new Router({
 			path: '/vip',
 			name: 'vip',
 			component: Vip,
-			meta:{
-				title:'会员特权'
+			meta: {
+				title: '会员特权'
 			}
 		},
 		// 帮助中心
@@ -235,8 +239,26 @@ export default new Router({
 			path: '/helpCenter',
 			name: 'helpCenter',
 			component: HelpCenter,
-			meta:{
-				title:'帮助中心'
+			meta: {
+				title: '帮助中心'
+			}
+		},
+		// 用户常用联系人信息
+		{
+			path: '/userInfo',
+			name: 'userInfo',
+			component: UserInfo,
+			meta: {
+				title: '常用信息'
+			}
+		},
+		// 添加常用联系人
+		{
+			path: '/addContact',
+			name: 'addContact',
+			component: AddContact,
+			meta: {
+				title: '新增旅客'
 			}
 		},
 		// 推荐好友-规则
@@ -244,8 +266,8 @@ export default new Router({
 			path: '/rule',
 			name: 'rule',
 			component: Rule,
-			meta:{
-				title:'规则'
+			meta: {
+				title: '规则'
 			}
 		},
 
@@ -254,8 +276,8 @@ export default new Router({
 			path: '/qsPush',
 			name: 'qsPush',
 			component: QSPush,
-			meta:{
-				title:'二维码'
+			meta: {
+				title: '二维码'
 			}
 		},
 
@@ -264,8 +286,8 @@ export default new Router({
 			path: '/praise',
 			name: 'praise',
 			component: Praise,
-			meta:{
-				title:'奖励明细'
+			meta: {
+				title: '奖励明细'
 			}
 		},
 
@@ -274,8 +296,8 @@ export default new Router({
 			path: '/helpFriend',
 			name: 'helpFriend',
 			component: HelpFriend,
-			meta:{
-				title:'助力好友'
+			meta: {
+				title: '助力好友'
 			}
 		},
 		// 推荐好友-提现明细
@@ -283,17 +305,17 @@ export default new Router({
 			path: '/pickCash',
 			name: 'pickCash',
 			component: PickCash,
-			meta:{
-				title:'提现明细'
+			meta: {
+				title: '提现明细'
 			}
 		},
 		//提现
 		{
-			path:'/extractMoney',
-			name:'extractMoney',
-			component:extractMoney,
-			meta:{
-				title:'奖励提现'
+			path: '/extractMoney',
+			name: 'extractMoney',
+			component: extractMoney,
+			meta: {
+				title: '奖励提现'
 			}
 		},
 		// //提现审核
@@ -307,11 +329,11 @@ export default new Router({
 		// },
 		//在线支付
 		{
-			path:'/onlinePay',
-			name:'onlinePay',
-			component:onlinePay,
-			meta:{
-				title:'在线支付'
+			path: '/onlinePay',
+			name: 'onlinePay',
+			component: onlinePay,
+			meta: {
+				title: '在线支付'
 			}
 		},
 		// 订单列表页的申请退款按钮-跳的页面
@@ -319,8 +341,8 @@ export default new Router({
 			path: '/applyMoney',
 			name: 'applyMoney',
 			component: ApplyMoney,
-			meta:{
-				title:'申请退款'
+			meta: {
+				title: '申请退款'
 			}
 		},
 		// 更改原手机号
@@ -328,8 +350,8 @@ export default new Router({
 			path: '/oldPhoneNum',
 			name: 'oldPhoneNum',
 			component: OldPhoneNum,
-			meta:{
-				title:'手机号'
+			meta: {
+				title: '手机号'
 			}
 		},
 		// 提交新手机号
@@ -337,8 +359,8 @@ export default new Router({
 			path: '/newPhoneNum',
 			name: 'newPhoneNum',
 			component: NewPhoneNum,
-			meta:{
-				title:'手机号'
+			meta: {
+				title: '手机号'
 			}
 		},
 		// 登录
@@ -346,8 +368,8 @@ export default new Router({
 			path: '/login',
 			name: 'login',
 			component: Login,
-			meta:{
-				title:'登录'
+			meta: {
+				title: '登录'
 			}
 		},
 		// 注册条款
@@ -355,11 +377,11 @@ export default new Router({
 			path: '/clause',
 			name: 'clause',
 			component: Clause,
-			meta:{
-				title:'注册条款'
+			meta: {
+				title: '注册条款'
 			}
 		},
-		
+
 		{
 			path: '/error',
 			name: 'error',

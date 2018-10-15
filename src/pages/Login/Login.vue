@@ -283,7 +283,7 @@ export default {
                                     store_id: this.$route.query.store_id
                                 }
                             });
-                        }
+                        } 
                     } else {
                         this.toastTxt = res.data.msg;
                         this.isToastShow = true;

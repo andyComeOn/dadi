@@ -11,7 +11,7 @@
         <ul class="list" v-if="list.length>0">
             <li v-for="(item,index) in list" :key="index">
                 <!-- 主信息 -->
-                <router-link :to="{path:'orderDetail', query:{order_id:item.id}}" tag="span">
+                <router-link :to="{path:'orderDetail', query:{order_id:item.id}}" tag="div">
                     <div class="bd">
                         <div class="lf">
                             <p class="hotel-name m-ellipsis">{{item.name}}</p>
@@ -288,6 +288,7 @@ export default {
         position: relative;
         background: #ffffff;
         .bd {
+            width: 100%;
             height: 80px;
             display: flex;
             flex-direction: row;
@@ -333,7 +334,6 @@ export default {
                 }
             }
             .rg {
-                // width: 70px;
                 height: 80px;
                 padding-top: 4px;
                 text-align: right;
@@ -342,8 +342,10 @@ export default {
                     line-height: 16px;
                     margin-bottom: 8px;
                     color: #999;
+                    padding: 0 2px;
                 }
                 .order-price {
+                    // width: 90px;
                     height: 20px;
                     line-height: 20px;
                     font-size: 14px;

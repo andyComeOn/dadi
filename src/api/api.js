@@ -61,7 +61,16 @@ export const user_member = '/api/User/user_member'   // 会员中心
 
 export const user_auth = '/api/User/user_auth'   // 实名认证（二期）
 
-export const user_card_privilege = '/api/User/user_card_privilege?cpid=' + GlobalCpid;  //生成订单
+export const user_card_privilege = '/api/User/user_card_privilege?cpid=' + GlobalCpid;  //会员卡种接口
+
+export const residentList = '/api/User/residentList?cpid=' + GlobalCpid;  //拉取常用联系人list
+
+export const addResident = '/api/User/addResident?cpid=' + GlobalCpid;  //添加常用联系人
+
+export const deleteDntList = '/api/User/deleteDntList?cpid=' + GlobalCpid;  //del常用联系人
+
+
+
 
 
 // UserActivity-用户活动

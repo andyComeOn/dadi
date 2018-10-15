@@ -154,12 +154,21 @@ export default {
             width: 100px;
             height: 120px;
             float: left;
-            background: url("../assets/images/default/jiudian.jpg") no-repeat
-                right center;
+
+            background-image: url("../assets/images/default/jiudian.jpg");
+            background-repeat: no-repeat;
+            background-position: center center;
             background-size: 100px 120px;
+            overflow: hidden;
+            position: relative;
             img {
+                position: absolute;
                 width: 100px;
                 height: 120px;
+                top: 50%;
+                left: 50%;
+                margin-left:-50px;
+                margin-top: -60px;
             }
         }
         .rg {

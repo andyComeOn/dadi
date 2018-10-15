@@ -40,11 +40,11 @@
             <!-- 入住人姓名 -->
             <li class="name">
                 <label class="label">入住人姓名</label>
-                <div class="item-rg">
+                <div class="item-rg linkman">
                     <div class="name-div">
                         <input type="text" class="input-name" id="name" placeholder="请输入姓名" v-model="orderName">
-                        <!-- @blur="orderNameBlur" -->
                     </div>
+                    <div class="linkmanBtn" @click="showLinkmanMask"></div>
                 </div>
             </li>
 
@@ -86,18 +86,33 @@
                     酒店开具发票
                 </div>
             </li>
+            <!-- 分割bar -->
+            <div class="divivid-bar"></div>
         </ul>
-        <!-- 文字提示 -->
+        <!-- 备注 -->
+        <div class="mark">
+            <label class="label">备注</label>
+            <div class="markRg"><textarea name="markName" id="markTextarea" placeholder="选填"></textarea></div>
+        </div>
+
+        <!-- “广播”提示 -->
+        <div class="broadcast m-ellipsis" @click="showUserCardRightMask">
+            <span class="broadcast-icon"></span>
+            {{group_name | filterCardType}}特权：房价折扣{{catering_discount}}，餐饮折扣餐饮折扣餐饮折扣
+            <span class="broadcast-btn"></span>
+        </div>
+        <!-- 温馨提示 -->
         <div class="tips">
             <!-- <h3>温馨提示仅可在预定15分钟内取消订单</h3> -->
             <!-- {{$options.filters.filterVipTxt(userVipStatus)}} -->
             <p>退订规则：入住当天12点之前均可取消订单</p>
-            <p>温馨提示：1、酒店入住时间14:00以后，离店时间12:00以前。如您在14:00以前未能到达，请以酒店安排为准。2、普卡会员入住当天12：00之前取消订单，不收取费用，逾期扣费。银卡、金卡会员14点前取消订单，不收取费用；铂金卡18点前取消订单，不收取费用。3、普通客户12点之前退房；普卡会员13点退房；银卡会员14点退房；金卡会员15点退房；铂金卡会员延迟到16点退房。</p>
+            <p>温馨提示：1、酒店入住时间14:00以后，离店时间12:00以前。如您在14:00以前未能到达，请以酒店安排为准。2、普卡会员入住当天12：00之前取消订单，不收取费用，逾期扣费。银卡、金卡会员14点前取消订单，不收取费用；铂金卡18点前取消订单，不收取费用。3、普通客户12点之前退房；普卡会员13点退房；银卡会员14点退房；金卡会员15点退房；铂金卡会员延迟到16点退房。联系电话：<a href="tel:4000-999-683">4000-999-683</a> (周一至周五9:00-17:30)</p>
         </div>
         <!-- 确认支付bar -->
         <div class="paybar">
             <div class="lf">
                 <div class="money">&yen;{{totalPrice}}</div>
+                <div class="discount">省{{discount}}</div>
                 <div class="arrow" @click="showDealDetailMask"><img src="../../assets/images/arrows/ic_pay_arrow.png" alt=""></div>
             </div>
             <div class="rg" @click="pay">支付</div>
@@ -197,6 +212,111 @@
                 </div>
             </div>
         </div>
+        <!-- 用户所属卡种的权益 -->
+        <div id="userCardRightMaskBox">
+            <div class="weui-mask zb-weui-mask" @click="hideUserCardRightMask" :class="[{'weui-actionsheet_no_toggle_active':isUserCardRightMask},{'weui-actionsheet_no_toggle':!isUserCardRightMask}]"></div>
+            <div class="weui-actionsheet zb-weui-actionsheet" id="weui-actionsheet" :class="[{'weui-actionsheet_toggle':isUserCardRightMask}]">
+                <div class="hd">
+                    {{group_name | filterCardType}}会员
+                    <span class="btn" @click="hideUserCardRightMask"></span>
+                </div>
+                <!-- 弹框的内容 -->
+                <div class="bd">
+                    <div class="desc-box" v-if="userCardRightInfo">
+                        <!-- 开卡权益 -->
+                        <div class="card-right">
+                            <div class="title">
+                                <span class="s1"></span>
+                                开卡权益
+                                <span class="s2"></span>
+                            </div>
+                            <div class="content">
+                                <dl>
+                                    <img src="../../assets/images/vip/kaika.png" alt="">
+                                    <dt>开卡赠券</dt>
+                                    <dd>{{userCardRightInfo.coupon_num}}</dd>
+                                </dl>
+                                <dl>
+                                    <img src="../../assets/images/vip/yaoqing.png" alt="">
+                                    <dt>邀请特权</dt>
+                                    <dd>{{userCardRightInfo.privilege_num}}</dd>
+                                </dl>
+                                <dl>
+                                    <img src="../../assets/images/vip/fangjia.png" alt="">
+                                    <dt>房价折扣</dt>
+                                    <dd>{{userCardRightInfo.promo}}</dd>
+                                </dl>
+                                <dl>
+                                    <img src="../../assets/images/vip/xiaofei.png" alt="">
+                                    <dt>消费积分</dt>
+                                    <dd>{{userCardRightInfo.score_rate}}</dd>
+                                </dl>
+                                <dl v-if="userCardRightInfo.pre_cancel_time">
+                                    <img src="../../assets/images/vip/mianfei.png" alt="">
+                                    <dt>免费取消</dt>
+                                    <dd>{{userCardRightInfo.pre_cancel_time}}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <!-- 会员权益 -->
+                        <div class="vip-right">
+                            <div class="title">
+                                <span class="s1"></span>
+                                会员权益
+                                <span class="s2"></span>
+                            </div>
+                            <div class="content">
+                                <ul class="ul">
+                                    <li v-if="userCardRightInfo.catering_discount">
+                                        <p class="li-desc">餐饮折扣</p>
+                                        <p class="li-intro">{{userCardRightInfo.catering_discount}}</p>
+                                    </li>
+                                    <li v-if="userCardRightInfo.enjoy_channel">
+                                        <p class="li-desc">优享通道</p>
+                                        <p class="li-intro">{{userCardRightInfo.enjoy_channel}}</p>
+                                    </li>
+                                    <li v-if="userCardRightInfo.supper">
+                                        <p class="li-desc">上门宵夜</p>
+                                        <p class="li-intro">{{userCardRightInfo.supper}}</p>
+                                    </li>
+                                    <li v-if="userCardRightInfo.delay_room">
+                                        <p class="li-desc">延迟退房</p>
+                                        <p class="li-intro">{{userCardRightInfo.delay_room}}</p>
+                                    </li>
+                                    <li v-if="userCardRightInfo.birthday">
+                                        <p class="li-desc">生日礼遇</p>
+                                        <p class="li-intro">{{userCardRightInfo.birthday}}</p>
+                                    </li>
+                                    <li v-if="userCardRightInfo.equity">
+                                        <p class="li-desc">权益共享</p>
+                                        <p class="li-intro">{{userCardRightInfo.equity}}</p>
+                                    </li>
+                                    <li v-if="userCardRightInfo.user_activity">
+                                        <p class="li-desc">收费会员活动</p>
+                                        <p class="li-intro">{{userCardRightInfo.user_activity}}</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 快速选择入住联系人 -->
+        <div class="linkman-mask-box">
+            <div class="weui-mask zb-weui-mask" @click="hideLinkmanMask" :class="[{'weui-actionsheet_no_toggle_active':isLinkmanMask},{'weui-actionsheet_no_toggle':!isLinkmanMask}]"></div>
+            <div class="weui-actionsheet zb-weui-actionsheet" id="weui-actionsheet" :class="[{'weui-actionsheet_toggle':isLinkmanMask}]">
+                <div class="hd">常用信息</div>
+                <div class="bd">
+                    <ul>
+                        <li v-for="(item,index) in linkmanList" :key="index" @click="selectLinkman(item.id,item.username,item.mobile)">{{item.username}}
+                            <span class="select"><img :src="imgSrcDefault" alt=""></span>
+                        </li>
+                    </ul>
+                </div>
+                <!-- imgSrcActive -->
+            </div>
+        </div>
         <!-- toast（delay=>z） -->
         <div v-show="orderDelayToast">
             <div class="z-mask-transparent"></div>
@@ -218,7 +338,12 @@
 
 <script>
 import { dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
-import { order_form, increase_room_num, create_order } from "@/api/api";
+import {
+    order_form,
+    create_order,
+    user_card_privilege,
+    residentList
+} from "@/api/api";
 import { getCookie } from "@/utils/util";
 export default {
     name: "order",
@@ -227,6 +352,8 @@ export default {
             isCouponMask: false,
             isDealDetailMask: false,
             isSelectRoom: false,
+            isUserCardRightMask: false,
+            isLinkmanMask: false, // 入住联系人mask控制
             watchObj: {
                 store_id: "",
                 room_id: "",
@@ -260,6 +387,12 @@ export default {
             totalPrice: "",
             // 房间的单价
             discount_price: "",
+            // 该用户属于哪个会员卡种
+            group_name: "",
+            // 该用户所属卡种的id
+            group_id: "",
+            // 该用户所属的会员卡种打几折promo，原本这个页面接口已经有了
+            catering_discount: "",
             // 优惠券
             coupon: [],
             // 订房人姓名输入验证
@@ -276,7 +409,11 @@ export default {
             loading: true, //
             loadingTxt: "数据加载中",
             couponBarShow: true,
-            userVipStatus: getCookie("userVipStatus") 
+            userVipStatus: getCookie("userVipStatus"),
+            userCardRightInfo: "", // 用户所属卡种的权益详情
+            discount: "", // 省了多少钱
+            linkmanList: "", // 联系人列表
+            imgSrcDefault:require("../../assets/images/icon/ic-radio.png"),
         };
     },
     created() {
@@ -310,12 +447,22 @@ export default {
         this.fetchOrderForm();
         // 拉取socket方法-暂且用不到
         // this.socketMethod();
+        // 拉取fetchLinkman的列表
+        this.fetchLinkman();
     },
     watch: {
         initCoupon: {
             handler(newValue, oldValue) {
                 if (newValue != "") {
-                    this.totalPrice = this.discount_price - newValue.amount;
+                    this.totalPrice = (
+                        Math.round(
+                            (this.discount_price - newValue.amount) * 100
+                        ) / 100
+                    ).toFixed(2);
+                    let discountTmp =
+                        Math.round((this.discount + newValue.amount) * 100) /
+                        100;
+                    this.discount = discountTmp.toFixed(2);
                     this.couponBarShow = false;
                     this.isCouponMask = false; //选取优惠券使其dialog消失
                 }
@@ -325,6 +472,57 @@ export default {
         }
     },
     methods: {
+        // 拉取联系人list
+        fetchLinkman() {
+            this.$http({
+                method: "POST",
+                url: residentList,
+                data: {}
+            })
+                .then(res => {
+                    this.linkmanList = res.data.data;
+                })
+                .catch(err => {});
+        },
+
+        // 展示用户所属卡种相关权益遮罩
+        showLinkmanMask() {
+            this.isLinkmanMask = true;
+            this.orderName = "";
+            this.orderTel = "";
+        },
+        // 隐藏入住联系人遮罩
+        hideLinkmanMask() {
+            this.isLinkmanMask = false;
+        },
+        // 选取入住联系人
+        selectLinkman(id,name,tel){
+            this.isLinkmanMask = false;
+            this.orderName = name;
+            this.orderTel = tel;
+        },
+        // 拉取用户所属卡种的信息
+        fetchUserCardRightInfo() {
+            this.$http({
+                method: "POST",
+                url: user_card_privilege,
+                data: {
+                    id: this.group_id
+                }
+            })
+                .then(res => {
+                    this.userCardRightInfo = res.data.data;
+                })
+                .catch(err => {});
+        },
+        // 展示用户所属卡种相关权益遮罩
+        showUserCardRightMask() {
+            this.isUserCardRightMask = true;
+        },
+        // 隐藏用户所属卡种相关权益遮罩
+        hideUserCardRightMask() {
+            this.isUserCardRightMask = false;
+        },
         // 展示优惠券遮罩
         showCouponMask() {
             this.isCouponMask = true;
@@ -369,7 +567,18 @@ export default {
                         this.coupon = res.data.data.coupon; //给房间优惠券赋值
                         this.price = res.data.data.price; // 给明细赋值
                         this.totalPrice = res.data.data.discount_price;
-
+                        this.discount = (
+                            Math.round(
+                                (res.data.data.original_price -
+                                    res.data.data.discount_price) *
+                                    100
+                            ) / 100
+                        ).toFixed(2);
+                        this.group_name = res.data.data.group_name; //属于哪个卡种
+                        this.group_id = res.data.data.group_id; // 用户所属卡种的id
+                        this.catering_discount =
+                            res.data.data.catering_discount; // 用户所属卡种的折扣 -> 95折
+                        this.fetchUserCardRightInfo(); // 拉取用户卡种的权益
                         let astrict = parseInt(res.data.data.astrict); // 后台配置的最大可选择几间房
                         let quantity = parseInt(res.data.data.quantity); // 当前用户能定的最大房间数
                         if (quantity > 0) {
@@ -435,7 +644,7 @@ export default {
                     this.orderDelayToast = false;
                 }, 1500);
                 return false;
-            } else if (this.orderTel.trim() != "") {
+            } else {
                 var myreg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
                 if (!myreg.test(this.orderTel.trim())) {
                     this.orderDelayToastTxt = "输入手机号格式有误";
@@ -449,7 +658,6 @@ export default {
                 }
             }
         },
-
         // 支付逻辑
         pay() {
             // 当今日可订限额已用完，禁止提交
@@ -470,8 +678,8 @@ export default {
                     data: {
                         room_type: this.watchObj.room_id,
                         store_id: this.watchObj.store_id,
-                        dwell_name: this.orderName,
-                        dewll_mobile: this.orderTel,
+                        dwell_name: this.orderName.trim(),
+                        dewll_mobile: this.orderTel.trim(),
                         room_sum: this.watchObj.room_sum,
                         begin: this.watchObj.begin,
                         finish: this.watchObj.finish,
@@ -575,6 +783,38 @@ export default {
 }
 
 // order页的样式
+
+// 后来添加的会员提示
+.broadcast {
+    line-height: 36px;
+    background: rgba(253, 252, 236, 1);
+    padding: 0 22px 0 34px;
+    position: relative;
+    color: #666;
+    font-size: 14px;
+    font-weight: 400;
+    .broadcast-icon {
+        width: 16px;
+        height: 16px;
+        position: absolute;
+        left: 15px;
+        top: 10px;
+        background: url("../../assets/images/icon/ic-broadcast.png") no-repeat
+            center center;
+        background-size: 100% 100%;
+    }
+    .broadcast-btn {
+        width: 5px;
+        height: 9px;
+        position: absolute;
+        right: 15px;
+        top: 13px;
+        background: url("../../assets/images/arrows/ic-arrow_10_18.png")
+            no-repeat center center;
+        background-size: 100% 100%;
+    }
+}
+
 .order {
     padding-bottom: 50px;
     overflow: auto;
@@ -592,6 +832,19 @@ export default {
         height: 50px;
         position: relative;
         font-size: 14px;
+        &.linkman {
+            padding-right: 42px;
+            .linkmanBtn {
+                width: 24px;
+                height: 24px;
+                position: absolute;
+                right: 15px;
+                top: 13px;
+                background: url("../../assets/images/icon/ic-linkman.png")
+                    no-repeat center;
+                background-size: 100% 100%;
+            }
+        }
         .errTips {
             position: absolute;
             top: 30px;
@@ -618,7 +871,7 @@ export default {
                 center;
             .name {
                 font-size: 16px;
-                color: #666;
+                color: #333;
                 height: 22px;
                 line-height: 22px;
                 margin-bottom: 5px;
@@ -627,6 +880,7 @@ export default {
                 line-height: 16px;
                 font-size: 12px;
                 margin-bottom: 8px;
+                color: #666;
                 span {
                     margin-right: 10px;
                 }
@@ -675,6 +929,7 @@ export default {
                     line-height: 34px;
                     font-style: normal;
                     background: #fff;
+                    border-radius: 5px;
                     color: #666;
                     &.default {
                         background: #269882;
@@ -754,11 +1009,11 @@ export default {
                 .name-div {
                     width: 160px;
                     height: 50px;
-                    padding: 8px 0;
+                    padding: 0;
                     #name {
                         display: block;
                         width: 100%;
-                        height: 34px;
+                        line-height: 50px;
                         border: none;
                         outline: none;
                         text-align: right;
@@ -806,6 +1061,75 @@ export default {
         }
     }
 
+    // 备注input提示
+    .mark {
+        height: 70px;
+        padding: 0 15px;
+        background: #fff;
+        .label {
+            height: 70px;
+            float: left;
+            margin-right: 15px;
+            line-height: 35px;
+        }
+        .markRg {
+            margin-left: 45px;
+            height: 70px;
+            #markTextarea {
+                display: block;
+                outline: none;
+                border: none;
+                width: 100%;
+                height: 100%;
+                padding-top: 6px;
+                font-size: 14px;
+            }
+        }
+    }
+    // 联系人list的遮罩
+    .linkman-mask-box {
+        color: #333;
+        .hd {
+            line-height: 40px;
+            font-size: 16px;
+            color: #333;
+            text-align: center;
+            background: #ffffff;
+        }
+        .bd {
+            padding: 0 15px;
+            background: #ffffff;
+            li {
+                line-height: 44px;
+                font-size: 14px;
+                position: relative;
+                &:after {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    height: 1px;
+                    bottom: 0;
+                    background: #e5e5e5;
+                    transform: scaleY(0.5);
+                }
+                .select {
+                    width: 20px;
+                    height: 20px;
+                    position: absolute;
+                    right: 15px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    border-radius: 50%;
+                    img {
+                        display: block;
+                        width: 20px;
+                        height: 20px;
+                    }
+                }
+            }
+        }
+    }
     // 文字小提示
     .tips {
         padding: 12px 15px 10px;
@@ -842,9 +1166,17 @@ export default {
                 color: #ffba56;
                 height: 49px;
                 line-height: 49px;
-                float: left;
                 font-size: 16px;
-                font-weight: bold; 
+                font-weight: bold;
+                margin: 0 10px 0 0;
+                float: left;
+            }
+            .discount {
+                text-decoration: line-through;
+                line-height: 49px;
+                color: #cccccc;
+                font-size: 12px;
+                float: left;
             }
             .arrow {
                 width: 49px;
@@ -852,7 +1184,7 @@ export default {
                 line-height: 49px;
                 text-align: center;
                 float: right;
-                padding: 0 10px;
+                padding: 0 10px 0 0;
                 font-size: 0;
                 img {
                     display: inline-block;
@@ -862,12 +1194,127 @@ export default {
             }
         }
         .rg {
-            width: 142px;
-            background: #30B097;
+            width: 125px;
+            background: #30b097;
             color: #fff;
             height: 49px;
             line-height: 49px;
             text-align: center;
+        }
+    }
+    // 广播的toast弹层
+    #userCardRightMaskBox {
+        .hd {
+            line-height: 40px;
+            font-size: 18px;
+            color: #333;
+            text-align: center;
+            position: relative;
+            background: #fff;
+            .btn {
+                width: 24px;
+                height: 24px;
+                position: absolute;
+                top: 9px;
+                right: 9px;
+                background: url("../../assets/images/icon/ic-close-card.png")
+                    no-repeat center center;
+                background-size: 12px 12px;
+            }
+        }
+        .bd {
+            background: #fff;
+            // 弹框公共的title
+            .title {
+                line-height: 21px;
+                text-align: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #333;
+                font-size: 16px;
+                padding-top: 25px;
+                font-weight: 400;
+                span {
+                    width: 72px;
+                    height: 8px;
+                    background: url("../../assets/images/vip/bg-row.png")
+                        no-repeat center center;
+                    background-size: 100% 100%;
+                    &.s1 {
+                        margin-right: 10px;
+                    }
+                    &.s2 {
+                        margin-left: 10px;
+                    }
+                }
+            }
+
+            .card-right {
+                .content {
+                    padding: 0 15px;
+                    &::after {
+                        display: table;
+                        content: "";
+                        clear: both;
+                    }
+                    dl {
+                        width: 20%;
+                        float: left;
+                        text-align: center;
+                        img {
+                            width: 24px;
+                            height: 24px;
+                            display: block;
+                            margin: 15px auto 10px;
+                        }
+                        dt {
+                            line-height: 19px;
+                            margin-bottom: 5px;
+                            color: #333;
+                            font-size: 13px;
+                        }
+                        dd {
+                            line-height: 16px;
+                            color: #666;
+                            font-size: 12px;
+                        }
+                    }
+                }
+            }
+            .vip-right {
+                .content {
+                    padding: 15px 15px 15px;
+                    .ul {
+                        &::after {
+                            content: "";
+                            display: table;
+                            clear: both;
+                        }
+                        li {
+                            // padding: 20px 30px 0;
+                            padding: 15px 15px 0;
+                            height: 100px;
+                            width: 33.33%;
+                            float: left;
+                            border-bottom: 1px solid #e5e5e5;
+                            .li-desc {
+                                color: #333;
+                                line-height: 19px;
+                                font-size: 13px;
+                                margin-bottom: 8px;
+                                text-align: center;
+                            }
+                            .li-intro {
+                                text-align: center;
+                                color: #666;
+                                line-height: 16px;
+                                font-size: 12px;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

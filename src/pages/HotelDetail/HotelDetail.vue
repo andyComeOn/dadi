@@ -87,17 +87,20 @@
                 <ul class="list">
                     <li v-for="(item,index) in data_room" :key="index" @click.stop="showToastMethod(item.id)">
                         <!-- 左边图片展示 -->
-                        <div class="lf"><img :src="item.room_img" alt=""></div>
+                        <div class="lf"><img :src="item.house_img[0]" alt=""></div>
                         <!-- 中间 -->
                         <div class="md">
                             <!-- 大标题 -->
                             <p class="name m-ellipsis">{{item.name}}</p>
-                            <!-- 酒店设施集合 -->
-                            <div class="labels m-ellipsis">{{item.tags}}</div>
+                            <!-- 房型主标签展示 -->
+                            <div class="labels m-ellipsis">
+                                {{item.area}} 、{{item.bed_type}}、{{item.window}} 、{{item.floor}}层
+                            </div>
                             <!-- 价格（新、旧） -->
                             <div class="price din">
                                 <span class="price-new">&yen;{{item.discount_price}}</span>
                                 <span class="price-old">&yen;{{item.market_amount}}</span>
+                                <span>{{item.group_name | filterCardType }} {{ item.promo | filterDiscount}}折</span>
                             </div>
                         </div>
                         <!-- 右侧预定按钮 -->
@@ -121,7 +124,7 @@
                             </div>
                         </div>
                         <div class="item-toast-banner" id="hotelDetailBanner" :style="{height: hotelDetailBannerH + 'px'}">
-                            <img :src="item.room_img" alt="">
+                            <img :src="item.house_img[0]" alt="">
                         </div>
                         <div class="item-toast-info">
                             <div class="item-toast-tags">
@@ -408,7 +411,7 @@ export default {
                 this.itemToastArr.push({
                     isShow: false,
                     id: this.data_room[i].id,
-                    room_img:this.data_room[i].room_img, // 房型图片
+                    house_img:this.data_room[i].house_img, // 房型图片
                     name: this.data_room[i].name, // 房型
                     area: this.data_room[i].area, // 面积
                     floor: this.data_room[i].floor, // 楼层
@@ -424,7 +427,6 @@ export default {
                     other: this.data_room[i].other, // 其它
                 });
             }
-            console.log(this.itemToastArr);
         },
 
         // 点击预定
@@ -634,7 +636,7 @@ export default {
                 "#hotelDetailBanner"
             );
             let hotelDetailBannerW = hotelDetailBanner.clientWidth;
-            let hotelDetailBannerH = (hotelDetailBannerW * 380) / 750;
+            let hotelDetailBannerH = (hotelDetailBannerW * 320) / 750;
             this.hotelDetailBannerH = hotelDetailBannerH;
         },
         showToastMethod(id) {
@@ -660,8 +662,8 @@ export default {
 // banner
 .banner-box {
     position: relative;
-    min-height: 162px;
-    max-height: 190px;
+    // min-height: 162px;
+    // max-height: 190px;
     background: url("../../assets/images/default/banner.jpg") no-repeat center
         center;
     background-size: 100% 100%;
@@ -867,7 +869,7 @@ export default {
                 background: url("../../assets/images/default/fangxing.jpg")
                     no-repeat right center;
                 background-size: 83px 73px;
-                margin-right: 10px;
+                margin-right: 6px;
                 img {
                     width: 83px;
                     height: 73px;
@@ -998,7 +1000,9 @@ export default {
         .item-toast-banner {
             // height: 190px;
             // background: #ffba56;
+            overflow: hidden;
             img {
+                display: block;
                 width: 100%;
             }
         }

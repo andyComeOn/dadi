@@ -76,6 +76,16 @@ export function filterMoneyInt(a) {
 export function Fixto2(a) {
 	return Math.round(a * 100) / 100;
 }
+// 保留2位小数点：50.4 => 50.40
+export function Fixto2Str(a) {
+	// let ind = a.indexOf(".");
+	// if (ind != -1 ) {
+	// 	if (ind == 2) {
+	// 		return a.toString();
+	// 	} else if (ind == 1)
+	// }
+	// return Math.round(a * 100) / 100;
+}
 // 过滤是否有房
 export function filterIsHasRoom(a) {
 	if (a == 1) {
@@ -169,4 +179,12 @@ export function filterLabel(a) {
 	} else {
 		return "美容美发";
 	}
+}
+// 过滤0.95折-> 95
+export function filterDiscount(a) {
+	return a.substring(2);
+}
+// 过滤会员卡类型
+export function filterCardType(a) {
+	return a.slice(0,2);
 }

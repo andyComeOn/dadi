@@ -76,6 +76,103 @@
                 </li>
             </ul>
         </div>
+
+        <div class="broadcast m-ellipsis" @click="showUserCardRightMask">
+            <span class="broadcast-icon"></span>
+            {{group_name | filterCardType}}特权：房价折扣{{catering_discount}}，餐饮折扣餐饮折扣餐饮折扣
+            <span class="broadcast-btn"></span>
+        </div>
+        <!-- 用户所属卡种的权益 -->
+        <div id="userCardRightMaskBox">
+            <div class="weui-mask zb-weui-mask" @click="hideUserCardRightMask" :class="[{'weui-actionsheet_no_toggle_active':isUserCardRightMask},{'weui-actionsheet_no_toggle':!isUserCardRightMask}]"></div>
+            <div class="weui-actionsheet zb-weui-actionsheet" id="weui-actionsheet" :class="[{'weui-actionsheet_toggle':isUserCardRightMask}]">
+                <div class="hd">
+                    {{group_name | filterCardType}}会员
+                    <span class="btn" @click="hideUserCardRightMask"></span>
+                </div>
+                <!-- 弹框的内容 -->
+                <div class="bd">
+                    <div class="desc-box" v-if="userCardRightInfo">
+                        <!-- 开卡权益 -->
+                        <div class="card-right">
+                            <div class="title">
+                                <span class="s1"></span>
+                                开卡权益
+                                <span class="s2"></span>
+                            </div>
+                            <div class="content">
+                                <dl>
+                                    <img src="../../assets/images/vip/kaika.png" alt="">
+                                    <dt>开卡赠券</dt>
+                                    <dd>{{userCardRightInfo.coupon_num}}</dd>
+                                </dl>
+                                <dl>
+                                    <img src="../../assets/images/vip/yaoqing.png" alt="">
+                                    <dt>邀请特权</dt>
+                                    <dd>{{userCardRightInfo.privilege_num}}</dd>
+                                </dl>
+                                <dl>
+                                    <img src="../../assets/images/vip/fangjia.png" alt="">
+                                    <dt>房价折扣</dt>
+                                    <dd>{{userCardRightInfo.promo}}</dd>
+                                </dl>
+                                <dl>
+                                    <img src="../../assets/images/vip/xiaofei.png" alt="">
+                                    <dt>消费积分</dt>
+                                    <dd>{{userCardRightInfo.score_rate}}</dd>
+                                </dl>
+                                <dl v-if="userCardRightInfo.pre_cancel_time">
+                                    <img src="../../assets/images/vip/mianfei.png" alt="">
+                                    <dt>免费取消</dt>
+                                    <dd>{{userCardRightInfo.pre_cancel_time}}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <!-- 会员权益 -->
+                        <div class="vip-right">
+                            <div class="title">
+                                <span class="s1"></span>
+                                会员权益
+                                <span class="s2"></span>
+                            </div>
+                            <div class="content">
+                                <ul class="ul">
+                                    <li v-if="userCardRightInfo.catering_discount">
+                                        <p class="li-desc">餐饮折扣</p>
+                                        <p class="li-intro">{{userCardRightInfo.catering_discount}}</p>
+                                    </li>
+                                    <li v-if="userCardRightInfo.enjoy_channel">
+                                        <p class="li-desc">优享通道</p>
+                                        <p class="li-intro">{{userCardRightInfo.enjoy_channel}}</p>
+                                    </li>
+                                    <li v-if="userCardRightInfo.supper">
+                                        <p class="li-desc">上门宵夜</p>
+                                        <p class="li-intro">{{userCardRightInfo.supper}}</p>
+                                    </li>
+                                    <li v-if="userCardRightInfo.delay_room">
+                                        <p class="li-desc">延迟退房</p>
+                                        <p class="li-intro">{{userCardRightInfo.delay_room}}</p>
+                                    </li>
+                                    <li v-if="userCardRightInfo.birthday">
+                                        <p class="li-desc">生日礼遇</p>
+                                        <p class="li-intro">{{userCardRightInfo.birthday}}</p>
+                                    </li>
+                                    <li v-if="userCardRightInfo.equity">
+                                        <p class="li-desc">权益共享</p>
+                                        <p class="li-intro">{{userCardRightInfo.equity}}</p>
+                                    </li>
+                                    <li v-if="userCardRightInfo.user_activity">
+                                        <p class="li-desc">收费会员活动</p>
+                                        <p class="li-intro">{{userCardRightInfo.user_activity}}</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- 再次预定按钮  -->
         <!-- <div></div> -->
         <div v-if="order_id_info.status!=0">
@@ -90,7 +187,7 @@
         </div>
         <!-- 温馨提示 -->
         <div class="tips">
-            <p>温馨提示：1、酒店入住时间14:00以后，离店时间12:00以前。如您在14:00以前未能到达，请以酒店安排为准。2、普卡会员入住当天12：00之前取消订单，不收取费用，逾期扣费。银卡、金卡会员14点前取消订单，不收取费用；铂金卡18点前取消订单，不收取费用。3、普通客户12点之前退房；普卡会员13点退房；银卡会员14点退房；金卡会员15点退房；铂金卡会员延迟到16点退房。</p>
+            <p>温馨提示：1、酒店入住时间14:00以后，离店时间12:00以前。如您在14:00以前未能到达，请以酒店安排为准。2、普卡会员入住当天12：00之前取消订单，不收取费用，逾期扣费。银卡、金卡会员14点前取消订单，不收取费用；铂金卡18点前取消订单，不收取费用。3、普通客户12点之前退房；普卡会员13点退房；银卡会员14点退房；金卡会员15点退房；铂金卡会员延迟到16点退房。联系电话：<a href="tel:4000-999-683">4000-999-683</a> (周一至周五9:00-17:30)</p>
         </div>
         <!-- 交易明细弹框 -->
         <div class="deal-detail-mask-box">
@@ -163,7 +260,8 @@ import {
     order_detail,
     order_cost_detail,
     cancel_orderform,
-    wx_pay
+    wx_pay,
+    user_card_privilege
 } from "@/api/api";
 export default {
     name: "order-detail",
@@ -176,7 +274,12 @@ export default {
             order_cost_info: "", // 接收http请求的明细接口（order_cost_info）数据
             paySuccessToast: false,
             loading: false,
-            loadingTxt: "数据加载中"
+            loadingTxt: "数据加载中",
+            userCardRightInfo : "",
+            isUserCardRightMask: false,
+            group_name: "",  // 会员卡desc
+            catering_discount: "" // 95折扣
+            
         };
     },
     created() {
@@ -190,6 +293,29 @@ export default {
         this.fetchOrderCostDetail();
     },
     methods: {
+        // 拉取用户所属卡种的信息
+        fetchUserCardRightInfo() {
+            this.$http({
+                method: "POST",
+                url: user_card_privilege,
+                data: {
+                    id: this.order_id_info.group_id
+                }
+            })
+                .then(res => {
+                    // console.log(res.data.data);
+                    this.userCardRightInfo = res.data.data;
+                })
+                .catch(err => {});
+        },
+        // 展示用户所属卡种相关权益遮罩
+        showUserCardRightMask() {
+            this.isUserCardRightMask = true;
+        },
+        // 隐藏用户所属卡种相关权益遮罩
+        hideUserCardRightMask() {
+            this.isUserCardRightMask = false;
+        },
         // 展示交易明细遮罩
         showDealDetailMask() {
             if (
@@ -219,7 +345,10 @@ export default {
                 .then(res => {
                     if (res.data.status == 1) {
                         this.order_id_info = res.data.data;
-                        this.fetchOrderCostDetail();
+                        this.group_name = res.data.data.group.name;
+                        this.catering_discount = res.data.data.group.catering_discount;
+                        this.fetchUserCardRightInfo(); // 拉取用户卡种的权益
+                        // this.fetchOrderCostDetail();
                     }
                 })
                 .catch();
@@ -361,6 +490,153 @@ export default {
         font-size: 16px;
     }
 }
+
+// 后来添加的会员提示
+.broadcast {
+    line-height: 36px;
+    background: rgba(253, 252, 236, 1);
+    padding: 0 22px 0 34px;
+    position: relative;
+    color: #666;
+    font-size: 14px;
+    font-weight: 400;
+    .broadcast-icon {
+        width: 16px;
+        height: 16px;
+        position: absolute;
+        left: 15px;
+        top: 10px;
+        background: url("../../assets/images/icon/ic-broadcast.png") no-repeat
+            center center;
+        background-size: 100% 100%;
+    }
+    .broadcast-btn {
+        width: 5px;
+        height: 9px;
+        position: absolute;
+        right: 15px;
+        top: 13px;
+        background: url("../../assets/images/arrows/ic-arrow_10_18.png")
+            no-repeat center center;
+        background-size: 100% 100%;
+    }
+}
+
+#userCardRightMaskBox {
+    .hd {
+        line-height: 40px;
+        font-size: 18px;
+        color: #333;
+        text-align: center;
+        position: relative;
+        background: #fff;
+        .btn {
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            top: 9px;
+            right: 9px;
+            background: url("../../assets/images/icon/ic-close-card.png")
+                no-repeat center center;
+            background-size: 12px 12px;
+        }
+    }
+    .bd {
+        background: #fff;
+        // 弹框公共的title
+        .title {
+            line-height: 21px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            font-size: 16px;
+            padding-top: 25px;
+            font-weight: 400;
+            span {
+                width: 72px;
+                height: 8px;
+                background: url("../../assets/images/vip/bg-row.png") no-repeat
+                    center center;
+                background-size: 100% 100%;
+                &.s1 {
+                    margin-right: 10px;
+                }
+                &.s2 {
+                    margin-left: 10px;
+                }
+            }
+        }
+
+        .card-right {
+            .content {
+                padding: 0 15px;
+                &::after {
+                    display: table;
+                    content: "";
+                    clear: both;
+                }
+                dl {
+                    width: 20%;
+                    float: left;
+                    text-align: center;
+                    img {
+                        width: 24px;
+                        height: 24px;
+                        display: block;
+                        margin: 15px auto 10px;
+                    }
+                    dt {
+                        line-height: 19px;
+                        margin-bottom: 5px;
+                        color: #333;
+                        font-size: 13px;
+                    }
+                    dd {
+                        line-height: 16px;
+                        color: #666;
+                        font-size: 12px;
+                    }
+                }
+            }
+        }
+        .vip-right {
+            .content {
+                padding: 15px 15px 15px;
+                .ul {
+                    &::after {
+                        content: "";
+                        display: table;
+                        clear: both;
+                    }
+                    li {
+                        // padding: 20px 30px 0;
+                        padding: 15px 15px 0;
+                        height: 100px;
+                        width: 33.33%;
+                        float: left;
+                        border-bottom: 1px solid #e5e5e5;
+                        .li-desc {
+                            color: #333;
+                            line-height: 19px;
+                            font-size: 13px;
+                            margin-bottom: 8px;
+                            text-align: center;
+                        }
+                        .li-intro {
+                            text-align: center;
+                            color: #666;
+                            line-height: 16px;
+                            font-size: 12px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 // 这是弹框的内容
 .zb-actionsheet__bd {
     height: 55px;

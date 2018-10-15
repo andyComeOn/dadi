@@ -23,7 +23,6 @@
                     <span>进行中订单</span>
                 </div>
             </router-link>
-
             <router-link :to=" { path: 'orderList', query: { status: 'done' }}">
                 <div class="rg">
                     <div class="icon"><img src="../../assets/images/my/my_yiwancheng.png" alt=""></div>
@@ -37,14 +36,14 @@
                 <div class="weui-media-box weui-media-box_small-appmsg">
                     <div class="weui-cells">
                         <!-- 推荐好友拿奖金 -->
-                        <div class="weui-cell weui-cell_access" @click="recommendFriend">
+                        <!-- <div class="weui-cell weui-cell_access" @click="recommendFriend">
                             <div class="weui-cell__hd"><img src="../../assets/images/my/my_tuijian.png" alt="" style="width:22px;margin-right:5px;display:block"></div>
                             <div class="weui-cell__bd weui-cell_primary">
                                 <p>推荐好友拿奖金</p>
                             </div>
                             <span class="hot"><img src="../../assets/images/icon/ic-hot.png" alt=""></span>
                             <span class="weui-cell__ft"></span>
-                        </div>
+                        </div> -->
                         <!-- 我的优惠券 -->
                         <router-link to="/myCoupon" class="weui-cell weui-cell_access">
                             <div class="weui-cell__hd"><img src="../../assets/images/my/my_youhuiquan.png" alt="" style="width:22px;margin-right:5px;display:block"></div>
@@ -59,6 +58,7 @@
                             <div class="weui-cell__bd weui-cell_primary">
                                 <p>我的积分</p>
                             </div>
+                            <span class="score">{{userInfoData.avail_points}}</span>
                             <span class="weui-cell__ft"></span>
                         </router-link>
                         <!-- 我的收藏 -->
@@ -66,6 +66,14 @@
                             <div class="weui-cell__hd"><img src="../../assets/images/my/my_shoucang.png" alt="" style="width:22px;margin-right:5px;display:block"></div>
                             <div class="weui-cell__bd weui-cell_primary">
                                 <p>我的收藏</p>
+                            </div>
+                            <span class="weui-cell__ft"></span>
+                        </router-link>
+                        <!-- 常用信息 -->
+                        <router-link to="/userInfo" class="weui-cell weui-cell_access">
+                            <div class="weui-cell__hd"><img src="../../assets/images/my/lianxiren.png" alt="" style="width:22px;margin-right:5px;display:block"></div>
+                            <div class="weui-cell__bd weui-cell_primary">
+                                <p>常用信息</p>
                             </div>
                             <span class="weui-cell__ft"></span>
                         </router-link>
@@ -85,6 +93,7 @@
                             </div>
                             <span class="weui-cell__ft"></span>
                         </router-link>
+                        
                     </div>
                 </div>
             </div>
@@ -95,6 +104,7 @@
 <script>
 import mTabbarfa from "@/components/tabbarfa";
 import { userInfo } from "@/api/api";
+
 export default {
     name: "mine",
     components: {
@@ -123,7 +133,7 @@ export default {
                     this.userInfoData = res.data.data;
                 }
             });
-        }
+        },
     },
     mounted() {
         this.fetchUserInfo();
@@ -150,7 +160,6 @@ export default {
                 width: 6px;
                 border-width: 2px 2px 0 0;
                 border-color: #c8c8cd;
-                // c8c8cd
                 border-style: solid;
                 -webkit-transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
                 transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
@@ -190,17 +199,21 @@ export default {
                 height: 100%;
             }
         }
+        .score {
+            line-height: 25px;
+            font-size: 13px;
+        }
     }
     // 我的上面的个人icon的样式
     .mine-info-media-box {
-        padding: 53px 15px;
+        padding: 48px 15px;
         color: #fff;
         background: url("../../assets/images/bg/bg_my.jpg") no-repeat center
             center;
         background-size: 100% 100%;
         .mine-info-media-box__hd {
-            width: 44px;
-            height: 44px;
+            width: 54px;
+            height: 54px;
             border-radius: 50%;
             margin-right: 10px;
             border: 2px solid #fff;
@@ -214,7 +227,7 @@ export default {
             .mine-info-media-box__title {
                 font-size: 16px;
                 line-height: 22px;
-                margin-bottom: 4px;
+                margin-bottom: 8px;
             }
             .mine-info-media-box__desc {
                 line-height: 16px;

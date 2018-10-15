@@ -27,13 +27,31 @@
         <div class="refund_btn" @click="submit">提交申请</div>
         <!-- refund btn end -->
         <!-- 提交申请按钮toast -->
-        <div v-show="submitSucToast">
+        <!-- <div v-show="submitSucToast">
             <div class="weui-mask_transparent"></div>
             <div class="weui-toast">
                 <i class="weui-error weui-icon_toast"></i>
                 <p class="weui-toast__content">提交申请成功</p>
             </div>
+        </div> -->
+
+        <!-- toast(loading=>weui) -->
+        <div v-show="loading">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-loading weui-icon_toast"></i>
+                <p class="weui-toast__content">提交中...</p>
+            </div>
         </div>
+        <!-- toast（delay=>z） -->
+        <div v-show="submitSucToast">
+            <div class="z-mask-transparent"></div>
+            <div class="z-toast">
+                <i class="z-toast-icon"></i>
+                <p class="z-toast-content">提交申请成功</p>
+            </div>
+        </div>
+
         <!-- 交易明细弹框 -->
         <div class="deal-detail-mask-box">
             <div class="weui-mask zb-weui-mask" id="dealDetailMask" @click="hideDealDetailMask" :class="[{'weui-actionsheet_no_toggle_active':isDealDetailMask},{'weui-actionsheet_no_toggle':!isDealDetailMask}]"></div>
@@ -117,6 +135,8 @@ export default {
             order_id_info: "", //接收http请求的order_detail数据
             order_cost_info: "", //接收http请求的明细接口（order_cost_info）数据
             submitSucToast: false, // Toast开关
+            delayToastTxt:"提交申请成功",
+            loading:false,
             isTipsShow: false
         };
     },
@@ -184,41 +204,49 @@ export default {
         focusM() {
             this.isTipsShow = false;
         },
-
         // 提交退款维权
         submit() {
             // 工作人员没有接单，用户已经付款
             if (this.order_id_info.status == 1) {
-                this.$http({
-                    method: "POST",
-                    url: cancel_orderform,
-                    data: {
-                        order_id: this.order_id_info.id,
-                        status: this.order_id_info.status,
-                        remarks: this.refund_cause
-                    }
-                })
-                    .then(res => {
-                        if (res.data.status == 1) {
-                            this.submitSucToast = true;
-                            setTimeout(() => {
-                                this.submitSucToast = false;
-                            }, 2000);
-                            this.$router.push({
-                                path: "orderList",
-                                query: {
-                                    status: "ing"
-                                }
-                            });
+                // debugger;   
+                if (this.refund_cause == "") {
+                    this.isTipsShow = true;
+                    return;
+                } else {
+                    this.loading = true;
+                    this.$http({
+                        method: "POST",
+                        url: cancel_orderform,
+                        data: {
+                            order_id: this.order_id_info.id,
+                            status: this.order_id_info.status,
+                            remarks: this.refund_cause
                         }
                     })
-                    .catch();
+                        .then(res => {
+                            if (res.data.status == 1) {
+                                this.loading = false;
+                                this.submitSucToast = true;
+                                setTimeout(() => {
+                                    this.submitSucToast = false;
+                                    this.$router.push({
+                                        path: "orderList",
+                                        query: {
+                                            status: "ing"
+                                        }
+                                    });
+                                }, 2000);
+                            }
+                        })
+                        .catch();
+                }
             } else {
                 // 工作人员没有接单，用户已经付款
                 if (this.refund_cause == "") {
                     this.isTipsShow = true;
                     return;
                 }
+
                 this.$http({
                     method: "POST",
                     url: order_preserver,
@@ -232,8 +260,13 @@ export default {
                             this.submitSucToast = true;
                             setTimeout(() => {
                                 this.submitSucToast = false;
+                                this.$router.push({
+                                    path: "orderList",
+                                    query: {
+                                        status: "ing"
+                                    }
+                                });
                             }, 2000);
-                            this.$router.go(-1);
                         }
                     })
                     .catch();
