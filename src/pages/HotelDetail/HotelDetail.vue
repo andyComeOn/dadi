@@ -100,7 +100,7 @@
                             <div class="price din">
                                 <span class="price-new">&yen;{{item.discount_price}}</span>
                                 <span class="price-old">&yen;{{item.market_amount}}</span>
-                                <span>{{item.group_name | filterCardType }} {{ item.promo | filterDiscount}}折</span>
+                                <!-- <span>{{item.group_name | filterCardType }} {{ item.promo | filterDiscount}}折</span> -->
                             </div>
                         </div>
                         <!-- 右侧预定按钮 -->

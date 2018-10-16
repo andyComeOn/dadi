@@ -309,12 +309,11 @@
                 <div class="hd">常用信息</div>
                 <div class="bd">
                     <ul>
-                        <li v-for="(item,index) in linkmanList" :key="index" @click="selectLinkman(item.id,item.username,item.mobile)">{{item.username}}
-                            <span class="select"><img :src="imgSrcDefault" alt=""></span>
+                        <li v-for="(item,index) in linkmanList" :key="index" @click="selectLinkman(item.id,item.username,item.mobile)" :class="{active:isLinkmanActive==item.id}">{{item.username}}
+                            <span class="select"></span>
                         </li>
                     </ul>
-                </div>
-                <!-- imgSrcActive -->
+                </div>    
             </div>
         </div>
         <!-- toast（delay=>z） -->
@@ -354,6 +353,7 @@ export default {
             isSelectRoom: false,
             isUserCardRightMask: false,
             isLinkmanMask: false, // 入住联系人mask控制
+            isLinkmanActive: -1,   //入住联系人默认选择第一个
             watchObj: {
                 store_id: "",
                 room_id: "",
@@ -488,8 +488,6 @@ export default {
         // 展示用户所属卡种相关权益遮罩
         showLinkmanMask() {
             this.isLinkmanMask = true;
-            this.orderName = "";
-            this.orderTel = "";
         },
         // 隐藏入住联系人遮罩
         hideLinkmanMask() {
@@ -498,6 +496,7 @@ export default {
         // 选取入住联系人
         selectLinkman(id,name,tel){
             this.isLinkmanMask = false;
+            this.isLinkmanActive = id;
             this.orderName = name;
             this.orderTel = tel;
         },
@@ -1121,10 +1120,14 @@ export default {
                     top: 50%;
                     transform: translateY(-50%);
                     border-radius: 50%;
-                    img {
-                        display: block;
-                        width: 20px;
-                        height: 20px;
+                    background-repeat:no-repeat;
+                    background-position: center;  
+                    background-size: 100% 100%;  
+                    background-image: url("../../assets/images/icon/ic-radio.png");    
+                }
+                &.active {
+                    .select {
+                        background-image: url("../../assets/images/icon/ic-radio-ed.png"); 
                     }
                 }
             }
