@@ -31,7 +31,7 @@
         <!-- 用户无优惠券展示 -->
         <div v-else class="no-coupon">
             <img src="../assets/images/404/404-no-coupon.png" alt="">
-            <p>暂无代金券</p>
+            <p>暂无优惠券</p>
         </div>
 
     </div>

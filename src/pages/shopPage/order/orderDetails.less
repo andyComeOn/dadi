@@ -1,0 +1,200 @@
+.shopOrderDetails{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #f6f6f6;
+    padding-bottom: 57px;
+}
+.typeMsg{
+    width: 100%;
+    background: url('../../../assets/images/shop/order_bg_kuaidi.png') no-repeat center center;
+    background-size: 100% 100%;
+    padding:15px 15px 55px 15px;
+    position: relative;
+    h3{
+        font-size: 16px;
+        color: #fff;
+        text-indent: 35px;
+        position: relative;
+        margin-bottom: 15px;
+        font-weight: 700;
+        img{
+            display: inline-block;
+            width: 19px;
+            height: 19px;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+        }
+    }
+    .typeMsgHint{
+        font-size: 13px;
+        color: #fff;
+        text-indent: 35px;
+        margin-bottom: 8px;
+    }
+    .orderTime{
+        display: inline-block;
+        color:#ccc;
+        font-size: 11px;
+        text-indent: 35px;
+    }
+    .addressMsg{
+        width: 100%;
+        position: absolute;
+        bottom: -50px;
+        left: 0;
+        padding:0px 8px;
+        .address{
+            background: #fff;
+            padding:15px;
+            border-radius: 8px;
+            h3{
+                img{
+                    display: inline-block;
+                    width: 17.5px;
+                    height: 17.5px;
+                    margin-right: 15px;
+                }
+                span{
+                    color: #333;
+                    font-size: 15px;
+                    &:nth-of-type(1){
+                        margin-right: 30px;
+                    }
+                }
+            }
+            .addressDetails{
+                font-size: 13px;
+                color: #666;
+                margin-top: 8px;
+                line-height: 13px;
+            }
+        }
+    }
+}
+.shopMsgBox{
+    padding:0px 8px;
+    margin-top: 60px;
+    .shopMsg{
+        background: #fff;
+        border-radius: 8px;
+        padding:15px;
+        position: relative;
+        p{
+            font-size: 14px;
+            color: #333;
+            text-indent: 82px;
+            word-break:keep-all;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            margin-bottom: 8px;
+        }
+        img{
+            display: inline-block;
+            width: 74px;
+            height: 74px;
+            position: absolute;
+            top: 15px;
+            left: 15px;
+        }
+        span{
+            font-size: 11px;
+            color: #666;
+            display: inline-block;
+            text-indent: 82px;
+            margin-bottom: 15px;
+        }
+        h3{
+            color: #333;
+            font-size: 14px;
+            line-height: 14px;
+            text-indent: 82px;
+        }
+    }
+}
+.shopPriceBox{
+    padding:0px 8px;
+    margin-top: 8px;
+    .shopPrice{
+        padding:0px 15px;
+        background:#fff;
+        border-radius: 8px;
+        p{
+            line-height: 45px;
+            font-size: 14px;
+            color: #333;
+            span{
+                float: right;
+            }
+        }
+        .shopPriceBtn{
+            line-height: 50px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color:#333;
+            height: 50px;
+            text-align: right;
+            span:nth-of-type(2){
+                font-size: 15px;
+                color: #E0310D;
+            }
+        }
+    }
+}
+.orderNumBox{
+    padding:0px 8px;
+    margin-top: 8px;
+    .orderNum{
+        background:#fff;
+        padding:0px 15px;
+        border-radius: 8px;
+        p{
+            line-height: 34px;
+            height: 34px;
+            color: #333;
+            font-size: #333;
+            span:nth-of-type(1){
+                float: left;
+            }
+            span:nth-of-type(2){
+                font-size: 11px;
+                color: #666;
+                padding:2.5px 5px;
+                border:1px solid #ccc;
+                border-radius: 13px;
+            }
+            &:nth-of-type(1){
+                text-align: right;
+            }
+        }
+    }
+}
+.orderBtn{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 49px;
+    line-height: 49px;
+    background: #fff;
+    padding:0px 15px;
+    text-align: right;
+    border-top: 1px solid #eee;
+    span{
+        font-size: 12px;
+        color: #999;
+        padding:8px;
+        border:1px solid #eee;
+        border-radius: 28px;
+        margin-left: 15px;
+    }
+    .orderBtnActive{
+        background: #E25C1D;
+        border:0;
+        color:#fff;
+    }
+}

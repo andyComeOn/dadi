@@ -79,7 +79,7 @@
 
         <div class="broadcast m-ellipsis" @click="showUserCardRightMask">
             <span class="broadcast-icon"></span>
-            {{group_name | filterCardType}}特权：房价折扣{{catering_discount}}，餐饮折扣餐饮折扣餐饮折扣
+            {{group_name | filterCardType}}特权：房价折扣{{promo}}，餐饮折扣{{catering_discount}}，延迟退房{{userCardRightInfo.delay_room}}
             <span class="broadcast-btn"></span>
         </div>
         <!-- 用户所属卡种的权益 -->
@@ -116,7 +116,7 @@
                                     <dt>房价折扣</dt>
                                     <dd>{{userCardRightInfo.promo}}</dd>
                                 </dl>
-                                <dl>
+                                <dl v-if="userCardRightInfo.score_rate">
                                     <img src="../../assets/images/vip/xiaofei.png" alt="">
                                     <dt>消费积分</dt>
                                     <dd>{{userCardRightInfo.score_rate}}</dd>
@@ -345,8 +345,9 @@ export default {
                 .then(res => {
                     if (res.data.status == 1) {
                         this.order_id_info = res.data.data;
-                        this.group_name = res.data.data.group.name;
-                        this.catering_discount = res.data.data.group.catering_discount;
+                        this.group_name = res.data.data.group.name;  // 用户所属卡种-名称
+                        this.promo = res.data.data.group.promo;  // 用户所属卡种-会员折扣
+                        this.catering_discount = res.data.data.group.catering_discount; // 用户所属卡种-餐饮折扣
                         this.fetchUserCardRightInfo(); // 拉取用户卡种的权益
                         // this.fetchOrderCostDetail();
                     }
@@ -397,7 +398,7 @@ export default {
                         }
                         if (res.err_msg == "get_brand_wcpay_request:cancel") {
                             alert("取消支付");
-                            // window.location.reload();
+                            window.location.reload();
                         }
                     }
                 );

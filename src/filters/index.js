@@ -188,3 +188,17 @@ export function filterDiscount(a) {
 export function filterCardType(a) {
 	return a.slice(0,2);
 }
+// 过滤会员卡类型
+export function filterCardGradeGetInfo(a) {
+	if (a == 1){
+		return "普卡"
+	} else if (a == 2){
+		return "银卡"
+	} else if (a == 3){
+		return "金卡"
+	} else if (a == 4){
+		return "珀金"
+	} else {
+		return "黑钻"
+	} 
+}

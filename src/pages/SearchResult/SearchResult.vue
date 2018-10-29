@@ -1,5 +1,5 @@
 <template>
-    <div class="search-result m-position-ab">
+    <div class="searchResultPage m-position-ab">
         <!-- 搜索条 -->
         <searchbar @triggerCityDialogEmit="triggerCityDialogEmitFun" @triggerCalendarDialogEmit="triggerCalendarDialogEmitFun" @inputValEmit="inputValEmitFun" :searchbarObj="toSearchbarObj">
         </searchbar>
@@ -14,8 +14,8 @@
         <!-- 刷新用户所在地理位置 -->
         <refreshbar @refreshEmit="refreshEmitFun" :refreshBarObj="toRefreshBarObj"> </refreshbar>
 
-        <!-- 酒店组件 -->
-        <roomItem :condition="watchObj"></roomItem>
+        <!-- 门店组件 -->
+        <storeListItem :condition="watchObj"></storeListItem>
 
         <!-- 城市组件dialog -->
         <mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCityVisible">
@@ -39,7 +39,7 @@
 
 <script>
 import mHotelLocation from "../../components/hotel-location";
-import roomItem from "../../components/room-item";
+import storeListItem from "@/components/store-list-item";
 import searchbar from "../../components/searchbar";
 import sortbar from "../../components/sortbar";
 import refreshbar from "../../components/refresh-bar";
@@ -48,9 +48,9 @@ import City from "@/components/city/city.vue"; // 引入城市组件
 import Calendar from "@/components/calendar/calendar.vue"; // 引入日历组件
 import Search from "@/components/search/search.vue"; // 引入搜索弹层组件
 export default {
-    name: "search-result",
+    name: "searchResultPage",
     components: {
-        roomItem,
+        storeListItem,
         searchbar,
         sortbar,
         refreshbar,
@@ -62,7 +62,7 @@ export default {
     data() {
         return {
             toSearchbarObj: {}, // 最终传给searchbar的对象
-            toRefreshBarObj:{longitude:"",latitude:""}, // 最终传给refreshBar的对象
+            toRefreshBarObj: { longitude: "", latitude: "" }, // 最终传给refreshBar的对象
             // 监听数据的变化，用来筛选满足条件的酒店列表
             watchObj: {
                 type: "SORT_ASC", //正序、降序排列
@@ -107,7 +107,7 @@ export default {
             liveoutDD: this.$route.query.liveoutDD,
             abstract: this.$route.query.abstract,
             longitude: this.$route.query.longitude,
-            latitude: this.$route.query.latitude,
+            latitude: this.$route.query.latitude
         };
         // searchbar组件的赋值
         this.toSearchbarObj = urlPara;
@@ -231,7 +231,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-    .search-result {
-        overflow: auto;
-    }
+.searchResultPage {
+    overflow: auto;
+}
 </style>

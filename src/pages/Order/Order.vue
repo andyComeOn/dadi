@@ -92,13 +92,13 @@
         <!-- 备注 -->
         <div class="mark">
             <label class="label">备注</label>
-            <div class="markRg"><textarea name="markName" id="markTextarea" placeholder="选填"></textarea></div>
+            <div class="markRg"><textarea name="markName" id="markTextarea" placeholder="选填" v-model="remarks"></textarea></div>
         </div>
 
         <!-- “广播”提示 -->
         <div class="broadcast m-ellipsis" @click="showUserCardRightMask">
             <span class="broadcast-icon"></span>
-            {{group_name | filterCardType}}特权：房价折扣{{catering_discount}}，餐饮折扣餐饮折扣餐饮折扣
+            {{group_name | filterCardType}}特权：房价折扣{{promo}}折，餐饮折扣{{catering_discount}}，延迟退房至{{delayCheckout}}
             <span class="broadcast-btn"></span>
         </div>
         <!-- 温馨提示 -->
@@ -246,7 +246,7 @@
                                     <dt>房价折扣</dt>
                                     <dd>{{userCardRightInfo.promo}}</dd>
                                 </dl>
-                                <dl>
+                                <dl v-if="userCardRightInfo.score_rate">
                                     <img src="../../assets/images/vip/xiaofei.png" alt="">
                                     <dt>消费积分</dt>
                                     <dd>{{userCardRightInfo.score_rate}}</dd>
@@ -308,11 +308,12 @@
             <div class="weui-actionsheet zb-weui-actionsheet" id="weui-actionsheet" :class="[{'weui-actionsheet_toggle':isLinkmanMask}]">
                 <div class="hd">常用信息</div>
                 <div class="bd">
-                    <ul>
+                    <ul v-if="linkmanList">
                         <li v-for="(item,index) in linkmanList" :key="index" @click="selectLinkman(item.id,item.username,item.mobile)" :class="{active:isLinkmanActive==item.id}">{{item.username}}
                             <span class="select"></span>
                         </li>
                     </ul>
+                    <div v-else style="line-height: 44px;font-size:14px;color:#666;text-align:center;">您还没有添加常用入住人信息</div>
                 </div>    
             </div>
         </div>
@@ -391,8 +392,12 @@ export default {
             group_name: "",
             // 该用户所属卡种的id
             group_id: "",
-            // 该用户所属的会员卡种打几折promo，原本这个页面接口已经有了
+            // 该用户所属会员卡种-餐饮打几折  
             catering_discount: "",
+            // 该用户所属会员卡种-会员卡折扣
+            promo:"",
+            // 用户所属卡种-延迟退房时间 -> 13:00
+            delayCheckout :"", 
             // 优惠券
             coupon: [],
             // 订房人姓名输入验证
@@ -414,6 +419,7 @@ export default {
             discount: "", // 省了多少钱
             linkmanList: "", // 联系人列表
             imgSrcDefault:require("../../assets/images/icon/ic-radio.png"),
+            remarks: "", // 若有老、幼、孕、残可以添加备注
         };
     },
     created() {
@@ -458,10 +464,10 @@ export default {
                         Math.round(
                             (this.discount_price - newValue.amount) * 100
                         ) / 100
-                    ).toFixed(2);
+                    ).toFixed(2);    // 选择优惠券之后最后的价格
                     let discountTmp =
-                        Math.round((this.discount + newValue.amount) * 100) /
-                        100;
+                        Math.round((this.original_price - this.discount_price - ( -newValue.amount)) * 100) /
+                        100;  // 选择优惠券之后省了多少钱
                     this.discount = discountTmp.toFixed(2);
                     this.couponBarShow = false;
                     this.isCouponMask = false; //选取优惠券使其dialog消失
@@ -480,7 +486,11 @@ export default {
                 data: {}
             })
                 .then(res => {
-                    this.linkmanList = res.data.data;
+                    if (res.data.status== 1) {
+                        this.linkmanList = res.data.data;
+                    } else {
+                        this.linkmanList = "";
+                    }
                 })
                 .catch(err => {});
         },
@@ -500,7 +510,7 @@ export default {
             this.orderName = name;
             this.orderTel = tel;
         },
-        // 拉取用户所属卡种的信息
+        // 拉取用户所属卡种的权益
         fetchUserCardRightInfo() {
             this.$http({
                 method: "POST",
@@ -563,20 +573,26 @@ export default {
                         this.loading = false;
                         this.details = res.data.data.details; //给房间详情赋值
                         this.discount_price = res.data.data.discount_price; //预定房间总价赋值
+                        this.original_price = res.data.data.original_price;  // 普通价   
                         this.coupon = res.data.data.coupon; //给房间优惠券赋值
                         this.price = res.data.data.price; // 给明细赋值
-                        this.totalPrice = res.data.data.discount_price;
+                        this.totalPrice = res.data.data.discount_price;  // 会员价格
+                        this.orderName = res.data.data.resident.username;  // 用户本人的信息：用户名
+                        this.orderTel = res.data.data.resident.mobile;  // 用户本人的信息：手机号
                         this.discount = (
                             Math.round(
                                 (res.data.data.original_price -
                                     res.data.data.discount_price) *
                                     100
                             ) / 100
-                        ).toFixed(2);
+                        ).toFixed(2);   // 告诉用户省了多少钱，普通价-会员价
                         this.group_name = res.data.data.group_name; //属于哪个卡种
                         this.group_id = res.data.data.group_id; // 用户所属卡种的id
                         this.catering_discount =
-                            res.data.data.catering_discount; // 用户所属卡种的折扣 -> 95折
+                            res.data.data.catering_discount; // 用户所属卡种-餐饮折扣 -> 95折
+                        this.promo = res.data.data.promo; // 用户所属卡种-会员卡折扣 -> 0.95
+                        // this.delayCheckout = res.data.data.delayCheckout; // 用户所属卡种-延迟退房时间 -> 13:00
+                        this.delayCheckout = "14:00"; // 用户所属卡种-延迟退房时间 -> 13:00
                         this.fetchUserCardRightInfo(); // 拉取用户卡种的权益
                         let astrict = parseInt(res.data.data.astrict); // 后台配置的最大可选择几间房
                         let quantity = parseInt(res.data.data.quantity); // 当前用户能定的最大房间数
@@ -682,7 +698,8 @@ export default {
                         room_sum: this.watchObj.room_sum,
                         begin: this.watchObj.begin,
                         finish: this.watchObj.finish,
-                        coupon_id: this.initCoupon.id
+                        coupon_id: this.initCoupon.id,
+                        remarks: this.remarks
                     }
                 })
                     .then(res => {
@@ -1072,7 +1089,7 @@ export default {
             line-height: 35px;
         }
         .markRg {
-            margin-left: 45px;
+            margin-left: 48px;
             height: 70px;
             #markTextarea {
                 display: block;

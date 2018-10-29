@@ -32,7 +32,7 @@
             <p>支付剩余时间</p>
         </div>
         <div class="olinePay_box_content" v-if="order_id_info">
-            <p class="store_name">{{order_id_info.name}}</p>
+            <p class="store_name m-ellipsis">{{order_id_info.name}}</p>
             <div class="room_introduce">
                 <img src="../../assets/images/hotel-label/my_order_hotel.png" />
                 <span>{{order_id_info.room_name}}</span>
@@ -125,7 +125,7 @@ export default {
                         }
                         if (res.err_msg == "get_brand_wcpay_request:cancel") {
                             alert("取消支付");
-                            // window.location.reload();
+                            window.location.reload();
                         }
                     }
                 );
@@ -174,10 +174,15 @@ export default {
             this.paySuccessToast = false;
             clearInterval(this.timer);
             this.$router.push({
-                path: "orderList",
-                query: {
-                    status: "ing"
-                }
+                // 之前跳转到订单list页
+                // path: "orderList",
+                // query: {
+                //     status: "ing"
+                // }
+
+                // 现在跳转到订单详情页
+                path:'orderDetail', 
+                query:{order_id:this.order_id}
             });
         },
         // 支付成功二次提示toast中下面的跳转首页按妞

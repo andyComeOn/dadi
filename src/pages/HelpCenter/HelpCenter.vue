@@ -1,39 +1,29 @@
 <template>
-	<div class="help-center-page m-position-ab">
-		<div class="weui-panel">
-			<div class="weui-panel__bd">
-				<div class="weui-media-box weui-media-box_small-appmsg">
-					<div class="weui-cells">
-						<template v-for="(item,index) in list">
-							<span class="item" @click="operaFolder(index)" :key="index" :class="{isActive:item.showParagraph}">
-								<a class="weui-cell weui-cell_access" href="javascript:;">
-									<div class="weui-cell__hd z-weui-cell-hd">
-                                        {{index + 1}}
-                                    </div>
-									<div class="weui-cell__bd weui-cell_primary">
-										<p>{{item.title}}</p>
-									</div>
-									<span class="weui-cell__ft"></span>
-
-								</a>
-								<transition name="fade" mode="out-in">
-									<div class="context-box" v-show="item.showParagraph">
-										<div class="context">{{item.context}}</div>
-									</div>
-								</transition>
-							</span>
-						</template>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
+    <div class="helpCenterPage m-position-ab">
+        <template v-for="(item,index) in list">
+            <div class="item" @click="operaFolder(index)" :key="index" :class="{isActive:item.showParagraph}">
+                <div class="title">
+                    <div class="hd">
+                        {{index + 1}}
+                    </div>
+                    <div class="bd">
+                        {{item.title}}
+                    </div>
+                    <span class="ft" :class="{ftActive:item.showParagraph}"></span>
+                </div>
+                <transition name="fade" mode="out-in">
+                    <div class="context-box" v-show="item.showParagraph">
+                        <div class="context">{{item.context}}</div>
+                    </div>
+                </transition>
+            </div>
+        </template>
+    </div>
 </template>
 
 <script>
 export default {
-    name: "help-center-page",
+    name: "helpCenterPage",
     components: {},
     data() {
         return {
@@ -122,7 +112,10 @@ export default {
     created() {},
     methods: {
         operaFolder(index) {
-            var tmp = this.list;
+            let tmp = this.list;
+            for (let i = 0; i < tmp.length; i++) {
+                tmp[i].showParagraph = false;
+            }
             tmp[index].showParagraph = !tmp[index].showParagraph;
             this.list = tmp;
         }
@@ -131,28 +124,85 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.help-center-page {
+.helpCenterPage {
     overflow: auto;
-    .z-weui-cell-hd {
-        width:22px;
+    padding-top: 10px;
+}
+.item {
+    background: #fff;
+    padding-left: 15px;
+    position: relative;
+    &:after {
+        content: "";
+        position: absolute;
+        left: 15px;
+        right: 0;
+        bottom: 0;
+        height: 1px;
+        background: #e5e5e5;
+        transform: scaleY(0.5);
+    }
+    &:nth-last-child(1) {
+        &:after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            height: 0;
+            background: #e5e5e5;
+            transform: scaleY(0.5);
+        }
+    }
+}
+// 问
+.title {
+    position: relative;
+    padding: 15px 30px 15px 34px;
+    .hd {
+        width: 22px;
         height: 20px;
-        line-height: 20px;
         text-align: center;
-        margin-right:5px;
-        background: url("../../assets/images/icon/ic-ask.png") no-repeat center center;
-        background-size: 100% 100%; 
+        position: absolute;
+        left: 0;
+        top: 50%;
+        margin-top: -10px;
+        background: url("../../assets/images/icon/ic-ask.png") no-repeat center
+            center;
+        background-size: 100% 100%;
         font-size: 12px;
         color: #fff;
     }
-    .context-box {
-        padding: 0 15px;
-        .context {
-            padding: 12px;
-            background: #f9f9f9;
-            color: #666;
-            font-size: 14px;
-            line-height: 20px;
+    .bd {
+        line-height: 22px;
+        font-size: 15px;
+        color: #333;
+    }
+    .ft {
+        width: 13px;
+        height: 7px;
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        margin-top: -4px;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-position: center center;
+        background-image: url("../../assets/images/arrows/ic-up.png");
+        &.ftActive {
+            background-image: url("../../assets/images/arrows/ic-down.png");
         }
+    }
+}
+// 答
+.context-box {
+    padding: 0 15px 15px 0;
+    .context {
+        padding: 12px;
+        background: #f9f9f9;
+        color: #666;
+        font-size: 14px;
+        line-height: 20px;
     }
 }
 </style>

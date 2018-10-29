@@ -25,7 +25,7 @@
                             <img :src="item" alt="" style="display:block;width:100%;">
                         </router-link>
                     </swiper-slide>
-                    <div class="swiper-pagination" slot="pagination"></div>
+                    <div class="swiper-pagination" style="line-height:5px;bottom:5px;" slot="pagination"></div>
                 </swiper>
                 <div class="z-swiper-intro" v-if="data_store.img_logo">
                     <img src="../../assets/images/icon/ic-hotel-detail.png" alt="">共{{data_store.img_logo.length}}张
@@ -83,11 +83,11 @@
             <!-- <reserveItem :condition="watchObj"></reserveItem> -->
 
             <!-- 搜索到list -->
-            <div class="reverse-wrapper">
+            <div class="roomtype-list-wrapper">
                 <ul class="list">
                     <li v-for="(item,index) in data_room" :key="index" @click.stop="showToastMethod(item.id)">
                         <!-- 左边图片展示 -->
-                        <div class="lf"><img :src="item.house_img[0]" alt=""></div>
+                        <div class="lf"><img :src="item.room_img" alt=""></div>
                         <!-- 中间 -->
                         <div class="md">
                             <!-- 大标题 -->
@@ -96,8 +96,8 @@
                             <div class="labels m-ellipsis">
                                 {{item.area}} 、{{item.bed_type}}、{{item.window}} 、{{item.floor}}层
                             </div>
-                            <!-- 价格（新、旧） -->
-                            <div class="price din">
+                            <!-- 价格（新、旧）din -->
+                            <div class="price">
                                 <span class="price-new">&yen;{{item.discount_price}}</span>
                                 <span class="price-old">&yen;{{item.market_amount}}</span>
                                 <!-- <span>{{item.group_name | filterCardType }} {{ item.promo | filterDiscount}}折</span> -->
@@ -114,8 +114,8 @@
             </div>
             <!-- 每个item点击之后出现toast，展示其详情 -->
             <div class="item-toast-container">
-                <div class="item-toast" v-for="(item,index) in itemToastArr" :key="index" v-show="item.isShow" @touchmove.prevent @scroll.prevent>
-                    <!-- ="touchmoveP"  -->
+                <div class="item-toast" v-for="(item,index) in itemToastArr" :key="index" v-show="item.isShow" >
+                    <!-- ="touchmoveP" @scroll.prevent @touchmove.prevent -->
                     <div class="item-toast-wrapper">
                         <div class="item-toast-title">
                             <div class="item-toast-title-wrapper">
@@ -124,7 +124,12 @@
                             </div>
                         </div>
                         <div class="item-toast-banner" id="hotelDetailBanner" :style="{height: hotelDetailBannerH + 'px'}">
-                            <img :src="item.house_img[0]" alt="">
+                            <swiper class="zb-swiper" :options="swiperToastOption" ref="mySwiper" @someSwiperEvent="swiperToastCallback(1)">
+                                <swiper-slide v-for="(itemSon,indexSon) in item.roomTypeList" :key="indexSon" @click="swiperToastSlideFun(indexSon)">
+                                    <img :src="itemSon" alt="" style="display:block;width:100%;">
+                                </swiper-slide>
+                                <div class="swiper-pagination" slot="pagination"></div>
+                            </swiper>
                         </div>
                         <div class="item-toast-info">
                             <div class="item-toast-tags">
@@ -133,7 +138,7 @@
                                         <span class="ftc333">{{item.area}}</span>
                                     </span>
                                     <span class="tag">楼层&nbsp;&nbsp;
-                                        <span class="ftc333">{{item.floor}}层</span>
+                                        <span class="ftc333">{{item.floor}}</span>
                                     </span>
                                     <span class="tag">房型&nbsp;&nbsp;
                                         <span class="ftc333">{{item.name}}</span>
@@ -205,10 +210,6 @@
                                     </div>
                                 </li>
                             </ul>
-                            <!-- 电视机、电脑、音乐影音、电脑、音乐影音、电脑、音乐影音、电脑、 -->
-                            <!-- <div class="item-toast-foot">
-                                <div class="item-toast-foot-wrapper" @click="closeToast(item.id)">查看其它房型</div>
-                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -238,8 +239,43 @@ export default {
     },
     data() {
         return {
-            // swiper相关参数
+            // 门店详情banner-swiper相关参数
             swiperOption: {
+                notNextTick: true,
+                preventClicks: true,
+                loop: true, 
+                speed: 1000,   // 这个参数是一张轮播照片从左边播到右边用时1000毫秒
+                autoplay: 3000,
+                direction: "horizontal",
+                grabCursor: true,
+                setWrapperSize: true,
+                autoHeight: true,
+                pagination: ".swiper-pagination",
+                paginationType: "custom",
+                paginationCustomRender: function(swiper, current, total) {
+                    const activeColor = "#30B097";
+                    const normalColor = "rgba(255,255,255,0.5)";
+                    let color = "";
+                    let paginationStyle = "";
+                    let html = "";
+                    for (let i = 1; i <= total; i++) {
+                        if (i === current) {
+                            color = activeColor;
+                        } else {
+                            color = normalColor;
+                        }
+                        paginationStyle = `background:${color};opacity:1;margin-right:4px;width:5px;height:5px;`;
+                        html += `<span class="swiper-pagination-bullet" style=${paginationStyle}></span>`;
+                    }
+                    return html;
+                },
+                paginationClickable: true,
+                mousewheelControl: false,
+                observeParents: true,
+                debugger: true
+            },
+            // 房型toast中bannner-swiper的参数
+            swiperToastOption: {
                 notNextTick: true,
                 autoplay: false,
                 preventClicks: true,
@@ -310,6 +346,9 @@ export default {
             timestamp: "", // 必填，生成签名的时间戳
             nonceStr: "", // 必填，生成签名的随机串
             signature: "", // 必填，签名
+            // longitude: "",  // 经度
+            // latitude: "",   // 维度
+
             longitude: getCookie("userLongitude"),
             latitude: getCookie("userLatitude"),
             hotelDetailBannerH: "", //酒店详情banner的高
@@ -373,10 +412,11 @@ export default {
         // 调取getAppInfo
         this.getAppInfo();
         // 调取banner赋值函数
+        
         this.setBannerSize();
+        // this.fetchData(this.watchObj);
     },
     methods: {
-        // touchmoveP(){},
         // 拉取门店详情
         fetchData(param) {
             this.$http({
@@ -392,6 +432,11 @@ export default {
                     this.ItemToastArrMethod();
                     // 房间介绍
                     this.data_store = res.data.data.data_store;
+                    // 该门店经纬度赋值
+                    // this.longitude = this.data_store.longitude;
+                    
+                    // this.latitude = this.data_store.latitude;
+                    // console.log(this.longitude + "--" + this.latitude);
                     // 入店、离店、共几晚
                     this.begin = res.data.data.begin;
                     this.finish = res.data.data.finish;
@@ -400,6 +445,8 @@ export default {
                     this.is_collect = res.data.data.is_collect;
                     // 收藏的id
                     this.collectId = res.data.data.collect_id;
+                    // 调取getAppInfo
+                    // this.getAppInfo();
                 } else {
                     this.data_store = "";
                 }
@@ -411,7 +458,7 @@ export default {
                 this.itemToastArr.push({
                     isShow: false,
                     id: this.data_room[i].id,
-                    house_img:this.data_room[i].house_img, // 房型图片
+                    roomTypeList:this.data_room[i].img_all, // 房型图片list
                     name: this.data_room[i].name, // 房型
                     area: this.data_room[i].area, // 面积
                     floor: this.data_room[i].floor, // 楼层
@@ -503,8 +550,16 @@ export default {
         swiperCallback(val) {
             console.log(val);
         },
+        // swiper的toast回调
+        swiperToastCallback(val) {
+            console.log(val);
+        },
         // swiper-slide的点击
         swiperSlideFun(val) {
+            console.log(val);
+        },
+        // swiper-slide的toast点击
+        swiperToastSlideFun(val) {
             console.log(val);
         },
         // 点击收藏按钮逻辑
@@ -621,13 +676,47 @@ export default {
         // 打开wx的map
         openMap() {
             // var that = this;
+            // alert(123);
+            // alert( this.longitude + '---' + this.latitude );
+            // type: 'gcj02',
+                // latitude: Number(''+this.latitude+''), // 纬度，浮点数，范围为90 ~ -90
+                // longitude: Number(''+this.longitude+''), // 经度，浮点数，范围为180 ~ -180。
+                // ''+latitude+''
+
+                // latitude: Number(this.latitude), // 纬度，浮点数，范围为90 ~ -90
+
+
+                // longitude:  Number('39.9219'), 
+                // latitude:  Number('116.44355') ,  // 
             wx.openLocation({
-                latitude: Number(this.latitude), // 纬度，浮点数，范围为90 ~ -90
-                longitude: Number(this.longitude), // 经度，浮点数，范围为180 ~ -180。
+                
+               
+                // 116.468762,39.963803  燕莎店（百度）
+                // 39.958080,116.461950  燕莎店（腾讯）
+                // 39.9219,116.44355 getLocation
+
+
+                latitude: Number(39.9219), // 纬度，浮点数，范围为90 ~ -90
+                longitude: Number(116.44355), // 经度，浮点数，范围为180 ~ -180。
+
+
+                // latitude:  39.9219,  // 纬度，浮点数，范围为90 ~ -90
+                // longitude: 116.44355,   cookie 
+                
+                
                 name: this.data_store.store_name, // 位置名
                 address: this.data_store.address, // 地址详情说明
                 scale: 10, // 地图缩放级别,整形值,范围从1~28。默认为最大
-                infoUrl: "" // 在查看位置界面底部显示的超链接,可点击跳转
+                infoUrl: "", // 在查看位置界面底部显示的超链接,可点击跳转
+                success: function (res) {
+                    // alert('suc'+ res);
+                    // alert( 'suc' +"--"  + res.errMsg);
+                    
+                },
+                fail: function (res) {
+                    // alert( "err"  + "--" + res.errMsg);
+                    
+                }
             });
         },
         // banner重置宽高
@@ -664,7 +753,7 @@ export default {
     position: relative;
     // min-height: 162px;
     // max-height: 190px;
-    background: url("../../assets/images/default/banner.jpg") no-repeat center
+    background: url("../../assets/images/default/tupian.jpg") no-repeat center
         center;
     background-size: 100% 100%;
     .zb-swiper {
@@ -709,6 +798,7 @@ export default {
 // 酒店的位置
 .detail {
     padding: 10px 50px 10px 15px;
+    background: #fff;
     position: relative;
     &:after {
         content: "";
@@ -731,7 +821,7 @@ export default {
         width: 100%;
         padding-left: 22px;
         background: url("../../assets/images/hotel-label/ic_dingwei.png")
-            no-repeat 3px 3px;
+            no-repeat 3px center;
         background-size: 13px 15px;
     }
     .call {
@@ -843,9 +933,10 @@ export default {
 }
 
 // 预定的list
-.reverse-wrapper {
+.roomtype-list-wrapper {
     .list {
         padding: 0 15px;
+        background: #fff;
         li {
             padding: 10px 0 5px 0;
             height: 88px;
@@ -869,21 +960,25 @@ export default {
                 background: url("../../assets/images/default/fangxing.jpg")
                     no-repeat right center;
                 background-size: 83px 73px;
+                border-radius: 3px; 
                 margin-right: 6px;
                 img {
+                    display: block;
                     width: 83px;
                     height: 73px;
+                    border-radius: 3px; 
                 }
             }
             // 中间
             .md {
                 flex: 1;
+                overflow: hidden;
                 height: 73px;
                 padding: 8px 0 0 0;
                 color: rgba(153, 153, 153, 1);
                 // 酒店名称
                 .name {
-                    width: 155px;
+                    // width: 155px;
                     height: 20px;
                     font-size: 14px;
                     color: rgba(51, 51, 51, 1);
@@ -891,7 +986,7 @@ export default {
                 }
                 // 酒店房间标签
                 .labels {
-                    width: 155px;
+                    // width: 155px;
                     height: 16px;
                     line-height: 16px;
                     font-size: 12px;
@@ -1000,6 +1095,9 @@ export default {
         .item-toast-banner {
             // height: 190px;
             // background: #ffba56;
+            background: url("../../assets/images/default/tupian.jpg") no-repeat center
+                center;
+            background-size: 100% 100%;
             overflow: hidden;
             img {
                 display: block;
@@ -1053,7 +1151,7 @@ export default {
                     transform: scaleY(0.5);
                 }
                 .label-item-head {
-                    // width: 70px;
+                    width: 70px;
                     margin-right: 15px;
                     color: #666;
                     letter-spacing: 1px;

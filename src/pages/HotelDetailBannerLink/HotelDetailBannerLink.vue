@@ -2,7 +2,7 @@
     <div class="hotel-detail-banner-link-page m-position-ab">
         <ul class="list" v-if="list.length>0">
             <li v-for="(item,index) in list" :key="index">
-                <div :style="{backgroundImage:'url('+ item +')'}"></div>
+                <div class="divItem" :style="{height: divItemH + 'px', backgroundImage:'url('+ item +')'}"></div>
             </li>
         </ul>
         <div v-show="loading">
@@ -26,7 +26,8 @@ export default {
             store_id: "",
             loading: true,
             isHasData: false,
-            list: ""
+            list: "",
+            divItemH:""  // 循环的div的高
         };
     },
     created() {
@@ -48,6 +49,13 @@ export default {
                 if (res.data.status == 1) {
                     // 房间img list
                     this.list = res.data.data.data_store.img_logo;
+                    this.$nextTick(() => {
+                        // 由卡片的宽度-->给卡片的高赋值
+                        let divItem = document.querySelector(".divItem");
+                        let tempW = divItem.clientWidth;
+                        let tempH = (tempW * 320) / 750;
+                        this.divItemH = tempH;
+                    });
                 } else {
                     this.isHasData = true;
                 }
@@ -68,9 +76,9 @@ export default {
         width: 50%;
         padding: 0 1.066% 0 4%;
         margin-bottom: 1.066%;
-        div {
+        .divItem {
             width: 100%;
-            height: 110px;
+            // height: 110px;
             background-repeat: no-repeat;
             background-position:center center;
             background-size:100% 100%;   

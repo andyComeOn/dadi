@@ -41,6 +41,7 @@
 		width: 100%;
 		overflow: hidden;
 		height: 50px;
+		// background: rgba(255, 255, 34, .2);
 		background: #fff;
 		&:before {
 			content: '';

@@ -1,0 +1,116 @@
+.topUp{
+    padding:30px 15px;
+    border-bottom: 1px solid #eee;
+    p{
+        font-size: 14px;
+        color: #333;
+        line-height: 14px;
+        margin-bottom: 15px;
+    }
+    .topUpVal{
+        position: relative;
+        span{
+            // display: inline-block;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            line-height: 24px;
+            font-size: 18px;
+            color: #333;
+        }
+        input{
+            display: inline-block;
+            border: 0;
+            outline: 0;
+            font-size: 24px;
+            color: #333;
+            width: 100%;
+            padding-left: 19px;
+        }
+    }
+}
+.payWay_package{
+    li{
+        line-height: 45px;
+        font-size: 14px;
+        color: #666;
+        padding:0px 15px;
+        position: relative;
+        p{
+            span{
+                float: right;
+                font-size: 15px;
+                color: #333;
+            }
+        }
+        img{
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+        }
+        &:nth-of-type(2){
+            p{
+                text-indent: 26px;
+            }
+        }
+    }
+}
+.packAgeBtn{
+    padding: 0px 15px;
+    font-size: 16px;
+    margin-top: 30px;
+    p{
+        background: #E0310D;
+        line-height: 45px;
+        text-align: center;
+        border-radius: 45px;
+        color: #fff;
+    }
+}
+.topUpMsg{
+    position: fixed;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    p{
+        span{
+            color: #576B95;
+            font-size: 13px;
+            &:nth-of-type(1){
+                margin-right: 8px;
+                position: relative;
+                &::after{
+                    content: '';
+                    width: 1px;
+                    height: 12px;
+                    position: absolute;
+                    top: 50%;
+                    right: -8px;
+                    background: #ccc;
+                    transform: translateY(-50%);
+                }
+            }
+            &:nth-of-type(2){
+                margin-left: 8px;
+            }
+        }
+    }
+}
+.topUpHint{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%);
+    transform: translateX(-50%);
+    span{
+        background: rgba(0,0,0,0.7);
+        padding:8px 20px;
+        color: #fff;
+        border-radius: 2px;
+    }
+}

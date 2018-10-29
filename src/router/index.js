@@ -76,6 +76,36 @@ import UserInfo from '../pages/UserInfo/UserInfo.vue'
 //添加常用联系人信息
 import AddContact from '../pages/AddContact/AddContact.vue'
 
+// 商城
+import shoppIng from '../pages/shopPage/shoppIng/shoppIng.vue';
+// 商城详情
+import shoppIngDetails from '../pages/shopPage/shoppIngDetails/shoppIngDetails.vue';
+//收货地址
+import takeGoodsAddress from '../pages/shopPage/takeGoodsAddress/takeGoodsAddress.vue';
+//我的钱包
+import myWallet from '../pages/shopPage/myWallet/myWallet.vue';
+//商城订单
+import shopOrder from '../pages/shopPage/shopOrder/shopOrder.vue';
+//订单详情
+import shopOrderDetail from '../pages/shopPage/order/orderDetails.vue';
+//退款订单
+import refundOrder from '../pages/shopPage/refundOrder/refundOrder.vue';
+//配送方式
+import deliveryWay from '../pages/shopPage/deliveryWay/deliveryWay.vue';
+//确认订单
+import payOrder from '../pages/shopPage/payOrder/payOrder.vue';
+//充值详情
+import topUpDetails from '../pages/shopPage/myWallet/topUpDetails.vue';
+//充值明细
+import topUpLists from '../pages/shopPage/myWallet/topUpLists.vue';
+//账单详情
+import billDetails from '../pages/shopPage/myWallet/billDetails.vue';
+//编辑收货地址
+import editAddress from '../pages/shopPage/address/editAddress.vue';
+
+
+
+
 Vue.use(Router)
 
 export default new Router({
@@ -381,7 +411,123 @@ export default new Router({
 				title: '注册条款'
 			}
 		},
-
+		// 商城
+		{
+			path: '/shoppIng',
+			name: 'shoppIng',
+			component: shoppIng,
+			meta:{
+				title:'商城'
+			}
+		},
+		//商城产品详情
+		{
+			path: '/shoppIngDetails',
+			name: 'shoppIngDetails',
+			component: shoppIngDetails,
+			meta:{
+				title:'商城'
+			}
+		},
+		//收货地址
+		{
+			path: '/takeGoodsAddress',
+			name: 'takeGoodsAddress',
+			component: takeGoodsAddress,
+			meta:{
+				title:'收货地址'
+			}
+		}, 
+		//我的钱包  
+		{
+			path: '/myWallet',
+			name: 'myWallet',
+			component: myWallet,
+			meta:{
+				title:'我的钱包'
+			}
+		}, 
+		//商城订单  
+		{
+			path: '/shopOrder',
+			name: 'shopOrder',
+			component: shopOrder,
+			meta:{
+				title:'商城订单'
+			}
+		}, 
+		//订单详情  
+		{
+			path: '/shopOrderDetail',
+			name: 'shopOrderDetail',
+			component: shopOrderDetail,
+			meta:{
+				title:'订单详情'
+			}
+		}, 
+		//退款订单  
+		{
+			path: '/refundOrder',
+			name: 'refundOrder',
+			component: refundOrder,
+			meta:{
+				title:'退款订单'
+			}
+		}, 
+		//配送方式  
+		{
+			path: '/deliveryWay',
+			name: 'deliveryWay',
+			component: deliveryWay,
+			meta:{
+				title:'配送方式'
+			}
+		}, 
+		//确认订单  
+		{
+			path: '/payOrder',
+			name: 'payOrder',
+			component: payOrder,
+			meta:{
+				title:'确认订单'
+			}
+		}, 
+		//充值详情  
+		{
+			path: '/topUpDetails',
+			name: 'topUpDetails',
+			component: topUpDetails,
+			meta:{
+				title:'充值详情'
+			}
+		}, 
+		//充值明细  
+		{
+			path: '/topUpLists',
+			name: 'topUpLists',
+			component: topUpLists,
+			meta:{
+				title:'充值明细'
+			}
+		}, 
+		//账单详情  
+		{
+			path: '/billDetails',
+			name: 'billDetails',
+			component: billDetails,
+			meta:{
+				title:'账单详情'
+			}
+		}, 
+		//编辑收货地址  
+		{
+			path: '/editAddress',
+			name: 'editAddress',
+			component: editAddress,
+			meta:{
+				title:'编辑收货地址'
+			}
+		}, 
 		{
 			path: '/error',
 			name: 'error',

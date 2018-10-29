@@ -1,5 +1,5 @@
 <template>
-    <div class="vip-page">
+    <div id="vipPage">
         <!-- 卡片区 -->
         <div class="cards">
             <div class="box" id="cardsBox" v-if='cardList'>

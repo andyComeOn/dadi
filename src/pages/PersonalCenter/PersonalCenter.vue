@@ -7,6 +7,10 @@
 				<img v-else src="../../assets/images/default_avatar.png" />
 			</li>
 			<li>
+				<span>账号</span>
+				<span class='nickName'>{{username}}</span>
+			</li>
+			<li>
 				<span>昵称</span>
 				<span class='nickName'>{{nickname}}</span>
 			</li>
@@ -20,6 +24,10 @@
 				<span v-if="this.sex == 1" class="center_date">男</span>
 				<span v-if="this.sex == 2" class="center_date">女</span>
 				<img class="pa" src="../../assets/images/arrows/list－更多icon@1x.png" />
+			</li>
+			<li>
+				<span>会员等级</span>
+				<span class='nickName'>{{grade | filterCardGradeGetInfo}} </span>
 			</li>
 			<li class="border0 center_li" @click="oldMobile">
 				<span>手机号</span>
@@ -44,8 +52,11 @@
 			return {
 				birthdayNum:'',	//生日
 				imgUrl:'',		//头像
+				username: "",   //账号
 				nickname:'',	//昵称
 				sex:'',			//性别   1
+				card:"",      // 什么类型的卡
+				grade : "",  // 卡的等级
 				mobile:'',		//手机号
 				openId:'',		//openId
 				hint_box_show:false,	//hint
@@ -158,11 +169,13 @@
 			}).then((res)=>{
 				this.imgUrl = res.data.data.avatar;		//头像
 				this.nickname = res.data.data.nickname;		//昵称
+				this.username = res.data.data.username;  // 用户名
+				this.card = res.data.data.card;
+				this.grade = res.data.data.grade;
 				this.birthdayNum = res.data.data.birthday;	//生日
 				this.sex = res.data.data.sex;				//
 				this.mobile = res.data.data.mobile;
 				this.openId = res.data.data.openid;
-				console.log(res);
 			});
         }
 	};

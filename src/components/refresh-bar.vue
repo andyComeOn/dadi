@@ -71,7 +71,7 @@ export default {
             });
             wx.ready(function() {
                 wx.getLocation({
-                    type: "wgs84", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+                    type: "gcj02", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
                     success: function(res) {
                         var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
                         setCookie("userLatitude", latitude);
@@ -101,9 +101,6 @@ export default {
             }).then(res => {
                 if (res.data.status == 1) {
                     let locationTmp = res.data.data;
-                    // if (locationTmp.address == "") {
-                        // this.getAddr();
-                    // }
                     this.cityname = locationTmp.city;
                     this.cityid = locationTmp.id;
                     this.address = locationTmp.address;

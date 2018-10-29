@@ -305,10 +305,11 @@ export default {
                 transform: scaleY(0.5);
             }
             .lf {
-                // flex: 1;
-                max-width: 211px;
+                flex: 1;
+                // max-width: 211px;
                 height: 80px;
                 color: #666;
+                overflow: hidden;
                 .hotel-name {
                     color: #999;
                     font-size: 15px;
