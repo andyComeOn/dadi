@@ -98,7 +98,7 @@
         <!-- “广播”提示 -->
         <div class="broadcast m-ellipsis" @click="showUserCardRightMask">
             <span class="broadcast-icon"></span>
-            {{group_name | filterCardType}}特权：房价折扣{{promo}}折，餐饮折扣{{catering_discount}}，延迟退房至{{delayCheckout}}
+            {{group_name | filterCardType}}特权：房价折扣{{promo}}折，餐饮折扣{{catering_discount}}，延迟退房{{delayCheckout}}
             <span class="broadcast-btn"></span>
         </div>
         <!-- 温馨提示 -->
@@ -591,8 +591,8 @@ export default {
                         this.catering_discount =
                             res.data.data.catering_discount; // 用户所属卡种-餐饮折扣 -> 95折
                         this.promo = res.data.data.promo; // 用户所属卡种-会员卡折扣 -> 0.95
-                        // this.delayCheckout = res.data.data.delayCheckout; // 用户所属卡种-延迟退房时间 -> 13:00
-                        this.delayCheckout = "14:00"; // 用户所属卡种-延迟退房时间 -> 13:00
+                        this.delayCheckout = res.data.data.delay_room; // 用户所属卡种-延迟退房时间 -> 13:00
+                        // this.delayCheckout = "14:00"; // 用户所属卡种-延迟退房时间 -> 13:00
                         this.fetchUserCardRightInfo(); // 拉取用户卡种的权益
                         let astrict = parseInt(res.data.data.astrict); // 后台配置的最大可选择几间房
                         let quantity = parseInt(res.data.data.quantity); // 当前用户能定的最大房间数

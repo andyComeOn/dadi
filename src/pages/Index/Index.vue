@@ -107,21 +107,22 @@ export default {
     },
     data() {
         let isYouzan = "";
-        if (getCookie("isYouzan") == 0) {
+        if (getCookie("isYouzan") == 0 || getCookie("isYouzan") == undefined || getCookie("isYouzan") == "") {
             isYouzan = false;        
         } else {
             isYouzan = true;
         }
         return {
-            swiperIndexOption: {
-                notNextTick: true,
+            swiperIndexOption: {                
                 // autoplay: true,
                 // speed: 2000,
                 // loop:true,
-                preventClicks: true,  // 当swiper在触摸时阻止默认事件（preventDefault），用于防止触摸时触发链接跳转. 默认是true。
-                loop: true, 
+                
+                autoplay: false,  // 这个参数是一张轮播照片播完delay 3s之后第二张图片开播
                 speed: 1000,   // 这个参数是一张轮播照片从左边播到右边用时1000毫秒
-                autoplay: 3000,  // 这个参数是一张轮播照片播完delay 3s之后第二张图片开播
+                loop: false,   // 这循环指的是->true:如果有三张图片，轮播到第三张直接是平滑的过度（克隆了第一张）；false:如果有三张图片，轮播到第三张直接是把第一张拉到开始的位置轮播（无克隆）
+                notNextTick: true,
+                preventClicks: true,  // 当swiper在触摸时阻止默认事件（preventDefault），用于防止触摸时触发链接跳转. 默认是true。
                 direction: "horizontal",
                 autoplayDisableOnInteraction: true, // 滑动结束后, 继续轮播
                 grabCursor: true, //设置为true时，鼠标覆盖Swiper时指针会变成手掌形状，拖动时指针会变成抓手形状

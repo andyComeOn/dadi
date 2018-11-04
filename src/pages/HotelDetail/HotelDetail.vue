@@ -128,7 +128,7 @@
                                 <swiper-slide v-for="(itemSon,indexSon) in item.roomTypeList" :key="indexSon" @click="swiperToastSlideFun(indexSon)">
                                     <img :src="itemSon" alt="" style="display:block;width:100%;">
                                 </swiper-slide>
-                                <div class="swiper-pagination" slot="pagination"></div>
+                                <div class="swiper-pagination" style="line-height:5px;bottom:5px;" slot="pagination"></div>
                             </swiper>
                         </div>
                         <div class="item-toast-info">
@@ -241,11 +241,11 @@ export default {
         return {
             // 门店详情banner-swiper相关参数
             swiperOption: {
+                autoplay: 3000,
+                speed: 1000,   // 这个参数是一张轮播照片从左边播到右边用时1000毫秒
+                loop: true, 
                 notNextTick: true,
                 preventClicks: true,
-                loop: true, 
-                speed: 1000,   // 这个参数是一张轮播照片从左边播到右边用时1000毫秒
-                autoplay: 3000,
                 direction: "horizontal",
                 grabCursor: true,
                 setWrapperSize: true,
@@ -346,11 +346,11 @@ export default {
             timestamp: "", // 必填，生成签名的时间戳
             nonceStr: "", // 必填，生成签名的随机串
             signature: "", // 必填，签名
-            // longitude: "",  // 经度
-            // latitude: "",   // 维度
+            longitude: "",  // 经度
+            latitude: "",   // 维度
 
-            longitude: getCookie("userLongitude"),
-            latitude: getCookie("userLatitude"),
+            // longitude: getCookie("userLongitude"),
+            // latitude: getCookie("userLatitude"),
             hotelDetailBannerH: "", //酒店详情banner的高
             itemToastArr: []
         };
@@ -410,9 +410,8 @@ export default {
     },
     mounted() {
         // 调取getAppInfo
-        this.getAppInfo();
+        // this.getAppInfo();
         // 调取banner赋值函数
-        
         this.setBannerSize();
         // this.fetchData(this.watchObj);
     },
@@ -433,9 +432,8 @@ export default {
                     // 房间介绍
                     this.data_store = res.data.data.data_store;
                     // 该门店经纬度赋值
-                    // this.longitude = this.data_store.longitude;
-                    
-                    // this.latitude = this.data_store.latitude;
+                    this.longitude = this.data_store.longitude;
+                    this.latitude = this.data_store.latitude;
                     // console.log(this.longitude + "--" + this.latitude);
                     // 入店、离店、共几晚
                     this.begin = res.data.data.begin;
@@ -446,7 +444,7 @@ export default {
                     // 收藏的id
                     this.collectId = res.data.data.collect_id;
                     // 调取getAppInfo
-                    // this.getAppInfo();
+                    this.getAppInfo();
                 } else {
                     this.data_store = "";
                 }
@@ -675,47 +673,25 @@ export default {
         },
         // 打开wx的map
         openMap() {
-            // var that = this;
-            // alert(123);
-            // alert( this.longitude + '---' + this.latitude );
             // type: 'gcj02',
-                // latitude: Number(''+this.latitude+''), // 纬度，浮点数，范围为90 ~ -90
-                // longitude: Number(''+this.longitude+''), // 经度，浮点数，范围为180 ~ -180。
-                // ''+latitude+''
-
-                // latitude: Number(this.latitude), // 纬度，浮点数，范围为90 ~ -90
-
-
-                // longitude:  Number('39.9219'), 
-                // latitude:  Number('116.44355') ,  // 
+            // longitude:  Number('39.9219'), 
+            // latitude:  Number('116.44355') ,  
             wx.openLocation({
-                
-               
                 // 116.468762,39.963803  燕莎店（百度）
                 // 39.958080,116.461950  燕莎店（腾讯）
-                // 39.9219,116.44355 getLocation
-
-
-                latitude: Number(39.9219), // 纬度，浮点数，范围为90 ~ -90
-                longitude: Number(116.44355), // 经度，浮点数，范围为180 ~ -180。
-
-
-                // latitude:  39.9219,  // 纬度，浮点数，范围为90 ~ -90
-                // longitude: 116.44355,   cookie 
-                
-                
+                // 39.9219,116.44355 getLocation 
+                longitude: Number(this.longitude), //经度，浮点数，范围为180 ~ -180。
+                latitude: Number(this.latitude), // 纬度，浮点数，范围为90 ~ -90
                 name: this.data_store.store_name, // 位置名
                 address: this.data_store.address, // 地址详情说明
-                scale: 10, // 地图缩放级别,整形值,范围从1~28。默认为最大
+                scale: 18, // 地图缩放级别,整形值,范围从1~28。默认为最大
                 infoUrl: "", // 在查看位置界面底部显示的超链接,可点击跳转
                 success: function (res) {
                     // alert('suc'+ res);
                     // alert( 'suc' +"--"  + res.errMsg);
-                    
                 },
                 fail: function (res) {
                     // alert( "err"  + "--" + res.errMsg);
-                    
                 }
             });
         },

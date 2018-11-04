@@ -77,6 +77,7 @@ export default {
                         for (var i = 0; i < tmp.length; i += 3) {
                             tmpArr.push({ tag: tmp.slice(i, i + 3) });
                         }
+                        console.log(tmpArr);
                         this.list = tmpArr;
                     }
                 })

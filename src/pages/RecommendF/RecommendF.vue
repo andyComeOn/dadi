@@ -1,5 +1,5 @@
 <template>
-    <div class="recommend-f-page">
+    <div class="recommendfPage">
         <!-- toast提示 -->
         <div id="orderListToast" v-show="loading">
             <div class="weui-mask_transparent"></div>
@@ -53,7 +53,7 @@
                     <p @click='extractHash' class="tixian-btn">
                         <span>提现</span>
                         <img src="../../assets/images/arrows/tixian.png" alt="">
-                        </p>
+                    </p>
                 </div>
             </div>
             <!-- 四宫格 -->
@@ -104,7 +104,7 @@
 import { user_distribution } from "../../api/api.js";
 import { getCookie } from "../../utils/util.js";
 export default {
-    name: "recommend-f",
+    name: "recommendfPage",
     components: {},
     data() {
         return {
@@ -160,6 +160,16 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+
+.recommendfPage {
+    background: #fff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    overflow: auto;
+    bottom: 0;
+}
 .weui-media-box {
     .weui-cell__ft {
         padding-right: 15px;

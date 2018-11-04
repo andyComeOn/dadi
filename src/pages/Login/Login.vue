@@ -1,5 +1,5 @@
 <template>
-    <div class="login">
+    <div class="loginPage">
         <div class="avatar">
             <img v-if="avatarSrc !=''" :src="avatarSrc" alt="">
             <img v-else src="../../assets/images/default_avatar.png" />
@@ -55,7 +55,7 @@ import { login, sendMobile, storeLogo } from "@/api/api";
 import { getCookie, setCookie } from "@/utils/util";
 
 export default {
-    name: "login",
+    name: "loginPage",
     components: {},
     data() {
         return {
@@ -318,7 +318,14 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.login {
+.loginPage {
+    background: #fff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    overflow: auto;
+    bottom: 0;
     // 头像
     .avatar {
         height: 80px;
