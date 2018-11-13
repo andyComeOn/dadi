@@ -117,7 +117,6 @@
 						method:'POST',
 						data:param
 					}).then((res)=>{
-						console.log(res);
 						if(res.data.status == 1){
 							this.get_btn = false;		//关闭获取验证码按钮
 							this.get_code_btn = true;	//打开倒计时

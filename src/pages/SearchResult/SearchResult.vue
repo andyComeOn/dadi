@@ -111,9 +111,11 @@ export default {
         };
         // searchbar组件的赋值
         this.toSearchbarObj = urlPara;
-        // refreshBar组件赋值-使用cookie了
-        // this.toRefreshBarObj.longitude = urlPara.longitude;
-        // this.toRefreshBarObj.latitude = urlPara.latitude;
+        // refreshBar组件赋值-使用cookie了,下面的2句代码是注销的，
+        // 在11.5号发现城市组件的定位城市失败，原因是经纬度是'',
+        // 思考这种应该用全局的cookie取经纬度才是合理的。
+        this.toRefreshBarObj.longitude = urlPara.longitude;
+        this.toRefreshBarObj.latitude = urlPara.latitude;
         // 日历初始赋值
         this.zbInitCalendar.start.yyyy = urlPara.liveinYYYY;
         this.zbInitCalendar.start.mm = urlPara.liveinMM;

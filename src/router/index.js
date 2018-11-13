@@ -116,7 +116,8 @@ export default new Router({
 			name: 'index',
 			component: Index,
 			meta: {
-				title: '秋果酒店'
+				// title: '秋果酒店'
+				title: GlobalCpid == 1 ? "秋果酒店" : "华驿酒店-如家联盟"
 			}
 		},
 		// 搜素结果页
@@ -125,7 +126,7 @@ export default new Router({
 			name: 'searchResult',
 			component: SearchResult,
 			meta: {
-				title: '秋果酒店'
+				title: '搜索结果'
 			}
 		},
 		// 酒店详情页

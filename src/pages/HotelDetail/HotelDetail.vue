@@ -244,6 +244,7 @@ export default {
                 autoplay: 3000,
                 speed: 1000,   // 这个参数是一张轮播照片从左边播到右边用时1000毫秒
                 loop: true, 
+                initialSlide : 1,
                 notNextTick: true,
                 preventClicks: true,
                 direction: "horizontal",
@@ -895,15 +896,14 @@ export default {
             float: right;
         }
         .total {
-            position: absolute;
-            width: 40px;
-            height: 22px;
+            padding: 0 5px;
             line-height: 22px;
             border: 1px solid #ccc;
             border-radius: 3px;
+            position: absolute;
             top: 50%;
             left: 50%;
-            margin: -11px 0 0 -20px;
+            transform: translate(-50%, -50%);
         }
     }
 }
@@ -950,7 +950,7 @@ export default {
                 flex: 1;
                 overflow: hidden;
                 height: 73px;
-                padding: 8px 0 0 0;
+                padding: 8px 5px 0 0;
                 color: rgba(153, 153, 153, 1);
                 // 酒店名称
                 .name {

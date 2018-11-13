@@ -74,6 +74,35 @@ axios.post(check_login, param).then((res) => {
 	}
 });
 
+// 11.9按照产品需求修改代码备份
+// axios.post(check_login, param).then((res) => {
+// 	if (res.data.status == 0) {
+// 		window.location.href = res.data.data;
+// 	} else {
+// 		if (res.data.data.is_focus_wx == 0) {
+// 			// 跳到公众号历史列表页
+// 			window.location.href = "https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=Mzg3NDAxMTM0Mw==&scene=126#wechat_redirect";
+// 		} else {
+// 			setCookie("userInfoTel", res.data.data.mobile);  //手机号
+// 			setCookie("userVipStatus", res.data.data.status);  //会员状态（0待审、1正常、2锁定）
+// 			setCookie("userUid", res.data.data.uid);
+// 			setCookie("userInfoIsRealname", res.data.data.is_realname); //真实姓名
+// 			setCookie("userInfoGroupid", res.data.data.group_id);  //会员组id
+// 			setCookie("nickname", encodeURI(res.data.data.nickname));		//昵称
+// 			setCookie("openid", res.data.data.openid);  //openid
+// 			setCookie("avatar", res.data.data.avatar);  //avatar
+// 			if (res.data.data.coupon_flag == 0) {
+// 				setCookie("isYouzan", 0); // 判断是不是有赞用户 1是(弹系统维护提示) 0不是（不弹）
+// 			} else {
+// 				setCookie("isYouzan", 1); // 判断是不是有赞用户 1是(弹系统维护提示) 0不是（不弹）
+// 			}
+// 		}
+		
+// 	}
+// });
+
+
+// 测试发版时候切记要注释腾讯统计代码
 MtaH5.init({
 	"sid": 500647079, //必填，统计用的appid
 	"cid": "", //如果开启自定义事件，此项目为必填，否则不填
@@ -89,6 +118,7 @@ router.beforeEach((to, from, next) => {
 	//路由改变，改变页面title
 	if (to.meta.title) {
 		document.title = to.meta.title;
+		// 测试发版时候切记要注释腾讯统计代码
 		MtaH5.pgv();
 	}
 	next();

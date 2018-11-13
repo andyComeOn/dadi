@@ -141,13 +141,13 @@ export default {
         // 订单socket
         socketMethod() {
             var that = this;
-            let ws = new WebSocket("ws://172.16.0.252:8081");
+            // let ws = new WebSocket("ws://172.16.0.252:8081");
+            let ws = new WebSocket("ws://39.107.102.235:8081"); 
             // let  ws = this.ws;
             ws.onopen = function() {
                 console.log("连接成功");
                 ws.send("uid" + getCookie("userUid"));
             };
-            console.log(77);
             ws.onmessage = function(e) {
                 console.log("收到服务端的消息：" + e.data);
                 if (e) {

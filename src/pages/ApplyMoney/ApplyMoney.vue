@@ -26,15 +26,7 @@
         <!-- refund btn str -->
         <div class="refund_btn" @click="submit">提交申请</div>
         <!-- refund btn end -->
-        <!-- 提交申请按钮toast -->
-        <!-- <div v-show="submitSucToast">
-            <div class="weui-mask_transparent"></div>
-            <div class="weui-toast">
-                <i class="weui-error weui-icon_toast"></i>
-                <p class="weui-toast__content">提交申请成功</p>
-            </div>
-        </div> -->
-
+        
         <!-- toast(loading=>weui) -->
         <div v-show="loading">
             <div class="weui-mask_transparent"></div>
@@ -48,7 +40,7 @@
             <div class="z-mask-transparent"></div>
             <div class="z-toast">
                 <i class="z-toast-icon"></i>
-                <p class="z-toast-content">提交申请成功</p>
+                <p class="z-toast-content">{{delayToastTxt}}</p>
             </div>
         </div>
 
@@ -226,6 +218,7 @@ export default {
                         .then(res => {
                             if (res.data.status == 1) {
                                 this.loading = false;
+                                this.delayToastTxt = "提交申请成功";
                                 this.submitSucToast = true;
                                 setTimeout(() => {
                                     this.submitSucToast = false;
@@ -235,6 +228,13 @@ export default {
                                             status: "ing"
                                         }
                                     });
+                                }, 2000);
+                            } else if (res.data.status == -3) {
+                                this.loading = false;
+                                this.delayToastTxt = "系统支付错误03，请联系客服400-099-9682";
+                                this.submitSucToast = true;
+                                setTimeout(() => {
+                                    this.submitSucToast = false;
                                 }, 2000);
                             }
                         })
