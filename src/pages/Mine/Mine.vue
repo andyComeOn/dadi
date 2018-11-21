@@ -14,7 +14,7 @@
                     <span class="weui-cell__ft zb-weui-cell__ft"></span>
                 </router-link>
                 <!-- str -->
-                <!-- <ul class="userLists">
+                <ul class="userLists">
                     <li>
                         <router-link :to=" { path: 'orderList', query: { status: 'ing' }}">
                             <dl>
@@ -45,12 +45,12 @@
                             </dl>
                         </router-link>
                     </li>
-                </ul> -->
+                </ul>
                 <!-- end -->
             </div>
         </div>
         <!-- 进行中订单、已完成订单 -->
-        <div class="order-ing-ed clearflex">
+        <!-- <div class="order-ing-ed clearflex">
             <router-link :to=" { path: 'orderList', query: { status: 'ing' }}">
                 <div class="lf">
                     <div class="icon"><img src="../../assets/images/my/my_jinxingzhong.png" alt=""></div>
@@ -63,11 +63,10 @@
                     <span>已完成订单</span>
                 </div>
             </router-link>
-        </div>
-        
+        </div> -->
         <!-- 我的问题的list(第二部分) ma-top5 -->
         <div class="weui-panel">
-            <div class="weui-panel__bd ">
+            <div class="weui-panel__bd">
                 <div class="weui-media-box weui-media-box_small-appmsg">
                     <div class="weui-cells">
                         <!-- 推荐好友拿奖金 -->
@@ -79,6 +78,12 @@
                             <span class="hot"><img src="../../assets/images/icon/ic-hot.png" alt=""></span>
                             <span class="weui-cell__ft"></span>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-panel__bd ma-top5">
+                <div class="weui-media-box weui-media-box_small-appmsg">
+                    <div class="weui-cells">
                         <!-- 我的优惠券 -->
                         <router-link to="/myCoupon" class="weui-cell weui-cell_access">
                             <div class="weui-cell__hd"><img src="../../assets/images/my/my_youhuiquan.png" alt="" style="width:22px;margin-right:5px;display:block"></div>
@@ -120,7 +125,12 @@
                             </div>
                             <span class="weui-cell__ft"></span>
                         </router-link> -->
-
+                    </div>
+                </div>
+            </div>
+            <div class="weui-panel__bd ma-top5">
+                <div class="weui-media-box weui-media-box_small-appmsg">
+                    <div class="weui-cells">
                         <!-- 会员特权 -->
                         <router-link to="/vip" class="weui-cell weui-cell_access">
                             <div class="weui-cell__hd"><img src="../../assets/images/my/my_vip.png" alt="" style="width:22px;margin-right:5px;display:block"></div>
@@ -142,14 +152,15 @@
             </div>
         </div>
         <!-- tabbar -->
-        <mTabbarfa></mTabbarfa>
-        <!-- <shopFooter></shopFooter> -->
+        <!-- <mTabbarfa></mTabbarfa> -->
+        <shopFooter></shopFooter>
     </div>
 </template>
 <script>
 import mTabbarfa from "@/components/tabbarfa";
 import shopFooter from "@/components/shop/shopFooter.vue";
 import { userInfo } from "@/api/api";
+import { getCookie, setCookie } from '@/utils/util';
 
 export default {
     name: "mine",
@@ -176,8 +187,10 @@ export default {
                 url: userInfo,
                 data: {}
             }).then(res => {
+                console.log(res);
                 if (res.data.status == 1) {
                     this.userInfoData = res.data.data;
+                    setCookie('avail_amount',res.data.data.avail_amount);
                 }
             });
         }

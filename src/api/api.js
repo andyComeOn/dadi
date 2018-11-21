@@ -137,3 +137,27 @@ export const wxShare = '/api/Index/wx_share?cpid=' + GlobalCpid;       //获取�
 
 // UserAccount-用户账户
 export const wx_pay = '/api/WxPay/pay?cpid=' + GlobalCpid;       //微信支付
+
+
+// 商城部分接口-商品--Goods
+export const shopType = '/api/Goods/category_list?cpid=' + GlobalCpid;  //   商品分类
+// 商品列表
+export const shopLists = '/api/Goods/goods_list?cpid=' + GlobalCpid;  // 商品列表
+// 商品分类列表
+export const shopTypeLists = '/api/Goods/category_goods?cpid=' + GlobalCpid;  // 商品分类列表
+// 商品详情
+export const shopDetails = '/api/Goods/goods_detail?cpid=' + GlobalCpid;  // 商品详情
+// 充值
+export const topUpMoney = '/api/WxPay/recharge_pay?cpid=' + GlobalCpid;     //充值
+// 可用优惠券
+export const usableCoupon = '/api/Goods/available_coupon?cpid=' + GlobalCpid;   //可用优惠券
+// 充值明细列表
+export const topUpLists = '/api/ShopOrder/recharge_list?cpid=' + GlobalCpid;    //充值列表
+// 充值详情
+export const topUpDetails = '/api/ShopOrder/recharge_detail?cpid=' + GlobalCpid;    //充值详情
+// 下单
+export const placeOrder = '/api/Goods/add_order?cpid=' + GlobalCpid;    //下单 
+// 商品微信支付
+export const WxPay = '/api/WxPay/shop_pay?cpid=' + GlobalCpid;      //商品微信支付
+// 商城订单列表
+export const shopOrderLists = '/api/ShopOrder/order_list?cpid=' + GlobalCpid;       //商城订单列表

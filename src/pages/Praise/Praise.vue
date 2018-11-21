@@ -52,7 +52,6 @@
             tabsActive(active_text,activeIndex){
                 this.showView = active_text;    //点击的谁
                 this.classIndex = activeIndex;  //点击的index
-                
             }
         },
         mounted() {
