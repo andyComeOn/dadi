@@ -150,13 +150,7 @@
                     </div>
                 </div>
                 <!-- 输入短信验证码 end -->
-                <!-- 放弃支付 str -->
-                <div class="giveBox" style="display:none;">
-                    <p>确认要放弃支付吗？</p>
-                    <span>继续支付</span>
-                    <span>确认放弃</span>
-                </div>
-                <!-- 放弃支付 end -->
+
                 <!-- 配送方式 str -->
                 <div class="shopDetailsBox" v-if='shopDetailsBox == true'>
                     <ul class="deliveryLists">
@@ -173,7 +167,17 @@
                 <!-- 配送方式 end -->
             </div>
             <!-- 弹窗 end -->
+            <!-- 放弃支付(二次弹窗) str -->
+            <div class="giveBoxWrap" v-show="isGiveBoxWrapShow">
+                <div class="giveBox">
+                    <p>确认要放弃支付吗？</p>
+                    <span @click="isGiveBoxWrapShow = false">继续支付</span>
+                    <span @click="isGiveBoxWrapShow = false">确认放弃</span>
+                </div>
+            </div>
+            <!-- 放弃支付 end -->
         </div>
+
         <!-- hint box str -->
         <div class="hintBox" style="display:none;">
             <span>还未添加收货地址</span>
@@ -222,7 +226,7 @@ export default {
                 },
                 {
                     payWayIcon: require("../../../assets/images/shop/zhifu_qianbao@1x.png"),
-                    payWayName: "钱包支付(余额￥456.00)"
+                    payWayName: "钱包支付(余额¥456.00)"
                 }
             ],
             choosePayWayInd: -1,
@@ -243,42 +247,23 @@ export default {
             btnPlusDisable: require("../../../assets/images/shop/plus_disable@1x.png"), // “加”按钮图片disable
             btnPlusNormal: require("../../../assets/images/shop/plus_normal@1x.png"), // “加”按钮图片normal
             btnMinusDisable: require("../../../assets/images/shop/jian_disable@1x.png"), // “减”按钮图片disable
-            btnMinusNormal: require("../../../assets/images/shop/jian_normal@1x.png") //“减”按钮图片normal
+            btnMinusNormal: require("../../../assets/images/shop/jian_normal@1x.png"), //“减”按钮图片normal
+            isGiveBoxWrapShow: false, // 确认要放弃支付是否显示
         };
     },
     mounted() {
         this.avail_amount = getCookie("avail_amount"); //钱包余额
         this.payWayArr[1].payWayName =
-            "钱包支付(余额￥" + this.avail_amount + ")"; //设置钱包余额
+            "钱包支付(余额¥" + this.avail_amount + ")"; //设置钱包余额
         this.mobile =
             getCookie("userInfoTel").substr(0, 3) +
             "****" +
             getCookie("userInfoTel").substr(7); //手机号
         this.deliveryWay = this.$route.query.deliveryWay; //配送方式
-        // this.$http({
-        //     url: shopDetails,
-        //     method: "POST",
-        //     data: {
-        //         id: this.$route.query.shopId
-        //     }
-        // }).then(res => {
-        //     if (res.data.status == 1) {
-        //         this.shopName = res.data.data.goods_name; //商品姓名
-        //         this.shopSize = res.data.data.specs; //商品规格
-        //         this.shopPrice = res.data.data.goods_price; //商品价格
-        //         this.shopNum = this.$route.query.payShopNum; //商品购买数量
-        //         this.totalPrices = this.shopPrice * this.shopNum;
-        //         this.max_num = res.data.data.max_num; //最大购买量
-        //         this.freight_money = res.data.data.freight_money; //运费
-        //         console.log(res);
-        //     } else {
-        //         alert("获取失败");
-        //     }
-        // });
         this.fetchGoodsDetail();
     },
     methods: {
-        fetchGoodsDetail(){
+        fetchGoodsDetail() {
             this.$http({
                 url: shopDetails,
                 method: "POST",
@@ -313,7 +298,10 @@ export default {
                 return false;
             } else {
                 this.shopNum--;
-                this.totalPrices = ((this.shopPrice * 100 * this.shopNum) / 100).toFixed(2);
+                this.totalPrices = (
+                    (this.shopPrice * 100 * this.shopNum) /
+                    100
+                ).toFixed(2);
             }
         },
         plusSign() {
@@ -330,7 +318,10 @@ export default {
                 this.btnMinus = this.btnMinusNormal;
                 this.btnPlus = this.btnPlusNormal;
                 this.shopNum++;
-                this.totalPrices = ((this.shopPrice * 100 * this.shopNum) / 100).toFixed(2);
+                this.totalPrices = (
+                    (this.shopPrice * 100 * this.shopNum) /
+                    100
+                ).toFixed(2);
             }
         },
         pickUpWay() {
@@ -458,10 +449,11 @@ export default {
         },
         msgCodeBtn() {
             //钱包余额弹窗关闭
-            alert("钱包余额弹窗关闭");
+            // alert("钱包余额弹窗关闭");
+            this.isGiveBoxWrapShow = true;
         },
         sendCode() {
-            //发送验证码
+            // 钱包支付-获取支付验证码
             // this.$http({
             //     url:sendMobile,
             //     method:'POST',
@@ -494,8 +486,7 @@ export default {
                 }
             }, 1000);
         }
-    },
-    
+    }
 };
 </script>
 
