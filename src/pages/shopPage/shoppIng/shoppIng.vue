@@ -2,19 +2,18 @@
     <div>
         <div class="shoppIng">
             <!-- 轮播 str -->
-            <div class="goodsBanner" id="goodsBanner">
-                <router-link :to='{path:"shoppIngDetails"}'>
+            <div class="goodsBanner">
+                <!-- <router-link :to='{path:"shoppIngDetails"}'>
                     <img src="../../../assets/images/bg/bg-jifenmignxi.png" alt="">
-                </router-link>
-
-                <!-- <swiper class="" :options="goodsOption" ref="mySwiper" @someSwiperEvent="goodsSwiperCallback(1)">
-                    <swiper-slide v-for="(item,index) in data_store.img_logo" :key="index" @click="goodsSwiperSlideFun(index)">
-                        <router-link :to="{path:'hotelDetailBannerLink',query:{store_id:watchObj.store_id}}" class="hotel-detail-banner-link">
-                            <img :src="item" alt="" style="display:block;width:100%;">
-                        </router-link>
+                </router-link> -->
+                <swiper style="height:180px;" ref="mySwiper">
+                    <!-- slides -->
+                    <swiper-slide style="height:180px;" v-for='item in this.bannerArr'>
+                        <img :src="item.img" alt="">
                     </swiper-slide>
-                    <div class="swiper-pagination" style="line-height:5px;bottom:5px;" slot="pagination"></div>
-                </swiper> -->
+                    <!-- Optional controls -->
+                    <div class="swiper-pagination"  slot="pagination"></div>
+                </swiper>
             </div>
             <!-- 轮播 end -->
             <!-- nav str -->
@@ -46,7 +45,6 @@
                                 <img :src="item.goods_img" alt="">
                             </dt>
                             <dd>
-                                <!-- m-ellipsis-2 -->
                                 <p class=""><span v-if='item.consume_type == 2'>积分</span>{{item.goods_name}}</p>
                                 <h2><span>￥</span>{{item.goods_price}}</h2>
                             </dd>
@@ -59,66 +57,91 @@
     </div>
 </template>
 <script>
-import { shopLists, shopType } from "../../../api/api.js";
-export default {
-    name: "shoppIng",
-    components: {},
-    data() {
-        return {
-            shopListsArr: [],
-            shopTypeArr: []
-        };
-    },
-    computed: {},
-    mounted() {
-        this.$http({
-            url: shopType,
-            method: "POST",
-            data: {}
-        })
-            .then(res => {
+    import { shopLists, shopType,DistributionBanner } from "../../../api/api.js";
+    export default {
+        name: "shoppIng",
+        components: {
+
+        },
+        data() {
+            return {
+                shopListsArr: [],           //商品列表数据    
+                shopTypeArr: [],            //商品分类
+                bannerArr:[],               //轮播图数据
+            };
+        },
+        methods: {
+
+        },
+        mounted() {
+            this.$http({                        //获取商品分类
+                url: shopType,
+                method: "POST",
+                data: {}
+            }).then(res => {
                 if (res.data.status == 1) {
-                    this.shopTypeArr = res.data.data;
+                    this.shopTypeArr = res.data.data;       //商品分类数据
+                }else{
+                    alert('获取商品分类失败');
                 }
-            })
-            .catch(err => {
-                console.log(err);
             });
-        this.$http({
-            url: shopLists,
-            method: "POST",
-            data: {}
-        }).then(res => {
-            if (res.data.status == 1) {
-                this.shopListsArr = res.data.data;
-                console.log(res);
-            } else {
-                alert("获取失败");
-            }
-        });
-    },
-    methods: {
-        // banner重置宽高
-        setBannerSize() {
-            let goodsBanner = document.querySelector(
-                "#goodsBanner"
-            );
-            let hotelDetailBannerW = goodsBanner.clientWidth;
-            let hotelDetailBannerH = (hotelDetailBannerW * 320) / 750;
-            this.hotelDetailBannerH = hotelDetailBannerH;
+            this.$http({                        //获取商品列表
+                url: shopLists,
+                method: "POST",
+                data: {}
+            }).then(res => {
+                if (res.data.status == 1) {
+                    // console.log(res);
+                    this.shopListsArr = res.data.data;      //商品列表数据
+                } else {
+                    alert("获取失败");
+                }
+            });
+            this.$http({
+                url:DistributionBanner,
+                method:"POST",
+                data:{
+                    type_id:6,                  //广告位置
+                    banner_sum:5                //获取图片数量
+                }
+            }).then(res=>{
+                if(res.data.status == 1){
+                    this.bannerArr = res.data.data;             //轮播图片信息
+                    var mySwiper = new Swiper('.swiper-container', { 
+                            // notNextTick: true,
+                            autoplay: 3000,
+                            grabCursor : true,
+                            setWrapperSize :true,
+                            autoHeight: true,
+                            pagination : '.swiper-pagination',
+                            paginationClickable :true,
+                            mousewheelControl : true,
+                            debugger: true,
+                            observer:true,
+                            observeParents:true,
+                        }) 
+                }else{
+                    alert('获取轮播图失败');
+                }
+            });
         },
-        // swiper回调
-        goodsSwiperCallback(val) {
-            console.log(val);
-        },
-        // swiper-slide的点击
-        goodsSwiperSlideFun(val) {
-            console.log(val);
-        },
-    }
-};
+    };
 </script>
 <style lang="less" scoped>
-@import "./shopping.less";
+    @import "./shopping.less";
+</style>
+<style lang="">
+    .goodsBanner .swiper-container-autoheight  .swiper-pagination-bullet{
+        width: 5px;
+        height: 5px;
+        border-radius: 100%;
+        background: rgba(225,225,225,0.7);
+    }
+    .goodsBanner .swiper-container-autoheight .swiper-pagination-bullets .swiper-pagination-bullet-active{
+        width: 12px!important;
+        height: 5px!important;
+        background: #fff!important;
+        border-radius: 2px!important;
+    }
 </style>
  

@@ -17,12 +17,14 @@
             </div>
         </div>
         <!-- 轮播 str -->
-        <slider ref="slider" :options="options" @slide='slide'>
-            <!-- 直接使用slideritem slot -->
-            <slideritem v-for="(item,index) in someList" :key="index" :style="item.style">{{item.html}}</slideritem>
-            <!-- 设置loading,可自定义 -->
-            <div slot="loading">loading...</div>
-        </slider>
+        <swiper style="height:180px;" ref="mySwiper">
+            <!-- slides -->
+            <swiper-slide style="height:180px;" v-for='item in this.bannerArr'>
+                <img style="width:100%;height:180px;" :src="item.img" alt="">
+            </swiper-slide>
+            <!-- Optional controls -->
+            <div class="swiper-pagination"  slot="pagination"></div>
+        </swiper>
         <!-- 轮播 end -->
         <!-- product str -->
         <div class="product">
@@ -36,18 +38,22 @@
         </div>
         <!-- product end -->
         <!-- 配送方式 str -->
-        <div class="distribution" @click="shopDetailsBox = true">
+        <div class="distribution">
+            <span>配送方式</span>
+            <p>门店自提</p>
+        </div>
+        <!--================= 第二版添加<div class="distribution" @click="shopDetailsBox = true">
             <span>配送方式</span>
             <p v-if='deliveryWay == 1'>门店自提</p>
             <p v-if='deliveryWay == 2'>物流配送</p>
             <img src="../../../assets/images/arrows/ic-arrow_10_18.png" />
-        </div>
+        </div>========================= -->
         <!-- 配送方式 end -->
         <!-- 运费 str -->
-        <div class="distribution freight">
+        <!-- <div class="distribution freight">
             <span>运费</span>
             <p>￥{{freight_money}}</p>
-        </div>
+        </div> -->
         <!-- 运费 end -->
         <!-- 规格 str -->
         <div class="distribution freight">
@@ -88,33 +94,19 @@
     </div>
 </template>
 <script>
-import { slider, slideritem } from "vue-concise-slider"; // 引入slider组件
-// import wx from "weixin-js-sdk";
-import { shopDetails } from "../../../api/api.js";
-// import { getCookie } from "@/utils/util";
+import { slider } from "vue-concise-slider"; // 引入slider组件
+import { shopDetails,DistributionBanner } from "../../../api/api.js";
 export default {
     name: "shoppIngDetails",
     components: {
-        slider,
-        slideritem
+        slider
     },
     data() {
         return {
+            bannerArr:[],               //轮播图数据
             //Image list
             someList: [],
             //Sliding configuration [obj]
-            options: {
-                currentPage: 0,
-                thresholdDistance: 500,
-                thresholdTime: 100,
-                // autoplay:1000,
-                loop: true,
-                // direction:'vertical',
-                loopedSlides: 1,
-                slidesToScroll: 1,
-                timingFunction: "ease"
-                // speed: 300
-            },
             loading: true,   // toast控制开关
             loadingTxt: "数据加载中",  // toast中文案
             delayToast: false,  // tips开关
@@ -138,37 +130,7 @@ export default {
         };
     },
     computed: {},
-    mounted() {
-        let that = this;
-        setTimeout(function() {
-            that.someList = [
-                {
-                    html: "图片是线上的才可以哦",
-                    style: {
-                        background: "#aaa"
-                    }
-                },
-                {
-                    html: "slide2",
-                    style: {
-                        background: "#4bbfc3"
-                    }
-                },
-                {
-                    html: "slide3",
-                    style: {
-                        background: "#7baabe"
-                    }
-                }
-            ];
-        }, 0);
-        // 调取商品详情方法
-        this.fetchGoodsDetail();
-    },
     methods: {
-        slide(data) {
-            // console.log(data)
-        },
         // 拉取商品详情
         fetchGoodsDetail() {
             this.$http({
@@ -193,7 +155,6 @@ export default {
                 }
             });
         },
-
         minus() {
             if (this.payShopNum == 1) {
                 this.btnMinus = this.btnMinusDisable;
@@ -231,22 +192,58 @@ export default {
         },
         // 立即购买
         buyPayBtn() {
-            if (this.deliveryWay) {
-                this.$router.push({
-                    path: "payOrder",
-                    query: {
-                        shopId: this.$route.query.shopId,
-                        payShopNum: this.payShopNum,
-                        deliveryWay: this.deliveryWay
-                    }
-                });
-            } else {
-                alert("请选择配送方式！");
-            }
+            // if (this.deliveryWay) {
+            this.$router.push({
+                path: "payOrder",
+                query: {
+                    shopId: this.$route.query.shopId,
+                    payShopNum: this.payShopNum,
+                    deliveryWay: this.deliveryWay
+                }
+            });
+            // } else {
+            //     alert("请选择配送方式！");
+            // }
+        },
+        getBannerImg(){
+            this.$http({    
+                url:DistributionBanner,
+                method:"POST",
+                data:{
+                    type_id:6,                  //广告位置
+                    banner_sum:5                //获取图片数量
+                }
+            }).then(res=>{
+                if(res.data.status == 1){
+                    this.bannerArr = res.data.data;             //轮播图片信息
+                    var mySwiper = new Swiper('.swiper-container', { 
+                            // notNextTick: true,
+                            autoplay: 3000,
+                            grabCursor : true,
+                            setWrapperSize :true,
+                            autoHeight: true,
+                            pagination: {
+                                el: '.swiper-pagination',
+                                type: 'fraction',
+                            },
+                            paginationClickable :true,
+                            mousewheelControl : true,
+                            debugger: true,
+                            observer:true,
+                            observeParents:true,
+                        }) 
+                }else{
+                    alert('获取轮播图失败');
+                }
+            });
         }
-    }
+    },
+    mounted() {
+        this.fetchGoodsDetail();        // 调取商品详情方法
+        this.getBannerImg();            //获取banner图片
+    },
 };
 </script>
 <style lang='less' scoped>
-@import "shoppingDetails.less";
+    @import "shoppingDetails.less";
 </style>
