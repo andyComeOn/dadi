@@ -224,6 +224,6 @@ export function filterStoreType(a) {
 }
 // 处理钱有关的保留两位小数
 export function filterMoneyToFixed2(a) {
-	a = (Math.round(a * 100) / 100).toFixed(2) ; 
+	a = (Math.round(a * 100) / 100).toFixed(2); 
 	return a   
 }

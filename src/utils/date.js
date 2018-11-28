@@ -39,6 +39,7 @@ export function YTDRg() {
 		rgRule: f(d).yyyy + '\\' + f(d).mm + '\\' + f(d).dd, //yyyy\mm\dd
 		noRule: f(d).yyyy + f(d).mm + f(d).dd,    //yyyymmdd
 	}
+
 }
 
 // 昨天年月日输出
