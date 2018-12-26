@@ -35,6 +35,8 @@ export default {
 	},
 	//format日期
 	dateFormat: function (date) {
+		console.log(date);
+		console.log("dateFormat------------------------------");
 		date = typeof date === 'string' ? new Date(date.replace(/\-/g, '/')) : date;
 		return date.getFullYear() + '/' + (date.getMonth() + 1) + '/'
 			+ date.getDate();
@@ -71,12 +73,48 @@ export default {
 		// 获取参数的月份
 		let month = date.getMonth();
 
-		// 获取当前日期
-		let toDay = this.dateFormat(date);
+		
 
+		// 格式化时间
+		let today = "";
 		// 把当前日期并且转换格式如2018/07/19 --> 20180719
-		let todayDate = this.timeChange(toDay);
+		let todayDate = "";
 
+
+
+		// 获取当前日期
+		// 11.26号添加需求：若是今天的00:01-06:00 则可预定昨天的房
+		// 解释：若用户A在今天的00:01-06:00想要订房，即可理解为昨天预定
+		// 到今天12点退房即可。（正常用户今天订房：今天晚上入住，明天12:00之前离店）
+
+		// if (date.getHours() > 0 && date.getHours() < 6) {
+		// 	today = this.dateFormat(date);
+		// 	let tmpDate = date;
+		// 	tmpDate.setDate(tmpDate.getDate() - 1);
+		// 	// date.setDate(date.getDate() - 1);
+		// 	// let dateYesterday = date.setDate(date.getDate() - 1);
+		// 	console.log(tmpDate);
+		// 	// console.log(dateYesterday);
+		// 	// 格式化时间
+		// 	let tmptoDay = this.dateFormat(tmpDate);
+		// 	// 把当前日期并且转换格式如2018/07/19 --> 20180719
+		// 	todayDate = this.timeChange(tmptoDay);
+
+
+		// } else {
+		// 	// 格式化时间
+		// 	today = this.dateFormat(date);
+		// 	// 把当前日期并且转换格式如2018/07/19 --> 20180719
+		// 	todayDate = this.timeChange(today);
+		// }
+
+
+
+		// 格式化时间
+		today = this.dateFormat(date);
+		// 把当前日期并且转换格式如2018/07/19 --> 20180719
+		todayDate = this.timeChange(today);
+		
 		// 初始化4个月的数组的字段
 		let arr = [{ dateTop: '', arry: [] }, { dateTop: '', arry: [] }, { dateTop: '', arry: [] }, { dateTop: '', arry: [] }];
 		
@@ -91,7 +129,7 @@ export default {
 		let yearTmp = "";
 		if (monthTmp > 12) {
 			yearTmp = date.getFullYear() + 1;
-			monthTmp = monthTmp -12 
+			monthTmp = monthTmp - 12; 
 		}
 		let bigDay = yearTmp + '/' + monthTmp + '/' + (30 - (num[0] - date.getDate() + 1));
 		let bigDayDate = this.timeChange(bigDay); //20181029
@@ -99,43 +137,51 @@ export default {
 			let monthTmp = date.getMonth() + (n + 1);    
 			let yearTmp = date.getFullYear();
 			if (monthTmp > 12) {
-				monthTmp = monthTmp -12 ;
+				monthTmp = monthTmp -12;
 				yearTmp = date.getFullYear() + 1;
 				arr[n].dateTop = `${yearTmp}年${monthTmp}月`;
 			} else {
 				arr[n].dateTop = `${yearTmp}年${monthTmp}月`;
 			}
-			// arr[n].dateTop = `${date.getFullYear()}年${date.getMonth() + (n + 1)}月`
+			// 循环每月对应weekbar的空白
 			for (let m = 0; m < leftNum[n]; m++) {
 				arr[n].arry.push({
 					id: '',
 					date: '1',
 					isToday: false,
-					isWeekDay: false,
+					isWeekend: false,
+					isTodayDawn: false,
 					isBeforeTodayAndAfterBigDayDate: true,
 					isSelected: false,
-					isHome: false,
+					isCheckIn: false,
 					isLeave: false,
 					otherMonth: `pre`
 				})
 			}
+			// 循环每月的有效date（从月初到月末）
 			for (let i = 0; i < num[n]; i++) {
-				let mouthTmp = (month + n + 1);
-				let newYear = year
+				let mouthTmp = (month + 1 + n);
+				let newYear = year;
 				if (mouthTmp >12) {
 					mouthTmp = mouthTmp -12;
 					newYear = year + 1;
 				}
+				// 昨天
+				// const nowTimeYesterday = newYear + '/' + (mouthTmp < 10 ? '0' + mouthTmp : mouthTmp) + '/' + ((i + 1) < 10 ? '0' + (i + 1) : (i + 1));
+				// let nTYesterday = this.timeChange(nowTimeYesterday);
+				// 今天
 				const nowTime = newYear + '/' + (mouthTmp < 10 ? '0' + mouthTmp : mouthTmp) + '/' + ((i + 1) < 10 ? '0' + (i + 1) : (i + 1));
 				let nT = this.timeChange(nowTime);
+
 				arr[n].arry.push({
 					id: i + 1,
 					date: nowTime,
-					isToday: (toDay === nowTime),
-					isWeekDay: (new Date(nowTime).getDay() == 6 || new Date(nowTime).getDay() == 0),
+					isToday: (today === nowTime),
+					isWeekend: (new Date(nowTime).getDay() == 6 || new Date(nowTime).getDay() == 0),
+					isTodayDawn: true,
 					isBeforeTodayAndAfterBigDayDate: (nT < todayDate || nT > bigDayDate),
-					isSelected: ((opa1 <= nT) && (nT <= opa2)),  // 入店-离店
-					isHome: (opa1 === nT),
+					isSelected: ((opa1 <= nT) && (nT <= opa2)),  // 入住-离店
+					isCheckIn: (opa1 === nT),
 					isLeave: (opa2 === nT),
 					otherMonth: `nowMonth`
 				})

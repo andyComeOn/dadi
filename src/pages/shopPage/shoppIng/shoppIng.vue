@@ -2,45 +2,34 @@
     <div>
         <div class="shoppIng">
             <!-- 轮播 str -->
-            <div class="rollImg">
-                <router-link :to='{path:"shoppIngDetails"}'>
+            <div class="goodsBanner">
+                <!-- <router-link :to='{path:"shoppIngDetails"}'>
                     <img src="../../../assets/images/bg/bg-jifenmignxi.png" alt="">
-                </router-link>
+                </router-link> -->
+                <swiper style="height:180px;" ref="mySwiper">
+                    <!-- slides -->
+                    <swiper-slide style="height:180px;" v-for='item in this.bannerArr'>
+                        <img :src="item.img" alt="">
+                    </swiper-slide>
+                    <!-- Optional controls -->
+                    <div class="swiper-pagination"  slot="pagination"></div>
+                </swiper>
             </div>
             <!-- 轮播 end -->
             <!-- nav str -->
             <ul class="navLists clearfix">
-                <li>
-                    <dl>
-                        <dt>
-                            <img src="../../../assets/images/shop/home_shuimian.png" alt="">
-                        </dt>
-                        <dd>好睡眠</dd>
-                    </dl>
-                </li>
-                <li>
-                    <dl>
-                        <dt>
-                            <img src="../../../assets/images/shop/home-ziying.png" alt="">
-                        </dt>
-                        <dd>驿自营</dd>
-                    </dl>
-                </li>
-                <li>
-                    <dl>
-                        <dt>
-                            <img src="../../../assets/images/shop/home-techan@1x.png" alt="">
-                        </dt>
-                        <dd>唯特产</dd>
-                    </dl>
-                </li>
-                <li>
-                    <dl>
-                        <dt>
-                            <img src="../../../assets/images/shop/home-duihuan@1x.png" alt="">
-                        </dt>
-                        <dd>积分兑换</dd>
-                    </dl>
+                <li v-for="(item,index) in shopTypeArr" :key="index">
+                    <router-link :to='{path:"shopTypeLists",query:{shopType:item.id}}'>
+                        <dl>
+                            <dt>
+                                <img v-if='item.id == 1' src="../../../assets/images/shop/home_shuimian.png" alt="">
+                                <img v-if='item.id == 2' src="../../../assets/images/shop/home-ziying.png" alt="">
+                                <img v-if='item.id == 3' src="../../../assets/images/shop/home-techan@1x.png" alt="">
+                                <img v-if='item.id == 4' src="../../../assets/images/shop/home-duihuan@1x.png" alt="">
+                            </dt>
+                            <dd>{{item.category_name}}</dd>
+                        </dl>
+                    </router-link>
                 </li>
             </ul>
             <!-- nav end -->
@@ -49,136 +38,18 @@
         <div class="brand">
             <h3><span>品牌制造商直供</span></h3>
             <ul class="brandLists">
-                <li>
-                    <dl>
-                        <dt>
-                            <img src="../../../assets/images/shop/2c46f0ae86d8a26876e0c66ff299ca903b64010220187-ri7u47_fw658@1x.png" alt="">
-                        </dt>
-                        <dd>
-                            <p><span>积分</span>精选耳机智能享</p>
-                            <h2><span>￥</span>555.00</h2>
-                        </dd>
-                    </dl>
-                </li>
-                <li>
-                    <dl>
-                        <dt>
-                            <img src="../../../assets/images/shop/Bitmap@1x.png" alt="">
-                        </dt>
-                        <dd>
-                            <p><span>积分</span>精选耳机智能享优品质达人达人馆</p>
-                            <h2><span>￥</span>555.00</h2>
-                        </dd>
-                    </dl>
-                </li>
-                <li>
-                    <dl>
-                        <dt>
-                            <img src="../../../assets/images/shop/Group 3@1x.png" alt="">
-                        </dt>
-                        <dd>
-                            <p>精选耳机</p>
-                            <h2><span>￥</span>555.00</h2>
-                        </dd>
-                    </dl>
-                </li>
-                <li>
-                    <dl>
-                        <dt>
-                            <img src="../../../assets/images/shop/2@1x.png" alt="">
-                        </dt>
-                        <dd>
-                            <p><span>积分</span>精选耳机智能享优品质达人达人馆</p>
-                            <h2><span>￥</span>555.00</h2>
-                        </dd>
-                    </dl>
-                </li>
-                <li>
-                    <dl>
-                        <dt>
-                            <img src="../../../assets/images/shop/2@1x.png" alt="">
-                        </dt>
-                        <dd>
-                            <p><span>积分</span>精选耳机智能享优品质达人达人馆</p>
-                            <h2><span>￥</span>555.00</h2>
-                        </dd>
-                    </dl>
-                </li>
-                <li>
-                    <dl>
-                        <dt>
-                            <img src="../../../assets/images/shop/2@1x.png" alt="">
-                        </dt>
-                        <dd>
-                            <p><span>积分</span>精选耳机智能享优品质达人达人馆</p>
-                            <h2><span>￥</span>555.00</h2>
-                        </dd>
-                    </dl>
-                </li>
-                <li>
-                    <dl>
-                        <dt>
-                            <img src="../../../assets/images/shop/2@1x.png" alt="">
-                        </dt>
-                        <dd>
-                            <p><span>积分</span>精选耳机智能享优品质达人达人馆</p>
-                            <h2><span>￥</span>555.00</h2>
-                        </dd>
-                    </dl>
-                </li>
-                <li>
-                    <dl>
-                        <dt>
-                            <img src="../../../assets/images/shop/2@1x.png" alt="">
-                        </dt>
-                        <dd>
-                            <p><span>积分</span>精选耳机智能享优品质达人达人馆</p>
-                            <h2><span>￥</span>555.00</h2>
-                        </dd>
-                    </dl>
-                </li>
-                <li>
-                    <dl>
-                        <dt>
-                            <img src="../../../assets/images/shop/2@1x.png" alt="">
-                        </dt>
-                        <dd>
-                            <p><span>积分</span>精选耳机智能享优品质达人达人馆</p>
-                            <h2><span>￥</span>555.00</h2>
-                        </dd>
-                    </dl>
-                </li>
-                <li>
-                    <dl>
-                        <dt>
-                            <img src="../../../assets/images/shop/2@1x.png" alt="">
-                        </dt>
-                        <dd>
-                            <p><span>积分</span>精选耳机智能享优品质达人达人馆</p>
-                            <h2><span>￥</span>555.00</h2>
-                        </dd>
-                    </dl>
-                </li>
-                <li>
-                    <dl>
-                        <dt>
-                            <img src="../../../assets/images/shop/2@1x.png" alt="">
-                        </dt>
-                        <dd>
-                            <p><span>积分</span>精选耳机智能享优品质达人达人馆</p>
-                            <h2><span>￥</span>555.00</h2>
-                        </dd>
-                    </dl>
-                </li><li>
-                    <dl>
-                        <dt>
-                            <img src="../../../assets/images/shop/2@1x.png" alt="">
-                        </dt>
-                        <dd>
-                            <p><span>积分</span>精选耳机智能享优品质达人达人馆</p>
-                            <h2><span>￥</span>555.00</h2>
-                        </dd>
-                    </dl>
+                <li v-for="(item, index) in shopListsArr" :key="index">
+                    <router-link :to='{path:"shoppIngDetails",query:{shopId:item.id}}'>
+                        <dl>
+                            <dt>
+                                <img :src="item.goods_img" alt="">
+                            </dt>
+                            <dd>
+                                <p class=""><span v-if='item.consume_type == 2'>积分</span>{{item.goods_name}}</p>
+                                <h2><span>￥</span>{{item.goods_price}}</h2>
+                            </dd>
+                        </dl>
+                    </router-link>
                 </li>
             </ul>
         </div>
@@ -186,150 +57,91 @@
     </div>
 </template>
 <script>
-    
+    import { shopLists, shopType,DistributionBanner } from "../../../api/api.js";
+    export default {
+        name: "shoppIng",
+        components: {
+
+        },
+        data() {
+            return {
+                shopListsArr: [],           //商品列表数据    
+                shopTypeArr: [],            //商品分类
+                bannerArr:[],               //轮播图数据
+            };
+        },
+        methods: {
+
+        },
+        mounted() {
+            this.$http({                        //获取商品分类
+                url: shopType,
+                method: "POST",
+                data: {}
+            }).then(res => {
+                if (res.data.status == 1) {
+                    this.shopTypeArr = res.data.data;       //商品分类数据
+                }else{
+                    alert('获取商品分类失败');
+                }
+            });
+            this.$http({                        //获取商品列表
+                url: shopLists,
+                method: "POST",
+                data: {}
+            }).then(res => {
+                if (res.data.status == 1) {
+                    // console.log(res);
+                    this.shopListsArr = res.data.data;      //商品列表数据
+                } else {
+                    alert("获取失败");
+                }
+            });
+            this.$http({
+                url:DistributionBanner,
+                method:"POST",
+                data:{
+                    type_id:6,                  //广告位置
+                    banner_sum:5                //获取图片数量
+                }
+            }).then(res=>{
+                if(res.data.status == 1){
+                    this.bannerArr = res.data.data;             //轮播图片信息
+                    var mySwiper = new Swiper('.swiper-container', { 
+                            // notNextTick: true,
+                            autoplay: 3000,
+                            grabCursor : true,
+                            setWrapperSize :true,
+                            autoHeight: true,
+                            pagination : '.swiper-pagination',
+                            paginationClickable :true,
+                            mousewheelControl : true,
+                            debugger: true,
+                            observer:true,
+                            observeParents:true,
+                        }) 
+                }else{
+                    alert('获取轮播图失败');
+                }
+            });
+        },
+    };
 </script>
 <style lang="less" scoped>
-.rollImg img{
-    width: 100%;
-    height: 180px;
-}
-.shoppIng{
-    position: relative;
-    .navLists{
-        position: absolute;
-        bottom: -90px;
-        left: 0;
-        width: 100%;
+    @import "./shopping.less";
+</style>
+<style lang="">
+    .goodsBanner .swiper-container-autoheight  .swiper-pagination-bullet{
+        width: 5px;
+        height: 5px;
+        border-radius: 100%;
+        background: rgba(225,225,225,0.7);
     }
-}
-.navLists{
-    padding:15px 0px;
-    border-radius: 8px 8px 0px 0px;
-    background: #fff;
-    li{
-        width: 25%;
-        text-align: center;
-        float:left;
-        dl {
-            dt{
-                margin-bottom: 8px;
-                img{
-                    width: 45px;
-                    height: 45px;
-                    border-radius: 45px;
-                    display: block;
-                    margin: 0 auto;
-                }
-            }
-            dd{
-                font-size: 14px;
-                color: #666;
-                line-height: 14px;
-            }
-        }
-        
+    .goodsBanner .swiper-container-autoheight .swiper-pagination-bullets .swiper-pagination-bullet-active{
+        width: 12px!important;
+        height: 5px!important;
+        background: #fff!important;
+        border-radius: 2px!important;
     }
-    &:after{
-        content: '';
-        display: table;
-        clear: both;
-    }
-}
-.brand{
-    padding-top: 90px;
-    background: #F6F6F6;
-    h3 {
-        text-align: center;
-        font-size: 17px;
-        line-height: 17px;
-        padding:15px 0px;
-        span{
-            line-height: 17px;
-            font-size: 17px;
-            color: #E0310D;
-            position: relative;
-            font-weight: 700;
-            &:before{
-                content: '';
-                display: block;
-                width: 19px;
-                height: 1px;
-                background: #E0310D;
-                position: absolute;
-                top: 50%;
-                left: -27px;
-            }
-            &:after{
-                content: '';
-                display: block;
-                width: 19px;
-                height: 1px;
-                background: #E0310D;
-                position: absolute;
-                top: 50%;
-                right: -27px;
-            }
-        }
-        
-    }
-}
-.brandLists{
-    padding:0px 8px;
-    background: #f6f6f6;
-    li{
-        width: 48.6%;
-        float: left;
-        margin-bottom: 8px;
-        border-radius: 4px;
-        dl{
-            background:#fff;
-            border-radius: 4px;
-            dt img{
-                display: block;
-                width: 100%;
-                height: 175.5px;
-                border-radius: 4px;
-            }
-            dd{
-                padding-bottom: 15px;
-                p{
-                    line-height: 19px;
-                    font-size: 13px;
-                    color: #333;
-                    padding:0px 8px;
-                    margin-top: 8px;
-                    margin-bottom: 15px;
-                    span{
-                        font-size: 11px;
-                        color: #fff;
-                        padding:3px;
-                        background: #F79502;
-                        border-radius: 2px;
-                        margin-right: 7px;
-                    }
-                }
-                h2{
-                    font-size: 15px;
-                    color: #E0310D;
-                    padding:0px 8px;
-                    line-height: 15px;
-                    font-weight: 700;
-                    span{
-                        font-size: 13px;
-                        color: #E0310D;
-                    }
-                }
-            } 
-        }
-    }
-    &:after{
-        content:'';
-        display: block;
-        clear: both;
-    }
-    li:nth-child(even){
-        margin-left: 8px;
-    }
-}
 </style>
  

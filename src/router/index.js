@@ -78,6 +78,8 @@ import AddContact from '../pages/AddContact/AddContact.vue'
 
 // 商城
 import shoppIng from '../pages/shopPage/shoppIng/shoppIng.vue';
+// 商品分类列表
+import shopTypeLists from '../pages/shopPage/shoppIng/shopTypeLists.vue';
 // 商城详情
 import shoppIngDetails from '../pages/shopPage/shoppIngDetails/shoppIngDetails.vue';
 //收货地址
@@ -116,7 +118,8 @@ export default new Router({
 			name: 'index',
 			component: Index,
 			meta: {
-				title: '秋果酒店'
+				// title: '秋果酒店'
+				title: GlobalCpid == 1 ? "秋果酒店" : "华驿酒店-如家联盟"
 			}
 		},
 		// 搜素结果页
@@ -125,7 +128,7 @@ export default new Router({
 			name: 'searchResult',
 			component: SearchResult,
 			meta: {
-				title: '秋果酒店'
+				title: '搜索结果'
 			}
 		},
 		// 酒店详情页
@@ -418,6 +421,15 @@ export default new Router({
 			component: shoppIng,
 			meta:{
 				title:'商城'
+			}
+		},
+		// 商城
+		{
+			path: '/shopTypeLists',
+			name: 'shopTypeLists',
+			component: shopTypeLists,
+			meta:{
+				title:'商品-分类'
 			}
 		},
 		//商城产品详情

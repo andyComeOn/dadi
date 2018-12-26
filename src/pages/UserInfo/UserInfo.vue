@@ -132,10 +132,12 @@ export default {
 #contactInfoPage {
     overflow: auto;
     padding-bottom: 85px;
+    background: #fff;
 }
 
 // list的css
 .list {
+    background: #EFF1F0;
     .item {
         background: #fff;
         margin-bottom: 10px;

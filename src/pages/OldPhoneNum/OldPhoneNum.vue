@@ -30,7 +30,7 @@
 		</div>
 		<div class="link_store">
 			<span>无法验证身份，</span>
-			<a href="tel:1111111">联系客服</a>
+			<a href="tel:400-099-9682">联系客服</a>
 		</div>
 		<!-- hint -->
 		<span class="hint_box" v-if='hint_box_show == true'>{{hint_box_content}}</span>
@@ -106,7 +106,7 @@ export default {
         getCode() {
             var param = {
                 mobile: this.oldPhoneNum,
-                type: 4
+                type: 7
             };
             this.$http({
                 method: "POST",

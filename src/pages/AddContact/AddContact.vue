@@ -1,5 +1,5 @@
 <template>
-    <div id="addContactPage" class="">
+    <div id="addContactPage" class="m-position-ab">
         <div class="box">
             <div class="bd">
                 <div class="item name">
@@ -181,6 +181,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+#addContactPage {
+    background: #fff;
+    overflow: auto;
+}
 .box {
     padding-left: 15px;
     .bd {

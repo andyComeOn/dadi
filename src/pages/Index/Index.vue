@@ -27,7 +27,8 @@
                                 <span class="city">{{cityname}}</span>
                             </div>
                             <div class="dest-city-arrow">
-                                <img src="../../assets/images/arrows/ic-arrow_10_18.png" alt="">
+                                <!-- <img src="../../assets/images/arrows/ic-arrow_10_18.png" alt=""> -->
+                                <img src="../../assets/images/arrows/list－更多icon@1x.png" alt="">
                             </div>
                         </div>
                             <div class="rg" @click="fetchLocation">
@@ -465,15 +466,27 @@ export default {
                 }
                 // 城市选择，箭头的css
                 .dest-city-arrow {
-                    width: 10px;
-                    height: 18px;
+                    // width: 10px;
+                    // height: 18px;
+                    // position: absolute;
+                    // top: 50%;
+                    // margin-top: -9px;
+                    // right: 0px;
+                    // img {
+                    //     width: 10px;
+                    //     height: 18px;
+                    // }
+
+                    width: 7px;
+                    height: 13px;
                     position: absolute;
                     top: 50%;
-                    margin-top: -9px;
+                    margin-top: -6px;
                     right: 0px;
                     img {
-                        width: 10px;
-                        height: 18px;
+                        display: block;
+                        width: 7px;
+                        height: 13px;
                     }
                 }
             }
@@ -533,17 +546,14 @@ export default {
                 }
             }
             .md {
+                padding: 0 5px;
+                line-height: 22px;
+                border: 1px solid #ccc;
+                border-radius: 3px;
                 position: absolute;
                 top: 50%;
                 left: 50%;
-                margin-left: -22px;
-                margin-top: -11px;
-                width: 44px;
-                height: 22px;
-                line-height: 22px;
-                text-align: center;
-                border-radius: 3px;
-                border: 1px solid rgba(204, 204, 204, 1);
+                transform: translate(-50%, -50%);
             }
             .rg {
                 width: 78px;

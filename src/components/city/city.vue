@@ -37,6 +37,7 @@
 <script>
 import { getStorecity, getCityList, slt_location } from "@/api/api";
 export default {
+    props: ['longitude','latitude'],
     data() {
         return {
             cityList: [], //拉取城市的信息
@@ -48,7 +49,7 @@ export default {
             cityname: ""
         };
     },
-    props: ['longitude','latitude'],
+    
     created() {
         this.getLocation();
         this.fetchHotCityList();

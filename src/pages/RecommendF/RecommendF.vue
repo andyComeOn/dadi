@@ -222,7 +222,10 @@ export default {
     margin-bottom: 50px;
     .box {
         padding: 16px 0;
-        background: url(../../assets/images/distribution/bg_fenxiao.png)
+        // background: url(../../assets/images/distribution/bg_fenxiao.png)
+        //     no-repeat center center;
+
+        background: url(../../assets/images/bg/bg_my1.jpg)
             no-repeat center center;
         background-size: 100% 100%;
         position: relative;
@@ -239,6 +242,7 @@ export default {
         }
         // 提现钱数
         .tixian-num {
+            height: 24px;
             line-height: 24px;
             font-size: 24px;
             margin-bottom: 35px;
@@ -257,6 +261,7 @@ export default {
                 span {
                     text-align: center;
                     &:nth-child(1) {
+                        height: 18px;
                         line-height: 18px;
                         margin-bottom: 5px;
                         font-size: 14px;

@@ -3,73 +3,68 @@
         <div class="shopOrderLists"> 
             <!-- nav str -->
             <ul class="shopOrderNav">
-                <li>
-                    <span class="shopOrderNavActive">全部</span>
+                <li v-for="(item,index) in shopOrderArr" @click='tabsActive(item.b,index)'>
+                    <span :class="{shopOrderNavActive:index == classIndex}">{{item.a}}</span>
                 </li>
-                <li>
-                    <span>待付款</span>
-                </li>
-                <li>
-                    <span>待收货</span>
-                </li>
-                <li>
-                    <span>已收货</span>
-                </li>
-                <!-- <li>
-                    <span>退款订单</span>
-                </li> -->
             </ul>
             <!-- nav end -->
             <!-- lists str -->
             <div class="shopLists">
-                <div class="shopListBox">
-                    <router-link :to="{path:'shopOrderDetail'}">
-                        <p class="orderNum">订单编号:S20180827171900001<span>已付款</span></p>
-                        <div class="shopDetails">
-                            <img src="../../../assets/images/shop/home-duihuan@1x.png" alt="">
-                            <p>飞利浦（PHILIPS）男士电动剃须刀多</p>
-                            <span>礼盒装型号</span>
-                        </div>
-                        <p class="orderPrice"><span>共1件</span>实付金额:￥222.00</p>
-                    </router-link>
-                    <div class="orderBtn">
-                        <span class="orderBtnActive">申请退款</span>
-                        <span>确认收货</span>
-                    </div>
-                </div>
-                <div class="shopListBox">
-                    <router-link :to="{path:'refundOrder'}">
-                        <p class="orderNum">订单编号:S20180827171900001<span>已付款</span></p>
-                        <div class="shopDetails">
-                            <img src="../../../assets/images/shop/home-duihuan@1x.png" alt="">
-                            <p>飞利浦（PHILIPS）男士电动剃须刀多</p>
-                            <span>礼盒装型号</span>
-                        </div>
-                    </router-link>
-                    <p class="orderPrice"><span>共1件</span>实付金额:￥222.00</p>
-                    <div class="orderBtn">
-                        <span class="orderBtnActive">申请退款</span>
-                        <span>确认收货</span>
-                    </div>
-                </div>
-                <div class="shopListBox">
-                    <p class="orderNum">订单编号:S20180827171900001<span>已付款</span></p>
-                    <div class="shopDetails">
-                        <img src="../../../assets/images/shop/home-duihuan@1x.png" alt="">
-                        <p>飞利浦（PHILIPS）男士电动剃须刀多</p>
-                        <span>礼盒装型号</span>
-                    </div>
-                    <p class="orderPrice"><span>共1件</span>实付金额:￥222.00</p>
-                    <div class="orderBtn">
-                        <span class="orderBtnActive">申请退款</span>
-                        <span>确认收货</span>
-                    </div>
-                </div>
+                <allPraise :is='showView' keep-alive></allPraise>
             </div>
             <!-- lists end -->
         </div>
     </div>
 </template>
-<style lang='less'>
+<script>
+    import shopOrderAll from './components/shopOrderAll.vue';
+    import stayPayment from './components/stayPayment.vue';
+    import stayTakeGoods from './components/stayTakeGoods.vue';
+    import offStocks from './components/offStocks.vue';
+    import refundMoney from './components/refundMoney.vue';
+    export default {
+        name: "shopOrder",
+        components: {
+            shopOrderAll,
+            stayPayment,
+            stayTakeGoods,
+            offStocks,
+            refundMoney
+        },
+        data() {  
+            return {
+                shopOrderArr:[{
+                    a:'全部',
+                    b:'shopOrderAll'
+                },{
+                    a:'待付款',
+                    b:'stayPayment'
+                },{
+                    a:'待收货',
+                    b:'stayTakeGoods'
+                },{
+                    a:'已完成',
+                    b:'offStocks'
+                },{
+                    a:'退款',
+                    b:'refundMoney'
+                }],
+                showView:'shopOrderAll',
+                classIndex:0,
+            }
+        },
+        methods: {
+            //tab切换
+            tabsActive(active_text,activeIndex){
+                this.showView = active_text;    //点击的谁
+                this.classIndex = activeIndex;  //点击的index
+            }
+        },
+        mounted() {
+
+        }
+    }
+</script>
+<style lang='less' scoped>
     @import './shopOrder.less';
 </style>

@@ -66,6 +66,6 @@
         </div>
     </div>
 </template>
-<style lang='less'>
+<style lang='less' scoped>
     @import './orderDetails.less';
 </style>

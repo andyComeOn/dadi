@@ -202,3 +202,28 @@ export function filterCardGradeGetInfo(a) {
 		return "黑钻"
 	} 
 }
+// 商城的type
+export function filterStoreType(a) {
+	if (a == 1){
+		return "好随眠"
+	} else if (a == 2){
+		return "驿自营"
+	} else if (a == 3){
+		return "唯特产"
+	} else if (a == 4){
+		return "积分兑换"
+	} else if (a == 10){
+		return "果果随眠"
+	} else if (a == 11){
+		return "果果特产"
+	} else if (a == 4){
+		return "积分兑换"
+	} else {
+		return "其他"
+	} 
+}
+// 处理钱有关的保留两位小数
+export function filterMoneyToFixed2(a) {
+	a = (Math.round(a * 100) / 100).toFixed(2); 
+	return a   
+}
