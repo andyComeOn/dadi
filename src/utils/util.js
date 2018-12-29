@@ -1,3 +1,6 @@
+import axios from 'axios';
+import { check_login } from "@/api/api";
+
 // 获取url参数
 export function getUrlParam(name) {
 	var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
@@ -24,4 +27,9 @@ export function setCookie(name, value) {
 export function getCookie(name) {
 	var v = window.document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
 	return v ? v[2] : null;
+}
+
+// 拉取授权接口
+export function fetchCheckLogin(param) {
+	return axios.post(check_login, param);
 }

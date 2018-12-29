@@ -52,13 +52,15 @@
 
 <script>
 import { login, sendMobile, storeLogo } from "@/api/api";
-import { getCookie, setCookie } from "@/utils/util";
+import { getCookie, setCookie, fetchCheckLogin } from "@/utils/util";
 
 export default {
     name: "loginPage",
     components: {},
     data() {
+        let openId = getCookie('openid');
         return {
+            openid: openId,
             avatarSrc: "", //头像
             isToastShow: false,
             toastTxt: "",
@@ -101,7 +103,20 @@ export default {
             },
             deep: true,
             immediate: true
-        }
+        },
+        // 监听用户是否授权（用能否获取到getCookie("avatar")来检测是否授权）
+        // openid: {
+        //     handler(newVal, oldVal) {
+        //         if (newVal == "" || newVal == null || newVal == undefined) {
+        //             this.fetchCheckLoginPackage();
+        //         } else {
+        //             this.fetchCheckLoginPackage();
+        //         }
+        //     },
+        //     deep: true,
+        //     immediate: true
+        // }
+
     },
     methods: {
         // 用户姓名获焦
@@ -202,7 +217,6 @@ export default {
                             if (this.setTime >= 0) {
                                 this.codeBtnClickCtrl = false;
                                 let tmpSec = parseInt(this.setTime);
-                                // this.getTime = tmpSec;
                                 this.codeBtnTxt = tmpSec + "s后重发";
                                 this.setTime--;
                             } else {
@@ -213,7 +227,7 @@ export default {
                         }, 1000);
                     } else {
                         this.codeBtnClickCtrl = true;
-                        this.toastTxt = res.data.msg + "，请稍后再试";
+                        this.toastTxt = res.data.msg;
                         this.isToastShow = true;
                         setTimeout(() => {
                             this.isToastShow = false;
@@ -253,6 +267,29 @@ export default {
                 this.userCodeLen = false;
             }
         },
+        // fetchCheckLoginPackage(){
+        //     fetchCheckLogin({tg:"" ,form: encodeURIComponent(window.location.href)}).then(res => {
+        //         if (res.data.status == 0) {
+        //             window.location.href = res.data.data;
+        //         } else {
+        //             setCookie("userInfoTel", res.data.data.mobile);  //手机号
+        //             setCookie("userVipStatus", res.data.data.status);  //会员状态（0待审、1正常、2锁定）
+        //             setCookie("userUid", res.data.data.uid);
+        //             setCookie("userInfoIsRealname", res.data.data.is_realname); //真实姓名
+        //             setCookie("userInfoGroupid", res.data.data.group_id);  //会员组id
+        //             setCookie("nickname", encodeURI(res.data.data.nickname));		//昵称
+        //             setCookie("openid", res.data.data.openid);  
+        //             setCookie("avatar", res.data.data.avatar);  //avatar
+        //             setCookie('avail_amount',res.data.data.avail_amount);
+        //             if (res.data.data.coupon_flag == 0) {
+        //                 setCookie("isYouzan", 0); // 判断是不是有赞用户 1是(弹系统维护提示) 0不是（不弹）
+        //             } else {
+        //                 setCookie("isYouzan", 1); // 判断是不是有赞用户 1是(弹系统维护提示) 0不是（不弹）
+        //             }
+                    
+        //         }
+        //     })
+        // },
         // 总的提交
         bindMobile() {
             if (
@@ -260,13 +297,12 @@ export default {
                 this.userTelBlur() &&
                 this.userCodeBlur()
             ) {
-                let openId = this.$route.query.openId;
                 this.$http({
                     method: "POST",
                     url: login,
                     data: {
                         mobile: this.userTel,
-                        openid: openId,
+                        openid: this.openid,
                         code: this.userCode,
                         realname: this.userName
                     }
@@ -283,7 +319,15 @@ export default {
                                     store_id: this.$route.query.store_id
                                 }
                             });
-                        } 
+                        }else if(this.$route.query.loginPage == 3){
+                            this.$router.push({path:'shoppIngDetails',query:{shopId:this.$route.query.shopId}})
+                        }
+                    } else if (res.data.status == -1) {
+                        this.toastTxt = "检测到您登录信息异常，请再次输入您的手机号进行绑定";
+                        this.isToastShow = true;
+                        setTimeout(() => {
+                            this.isToastShow = false;
+                        }, 2500);
                     } else {
                         this.toastTxt = res.data.msg;
                         this.isToastShow = true;
@@ -296,11 +340,19 @@ export default {
         },
         // 注册过二次提示toast中下面的跳转首页按妞
         hasLoginMethod() {
-            this.hasLoginToast = false;
-            this.$router.push({
-                path: "index",
-                query: {}
-            });
+            if(this.$route.query.loginPage == 3){           //商品详情页面
+                this.hasLoginToast = false;
+                this.$router.push({
+                    path: "shoppIngDetails",
+                    query: {shopId:this.$route.query.shopId}
+                });
+            }else{
+                this.hasLoginToast = false;
+                this.$router.push({
+                    path: "index",
+                    query: {}
+                });
+            }
         }
     },
     mounted() {
@@ -430,17 +482,4 @@ export default {
     }
 }
 
-.hint_box {
-    background: rgba(75, 75, 75, 0.7);
-    color: #fff;
-    padding: 5px 20px;
-    font-size: 14px;
-    line-height: 44px;
-    border-radius: 13px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    margin-top: -13px;
-    transform: translateX(-50%);
-}
 </style>

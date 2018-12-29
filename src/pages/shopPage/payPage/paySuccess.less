@@ -1,0 +1,93 @@
+.paySucBox{
+    background: #fff;
+    padding-top: 15px;
+    .paySucImg{
+        display: block;
+        width: 68px;
+        height: 75px;
+        margin: 0 auto;
+    }
+    h3{
+        font-size: 16px;
+        color: #333;
+        text-align: center;
+        margin-top: 14px;
+        font-weight: 700;
+    }
+    .payMoney{
+        font-size: 14px;
+        color: #E0310D;
+        text-align: center;
+    }
+    .paySucBtn{
+        margin-top: 18px;
+        text-align: center;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        span{
+            display: inline-block;
+            padding:7px 13px;
+            border: 1px solid #999;
+            border-radius: 2px;
+            font-size: 14px;
+            color: #666;
+            // &:nth-of-type(1){
+            //     margin-right: 30px;
+            // }
+        }
+        .lookOrder{
+            margin-right: 30px;
+        }
+    }
+    ul{
+        padding-top: 4px;
+        padding-right: 15px;
+        padding-bottom: 15px;
+        li{
+            font-size: 14px;
+            color: #333;
+            padding-left: 74px;
+            margin-top: 9px;
+            position: relative;
+            span{
+                font-size: 14px;
+                color: #666;
+                position: absolute;
+                top: 0;
+                left: 15px;
+            }
+        }
+    }
+}
+.paySucLists{
+    text-align: center;
+    margin:15px 0px;
+    span{
+        position: relative;
+        font-size: 17px;
+        color: #E0310D;
+        font-weight: 700;
+        &::before{
+            position: absolute;
+            top: 50%;
+            left: -27px;
+            content: "";
+            display: block;
+            width: 19px;
+            height: 1px;
+            background: #E0310D;
+            transform: translateY(-50%);
+        }
+        &::after{
+            position: absolute;
+            top: 50%;
+            right: -27px;
+            content: "";
+            display: block;
+            width: 19px;
+            height: 1px;
+            background: #E0310D;
+            transform: translateY(-50%);
+        }
+    }
+}

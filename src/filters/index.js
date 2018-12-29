@@ -227,3 +227,18 @@ export function filterMoneyToFixed2(a) {
 	a = (Math.round(a * 100) / 100).toFixed(2); 
 	return a   
 }
+// 积分（得到、消费）的过滤
+export function filterScoreType(a) {
+	if (a < 0) {
+		a = -a;
+		return '<span style="color: #666;">－'+ a + '</span>';
+	} 
+	if (a > 0) {
+		return '<span style="color: #FFBA56;">＋'+ a + '</span>';  
+	}
+}
+// 过滤如：“至14点”、“14点”中的数字
+export function filterDelayRoomNum(a) {
+	a = a.replace(/[^0-9]/ig,"");
+	return a;
+}

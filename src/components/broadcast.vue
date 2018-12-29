@@ -10,8 +10,6 @@
 <script>
 import { YTDLf } from "@/utils/date";
 export default {
-    // props: ["isTip"],
-   
     data() {
         return {
             broadcastRgBtn: false,

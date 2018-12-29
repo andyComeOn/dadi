@@ -1,48 +1,52 @@
 <template>
-    <div class="order m-position-ab">
-        <div class="detail-container">
-            <div class="detail-wrapper" v-if="details">
-                <!-- 酒店名字 -->
-                <div class="name m-ellipsis">{{details.store_name}}</div>
-                <!-- 酒店标签 -->
-                <div class="labels">
+    <div class="orderPage m-position-ab">
+        <!-- <div class="broadcastWrap" :class="{beforeDawnAddclass: isBeforeDawn}">
+            <myBroadcast></myBroadcast>
+        </div> -->
+        <!-- 订单信息 -->
+        <div class="orderInfoWrap">
+            <div class="orderInfo" v-if="details">
+                <div class="storeName m-ellipsis">{{details.store_name}}</div>
+                <div class="storeLabels">
                     <span>{{details.name}}</span>
                     <span>{{details.introduce}}</span>
                 </div>
-                <div class="area">
-                    <span class="instro">入住</span>
+                <div class="checkInOutBar">
+                    <span class="instro" v-show="isBeforeDawnOrder">凌晨入住</span>
+                    <span class="instro" v-show="!isBeforeDawnOrder">入住</span>
                     <span class="date">{{beginM}}月{{beginD}}日</span>
-                    <span class="instro">离店</span>
+                    <span class="instro" v-show="isBeforeDawnOrderAndNoonGo">中午离店</span>
+                    <span class="instro" v-show="!isBeforeDawnOrderAndNoonGo">离店</span>
                     <span class="date">{{finishM}}月{{finishD}}日</span>
-                    <span class="date">{{howManyNight}}晚</span>
+                    <span class="date" style="margin-right:0;">{{howManyNight}}晚</span>
                 </div>
             </div>
         </div>
-        <!-- 用户信息操作区 -->
-        <ul class="info">
+        <!-- 用户操作区 -->
+        <ul class="Cells">
             <!-- 房间数 -->
-            <li class="room">
+            <li class="roomCell" :class="{roomCellBorderVoid: isSelectRoom == true}">
                 <label class="label">房间数</label>
-                <div class="room-info" @click="selectRoom">
+                <div class="roomNum" @click="selectRoom">
                     {{watchObj.room_sum}}间
-                    <img class="arrow-icon" src="../../assets/images/arrows/ic_pay_arrow.png" alt="">
+                    <img class="roomNumArrow" src="../../assets/images/arrows/ic_pay_arrow.png" alt="">
                 </div>
             </li>
-            <!-- 可定房间的列表 -->
-            <div class="room-num-select" v-show="isSelectRoom">
+            <!-- 可定房间list -->
+            <div class="roomList" v-show="isSelectRoom">
                 <span v-if="roomNumItems">
-                    <span class="room-num-item" v-for="(item,index) in roomNumItems" :key="index">
+                    <span class="roomItem" v-for="(item,index) in roomNumItems" :key="index">
                         <i :class="[{default: isActive == item.num }]" @click="selectOrder(item.num)">{{item.num}}</i>
                     </span>
                 </span>
-                <div v-else class="room-num-empty">您今日可订限额已用完，请明天再来</div>
+                <div v-else class="roomListVoid">您今日可订限额已用完，请明天再来</div>
             </div>
             <!-- 入住人姓名 -->
             <li class="name">
                 <label class="label">入住人姓名</label>
                 <div class="item-rg linkman">
-                    <div class="name-div">
-                        <input type="text" class="input-name" id="name" placeholder="请输入姓名" v-model="orderName">
+                    <div class="nameInputWrap">
+                        <input type="text" class="nameInput" id="name" placeholder="请输入姓名" v-model="orderName">
                     </div>
                     <div class="linkmanBtn" @click="showLinkmanMask"></div>
                 </div>
@@ -52,16 +56,14 @@
             <li class="tel">
                 <label class="label">手机号</label>
                 <div class="item-rg">
-                    <div class="tel-div">
-                        <input type="tel" class="input-tel" id="tel" placeholder="请输入手机号" v-model="orderTel">
+                    <div class="telInputWrap">
                         <!-- @blur="orderTelBlur" -->
+                        <input type="tel" class="telInput" id="tel" placeholder="请输入手机号" v-model="orderTel">
                     </div>
                 </div>
             </li>
-
-            <!-- 分割bar -->
-            <div class="divivid-bar"></div>
-
+        </ul>
+        <ul class="Cells">
             <!-- 优惠券 -->
             <li class="coupon">
                 <label class="label">优惠券</label>
@@ -78,7 +80,16 @@
                     </div>
                 </div>
             </li>
-
+            <!-- 会员卡种特权 -->
+            <li class="cardRight" @click="showUserCardRightMask">
+                <label class="label" style="width: 90px;">{{group_name | filterCardType}}特权</label>
+                <div class="cardRightContent">
+                    <div class="cardRightTxt m-ellipsis">
+                        房价折扣{{promo}}折，餐饮折扣{{catering_discount}}，延迟退房{{delayCheckout}} 
+                    </div>
+                    <img src="../../assets/images/arrows/ic-arrow_10_18.png" alt="">
+                </div>
+            </li>
             <!-- 发票 -->
             <li class="ticket">
                 <label class="label">发票</label>
@@ -86,25 +97,14 @@
                     酒店开具发票
                 </div>
             </li>
-            <!-- 分割bar -->
-            <div class="divivid-bar"></div>
         </ul>
         <!-- 备注 -->
         <div class="mark">
             <label class="label">备注</label>
             <div class="markRg"><textarea name="markName" id="markTextarea" placeholder="选填" v-model="remarks"></textarea></div>
         </div>
-
-        <!-- “广播”提示 -->
-        <div class="broadcast m-ellipsis" @click="showUserCardRightMask">
-            <span class="broadcast-icon"></span>
-            {{group_name | filterCardType}}特权：房价折扣{{promo}}折，餐饮折扣{{catering_discount}}，延迟退房{{delayCheckout}}
-            <span class="broadcast-btn"></span>
-        </div>
         <!-- 温馨提示 -->
         <div class="tips">
-            <!-- <h3>温馨提示仅可在预定15分钟内取消订单</h3> -->
-            <!-- {{$options.filters.filterVipTxt(userVipStatus)}} -->
             <p>退订规则：入住当天12点之前均可取消订单</p>
             <p>温馨提示：1、酒店入住时间14:00以后，离店时间12:00以前。如您在14:00以前未能到达，请以酒店安排为准。2、普卡会员入住当天12：00之前取消订单，不收取费用，逾期扣费。银卡、金卡会员14点前取消订单，不收取费用；铂金卡18点前取消订单，不收取费用。3、普通客户12点之前退房；普卡会员13点退房；银卡会员14点退房；金卡会员15点退房；铂金卡会员延迟到16点退房。联系电话：<a href="tel:400-099-9682">400-099-9682</a> (周一至周五9:00-17:30)</p>
         </div>
@@ -147,7 +147,6 @@
                 <div v-else style="line-height: 55px;background: #fff;font-size:17px;text-align:center;">暂无优惠券可用</div>
             </div>
         </div>
-
         <!-- 交易明细弹框 -->
         <div class="deal-detail-mask-box">
             <div class="weui-mask zb-weui-mask" id="dealDetailMask" @click="hideDealDetailMask" :class="[{'weui-actionsheet_no_toggle_active':isDealDetailMask},{'weui-actionsheet_no_toggle':!isDealDetailMask}]"></div>
@@ -333,11 +332,26 @@
                 <p class="weui-toast__content">{{loadingTxt}}</p>
             </div>
         </div>
+        <!-- 若凌晨订房，则出现该toast弹框 -->
+        <div v-show="orderBeforeDawnRoomToast">
+            <div class="z-mask-transparent-pay"></div>
+            <div class="z-toast-pay">
+                <p class="z-toast-pay-head">提示</p>
+                <p class="z-toast-pay-body beforeDawnAddclass">
+                    您的订单为{{beginM}}月{{beginD}}日凌晨入住，
+                    请于06:00前办理入住，
+                    {{finishM}}月{{finishD}}日{{delayCheckout|filterDelayRoomNum}}:00前办理退房</p>
+                <p class="z-toast-pay-footer beforeDawnAddclass">
+                    <span class="cancelOrder" @click="CancelOrder">取消订单</span>
+                    <span class="submitOrder" @click="SubmitOrder">提交订单</span>
+                </p>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
-import { dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
+import { dateEndMinusStart, YTDLf, YTD, isBeforeDawn } from "@/utils/date"; // 引入封装时间函数
 import {
     order_form,
     create_order,
@@ -345,8 +359,12 @@ import {
     residentList
 } from "@/api/api";
 import { getCookie } from "@/utils/util";
+import myBroadcast from "@/components/broadcast";
 export default {
-    name: "order",
+    name: "orderPage",
+    components: {
+        myBroadcast
+    },
     data() {
         return {
             isCouponMask: false,
@@ -375,10 +393,6 @@ export default {
             details: {},
             // 明细-房间单价-包含时间
             price: [],
-            // 请求返回的数据
-            fetchData: {},
-            // 后台返回的该用户可订房信息
-            userOrderMaxNum: 5,
             // 后台返回的该用户是否可订房标志
             isUserCanOrder: true,
             // 订房人预留的姓名、手机号
@@ -396,30 +410,28 @@ export default {
             catering_discount: "",
             // 该用户所属会员卡种-会员卡折扣
             promo:"",
-            // 用户所属卡种-延迟退房时间 -> 13:00
+            // 用户所属卡种-延迟退房时间 -> 13:00，“至14点”
             delayCheckout :"", 
             // 优惠券
             coupon: [],
-            // 订房人姓名输入验证
-            orderNameTipsVisible: false,
-            orderNameTxt: "123",
-            // 订房人手机号输入验证
-            orderTelTipsVisible: false,
-            orderTelTxt: "",
             orderDelayToast: false,
             orderDelayToastTxt: "您今日可订限额已用完，请明天再来",
             roomNumItems: "", //循环可定房间
             quantity: "", //该用户还能再定房间数的上限
             isActive: 1,
-            loading: true, //
+            loading: true, 
             loadingTxt: "数据加载中",
             couponBarShow: true,
-            userVipStatus: getCookie("userVipStatus"),
             userCardRightInfo: "", // 用户所属卡种的权益详情
             discount: "", // 省了多少钱
             linkmanList: "", // 联系人列表
-            imgSrcDefault:require("../../assets/images/icon/ic-radio.png"),
+            imgSrcDefault: require("../../assets/images/icon/ic-radio.png"),
             remarks: "", // 若有老、幼、孕、残可以添加备注
+            isBeforeDawn: false, // 是否为今天凌晨
+            isBeforeDawnOrder: false, // 是否为凌晨订单
+            isBeforeDawnOrderAndNoonGo: false, // 是凌晨订单且今天中午离店
+            yesterday: "",
+            orderBeforeDawnRoomToast: false, // 点击支付按钮控制凌晨订房toast 
         };
     },
     created() {
@@ -448,11 +460,25 @@ export default {
             routePara.begin,
             routePara.finish
         );
-
+        // 凌晨订单逻辑
+        if (routePara.begin == YTDLf().kebab) {
+            this.isBeforeDawnOrder = true;
+            if (routePara.finish == YTD().kebab) {
+                this.isBeforeDawnOrderAndNoonGo = true;
+            }
+        } else {
+            this.isBeforeDawnOrder = false;
+        }
+        // 凌晨订房bar提示逻辑
+        // if (isBeforeDawn() == true) {
+        //     this.isBeforeDawn = true;
+        // } else {
+        //     this.isBeforeDawn = false;
+        // }
+        // 获取当前日期的昨天
+        this.yesterday = YTDLf().kebab;
         // 拉取订单信息接口
         this.fetchOrderForm();
-        // 拉取socket方法-暂且用不到
-        // this.socketMethod();
         // 拉取fetchLinkman的列表
         this.fetchLinkman();
     },
@@ -494,7 +520,6 @@ export default {
                 })
                 .catch(err => {});
         },
-
         // 展示用户所属卡种相关权益遮罩
         showLinkmanMask() {
             this.isLinkmanMask = true;
@@ -548,18 +573,6 @@ export default {
         hideDealDetailMask() {
             this.isDealDetailMask = false;
         },
-        // 订单socket
-        socketMethod() {
-            let ws = new WebSocket("ws://172.16.0.252:2623");
-            ws.onopen = function() {
-                ws.send("uid" + getCookie("userUid"));
-            };
-            ws.onmessage = function(e) {
-                console.log("收到服务端的消息：" + e.data);
-                if (e) {
-                }
-            };
-        },
         // 拉取订单预览数据
         fetchOrderForm() {
             var para = this.watchObj;
@@ -591,8 +604,7 @@ export default {
                         this.catering_discount =
                             res.data.data.catering_discount; // 用户所属卡种-餐饮折扣 -> 95折
                         this.promo = res.data.data.promo; // 用户所属卡种-会员卡折扣 -> 0.95
-                        this.delayCheckout = res.data.data.delay_room; // 用户所属卡种-延迟退房时间 -> 13:00
-                        // this.delayCheckout = "14:00"; // 用户所属卡种-延迟退房时间 -> 13:00
+                        this.delayCheckout = res.data.data.delay_room; // 用户所属卡种-延迟退房时间 -> 13:00，后台返回的是“至14点”
                         this.fetchUserCardRightInfo(); // 拉取用户卡种的权益
                         let astrict = parseInt(res.data.data.astrict); // 后台配置的最大可选择几间房
                         let quantity = parseInt(res.data.data.quantity); // 当前用户能定的最大房间数
@@ -673,6 +685,62 @@ export default {
                 }
             }
         },
+        // 取消订单逻辑
+        CancelOrder() {
+            this.orderBeforeDawnRoomToast = false;
+        },
+        // 提交订单逻辑
+        SubmitOrder() {
+            this.orderBeforeDawnRoomToast = false;
+            // 调用CreateOrder方法
+            this.fetchCreateOrder();
+        },
+        // 拉取CreateOrder
+        fetchCreateOrder() {
+            this.loadingTxt = "支付中...";
+            this.loading = true;
+            this.$http({
+                method: "POST",
+                url: create_order,
+                data: {
+                    room_type: this.watchObj.room_id,
+                    store_id: this.watchObj.store_id,
+                    dwell_name: this.orderName.trim(),
+                    dewll_mobile: this.orderTel.trim(),
+                    room_sum: this.watchObj.room_sum,
+                    begin: this.watchObj.begin,
+                    finish: this.watchObj.finish,
+                    coupon_id: this.initCoupon.id,
+                    remarks: this.remarks
+                }
+            })
+                .then(res => {
+                    if (res.data.status == 1) {
+                        this.loading = false;
+                        this.orderBeforeDawnRoomToast = false;
+                        this.$router.push({
+                            path: "onlinePay",
+                            query: {
+                                order_id: res.data.data.order_id
+                            }
+                        });
+                    } else {
+                        this.loading = false;
+                        this.orderBeforeDawnRoomToast = false;
+                        this.orderDelayToastTxt = res.data.msg;
+                        // "在您支付过程中，房被小伙伴抢光了";
+                        this.orderDelayToast = true;
+                        this.watchObj.room_sum = 1;
+                        this.fetchOrderForm();
+                        setTimeout(() => {
+                            this.orderDelayToast = false;
+                        }, 1500);
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        },
         // 支付逻辑
         pay() {
             // 当今日可订限额已用完，禁止提交
@@ -685,47 +753,12 @@ export default {
                 return false;
             }
             if (this.orderNameBlur() && this.orderTelBlur()) {
-                this.loadingTxt = "支付中...";
-                this.loading = true;
-                this.$http({
-                    method: "POST",
-                    url: create_order,
-                    data: {
-                        room_type: this.watchObj.room_id,
-                        store_id: this.watchObj.store_id,
-                        dwell_name: this.orderName.trim(),
-                        dewll_mobile: this.orderTel.trim(),
-                        room_sum: this.watchObj.room_sum,
-                        begin: this.watchObj.begin,
-                        finish: this.watchObj.finish,
-                        coupon_id: this.initCoupon.id,
-                        remarks: this.remarks
-                    }
-                })
-                    .then(res => {
-                        if (res.data.status == 1) {
-                            this.loading = false;
-                            this.$router.push({
-                                path: "onlinePay",
-                                query: {
-                                    order_id: res.data.data.order_id
-                                }
-                            });
-                        } else {
-                            this.loading = false;
-                            this.orderDelayToastTxt =
-                                "在您支付过程中，房被小伙伴抢光了";
-                            this.orderDelayToast = true;
-                            this.watchObj.room_sum = 1;
-                            this.fetchOrderForm();
-                            setTimeout(() => {
-                                this.orderDelayToast = false;
-                            }, 1500);
-                        }
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
+                if (this.isBeforeDawnOrder == true) {
+                    this.orderBeforeDawnRoomToast = true;
+                } else {
+                    // 调用CreateOrder方法
+                    this.fetchCreateOrder();
+                } 
             }
         }
     }
@@ -800,6 +833,14 @@ export default {
 
 // order页的样式
 
+// 凌晨订房bar提示
+.broadcastWrap {
+    display: none;
+    &.beforeDawnAddclass {
+        display: block;
+    }
+}
+
 // 后来添加的会员提示
 .broadcast {
     line-height: 36px;
@@ -831,7 +872,7 @@ export default {
     }
 }
 
-.order {
+.orderPage {
     padding-bottom: 50px;
     overflow: auto;
     // 相同的样式提取
@@ -839,7 +880,7 @@ export default {
         float: left;
         height: 50px;
         line-height: 50px;
-        color: #333;
+        color: #666;
         font-size: 15px;
     }
     .item-rg {
@@ -847,7 +888,8 @@ export default {
         padding-right: 15px;
         height: 50px;
         position: relative;
-        font-size: 14px;
+        font-size: 15px;
+        color: #333;
         &.linkman {
             padding-right: 42px;
             .linkmanBtn {
@@ -870,60 +912,53 @@ export default {
         }
     }
 
-    // 分割bar
-    .divivid-bar {
-        height: 5px;
-        background: #eff1f0;
-        margin-left: -15px;
-    }
-
     // 酒店详情css
-    .detail-container {
-        padding: 10px 0;
+    .orderInfoWrap {
+        margin-bottom: 10px;
         background: #eff1f0;
-        .detail-wrapper {
-            padding: 15px;
+        .orderInfo {
+            padding: 15px 12px 10px;
             background: url("../../assets/images/bg/bg_order_page.png") repeat-x
                 center;
-            .name {
+            .storeName {
                 font-size: 16px;
                 color: #333;
                 height: 22px;
                 line-height: 22px;
-                margin-bottom: 5px;
+                margin-bottom: 6px;
             }
-            .labels {
+            .storeLabels {
                 line-height: 16px;
                 font-size: 12px;
-                margin-bottom: 8px;
+                margin-bottom: 6px;
                 color: #666;
                 span {
                     margin-right: 10px;
                 }
             }
-            .area {
-                line-height: 16px;
-                vertical-align: bottom;
+            .checkInOutBar {
+                line-height: 20px;
+                span {
+                    display: inline-block;
+                }
                 .instro {
                     color: #999;
                     font-size: 12px;
-                    margin-right: 8px;
+                    margin-right: 4px;
                 }
                 .date {
                     color: #666;
                     font-size: 16px;
-                    margin-right: 15px;
+                    margin-right: 5px;
                 }
             }
         }
     }
-
     // 用户信息操作区
-    .info {
-        padding-left: 15px;
+    .Cells {
         background: #fff;
-        .room-num-select {
-            margin-left: -15px;
+        margin-bottom: 5px;
+        .roomList {
             background: #eff1f0;
             padding: 12px 0 0;
             text-align: center;
@@ -932,7 +967,7 @@ export default {
                 content: "";
                 clear: both;
             }
-            .room-num-item {
+            .roomItem {
                 float: left;
                 width: 20%;
                 padding: 0 12px;
@@ -953,76 +988,52 @@ export default {
                     }
                 }
             }
-            .room-num-empty {
+            .roomListVoid {
                 line-height: 36px;
                 margin-top: -12px;
             }
         }
         li {
             height: 50px;
+            padding-left: 15px;
             position: relative;
-            &:after {
+            &::after {
                 content: "";
                 position: absolute;
-                left: 0;
+                left: 15px;
                 bottom: 0;
                 right: 0;
                 height: 1px;
                 background: #e5e5e5;
+                transform-origin: 0 0;
                 transform: scaleY(0.5);
             }
-            &.room {
-                .room-info {
+            &:nth-last-of-type(1) {
+                &::after {
+                    height: 0;
+                }
+            }
+            &.roomCell {
+                &.roomCellBorderVoid {
+                    &::after {
+                        height: 0;
+                    }
+                }
+                .roomNum {
                     float: right;
                     height: 50px;
                     line-height: 50px;
                     padding-right: 15px;
-                    .arrow-icon {
+                    .roomNumArrow {
                         display: inline-block;
                         width: 16px;
                         height: 16px;
                         margin: -2px 0 0 5px;
                     }
-                    span {
-                        height: 50px;
-                        float: left;
-                        &.span-minus,
-                        &.span-plus {
-                            width: 17px;
-                            line-height: 50px;
-                            font-size: 0;
-                        }
-                        &.span-minus {
-                            img {
-                                display: inline-block;
-                                width: 17px;
-                                height: 17px;
-                            }
-                        }
-                        &.span-plus {
-                            img {
-                                display: inline-block;
-                                width: 17px;
-                                height: 17px;
-                            }
-                        }
-                        &.span-input {
-                            width: 75px;
-                            padding: 10px 0;
-                            margin: 0 10px;
-                            .txt {
-                                display: block;
-                                width: 100%;
-                                height: 30px;
-                                text-align: center;
-                                border: 1px solid #cccccc;
-                            }
-                        }
-                    }
                 }
             }
             &.name {
-                .name-div {
+                .nameInputWrap {
                     width: 160px;
                     height: 50px;
                     padding: 0;
@@ -1036,10 +1047,8 @@ export default {
                     }
                 }
             }
-
-            // 手机号的输入
             &.tel {
-                .tel-div {
+                .telInputWrap {
                     width: 190px;
                     height: 50px;
                     padding: 8px 0;
@@ -1072,6 +1081,25 @@ export default {
                     line-height: 50px;
                     font-size: 14px;
                     color: #666;
+                }
+            }
+            &.cardRight {
+                .cardRightContent {
+                    height: 50px;
+                    line-height: 50px;
+                    padding-right: 22px; 
+                    margin-left: 90px;
+                    position: relative;
+                    color: #333;
+                    font-size: 15px;
+                    img {
+                        position: absolute;
+                        width: 5px;
+                        height: 9px;
+                        right: 15px;
+                        top: 50%;
+                        margin-top: -5px; 
+                    }
                 }
             }
         }

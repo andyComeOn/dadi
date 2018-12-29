@@ -2,13 +2,10 @@
     <div class="indexPage">
         <!-- 主内容-->
         <div class="page-content">
-            <!-- pdbottom100 -->
-            <!-- m-position-ab -->
             <!-- 轮播 -->
             <div class="banner-box" id="indexBanner" :style="{height: indexBannerH + 'px'}">
                 <swiper class="zb-swiper" :options="swiperIndexOption" ref="mySwiper" @someSwiperEvent="swiperCallback(1)">
                     <swiper-slide v-for="item in bannerList" :key="item.id" @click="swiperSlideFun(item.id)">
-                        <!-- <router-link :to="{path:'ad',query:{}}" class="hotel-detail-banner-link"></router-link> -->
                         <a :href="item.url">
                             <img :src="item.img" alt="" style="width:100%;">
                         </a>
@@ -27,7 +24,6 @@
                                 <span class="city">{{cityname}}</span>
                             </div>
                             <div class="dest-city-arrow">
-                                <!-- <img src="../../assets/images/arrows/ic-arrow_10_18.png" alt=""> -->
                                 <img src="../../assets/images/arrows/list－更多icon@1x.png" alt="">
                             </div>
                         </div>
@@ -38,7 +34,7 @@
                             </div>
                     </div>
                     <!-- 入住和离店 -->
-                    <div class="time">
+                    <div class="time" :class="{beforeDawnAddclass: isBeforeDawn}">
                         <!-- 入住模块 -->
                         <div class="lf">
                             <span class="instr">入住</span>
@@ -55,6 +51,10 @@
                                 {{zbInitCalendar.end.mm}}月{{zbInitCalendar.end.dd}}日
                             </span>
                         </div>
+                        <div class="beforeDawnOrderRoomBar" :class="{beforeDawnAddclass: isBeforeDawn}">
+                            今晨6点前入住，请选择{{yesterday|filterTimeMM}}月{{yesterday|filterTimeDD}}日入住
+                            <img src="../../assets/images/icon/ic-dawn-arrow.png" class="TaArrow" alt="">
+                        </div>
                     </div>
                     <!-- 关键词搜索 -->
                     <div class="search">
@@ -63,16 +63,14 @@
                     <!-- 提交按钮 -->
                     <div class="submit" @click="submitFun">酒店预订</div>
                 </div>
-                        
             </div>
-                    
         </div>
         <!-- 用户首次进入组件 -->
         <mUserFirstIn :isVisible="userComeInIsVisible" @userFirstInEmit="userFirstInEmitFun"></mUserFirstIn>
         <!-- 引入底部tabbar -->
         <mTabbarFa></mTabbarFa>
         <!-- 城市组件dialog -->
-        <mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCityVisible">
+        <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbCityVisible">
             <City @cityTitleBackEmit="cityTitleBackEmitFun" @cityItemEmit="cityItemEmitFun" :longitude="longitude" :latitude="latitude">
             </City>
         </mu-dialog>
@@ -86,7 +84,7 @@
 
 <script>
 import { DistributionBanner, slt_location, wxShare } from "@/api/api"; // 引入api
-import { f, dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
+import { f, dateEndMinusStart, YTDLf, isBeforeDawn} from "@/utils/date"; // 引入封装时间函数
 import { getCookie, setCookie } from "@/utils/util";
 import mTabbarFa from "@/components/tabbarfa";
 import { swiper, swiperSlide } from "vue-awesome-swiper"; // 引入swipe组件
@@ -185,7 +183,9 @@ export default {
             longitude: "", //116.309408
             latitude: "", //39.966051
             address: "", // 地址精确到街道
-            userComeInIsVisible : isYouzan
+            userComeInIsVisible : isYouzan, // 是否是有赞用户
+            isBeforeDawn: false,  // 凌晨定房提示 
+            yesterday: "",
         };
     },
     created() {
@@ -200,6 +200,15 @@ export default {
         this.zbInitCalendar.end.yyyy = f(dd).yyyy;
         this.zbInitCalendar.end.mm = f(dd).mm;
         this.zbInitCalendar.end.dd = f(dd).dd;
+
+        // 凌晨订房提示逻辑
+        if (isBeforeDawn() == true) {
+            this.isBeforeDawn = true;
+        } else {
+            this.isBeforeDawn = false;
+        }
+        // 获取当前日期的昨天
+        this.yesterday = YTDLf().kebab;
         // 拉取banner的方法
         this.fetchBannerData({ type_id: 1 });
     },
@@ -292,7 +301,6 @@ export default {
                     dataUrl: "", // 如果type是music或video，则要提供数据链接，默认为空
                     success: function() {
                         // 用户点击了分享后执行的回调函数
-                        // alert(1234);
                     }
                 });
                 wx.onMenuShareTimeline({
@@ -424,10 +432,6 @@ export default {
 }
 // 用户预定区
 .reserve-form {
-    width: 100%;
-    // height: 340px;
-    // background: #eff1f0;
-    // padding: 10px 10px 0;
     padding: 10px;
     .reserve-wrap {
         background: #ffffff;
@@ -466,17 +470,6 @@ export default {
                 }
                 // 城市选择，箭头的css
                 .dest-city-arrow {
-                    // width: 10px;
-                    // height: 18px;
-                    // position: absolute;
-                    // top: 50%;
-                    // margin-top: -9px;
-                    // right: 0px;
-                    // img {
-                    //     width: 10px;
-                    //     height: 18px;
-                    // }
-
                     width: 7px;
                     height: 13px;
                     position: absolute;
@@ -507,7 +500,7 @@ export default {
                     }
                 }
             }
-            &::after {
+            &:after {
                 content: "";
                 position: absolute;
                 left: 0;
@@ -515,12 +508,12 @@ export default {
                 right: 0;
                 height: 1px;
                 background: @tabbarBorderColor;
+                transform-origin: 0 0;
                 transform: scaleY(0.5);
             }
         }
         /* 入住离店区域的css */
         .time {
-            height: 67px;
             padding: 12px 0;
             position: relative;
             .lf {
@@ -577,7 +570,7 @@ export default {
                     color: #333333;
                 }
             }
-            &:after {
+            &::before {
                 content: "";
                 position: absolute;
                 left: 0;
@@ -585,7 +578,38 @@ export default {
                 right: 0;
                 height: 1px;
                 background: @tabbarBorderColor;
+                transform-origin: 0 0; 
                 transform: scaleY(0.5);
+            }
+            &::after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+            &.beforeDawnAddclass {
+                padding: 12px 0 34px 0px;
+            }
+            .beforeDawnOrderRoomBar {
+                display: none;
+                line-height: 18px;
+                padding: 6px 4px;
+                background: #FDFCEC;
+                color: #F8752C;
+                position: absolute;
+                left: 8px;
+                bottom: -2px;
+                box-shadow:0px 2px 4px 0px rgba(44,45,46,0.29);
+                border-radius:4px;
+                &.beforeDawnAddclass {
+                    display: block;
+                }
+                .TaArrow {
+                    width: 9px;
+                    height: 4px;
+                    position: absolute;
+                    left: 26px;
+                    top: -4px;
+                } 
             }
         }
         /* 关键词选择 */
@@ -609,6 +633,7 @@ export default {
                 right: 0;
                 height: 1px;
                 background: @tabbarBorderColor;
+                transform-origin: 0 0;
                 transform: scaleY(0.5);
             }
         }

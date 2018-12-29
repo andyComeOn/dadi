@@ -41,6 +41,10 @@ export const login = '/api/Login/login?cpid=' + GlobalCpid;     //登录接口
 
 export const check_login = '/api/Accredit/check_login?cpid=' + GlobalCpid;   //检查登录
 
+export const check_login1 = '/api/Accredit/test/?cpid=1';   // 检查登录
+
+
+
 
 // Public-公共
 export const DistributionBanner = '/api/Banner/DistributionBanner?cpid=' + GlobalCpid;  // 轮播图
@@ -158,6 +162,36 @@ export const topUpDetails = '/api/ShopOrder/recharge_detail?cpid=' + GlobalCpid;
 // 下单
 export const placeOrder = '/api/Goods/add_order?cpid=' + GlobalCpid;    //下单 
 // 商品微信支付
-export const WxPay = '/api/WxPay/shop_pay?cpid=' + GlobalCpid;      //商品微信支付
+export const WxPayGoods = '/api/WxPay/shop_pay?cpid=' + GlobalCpid;      //商品微信支付
 // 商城订单列表
 export const shopOrderLists = '/api/ShopOrder/order_list?cpid=' + GlobalCpid;       //商城订单列表
+// 余额积分支付
+export const balancePay = '/api/ShopOrder/goods_pay?cpid=' + GlobalCpid;        //余额积分支付
+// 商品价格计算
+export const goodsPrice = '/api/Goods/price?cpid=' + GlobalCpid;                //商品价格计算
+// 获取下单地址
+export const goodsOrderAddress = '/api/User/default_address?cpid=' + GlobalCpid;        //获取下单地址
+// 获取用户收货地址列表
+export const getUserGoodsAddress = '/api/User/user_address?cpid=' + GlobalCpid;     //获取用户收货地址列表
+// 新增地址
+export const NewAddress = '/api/User/add_address?cpid=' + GlobalCpid;           //新增地址
+// 获取用户收货地址详情
+export const getAddressDetails = '/api/User/addressInfo?cpid=' + GlobalCpid;        //获取用户收货地址详情
+// 修改收货地址
+export const amendAddress = '/api/User/update_address?cpid=' + GlobalCpid;          //修改收货地址
+// 商城订单状态改变
+export const orderTypeChange = '/api/ShopOrder/status_change?cpid=' + GlobalCpid;       //商城订单状态改变
+// 订单详情
+export const orderDetails = '/api/ShopOrder/order_detail?cpid=' + GlobalCpid;           //订单详情
+// 商城申请退款
+export const shopRefundMoney = '/api/ShopOrder/refund?cpid=' + GlobalCpid;                  //商城申请退款
+// 获取用户钱包余额
+export const walletBalance = '/api/User/userAccountDetail?cpid=' + GlobalCpid;           //获取用户钱包余额
+// 省市区联动
+export const getCityLists ='/api/User/getCityList?cpid=' + GlobalCpid;                  //获取省市区联动
+// 商城首页接口(后来新增)
+export const shopIndexPage = '/api/Goods/mainPage?cpid=' + GlobalCpid;                        //商城首页接口
+// 删除地址
+export const delAddress = '/api/User/del_address?cpid=' + GlobalCpid;                   //删除地址
+//支付成功页面
+export const paySuccess = '/api/ShopOrder/pay_success_page?cpid=' + GlobalCpid;         //支付成功页面

@@ -18,13 +18,13 @@
         <storeListItem :condition="watchObj"></storeListItem>
 
         <!-- 城市组件dialog -->
-        <mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCityVisible">
+        <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbCityVisible">
             <City @cityTitleBackEmit="cityTitleBackEmitFun" @cityItemEmit="cityItemEmitFun" :longitude="toRefreshBarObj.longitude" :latitude="toRefreshBarObj.latitude">
             </City>
         </mu-dialog>
 
         <!-- 日历组件dialog -->
-        <mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCalendarVisible">
+        <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbCalendarVisible">
             <Calendar ref="Calendar" :markDateMore="zbInitCalendar" @isToday="clickToday" @calendarTitleBackEmit="calendarTitleBackEmitFun">
             </Calendar>
         </mu-dialog>

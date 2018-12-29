@@ -83,13 +83,13 @@ import shopTypeLists from '../pages/shopPage/shoppIng/shopTypeLists.vue';
 // 商城详情
 import shoppIngDetails from '../pages/shopPage/shoppIngDetails/shoppIngDetails.vue';
 //收货地址
-import takeGoodsAddress from '../pages/shopPage/takeGoodsAddress/takeGoodsAddress.vue';
+import address from '../pages/shopPage/address/address.vue';
 //我的钱包
 import myWallet from '../pages/shopPage/myWallet/myWallet.vue';
 //商城订单
 import shopOrder from '../pages/shopPage/shopOrder/shopOrder.vue';
 //订单详情
-import shopOrderDetail from '../pages/shopPage/order/orderDetails.vue';
+import orderDetails from '../pages/shopPage/order/orderDetails.vue';
 //退款订单
 import refundOrder from '../pages/shopPage/refundOrder/refundOrder.vue';
 //配送方式
@@ -102,8 +102,14 @@ import topUpDetails from '../pages/shopPage/myWallet/topUpDetails.vue';
 import topUpLists from '../pages/shopPage/myWallet/topUpLists.vue';
 //账单详情
 import billDetails from '../pages/shopPage/myWallet/billDetails.vue';
+//充值规则
+import topUpRule from '../pages/shopPage/myWallet/topUpRule.vue';
 //编辑收货地址
 import editAddress from '../pages/shopPage/address/editAddress.vue';
+//支付页面
+import payPage from '../pages/shopPage/payPage/payPage.vue';
+//支付成功页面
+import paySuccess from '../pages/shopPage/payPage/paySuccess.vue';
 
 
 
@@ -111,6 +117,7 @@ import editAddress from '../pages/shopPage/address/editAddress.vue';
 Vue.use(Router)
 
 export default new Router({
+	// mode:'history',
 	routes: [
 		// 首页
 		{
@@ -414,7 +421,7 @@ export default new Router({
 				title: '注册条款'
 			}
 		},
-		// 商城
+		// 商城首页
 		{
 			path: '/shoppIng',
 			name: 'shoppIng',
@@ -423,7 +430,7 @@ export default new Router({
 				title:'商城'
 			}
 		},
-		// 商城
+		// 商城列表
 		{
 			path: '/shopTypeLists',
 			name: 'shopTypeLists',
@@ -443,9 +450,9 @@ export default new Router({
 		},
 		//收货地址
 		{
-			path: '/takeGoodsAddress',
-			name: 'takeGoodsAddress',
-			component: takeGoodsAddress,
+			path: '/address',
+			name: 'address',
+			component: address,
 			meta:{
 				title:'收货地址'
 			}
@@ -470,9 +477,9 @@ export default new Router({
 		}, 
 		//订单详情  
 		{
-			path: '/shopOrderDetail',
-			name: 'shopOrderDetail',
-			component: shopOrderDetail,
+			path: '/orderDetails',
+			name: 'orderDetails',
+			component: orderDetails,
 			meta:{
 				title:'订单详情'
 			}
@@ -531,6 +538,15 @@ export default new Router({
 				title:'账单详情'
 			}
 		}, 
+		//充值规则
+		{
+			path:'/topUpRule',
+			name:'topUpRule',
+			component:topUpRule,
+			meta:{
+				title:'充值规则'
+			}
+		},
 		//编辑收货地址  
 		{
 			path: '/editAddress',
@@ -540,6 +556,24 @@ export default new Router({
 				title:'编辑收货地址'
 			}
 		}, 
+		//支付页面  
+		{
+			path: '/payPage',
+			name: 'payPage',
+			component: payPage,
+			meta:{
+				title:'在线支付'
+			}
+		}, 
+		//支付成功页面
+		{
+			path:'/paySuccess',
+			name:'paySuccess',
+			component:paySuccess,
+			meta:{
+				title:'支付成功'
+			}
+		},
 		{
 			path: '/error',
 			name: 'error',

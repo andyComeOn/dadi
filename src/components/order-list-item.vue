@@ -141,9 +141,8 @@ export default {
         // 订单socket
         socketMethod() {
             var that = this;
-            // let ws = new WebSocket("ws://172.16.0.252:8081");
-            let ws = new WebSocket("ws://39.107.102.235:8081"); 
-            // let  ws = this.ws;
+            let ws = new WebSocket("ws://172.16.0.252:8081"); // 测试地址
+            // let ws = new WebSocket("ws://39.107.102.235:8081"); // 正式地址
             ws.onopen = function() {
                 console.log("连接成功");
                 ws.send("uid" + getCookie("userUid"));

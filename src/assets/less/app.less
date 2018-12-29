@@ -94,7 +94,6 @@
     width: 310px;
     border-radius: 5px;
     transform: translate(-50%,-50%);
-    text-align: center;
 }
 .z-toast-pay-head {
     color: #333333;
@@ -102,19 +101,27 @@
     font-size: 17px;
     padding-top: 25px;
     font-weight: 600;
+    text-align: center;
 }
 .z-toast-pay-body {
     color: #666666;
-    line-height: 14px;
-    font-size: 17px;
-    padding:  20px 0 35px;
+    line-height: 20px;
+    font-size: 14px;
+    padding: 20px 25px 35px;
+    text-align: center;
+}
+
+.z-toast-pay-body.beforeDawnAddclass {
+    text-align: left;
 }
 .z-toast-pay-footer {
     color:#269882; 
+    height: 50px;
     line-height: 50px;
     font-size: 16px;
+    text-align: center;
     position: relative;
-    &:before{
+    &:before {
         content: "";
         position: absolute;
         left: 0;
@@ -122,9 +129,42 @@
         right: 0;
         height: 1px;
         background: #e5e5e5;
+        transform-origin: 0 0;
         transform: scaleY(0.5);
     }
+    span {
+        position: absolute;
+        top: 0;
+        width: 50%;
+        line-height: 50px;
+        text-align: center;
+        &.cancelOrder {
+            left: 0;
+            color: #333;
+            border-radius: 0 0 0 5px;
+        }
+        &.submitOrder {
+            right: 0;
+            color: #fff;
+            background: #269882;
+            border-radius: 0 0 5px 0;
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .din {
     font-weight: bold;
     font-family: DIN;

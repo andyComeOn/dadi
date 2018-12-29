@@ -17,7 +17,7 @@
                 </li>
                 <li>
                     <img src="../../../assets/images/shop/qianbao_yue.png" alt="">
-                    <p>个人账户余额<span>￥{{avail_amount}}</span></p>
+                    <p>个人账户余额<span>￥{{this.avail_amount}}</span></p>
                 </li>
             </ul>
             <!-- 充值方式 end -->
@@ -32,15 +32,44 @@
                     <router-link :to="{path:'topUpLists'}">
                         <span class="topUpMsgAfter">充值明细</span>
                     </router-link>
-                    <span>规则</span>
+                    <router-link :to="{path:'topUpRule'}">
+                        <span>规则</span>
+                    </router-link>
                 </p>
             </div>
             <!-- 充值明细 end -->
-            <!-- 充值提示 str -->
-            <div class="topUpHint" style="display:none;">
-                <span>充值失败</span>
+            <!-- 遮罩 str -->
+            <div class="topUpBox" v-show="topUpBox">
+                <!-- dialog(支付成功) str-->
+                <div v-show="paySuccessToast">
+                    <div class="z-mask-transparent-pay"></div>
+                    <div class="z-toast-pay">
+                        <p class="z-toast-pay-head">提示</p>
+                        <p class="z-toast-pay-body">充值完成</p>
+                        <p class="z-toast-pay-footer" @click="paySuccessMethod">我知道了</p>
+                    </div>
+                </div>
+                <!-- dialog(支付成功) end-->
             </div>
-            <!-- 充值提示 end -->
+            <!-- 遮罩 end -->
+            <!-- toast(loading=>weui)  str -->
+            <div v-show="loading">
+                <div class="weui-mask_transparent"></div>
+                <div class="weui-toast">
+                    <i class="weui-loading weui-icon_toast"></i>
+                    <p class="weui-toast__content">{{loadingTxt}}</p>
+                </div>
+            </div>
+            <!-- toast(loading=>weui)  end -->
+            <!-- toast（delay=>z）str -->
+            <div v-show="delayToast">
+                <div class="z-mask-transparent"></div>
+                <div class="z-toast">
+                    <i class="z-toast-icon"></i>
+                    <p class="z-toast-content">{{delayToastTxt}}</p>
+                </div>
+            </div>
+            <!-- toast（delay=>z）end -->
         </div>
     </div>
 </template>
@@ -49,7 +78,7 @@
 </style>
 <script>
     import wx from "weixin-js-sdk";
-    import {topUpMoney} from '../../../api/api.js';
+    import {topUpMoney,walletBalance} from '../../../api/api.js';
     import {getCookie} from '../../../utils/util.js';
     export default {
         name: "payOrder",
@@ -58,18 +87,70 @@
         },
         data() {  
             return {
-                avail_amount:'',    //个人账户余额
-                topUpAmount:'',     //充值金额
+                avail_amount:'',            //个人账户余额
+                topUpAmount:'',             //充值金额
+                loading:"",                 //loading
+                loadingTxt:"",              //
+                delayToast:"",              //
+                delayToastTxt:"",           //
+                topUpBox:false,             //遮罩
+                paySuccessToast:false,      //成功提示
+                topUpId:""
             }
         },
         methods: {
+            paySuccessMethod(){         //跳转到订单详情页面
+                this.$router.push({path:"topUpDetails",query:{topUpId:this.topUpId}})
+            },
             topUpBtn(){    //充值
                 let reg = new RegExp(/^[+]{0,1}(\d+)$/);
                 if(!reg.test(this.topUpAmount)){
-                    alert('充值金额有误');
+                    this.delayToast = true;
+                    this.delayToastTxt = "充值金额有误！"
+                    setTimeout(()=>{
+                        this.delayToast = false;
+                    },1500);
                     return false;
                 }
-                console.log(this.topUpAmount);
+                let _this = this;
+                let jsApiParameters = {};
+                let callpay = function() {
+                    if (typeof WeixinJSBridge == "undefined") {
+                        if (document.addEventListener) {
+                            document.addEventListener(
+                                "WeixinJSBridgeReady",
+                                onBridgeReady,
+                                false
+                            );
+                        } else if (document.attachEvent) {
+                            document.attachEvent(
+                                "WeixinJSBridgeReady",
+                                onBridgeReady
+                            );
+                            document.attachEvent(
+                                "onWeixinJSBridgeReady",
+                                onBridgeReady
+                            );
+                        }
+                    } else {
+                        onBridgeReady();
+                    }
+                };
+                let onBridgeReady = function() {
+                    WeixinJSBridge.invoke(
+                        "getBrandWCPayRequest",
+                        jsApiParameters,
+                        res => {
+                            if (res.err_msg == "get_brand_wcpay_request:ok") {
+                                _this.topUpBox = true;
+                                _this.paySuccessToast = true;
+                            }
+                            if (res.err_msg == "get_brand_wcpay_request:cancel") {
+                                alert("取消支付");
+                            }
+                        }
+                    );
+                };
                 this.$http({
                     url:topUpMoney,
                     method:"POST",
@@ -78,27 +159,45 @@
                     }
                 }).then(res=>{
                     if(res.data.status == 1){
-                        let wxMsg = JSON.parse(res.data.data);
-                        wx.chooseWXPay({
-                            timestamp: wxMsg.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
-                            nonceStr: wxMsg.nonceStr, // 支付签名随机串，不长于 32 位
-                            package: wxMsg.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
-                            signType: wxMsg.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
-                            paySign: wxMsg.paySign, // 支付签名
-                            success: function (res) {
-                                // 支付成功后的回调函数
-                                alert(JSON.stringify(res));
-                            }
-                        });
+                        let wxMsg = res.data.data;
+                        this.topUpId = wxMsg.recharge_id;
+                        jsApiParameters = res.data.data;
+                        callpay();
                     }else{
+                        this.delayToast = true;
+                        this.delayToastTxt = res.data.msg;
+                        setTimeout(()=>{
+                            this.delayToast = false;
+                        },1500);
+                    }
+                });
+            },
+            walletMsg(){                        //钱包余额
+                this.loading = true;            //loading
+                this.$http({
+                    url:walletBalance,
+                    method:"POST",
+                    data:{
 
+                    }
+                }).then((res)=>{
+                    this.loading = false;            //loading
+                    if(res.data.status == 1){
+                        this.avail_amount = res.data.data.avail_amount;
+                    }else{
+                        this.delayToastTxt = res.data.msg;
+                        this.delayToast = true;
+                        setTimeout(() => {
+                            this.delayToast = false;
+                        }, 1500);
+                        return false;
                     }
                 });
             }
         },
         mounted() {
             //个人账户余额
-            this.avail_amount = getCookie('avail_amount');
+            this.walletMsg();
         }
     }
 </script>

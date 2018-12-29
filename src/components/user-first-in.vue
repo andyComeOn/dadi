@@ -3,11 +3,10 @@
     <div class="userFirstIn">
         <div class="toast" v-show="isVisible">
             <div class="content">
-                <div class="icon"><img src="../assets/images/icon/ic-first-in.png" alt=""></div>
+                <div class="icon"><img src="../assets/images/icon/ic-first-in.png" alt="" /></div>
                 <p class="title">系统升级公告</p>
                 <p class="desc">由于系统升级数据迁移，<br> 原系统账户的优惠券清零，<br> 新系统为每个账户补发5张优惠券。 <br>在“我的--->我的优惠券”中查看</p>
-                <p class="btn"><span @click="Submit">我知道了</span></p>
-                
+                <p class="btn"><span @click="Submit">我知道了</span></p>                
             </div>
         </div>
     </div>
@@ -28,7 +27,7 @@ export default {
     },
     methods: {
         Submit(){
-            this.$emit("userFirstInEmit",false);
+            this.$emit("userFirstInEmit", false);
         }
     }
 };

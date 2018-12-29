@@ -4,22 +4,25 @@
 }
 .shoppIng{
     position: relative;
+    width: 100%;
+    z-index: 999;
     .navLists{
         position: absolute;
-        bottom: -90px;
+        top: 175px;
         left: 0;
         width: 100%;
     }
 }
 .navLists{
     z-index: 999;
-    padding:15px 0px;
+    padding-bottom:15px;
     border-radius: 8px 8px 0px 0px;
     background: #fff;
     li{
         width: 25%;
         text-align: center;
         float:left;
+        margin-top: 15px;
         dl {
             dt{
                 margin-bottom: 8px;
@@ -45,7 +48,7 @@
     }
 }
 .brand{
-    padding-top: 90px;
+    margin-top: 180px;
     background: #F6F6F6;
     h3 {
         text-align: center;
@@ -83,8 +86,7 @@
     }
 }
 .brandTypeLists{
-    padding-top: 8px;
-    position: absolute;
+    position: fixed;
     top: 0;
     left:0;
     width: 100%;
@@ -92,21 +94,21 @@
     background: #f6f6f6;
 } 
 .brandLists{
-    padding:0px 8px;
+    // overflow: auto!important;
     background: #f6f6f6;
     li{
         width: 48.6%;
-        float: left;
+        // float: left;
         margin-bottom: 8px;
         border-radius: 4px;
+        display: inline-block;
         dl{
             background:#fff;
             border-radius: 4px;
             dt img{
                 display: block;
                 width: 100%;
-                // 高度最好是不要写，本身图片就是方形
-                // height: 175.5px;
+                height: 175.5px;
                 border-radius: 4px;
             }
             dd{
@@ -143,16 +145,61 @@
                         font-size: 13px;
                         color: #E0310D;
                     }
+                    i{
+                        font-style: normal;
+                        font-weight: 500;
+                    }
                 }
             } 
         }
     }
-    &:after{
-        content:'';
-        display: block;
-        clear: both;
-    }
     li:nth-child(even){
         margin-left: 8px;
     }
+}
+.clearfix::after {
+    content: ".";
+    clear: both;
+    display: block;
+    overflow: hidden;
+    font-size: 0;
+    height: 0;
+}
+.clearfix {
+    zoom: 1;
+}
+.footer{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 49px;
+    background: #fff;
+    z-index: 1000;
+    li{
+        width: 50%;
+        display: inline-block;
+        float: left;
+        text-align: center;
+        cursor:pointer;
+        img{
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin-top: 3.5px;
+            margin-bottom: 4px;
+        }
+        dd{
+            font-size: 10px;
+            color:#999;
+        }
+        &:nth-of-type(1) dl dd{
+            color: #E0310D;
+        }
+    }
+}
+.pull-to-refresh-layer{
+    position: fixed!important;
+    top: 0!important;
+    left: 0!important;
 }

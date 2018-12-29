@@ -39,7 +39,6 @@ export function YTDRg() {
 		rgRule: f(d).yyyy + '\\' + f(d).mm + '\\' + f(d).dd, //yyyy\mm\dd
 		noRule: f(d).yyyy + f(d).mm + f(d).dd,    //yyyymmdd
 	}
-
 }
 
 // 昨天年月日输出
@@ -78,3 +77,9 @@ export function dateEndMinusStart(p1, p2){
 	return parseInt((b - a)/(24*3600*1000));
 }
 
+// 判断是否是今天的黎明00:01-05:59
+export function isBeforeDawn(){
+	let d = new Date(); 
+	let h = d.getHours();
+	return h < 6;
+}

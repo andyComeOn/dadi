@@ -1,69 +1,159 @@
 <template>
     <div>
         <!-- 品牌制造商直供 str -->
-        <div class="brandTypeLists">
-            <ul class="brandLists">
+        <scroller :on-refresh="refresh" :on-infinite="infinite">
+            <ul class="brandLists" v-if="this.noShopLists == false">
                 <li v-for="(item,index) in shopTypeListsArr" :key="index">
-                    <dl>
-                        <dt>
-                            <img :src="item.goods_img" alt="">
-                        </dt>
-                        <dd>
-                            <p><span v-if='item.consume_type == 2'>积分</span>{{item.goods_name}}</p>
-                            <h2><span>￥</span>{{item.goods_price}}</h2>
-                        </dd>
-                    </dl>
+                    <router-link :to='{path:"shoppIngDetails",query:{shopId:item.id}}'>
+                        <dl>
+                            <dt>
+                                <img :src="item.goods_img" alt="">
+                            </dt>
+                            <dd>
+                                <p><span v-if='item.consume_type == 2 || item.consume_type == 3'>积分</span>{{item.goods_name}}</p>
+                                <h2 v-if="item.consume_type == 1"><span>￥</span>{{item.goods_price}}</h2>
+                                <h2 v-if="item.consume_type == 2">{{item.goods_integral}}<span>积分</span></h2>
+                                <h2 v-if="item.consume_type == 3"><span>￥</span>{{item.goods_price}}+{{item.goods_integral}}<span>积分</span></h2>
+                            </dd>
+                        </dl>
+                    </router-link>
                 </li>
             </ul>
-        </div>
+            <div class="noShopLists" v-show="noShopLists">
+                <img src="../../../assets/images/shop/dingdan_404.png" alt="">
+                <p>暂无商品</p>
+            </div>
+        </scroller>
         <!-- 品牌制造商直供 end -->
+        <!-- toast(loading=>weui)  str -->
+        <div v-show="loading">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-loading weui-icon_toast"></i>
+                <p class="weui-toast__content">{{loadingTxt}}</p>
+            </div>
+        </div>
+        <!-- toast(loading=>weui)  end -->
+         <!-- toast（delay=>z）str -->
+        <div v-show="delayToast">
+            <div class="z-mask-transparent"></div>
+            <div class="z-toast">
+                <i class="z-toast-icon"></i>
+                <p class="z-toast-content">{{delayToastTxt}}</p>
+            </div>
+        </div>
+        <!-- toast（delay=>z）end -->
     </div>
 </template>
 <script>
-import { shopTypeLists } from "../../../api/api.js";
-export default {
-    name: "shoppIng",
-    components: {},
-    data() {
-        return {
-            shopTypeListsArr: []
-        };
-    },
-    computed: {},
-    mounted() {
-        // //获取参数
-        // var dataObj = {
-
-        // };
-        // this.$http({
-        //     url: shopTypeLists,
-        //     method: "POST",
-        //     data: dataObj
-        // }).then(res => {
-        //     console.log(res);
-        // }).catch(err => {
-        //     console.log(err);
-        // });
-        var shopListsData = {
-            category_id: this.$route.query.shopType
-        };
-        this.$http({
-            url: shopTypeLists,
-            method: "POST",
-            data: shopListsData
-        }).then(res => {
-            if (res.data.status == 1) {
-                this.shopTypeListsArr = res.data.data;
-                console.log(res);
-            } else {
-                console.log("获取失败");
+    import { shopTypeLists } from "../../../api/api.js";
+    export default {
+        name: "shoppIng",
+        components: {},
+        data() {
+            return {
+                shopTypeListsArr:[],
+                loading:false,
+                loadingTxt:"加载中...",
+                delayToast:false,
+                delayToastTxt:"",
+                pageIndex:0,            //当前页
+                noShopLists:false
+            };
+        },
+        computed: {},
+        created(){
+            if(this.$route.query.shopType == 1){
+                document.title="商品-好睡眠";
+            }else if(this.$route.query.shopType == 2){
+                document.title="商品-驿自营";
+            }else if(this.$route.query.shopType == 3){
+                document.title="商品-唯特产";
+            }else if(this.$route.query.shopType == 4){
+                document.title="商品-积分兑换";
             }
-        });
-    },
-    methods: {}
-};
+        },
+        mounted() {
+
+        },
+        methods: {
+            refresh (done) {                     //刷新时清空列表
+                this.shopTypeListsArr.length = 0;
+                this.pageIndex = 1;
+                setTimeout(() => {
+                    this.goodsLists(this.pageIndex);
+                    done(true);
+                }, 1500);
+            },
+            infinite (done) {                    //加载
+                this.pageIndex++;
+                setTimeout(() => {
+                    this.goodsLists(this.pageIndex);
+                    done(true);
+                }, 1500);
+            },
+            goodsLists(pageIndex){                          //商品分类列表
+                this.loading = true;                        //打开loading
+                this.$http({
+                    url: shopTypeLists,
+                    method: "POST",
+                    data: {
+                        category_id: this.$route.query.shopType,
+                        page:pageIndex,
+                        pagesize:10
+                    }
+                }).then(res => {
+                    console.log(res);
+                    this.loading = false;                               //关闭loading
+                    if (res.data.status == 1) {
+                        if(res.data.data.length != 0){
+                            this.noShopLists = false;
+                            for(let i in res.data.data){
+                                this.shopTypeListsArr.push(res.data.data[i]);
+                            }
+                        }else if(res.data.data.length == 0 && this.pageIndex == 1){
+                            this.noShopLists = true;
+                        }else{
+                            this.delayToast = true;
+                            this.delayToastTxt = res.data.msg;              //错误信息
+                            setTimeout(() => {
+                                this.delayToast = false;
+                            }, 1500);
+                            return false;
+                        }
+                    } else {
+                        this.delayToast = true;
+                        this.delayToastTxt = res.data.msg;              //错误信息
+                        setTimeout(() => {
+                            this.delayToast = false;
+                        }, 1500);
+                        return false;
+                    }
+                });
+            }
+        }
+    };
 </script>
 <style lang="less" scoped>
-@import "./shopping.less";
+    @import "./shopping.less";
+</style>
+<style lang="less" scoped>
+    .brandLists{
+        padding:8px 8px;
+    }
+    .noShopLists{
+        text-align:center;
+        margin-top:150px;
+        img{
+            display:inline-block;
+            width:110px;
+            height:65px;
+        }
+        p{
+            font-size:14px;
+            color:#666;
+            margin-top:15px;
+        }
+    }
 </style>
  

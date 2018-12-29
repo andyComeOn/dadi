@@ -45,6 +45,7 @@
 
 <script>
 import { store_list } from "@/api/api";
+import { fetchCheckLogin } from "@/utils/util";
 export default {
     name: "room-wrapper",
     props: ["condition"],
@@ -77,10 +78,13 @@ export default {
                 this.isRoomItemToastVisible = false;
                 if (res.data.status == 1) {
                     this.dataList = res.data.data;
+                } else if (res.data.status == -1) {
+                    this.dataList = "";
+                    this.fetchCheckLoginPackage();
                 } else if (res.data.status == -2) {
                     this.dataList = "";
                     this.isShow = true;
-                }
+                } 
             });
         },
         // 门店item的点击事件
@@ -93,7 +97,30 @@ export default {
                     finish: finish
                 }
             });
-        }
+        },
+        fetchCheckLoginPackage(){
+            fetchCheckLogin({tg:"" ,form: encodeURIComponent(window.location.href)}).then(res => {
+                if (res.data.status == 0) {
+                    window.location.href = res.data.data;
+                } else {
+                    setCookie("userInfoTel", res.data.data.mobile);  //手机号
+                    setCookie("userVipStatus", res.data.data.status);  //会员状态（0待审、1正常、2锁定）
+                    setCookie("userUid", res.data.data.uid);
+                    setCookie("userInfoIsRealname", res.data.data.is_realname); //真实姓名
+                    setCookie("userInfoGroupid", res.data.data.group_id);  //会员组id
+                    setCookie("nickname", encodeURI(res.data.data.nickname));		//昵称
+                    setCookie("openid", res.data.data.openid);  
+                    setCookie("avatar", res.data.data.avatar);  //avatar
+                    setCookie('avail_amount',res.data.data.avail_amount);
+                    if (res.data.data.coupon_flag == 0) {
+                        setCookie("isYouzan", 0); // 判断是不是有赞用户 1是(弹系统维护提示) 0不是（不弹）
+                    } else {
+                        setCookie("isYouzan", 1); // 判断是不是有赞用户 1是(弹系统维护提示) 0不是（不弹）
+                    }
+                    
+                }
+            })
+        },
     }
 };
 </script>

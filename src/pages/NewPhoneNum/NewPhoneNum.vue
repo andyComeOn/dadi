@@ -1,191 +1,177 @@
 <template>
-	<div class="old-phone-num-page">
+	<div class="oldPhoneNumPage">
+		<!-- toast（delay=>z） -->
+        <div v-show="delayToast">
+            <div class="z-mask-transparent"></div>
+            <div class="z-toast">
+                <i class="z-toast-icon"></i>
+                <p class="z-toast-content">{{delayToastTxt}}</p>
+            </div>
+        </div>
+		<!-- 表单主内容 -->
 		<ul>
-			<!-- 新手机号 -->
-            <li class="tel">
+			<li class="telCell">
 				<label>新手机号</label>
-				<div class="lf">
-					<div class="tel-div">
-						<input @blur="blurInp" @focus="focusInp" type="tel" v-model="newMobile" class="tel-txt" placeholder="请输入新手机号">
+				<div class="rg fr">
+					<div class="telInputWrap">
+						<input type="tel" v-model="newPhoneNum" class="telInput" @blur="newPhoneInputBlur" @focus="newPhoneInputFocus" placeholder="请输入新手机号">
 					</div>
 				</div>
             </li>
-			<!-- 验证码 -->
-			<li class="test-code">
+			<li class="codeCell">
 				<div class="lf">
-					<input @blur="codeBlur" @focus="codeFocus" type="tel" v-model="codeVal" class="test-txt" placeholder="请输入验证码">
+					<input type="tel" v-model="codeVal" class="codeInput" @blur="codeInputBlur" @focus="codeInputFocus" placeholder="请输入验证码">
 				</div>
 				<div class="rg">
-					<div class="test-btn" @click="getCode" v-if='get_btn == true' >获取验证码</div>
-					<div class="test-code-btn" v-if="get_code_btn == true">{{getTime}}s后重新获取</div>
+					<div class="codeBtn" @click="getCode">{{codeBtnTxt}}</div>
 				</div>
 			</li>
 		</ul>
 		<!-- 提交 -->
-		<div class="submit-box" v-if='submit_show == true'>
-			<div class="submit" @click="subNewMobile">提交</div>
+		<div class="submitBtnWrap">
+			<div class="submit" @click="submitBtn">提交</div>
 		</div>
-		<div class="submit-box-aaa" v-if='submit_show_aaa == true'>
-			<div class="submit">提交</div>
-		</div>
-		<!-- hint -->
-		<span class="hint_box" v-if='hint_box_show == true'>{{hint_box_content}}</span>
 	</div>
 </template>
 <script>
-	import {sendMobile,check_mobile} from '../../api/api.js';
+	import { sendMobile, check_mobile } from '@/api/api.js';
 	export default {
-		name: "old-phone-num-page",
-		components: {
-			
-		},
+		name: "oldPhoneNumPage",
 		data() {
 			return {
-				newMobile:'',			//新手机
-				codeVal:'',				//验证码
-				setTime: 58,
-				getTime:'59',
-				get_btn:true,
-				get_code_btn:false,
-				submit_show_aaa:true,
-				submit_show:false,
-				hint_box_show:false,	//hint 显示 or 隐藏
-				hint_box_content:'',	//hint 内容
+				newPhoneNum: '',		// 新手机号
+				codeVal: '',			// 验证码
+				setTime: 59,
+				delayToast: false, // delayToast是否显示
+            	delayToastTxt: "", // delayToastTxt的文案
+				codeBtnTxt: "获取验证码", // 验证码btn的txt
+            	codeBtnClickCtrl: true, // 验证码btn的控制
 			};
 		},
 		methods: {
-			//手机号验证
-			focusInp(){
-				console.log(1);
+			// 新手机号获焦
+			newPhoneInputFocus(){
+				
 			},
-			blurInp(){
+			// 新手机号失焦
+			newPhoneInputBlur(){
 				let reg = new RegExp(/^1\d{10}$/);
-				if(reg.test(this.newMobile)){
-					if(this.newMobile != '' && this.codeVal != ''){
-						this.submit_show = true;
-						this.submit_show_aaa = false;
-					}
-				}else{
-					this.hint_box_show = true;
-					this.hint_box_content = '手机号不正确';
-					setTimeout(()=>{
-						this.hint_box_show = false;
-						this.hint_box_content = '';
-					},2000);
-					this.submit_show = false;
-					this.submit_show_aaa = true;
+				if (this.newPhoneNum.trim() == "") {
+					this.delayToastTxt = "手机号不能为空";
+					this.delayToast = true;
+					setTimeout(() => {
+						this.delayToast = false;
+					}, 1500);
+					return false;
+				} else if (!reg.test(this.newPhoneNum.trim())) {
+					this.delayToastTxt = "手机号格式不正确";
+					this.delayToast = true;
+					setTimeout(() => {
+						this.delayToast = false;
+					}, 1500);
+					return false;
+				} else {
+					return true;
 				}
 			},
-			//验证码验证
-			codeBlur(){
+			// 验证码失焦
+			codeInputBlur() {
 				let reg = new RegExp(/^\d{4}$/);
-				if(reg.test(this.codeVal)){
-					if(this.newMobile != '' && this.codeVal != ''){
-						this.submit_show = true;
-						this.submit_show_aaa = false;
-					}
-				}else{
-					this.hint_box_show = true;
-					this.hint_box_content = '验证码格式不正确';
-					setTimeout(()=>{
-						this.hint_box_show = false;
-						this.hint_box_content = '';
-					},2000);
-					this.submit_show = false;
-					this.submit_show_aaa = true;
+				if (this.codeVal.trim() == "") {
+					this.delayToastTxt = "验证码不能为空";
+					this.delayToast = true;
+					setTimeout(() => {
+						this.delayToast = false;
+					}, 1500);
+					return false;
+				} else if (!reg.test(this.codeVal.trim())) {
+					this.delayToastTxt = "验证码格式不正确";
+					this.delayToast = true;
+					setTimeout(() => {
+						this.delayToast = false;
+					}, 1500);
+					return false;
+				} else {
+					return true;
 				}
 			},
-			codeFocus(){
-				console.log(3);
-			},
-			//获取验证码
-			getCode(){
-				if(this.newMobile == ''){
-					this.hint_box_show = true;
-					this.hint_box_content = '手机号不能为空';
-					setTimeout(()=>{
-						this.hint_box_show = false;
-						this.hint_box_content = '';
-					},2000);
-				}else{				
-					var param = {
-						mobile:this.newMobile,
-						type:4
-					};
+			// 验证码获焦
+			codeInputFocus() {},
+			// 获取验证码
+			getCode() {
+				if (this.newPhoneInputBlur()) {
+					// 禁止频繁点击
+					if (this.codeBtnClickCtrl == false) {
+						this.delayToastTxt = "验证码已发送，请稍后再试";
+						this.delayToast = true;
+						setTimeout(() => {
+							this.delayToast = false;
+						}, 1500);
+						return;
+					}
 					this.$http({
-						url:sendMobile,
-						method:'POST',
-						data:param
-					}).then((res)=>{
-						if(res.data.status == 1){
-							this.get_btn = false;		//关闭获取验证码按钮
-							this.get_code_btn = true;	//打开倒计时
-							//倒计时
+						url: sendMobile,
+						method: 'POST',
+						data: {
+							mobile: this.newPhoneNum,
+							type: 7
+						}
+					}).then((res) => {
+						if (res.data.status == 1) {
+							this.setTime = 59; // 重新赋值
 							let timer = setInterval(() => {
 								if (this.setTime >= 0) {
-									let tmpMin = Math.floor(this.setTime / 60);
-									let min = tmpMin < 10 ? "0" + tmpMin : tmpMin;
-									let tmpSec = Math.floor(this.setTime % 60);
-									let sec = tmpSec < 10 ? "0" + tmpSec : tmpSec;
-									this.getTime = sec;
+									this.codeBtnClickCtrl = false;
+									let tmpSec = parseInt(this.setTime);
+									this.codeBtnTxt = tmpSec + "s后重发";
 									this.setTime--;
 								} else {
+									this.codeBtnTxt = "重新获取";
+									this.codeBtnClickCtrl = true;
 									clearInterval(timer);
-									this.get_btn = true;
-									this.get_code_btn = false;
-									this.setTime = 58;
-									this.getTime = 59;
 								}
 							}, 1000);
-						}else{
-							this.hint_box_show = true;
-							this.hint_box_content = res.data.msg;
-							setTimeout(()=>{
-								this.hint_box_show = false;
-								this.hint_box_content = '';
-							},2000);
-							this.get_btn = true;			//打开获取验证码接口
-							this.get_code_btn = false;  	//关闭倒计时
+						} else {
+							this.codeBtnClickCtrl = true;
+							this.delayToastTxt = res.data.msg;
+							this.delayToast = true;
+							setTimeout(() => {
+								this.delayToast = false;
+							}, 1500);
 						}
 					});
 				}
 			},
-			//提交新手机号
-			subNewMobile(){
-				if(this.newMobile != '' && this.codeVal != ''){
-					var param = {
-						mobile:this.newMobile,
-						code:this.codeVal,
-						type:2
-					};
+			// 提交
+			submitBtn() {
+				if (this.newPhoneInputBlur() && this.codeInputBlur()) {
 					this.$http({
-						url:check_mobile,
-						method:'POST',
-						data:param
-					}).then((res)=>{
-						if(res.data.status == 1){
-							this.$router.push({path:'/personalCenter'});
-						}else{
-							this.hint_box_show = true;
-							this.hint_box_content = res.data.msg;
-							setTimeout(()=>{
-								this.hint_box_show = false;
-								this.hint_box_content = '';
-							},2000);
+						url: check_mobile,
+						method: 'POST',
+						data: {
+							mobile: this.newPhoneNum,
+							code: this.codeVal,
+							type: 2
 						}
-						console.log(res);
+					}).then((res) => {
+						if (res.data.status == 1) {
+							this.$router.push({ path:'/personalCenter' });
+						} else {
+							this.delayToastTxt = res.data.msg;
+							this.delayToast = true;
+							setTimeout(() => {
+								this.delayToast = false;
+							}, 1500);
+						}
 					});
 				}
 			}
 		},
-		mounted() {
-			
-		}
+		mounted() {}
 	};
 </script>
 <style lang="less" scoped>
-    @import "../../assets/less/var.less";
-    .old-phone-num-page{
+    .oldPhoneNumPage {
         position: absolute;
         top: 0;
         bottom: 0;
@@ -193,10 +179,11 @@
         right: 0;
 		background: #EFF1F0;
 		padding-top: 10px; 
-        ul{
+        ul {
 			padding: 0 10px;
 			background: #fff;
-			li{
+			margin-bottom: 25px;
+			li {
 				position: relative;
 				height: 50px;
 				&:after{
@@ -206,27 +193,31 @@
 					bottom: 0;
 					right: 0;
 					height: 1px;
-					background: @tabbarBorderColor;
+					background: #e5e5e5;
+					transform-origin: 0 0;             
 					transform: scaleY(0.5);
 				}
+				&:nth-last-of-type(1) {
+					&::after {
+						height: 0;
+					}
+				}
 				// 新手机号
-				&.tel {
-					label{
+				&.telCell {
+					label {
 						float: left;
 						height: 50px;
 						line-height: 50px;
 						font-size: 16px;
 						color: #666;
-						margin-right: 25px; 
 					} 
-					.lf{
-						float: left;
+					.rg {
 						height: 50px;
-						.tel-div {
+						.telInputWrap {
 							width: 200px;
 							height: 50px;
 							padding: 8px 0;
-							.tel-txt{
+							.telInput {
 								display: block;
 								width: 100%;
 								height: 34px;
@@ -240,12 +231,12 @@
 					}
 				}
 				// 验证码
-				&.test-code {
-					.lf{
+				&.codeCell {
+					.lf {
 						float: left;
 						height: 50px;
 						padding: 8px 0;
-						.test-txt{
+						.codeInput {
 							display: block;
 							width: 100%;
 							height: 34px;
@@ -255,44 +246,30 @@
 							color: #999;
 						}	
 					}
-					.rg{
+					.rg {
 						float: right;
 						height: 50px;
-						padding: 8px 0;
-						.test-btn{
-							display: block;
-							padding: 0 10px;
+						padding: 10px 0;
+                    	width: 80px;
+						.codeBtn {
+							height: 30px;
+							line-height: 28px;
+							border: 1px solid #30b097;
+							border-radius: 3px;
+							font-size: 12px;
 							background: #ffffff;
-							height: 34px;
-							line-height: 34px;
-							border: 1px solid #30B097;
-							border-radius:3px;
-							font-size: 12px;
-							color: #30B097;
-							outline:none;
+							color: #30b097;
+							outline: none;
 							text-align: center;
-						}
-						.test-code-btn{
-							display: block;
-							padding: 0 10px;
-							background: #aaa;
-							height: 34px;
-							line-height: 34px;
-							border: 1px solid #aaa;
-							border-radius:3px;
-							font-size: 12px;
-							color: #fff;
-							outline:none;
-							text-align: center;
+							box-sizing: border-box;
 						}
 					}
 				}	
 			}
 		}
 		// 提交按钮
-		.submit-box{
+		.submitBtnWrap{
 			padding: 0 10px;
-			margin-top: 25px;
 			.submit{
 				text-align: center;
 				height: 44px;
@@ -303,34 +280,6 @@
 				font-size: 15px;
 			}
 		}
-		.submit-box-aaa{
-			padding: 0 10px;
-			margin-top: 25px;
-			.submit{
-				text-align: center;
-				height: 44px;
-				line-height: 44px;
-				background:#aaa;
-				border-radius:5px;
-				color: #fff;
-				font-size: 15px;
-			}
-		}
-	}
-	.old-phone-num-page ul li:nth-of-type(2)::after{
-		height: 0;
-	}
-	.hint_box{
-		background: rgba(75, 75, 75, 0.7);
-		color: #fff;
-		padding: 5px 20px;
-		font-size: 14px;
-		line-height: 44px;
-		border-radius: 13px;
-		position: fixed;
-		top: 50%;
-		left: 50%;
-		margin-top: -13px;
-		transform: translateX(-50%);
+		
 	}
 </style>

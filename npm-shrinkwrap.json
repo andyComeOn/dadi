@@ -1171,6 +1171,11 @@
       "from": "cli-width@>=2.0.0 <3.0.0",
       "resolved": "https://registry.npmjs.org/cli-width/-/cli-width-2.2.0.tgz"
     },
+    "clipboard": {
+      "version": "2.0.4",
+      "from": "clipboard@>=2.0.0 <3.0.0",
+      "resolved": "https://registry.npmjs.org/clipboard/-/clipboard-2.0.4.tgz"
+    },
     "cliui": {
       "version": "2.1.0",
       "from": "cliui@>=2.1.0 <3.0.0",
@@ -1610,6 +1615,11 @@
       "version": "1.0.0",
       "from": "delayed-stream@>=1.0.0 <1.1.0",
       "resolved": "https://registry.npmjs.org/delayed-stream/-/delayed-stream-1.0.0.tgz"
+    },
+    "delegate": {
+      "version": "3.2.0",
+      "from": "delegate@>=3.1.2 <4.0.0",
+      "resolved": "https://registry.npmjs.org/delegate/-/delegate-3.2.0.tgz"
     },
     "depd": {
       "version": "1.1.2",
@@ -2290,6 +2300,11 @@
       "from": "globby@>=7.1.1 <8.0.0",
       "resolved": "https://registry.npmjs.org/globby/-/globby-7.1.1.tgz",
       "dev": true
+    },
+    "good-listener": {
+      "version": "1.2.2",
+      "from": "good-listener@>=1.2.2 <2.0.0",
+      "resolved": "https://registry.npmjs.org/good-listener/-/good-listener-1.2.2.tgz"
     },
     "graceful-fs": {
       "version": "4.1.11",
@@ -4184,9 +4199,8 @@
     },
     "qs": {
       "version": "6.4.0",
-      "from": "qs@>=6.4.0 <6.5.0",
-      "resolved": "https://registry.npmjs.org/qs/-/qs-6.4.0.tgz",
-      "optional": true
+      "from": "https://registry.npmjs.org/qs/-/qs-6.4.0.tgz",
+      "resolved": "https://registry.npmjs.org/qs/-/qs-6.4.0.tgz"
     },
     "query-string": {
       "version": "4.3.4",
@@ -4579,6 +4593,11 @@
       "from": "script-loader@latest",
       "resolved": "https://registry.npmjs.org/script-loader/-/script-loader-0.7.2.tgz",
       "dev": true
+    },
+    "select": {
+      "version": "1.1.2",
+      "from": "select@>=1.1.2 <2.0.0",
+      "resolved": "https://registry.npmjs.org/select/-/select-1.1.2.tgz"
     },
     "semver": {
       "version": "5.5.0",
@@ -4982,6 +5001,11 @@
       "from": "timers-browserify@>=2.0.4 <3.0.0",
       "resolved": "https://registry.npmjs.org/timers-browserify/-/timers-browserify-2.0.10.tgz"
     },
+    "tiny-emitter": {
+      "version": "2.0.2",
+      "from": "tiny-emitter@>=2.0.0 <3.0.0",
+      "resolved": "https://registry.npmjs.org/tiny-emitter/-/tiny-emitter-2.0.2.tgz"
+    },
     "to-arraybuffer": {
       "version": "1.0.1",
       "from": "to-arraybuffer@>=1.0.0 <2.0.0",
@@ -5352,6 +5376,11 @@
         }
       }
     },
+    "vue-clipboard2": {
+      "version": "0.2.1",
+      "from": "vue-clipboard2@latest",
+      "resolved": "https://registry.npmjs.org/vue-clipboard2/-/vue-clipboard2-0.2.1.tgz"
+    },
     "vue-concise-slider": {
       "version": "3.2.2",
       "from": "vue-concise-slider@latest",
@@ -5500,6 +5529,11 @@
       "version": "2.8.1",
       "from": "vue-router@>=2.2.0 <3.0.0",
       "resolved": "https://registry.npmjs.org/vue-router/-/vue-router-2.8.1.tgz"
+    },
+    "vue-scroller": {
+      "version": "2.2.4",
+      "from": "vue-scroller@latest",
+      "resolved": "https://registry.npmjs.org/vue-scroller/-/vue-scroller-2.2.4.tgz"
     },
     "vue-slip-delete": {
       "version": "1.0.16",

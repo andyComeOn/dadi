@@ -9,9 +9,7 @@
             </ul>
             <!-- nav end -->
             <!-- lists str -->
-            <div class="shopLists">
-                <allPraise :is='showView' keep-alive></allPraise>
-            </div>
+            <allPraise :is='showView' keep-alive></allPraise>
             <!-- lists end -->
         </div>
     </div>
@@ -56,8 +54,8 @@
         methods: {
             //tab切换
             tabsActive(active_text,activeIndex){
-                this.showView = active_text;    //点击的谁
-                this.classIndex = activeIndex;  //点击的index
+                this.showView = active_text;            //点击的谁
+                this.classIndex = activeIndex;          //点击的index
             }
         },
         mounted() {

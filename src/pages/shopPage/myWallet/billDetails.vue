@@ -3,7 +3,8 @@
         <p class="charge_money">入账金额<span>{{amount}}</span></p>
         <ul class="topUpDetailsLists">
             <li>
-                <p>类型<span>{{pay_type}}</span></p>
+                <!-- <p>类型<span>{{pay_type}}</span></p> -->
+                <p>类型<span>余额充值</span></p>
             </li>
             <li>
                 <p>时间<span>{{add_time}}</span></p>
@@ -12,7 +13,8 @@
                 <p>单号<span>{{request_no}}</span></p>
             </li>
             <li>
-                <p>充值活动<span>{{give_amount}}</span></p>
+                <!-- <p>充值活动<span>{{give_amount}}</span></p> -->
+                <p>充值活动<span>无</span></p>
             </li>
         </ul>
     </div>

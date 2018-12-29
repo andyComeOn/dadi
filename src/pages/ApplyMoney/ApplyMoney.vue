@@ -1,32 +1,27 @@
 <template>
     <div class="refund_bd">
-        <!-- refund money str -->
+        <!-- 退款金额 -->
         <p class="refund_money_title">退款金额</p>
         <div class="refund_money" v-if="order_id_info">
             <span>￥{{order_id_info.amount}}</span>
             <span @click="showDealDetailMask">明细</span>
             <img src="../../assets/images/arrows/list－更多icon@1x.png" />
         </div>
-        <!-- refund money end -->
         <!-- <p class="more_refund" v-if="totalBakMoney">最多可退¥ {{totalBakMoney}} </p> -->
-        <!-- refund way str -->
+        <!-- 退还方式 -->
         <p class="refund_way">退还方式</p>
         <p class="refund_way_content">退回原支付方
             <span>（预计1-7个工作日内到账）</span>
         </p>
-        <!-- refund way end -->
-        <!-- refund explain str -->
+        <!-- 退款说明 -->
         <p class="refund_explain">退款说明</p>
         <div class="refund_input">
             <textarea v-model="refund_cause" placeholder="填写退款原因" @focus="focusM"></textarea>
             <span class="num-limit">{{refund_cause.length}}/60</span>
             <span class="tips" v-show="isTipsShow">退款原因不能为空哦！</span>
         </div>
-        <!-- refund explain end -->
-        <!-- refund btn str -->
+        <!-- 提交申请 -->
         <div class="refund_btn" @click="submit">提交申请</div>
-        <!-- refund btn end -->
-        
         <!-- toast(loading=>weui) -->
         <div v-show="loading">
             <div class="weui-mask_transparent"></div>
@@ -36,14 +31,22 @@
             </div>
         </div>
         <!-- toast（delay=>z） -->
-        <div v-show="submitSucToast">
+        <div v-show="submitToast">
             <div class="z-mask-transparent"></div>
             <div class="z-toast">
                 <i class="z-toast-icon"></i>
-                <p class="z-toast-content">{{delayToastTxt}}</p>
+                <p class="z-toast-content">{{submitToastTxt}}</p>
             </div>
         </div>
-
+        <!-- 已经退款了，用户一直按返回，由于微信中h5的goback(-1)会再次跳到该页面 -->
+        <div v-show="submitTwoToast">
+            <div class="z-mask-transparent-pay"></div>
+            <div class="z-toast-pay">
+                <p class="z-toast-pay-head">提示</p>
+                <p class="z-toast-pay-body">{{submitTwoToastTxt}}</p>
+                <p class="z-toast-pay-footer" @click="submitTwoToastMethod">我知道了</p>
+            </div>
+        </div>
         <!-- 交易明细弹框 -->
         <div class="deal-detail-mask-box">
             <div class="weui-mask zb-weui-mask" id="dealDetailMask" @click="hideDealDetailMask" :class="[{'weui-actionsheet_no_toggle_active':isDealDetailMask},{'weui-actionsheet_no_toggle':!isDealDetailMask}]"></div>
@@ -126,9 +129,11 @@ export default {
             order_id: "", //接收路由传过来的order_id
             order_id_info: "", //接收http请求的order_detail数据
             order_cost_info: "", //接收http请求的明细接口（order_cost_info）数据
-            submitSucToast: false, // Toast开关
-            delayToastTxt:"提交申请成功",
-            loading:false,
+            submitToast: false, // Toast开关
+            submitToastTxt: "提交申请成功",
+            submitTwoToast: false, // 已经申请过退款二次提醒
+            submitTwoToastTxt: "", // 已经申请过退款二次提醒的txt
+            loading: false,
             isTipsShow: false
         };
     },
@@ -200,7 +205,6 @@ export default {
         submit() {
             // 工作人员没有接单，用户已经付款
             if (this.order_id_info.status == 1) {
-                // debugger;   
                 if (this.refund_cause == "") {
                     this.isTipsShow = true;
                     return;
@@ -218,10 +222,10 @@ export default {
                         .then(res => {
                             if (res.data.status == 1) {
                                 this.loading = false;
-                                this.delayToastTxt = "提交申请成功";
-                                this.submitSucToast = true;
+                                this.submitToastTxt = "提交申请成功";
+                                this.submitToast = true;
                                 setTimeout(() => {
-                                    this.submitSucToast = false;
+                                    this.submitToast = false;
                                     this.$router.push({
                                         path: "orderList",
                                         query: {
@@ -231,22 +235,21 @@ export default {
                                 }, 2000);
                             } else if (res.data.status == -3) {
                                 this.loading = false;
-                                this.delayToastTxt = "系统支付错误03，请联系客服400-099-9682";
-                                this.submitSucToast = true;
+                                this.submitToastTxt = "系统支付错误03，请联系客服400-099-9682";
+                                this.submitToast = true;
                                 setTimeout(() => {
-                                    this.submitSucToast = false;
+                                    this.submitToast = false;
                                 }, 2000);
                             }
                         })
                         .catch();
                 }
             } else {
-                // 工作人员没有接单，用户已经付款
+                // 工作人员接单，用户已经付款
                 if (this.refund_cause == "") {
                     this.isTipsShow = true;
                     return;
                 }
-
                 this.$http({
                     method: "POST",
                     url: order_preserver,
@@ -257,9 +260,9 @@ export default {
                 })
                     .then(res => {
                         if (res.data.status == 1) {
-                            this.submitSucToast = true;
+                            this.submitToast = true;
                             setTimeout(() => {
-                                this.submitSucToast = false;
+                                this.submitToast = false;
                                 this.$router.push({
                                     path: "orderList",
                                     query: {
@@ -267,10 +270,21 @@ export default {
                                     }
                                 });
                             }, 2000);
+                        } else {
+                            this.submitTwoToastTxt = res.data.msg;
+                            this.submitTwoToast = true;
                         }
                     })
                     .catch();
             }
+        },
+        // 提交退款维权出现二次toast，点击我知道了执行的方法
+        submitTwoToastMethod() {
+            this.submitTwoToast = false;
+            this.$router.push({
+                path: "index",
+                query: {}
+            });
         }
     }
 };

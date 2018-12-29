@@ -19,6 +19,24 @@
                 </li>
             </ul>
         </div>
+        <!-- toast(loading=>weui)  str -->
+        <div v-show="loading">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-loading weui-icon_toast"></i>
+                <p class="weui-toast__content">{{loadingTxt}}</p>
+            </div>
+        </div>
+        <!-- toast(loading=>weui)  end -->
+        <!-- toast（delay=>z）str -->
+        <div v-show="delayToast">
+            <div class="z-mask-transparent"></div>
+            <div class="z-toast">
+                <i class="z-toast-icon"></i>
+                <p class="z-toast-content">{{delayToastTxt}}</p>
+            </div>
+        </div>
+        <!-- toast（delay=>z）end -->
     </div>
 </template>
 <script>
@@ -35,6 +53,10 @@
                 add_time:'',    //时间
                 request_no:'',  //单号
                 give_amount:'',     //充值活动
+                loading:false,
+                loadingTxt:"",
+                delayToast:false,
+                delayToastTxt:""
             }
         },
         computed: {
@@ -45,6 +67,7 @@
         },
         mounted() {
             //获取充值详情
+            this.loading = true;
             this.$http({
                 url:topUpDetails,
                 method:'POST',
@@ -53,6 +76,7 @@
                 }
             }).then(res=>{
                 console.log(res);
+                this.loading = false;
                 if(res.data.status == 1){
                     this.amount = res.data.data[0].amount;
                     this.pay_type = res.data.data[0].pay_type;
@@ -60,7 +84,11 @@
                     this.request_no = res.data.data[0].request_no;
                     this.give_amount = res.data.data[0].give_amount;
                 }else{
-                    
+                    this.delayToast = true;
+                    this.delayToastTxt = res.data.msg;
+                    setTimeout(()=>{
+                        this.delayToast = false;
+                    },1500);
                 }
             });
         }

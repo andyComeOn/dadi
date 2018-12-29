@@ -21,11 +21,12 @@
 			</div>
 			<ul class="body">
 				<li v-for="(item,index) in pointArr" :key="index">
-					<div class="lf">
-						<p class="jifen-type">{{item.store_name}}</p>
-						<p class="jifen-date">{{item.add_time}}</p>
+                    <div class="lf">
+						<h3 class="scoreType m-ellipsis" v-if="item.store_name == null">{{item.shop_name}}</h3>
+                        <h3 class="scoreType m-ellipsis" v-else>{{item.store_name}}</h3>
+						<p class="scoreDate">{{item.add_time}}</p>
 					</div>
-					<div class="rg">+{{item.score}}</div>
+					<div class="rg" v-html="$options.filters.filterScoreType(item.score)"></div>
 				</li>
 			</ul>
 		</div>
@@ -125,12 +126,14 @@ export default {
     }
 }
 .body {
+    background: #fff;
     padding: 0 15px;
     li {
+        height: 60px;
         position: relative;
         display: flex;
         flex-direction: row;
-        height: 60px;
+        padding: 10px 0; 
         &::after {
             content: "";
             position: absolute;
@@ -139,30 +142,42 @@ export default {
             right: 0;
             bottom: 0;
             background: #e5e5e5;
+            transform-origin: 0 0; 
             transform: scaleY(0.5);
+        }
+        &:nth-last-of-type(1) {
+            &::after {
+                height: 0;
+            }
         }
         .lf {
             flex: 1;
-            height: 60px;
-            display: flex;
-            flex-direction: column;
-            .jifen-type {
-                color: #666;
-                margin: 12px 0 6px 0;
+            overflow: hidden;
+            .scoreType {
+                height: 15px;
+                line-height: 15px;
+                margin-bottom: 10px;
                 font-size: 15px;
-                line-height: 16px;
+                font-weight:400;
+                color: #666;
             }
-            .jifen-date {
+            .scoreDate {
+                height: 12px;
+                line-height: 12px;
+                font-size: 12px;
+                font-weight:400;
                 color: #999;
             }
         }
         .rg {
-            width: 40px;
-            height: 60px;
-            line-height: 60px;
-            text-align: right;
-            font-weight: 600;
-            color: #ffba56;
+            height: 40px;
+            line-height: 40px;
+            span {
+                display: inline-block;
+                font-size: 12px;
+                letter-spacing: 2px;
+                font-weight: 400;
+            }
         }
     }
 }

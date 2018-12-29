@@ -34,6 +34,10 @@
 				<span v-if="this.sex == 2" class="center_date">女</span>
 				<img class="pa" src="../../assets/images/arrows/list－更多icon@1x.png" />
 			</li>
+            <li>
+				<span>房晚</span>
+				<span class='nickName'>{{roomSum}}</span>
+			</li>
 			<li>
 				<span>会员等级</span>
 				<span class='nickName'>{{grade | filterCardGradeGetInfo}} </span>
@@ -68,6 +72,7 @@ export default {
             grade: "", // 卡的等级
             mobile: "", //手机号
             openId: "", //openId
+            roomSum: "", // 用户入住的房晚数量
             hint_box_show: false, //hint
             hint_box_content: "" //hint_content
         };
@@ -200,25 +205,18 @@ export default {
                 this.card = res.data.data.card;
                 this.grade = res.data.data.grade;
                 this.birthdayNum = res.data.data.birthday; //生日
-                this.sex = res.data.data.sex; //
+                this.sex = res.data.data.sex; 
                 this.mobile = res.data.data.mobile;
                 this.openId = res.data.data.openid;
+                this.roomSum = res.data.data.room_sum;
             }
         });
     }
 };
 </script>
 <style lang="less" scoped>
-.center_bd {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #eff1f0;
-    padding-top: 10px;
-}
 .center_lists {
+    margin-top: 10px;
     padding-left: 15px;
     background: #fff;
 }

@@ -1,5 +1,5 @@
 <template>
-    <div class="hotel-detail">
+    <div class="hotelDetailPage">
         <!-- toast(loading=>weui) -->
         <div v-show="loading">
             <div class="weui-mask_transparent"></div>
@@ -17,6 +17,9 @@
             </div>
         </div>
         <div class="main" v-if="data_store">
+            <!-- <div class="broadcastWrap" :class="{beforeDawnAddclass: isBeforeDawn}">
+                <myBroadcast></myBroadcast>
+            </div> -->
             <!-- 广告 -->
             <div class="banner-box" id="hotelDetailBanner" :style="{height: hotelDetailBannerH + 'px'}">
                 <swiper class="zb-swiper" :options="swiperOption" ref="mySwiper" @someSwiperEvent="swiperCallback(1)">
@@ -37,12 +40,20 @@
             </div>
             <!-- 酒店位置说明 -->
             <div class="detail">
-                <div class="name m-ellipsis">{{data_store.store_name}}</div>
-                <ul class="location-wrapper" @click="openMap">
-                    <li class="location m-ellipsis">{{data_store.address}}</li>
-                    <li class="location-info m-ellipsis"> {{data_store.introduce}}</li>
-                </ul>
-                <a :href="'tel:' + data_store.tel" class="call"><img src="../../assets/images/icon/ic-call.png" alt=""></a>
+                <div class="locationMainInfo">
+                    <p class="storeName m-ellipsis">{{data_store.store_name}}</p>
+                    <p class="storeAddress m-ellipsis">{{data_store.address}}</p>
+                    <p class="storeAddrIntro m-ellipsis">{{data_store.introduce}}</p>
+                </div>
+                <div class="locationViceInfo">
+                    <div class="callWrap">
+                        <a :href="'tel:' + data_store.tel" class="callBtn"><img src="../../assets/images/icon/ic-call.png" class="callIcon" alt=""></a>
+                    </div>
+                    <div class="mapWrap" @click="openMap">
+                        <span class="mapTxt">地图</span> 
+                        <span class="mapArrow"></span> 
+                    </div>
+                </div>
             </div>
             <!-- 酒店详情查看更多 -->
             <div class="detail-more-container">
@@ -59,16 +70,17 @@
                 </div>
             </div>
             <!-- 入离时间展示 -->
-            <div class="come-go-box">
-                <div class="come-go">
-                    <div class="come" @click="triggerCalendar">
-                        <span>入住</span>
+            <div class="checkInOutWrap">
+                <div class="checkInOut">
+                    <div class="checkIn" @click="triggerCalendar">
+                        <span class="checkInHead" v-show="isRouteBeforeDawn">凌晨入住</span>
+                        <span class="checkInHead" v-show="!isRouteBeforeDawn">入住</span>
                         <span>{{zbInitCalendar.start.mm}}月{{zbInitCalendar.start.dd}}日</span>
                     </div>
                     <span class="total">共{{count}}晚</span>
-
-                    <div class="go" @click="triggerCalendar">
-                        <span>离店</span>
+                    <div class="checkOut" @click="triggerCalendar">
+                        <span class="checkInHead" v-show="isRouteBeforeDawnAndNoonGo">中午离店</span>
+                        <span class="checkInHead" v-show="!isRouteBeforeDawnAndNoonGo">离店</span>
                         <span>{{zbInitCalendar.end.mm}}月{{zbInitCalendar.end.dd}}日</span>
                     </div>
                 </div>
@@ -218,24 +230,27 @@
         <!-- 该门店下架时候展示 -->
         <div v-else class="no-store">
             <img src="../../assets/images/404/xiajia.png" alt="">
-            <p>该酒店已下架</p>
+            <p>暂无符合条件的酒店</p>
         </div>
     </div>
 </template>
 
 <script>
 import { store_detail, add_collect, del_collect, wxShare } from "@/api/api";
-import { getCookie } from "@/utils/util";
-import { f, dateEndMinusStart } from "@/utils/date"; // 引入封装时间函数
+import { getCookie, fetchCheckLogin } from "@/utils/util";
+import { f, dateEndMinusStart, isBeforeDawn, YTDLf, YTD } from "@/utils/date"; 
 import Calendar from "@/components/calendar/calendar.vue"; // 引入日历组件
 import { swiper, swiperSlide } from "vue-awesome-swiper"; // 引入swipe组件
 import wx from "weixin-js-sdk";
+import myBroadcast from "@/components/broadcast";
+            
 export default {
-    name: "hotel-detail",
+    name: "hotelDetailPage",
     components: {
         Calendar,
         swiper,
-        swiperSlide
+        swiperSlide,
+        myBroadcast
     },
     data() {
         return {
@@ -353,7 +368,11 @@ export default {
             // longitude: getCookie("userLongitude"),
             // latitude: getCookie("userLatitude"),
             hotelDetailBannerH: "", //酒店详情banner的高
-            itemToastArr: []
+            itemToastArr: [],
+            isBeforeDawn: false, // 是否是今天凌晨
+            userStatus: "", // 该会员是否是处于禁用状态
+            isRouteBeforeDawn: false, // 路由带过来今日凌晨入住
+            isRouteBeforeDawnAndNoonGo: false, // 路由带过来今日中午离店
         };
     },
     created() {
@@ -377,6 +396,9 @@ export default {
             this.zbInitCalendar.end.yyyy = f(dd).yyyy;
             this.zbInitCalendar.end.mm = f(dd).mm;
             this.zbInitCalendar.end.dd = f(dd).dd;
+            // 满足该情况把routeIsBeforeDawnAndTodayGo设置为false
+            this.isRouteBeforeDawn = false; 
+            this.isRouteBeforeDawnAndNoonGo = false;
         } else {
             // 给date()中监听数据进行赋值
             this.watchObj.store_id = routePara.store_id;
@@ -391,9 +413,26 @@ export default {
             this.zbInitCalendar.end.yyyy = endArr[0];
             this.zbInitCalendar.end.mm = endArr[1];
             this.zbInitCalendar.end.dd = endArr[2];
+            // 若路由传过来的是今天凌晨订房，今天中午退房
+            if (routePara.begin == YTDLf().kebab) {
+                this.isRouteBeforeDawn = true;
+            } else {
+                this.isRouteBeforeDawn = false;
+            }
+            if (routePara.finish == YTD().kebab) {
+                this.isRouteBeforeDawnAndNoonGo = true;
+            } else {
+                this.isRouteBeforeDawnAndNoonGo = false;
+            }
         }
         // 拉取数据
         // this.fetchData(this.watchObj);
+        // 凌晨订房提示逻辑
+        if (isBeforeDawn() == true) {
+            this.isBeforeDawn = true;
+        } else {
+            this.isBeforeDawn = false;
+        }
     },
     computed: {
         swiper() {
@@ -444,12 +483,40 @@ export default {
                     this.is_collect = res.data.data.is_collect;
                     // 收藏的id
                     this.collectId = res.data.data.collect_id;
+                    // 该会员是否是处于禁用状态
+                    this.userStatus = res.data.data.user_status;
                     // 调取getAppInfo
                     this.getAppInfo();
-                } else {
+                } else if (res.data.status == -1) {
+                    this.data_store = "";
+                    this.fetchCheckLoginPackage();
+                    
+                }else {
                     this.data_store = "";
                 }
             });
+        },
+        fetchCheckLoginPackage() {
+            fetchCheckLogin({tg:"" ,form: encodeURIComponent(window.location.href)}).then(res => {
+                if (res.data.status == 0) {
+                    window.location.href = res.data.data;
+                } else {
+                    setCookie("userInfoTel", res.data.data.mobile);  //手机号
+                    setCookie("userVipStatus", res.data.data.status);  //会员状态（0待审、1正常、2锁定）
+                    setCookie("userUid", res.data.data.uid);
+                    setCookie("userInfoIsRealname", res.data.data.is_realname); //真实姓名
+                    setCookie("userInfoGroupid", res.data.data.group_id);  //会员组id
+                    setCookie("nickname", encodeURI(res.data.data.nickname));		//昵称
+                    setCookie("openid", res.data.data.openid);  
+                    setCookie("avatar", res.data.data.avatar);  //avatar
+                    setCookie('avail_amount',res.data.data.avail_amount);
+                    if (res.data.data.coupon_flag == 0) {
+                        setCookie("isYouzan", 0); // 判断是不是有赞用户 1是(弹系统维护提示) 0不是（不弹）
+                    } else {
+                        setCookie("isYouzan", 1); // 判断是不是有赞用户 1是(弹系统维护提示) 0不是（不弹）
+                    }
+                }
+            })
         },
         ItemToastArrMethod() {
             this.itemToastArr = [];
@@ -474,11 +541,10 @@ export default {
                 });
             }
         },
-
         // 点击预定
         bookFun(isHasRoom, store_id, room_id, begin, finish) {
             let tmp = getCookie("userInfoTel");
-            let tmpVipStatus = getCookie("userVipStatus");
+            let tmpVipStatus = this.userStatus;
             let tmpOpenid = getCookie("openid");
             // 判断该用户否有有手机号
             if (!tmp) {
@@ -492,7 +558,7 @@ export default {
                 });
                 return;
             }
-            // 判断用户的会员的是否是1
+            // 判断用户的会员是否为1
             if (tmpVipStatus != 1) {
                 this.delayToastTxt = "正处于禁用状态，不可预订";
                 this.delayToast = true;
@@ -532,12 +598,24 @@ export default {
             this.zbInitCalendar.start.mm = tmpB[1];
             this.zbInitCalendar.start.dd = tmpB[2];
             this.watchObj.begin = tmpB[0] + "-" + tmpB[1] + "-" + tmpB[2];
+            // 加入今日凌晨入住判断逻辑
+            if (tmpB[0] + "-" + tmpB[1] + "-" + tmpB[2] == YTDLf().kebab) {
+                this.isRouteBeforeDawn = true;
+            } else {
+                this.isRouteBeforeDawn = false;
+            }
             // 离店时间
             let tmpF = value[1].split("/");
             this.zbInitCalendar.end.yyyy = tmpF[0];
             this.zbInitCalendar.end.mm = tmpF[1];
             this.zbInitCalendar.end.dd = tmpF[2];
             this.watchObj.finish = tmpF[0] + "-" + tmpF[1] + "-" + tmpF[2];
+            // 加入今日中午离店判断逻辑
+            if (tmpF[0] + "-" + tmpF[1] + "-" + tmpF[2] == YTD().kebab) {
+                this.isRouteBeforeDawnAndNoonGo = true;
+            } else {
+                this.isRouteBeforeDawnAndNoonGo = false;
+            }
             //共几晚
             this.count = dateEndMinusStart(value[0], value[1]);
         },
@@ -725,6 +803,14 @@ export default {
 </script>
 
 <style lang="less" scoped>
+// 凌晨订房bar提示
+.broadcastWrap {
+    display: none;
+    &.beforeDawnAddclass {
+        display: block;
+    }
+}
+
 // banner
 .banner-box {
     position: relative;
@@ -774,9 +860,12 @@ export default {
 }
 // 酒店的位置
 .detail {
-    padding: 10px 50px 10px 15px;
+    // padding: 10px 50px 10px 15px;
+    padding: 15px;
     background: #fff;
     position: relative;
+    display: flex;
+    flex-direction: row;
     &:after {
         content: "";
         position: absolute;
@@ -787,32 +876,68 @@ export default {
         background: #e5e5e5;
         transform: scaleY(0.5);
     }
-    .name {
-        height: 22px;
-        line-height: 22px;
-        font-size: 16px;
-        color: #333333;
-        letter-spacing: 0;
+
+    .locationMainInfo {
+        flex: 1;
+        overflow: hidden;
+        .storeName {
+            height: 16px;
+            line-height: 16px;
+            font-size: 16px;
+            color: #333333;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        .storeAddress {
+            height: 18px;
+            line-height: 18px;
+            font-size: 13px;
+            font-weight:400;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .storeAddrIntro {
+            height: 12px;
+            line-height: 12px;
+            font-size: 12px;
+            font-weight: 400;
+            color: #666;
+        }
     }
-    .location-wrapper {
-        width: 100%;
-        padding-left: 22px;
-        background: url("../../assets/images/hotel-label/ic_dingwei.png")
-            no-repeat 3px center;
-        background-size: 13px 15px;
-    }
-    .call {
-        width: 32px;
-        height: 32px;
-        position: absolute;
-        top: 50%;
-        margin-top: -16px;
-        right: 15px;
-        z-index: 10;
-        img {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
+    .locationViceInfo {
+        width: 65px;
+        .callWrap {
+            height: 22px;
+            margin-bottom: 32px;
+            text-align: right;
+            .callBtn {
+                display: inline-block;
+                width: 22px;
+                height: 22px;
+                .callIcon {
+                    width: 22px;
+                    height: 22px;
+                    border-radius: 50%;
+                }
+            }
+        }
+        .mapWrap {
+            line-height: 12px;
+            text-align: right;
+            span {
+                display: inline-block;
+            }
+            .mapTxt {
+                color: #30b097;
+            }
+            .mapArrow {
+                margin-left: 10px;
+                width: 6px;
+                height: 10px;
+                background: url("../../assets/images/arrows/ic_map_arrow.png")
+                no-repeat center;
+                background-size: 6px 10px; 
+            }
         }
     }
 }
@@ -866,33 +991,29 @@ export default {
 }
 
 // 入离店展示
-.come-go-box {
+.checkInOutWrap {
     height: 70px;
     padding-bottom: 5px;
     background: #e5e5e5;
-    .come-go {
+    .checkInOut {
         height: 65px;
         text-align: center;
         background: #fff;
         padding: 0 15px;
         position: relative;
-        .come,
-        .go {
+        .checkIn,
+        .checkOut {
             float: left;
             height: 65px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            span {
-                &:nth-child(1) {
-                    color: #999;
-                }
-                &:nth-child(2) {
-                    color: #333;
-                }
+            color: #333;
+            .checkInHead {
+                color: #999;
             }
         }
-        .go {
+        .checkOut {
             float: right;
         }
         .total {

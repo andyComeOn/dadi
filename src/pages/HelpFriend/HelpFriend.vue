@@ -3,13 +3,12 @@
         <ul class="help_head">
             <li v-for="(item,index) in levelArr" @click="tabsActive(item.id,index)" :key="index">
                 <span v-if="index == 0" :class="{help_active:index == classIndex}">{{item.name}}({{stair_count_num}})</span>
-                <span v-if="index == 1" :class="{help_active:index == classIndex}">{{item.name}}({{stair_count_num}})</span>
+                <span v-if="index == 1" :class="{help_active:index == classIndex}">{{item.name}}({{second_count_num}})</span>
             </li>
         </ul>
         <p class="help_chunk"></p>
         <!-- one level -->
         <oneLevel :is='showView' v-on:listenToChildEvent="showMsgFromChild" keep-alive></oneLevel>
-        <!-- second level -->
     </div>
 </template>
 <script>
@@ -35,7 +34,8 @@ export default {
             ],
             showView: "oneLevel",
             classIndex: 0,
-            stair_count_num: ""
+            stair_count_num: "",
+            second_count_num: ""
         };
     },
     computed: {},
@@ -46,6 +46,7 @@ export default {
         },
         showMsgFromChild(data1, data2) {
             // stair_count就是子组件传过来的值
+            console.log(data1);
             this.stair_count_num = data1;
             this.second_count_num = data2;
         }
