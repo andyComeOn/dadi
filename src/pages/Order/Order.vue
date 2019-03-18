@@ -378,8 +378,10 @@ export default {
                 room_id: "",
                 begin: "",
                 finish: "",
-                room_sum: 1 //默认的房间数
+                room_sum: 1, //默认的房间数
+            
             },
+            distance_int: "", // 距离  
             beginY: "",
             beginM: "",
             beginD: "",
@@ -439,13 +441,17 @@ export default {
             store_id: this.$route.query.store_id,
             room_id: this.$route.query.room_id,
             begin: this.$route.query.begin,
-            finish: this.$route.query.finish
+            finish: this.$route.query.finish,
+            distance_int: this.$route.query.distance_int
         };
         // 初始化数据
         this.watchObj.store_id = routePara.store_id;
         this.watchObj.room_id = routePara.room_id;
         this.watchObj.begin = routePara.begin;
         this.watchObj.finish = routePara.finish;
+
+        this.distance_int = routePara.distance_int;
+        
 
         var beginArr = routePara.begin.split("-");
         this.beginY = beginArr[0];
@@ -711,7 +717,9 @@ export default {
                     begin: this.watchObj.begin,
                     finish: this.watchObj.finish,
                     coupon_id: this.initCoupon.id,
-                    remarks: this.remarks
+                    remarks: this.remarks,
+                    distance_int: this.distance_int,
+                    lat_lon: getCookie("userLatitude")+','+getCookie("userLongitude")
                 }
             })
                 .then(res => {

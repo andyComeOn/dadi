@@ -47,12 +47,12 @@
                 <span>共{{order_id_info.occupancy_day_num}}晚</span>
             </div>
         </div>
-        <div v-if="this.setTime >= 0" class="onlinePay_btn" @click.once="payMethod">确认支付</div>
+        <div v-if="this.setTime > 0" class="onlinePay_btn" @click.once="payMethod">确认支付</div>
         <div v-else class="onlinePay_btn_old">已超时，请重新下单</div>
     </div>
 </template>
 <script>
-import { order_detail, wx_pay } from "@/api/api";
+import { order_detail, wx_pay, cancel_orderform } from "@/api/api";
 export default {
     name: "onlinePay",
     components: {},
@@ -122,10 +122,11 @@ export default {
                     res => {
                         if (res.err_msg == "get_brand_wcpay_request:ok") {
                             _this.paySuccessToast = true;
-                        }
-                        if (res.err_msg == "get_brand_wcpay_request:cancel") {
+                        } else if (res.err_msg == "get_brand_wcpay_request:cancel") {
                             alert("取消支付");
                             window.location.reload();
+                        } else {
+
                         }
                     }
                 );
@@ -165,7 +166,10 @@ export default {
                     jsApiParameters = JSON.parse(res.data.data);
                     callpay();
                 } else {
-                    _this.alert(res.data.msg);
+                    this.loading = false;
+                    alert(res.data.msg);
+                    // 调取取消订单方法
+                    this.cancal();
                 }
             });
         },
@@ -193,7 +197,28 @@ export default {
                 path: "index",
                 query: {}
             });
-        }
+        },
+        // 取消订单
+        cancal() {
+            this.$http({
+                method: "POST",
+                url: cancel_orderform,
+                data: {
+                    order_id: this.order_id,
+                    status: 0
+                }
+            })
+                .then(res => {
+                    if (res.data.status == 1) {
+                        clearInterval(this.timer);
+                        this.$router.push({
+                            path: "index",
+                            query: {}
+                        });
+                    }
+                })
+                .catch();
+        },
     }
 };
 </script>

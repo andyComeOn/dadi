@@ -7,6 +7,7 @@
     "vue-html": "html"
   },
   "vetur.format.defaultFormatter.html": "prettier",
-  "prettier.tabWidth": 4
+  "prettier.tabWidth": 4,
+  "javascript.implicitProjectConfig.experimentalDecorators": true
 
 }

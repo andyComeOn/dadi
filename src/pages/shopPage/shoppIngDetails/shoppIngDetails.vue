@@ -1,10 +1,10 @@
 <template>
     <div class="shoppingDetailPage">
         <!-- 轮播 str -->
-        <swiper style="height:310px;" ref="mySwiper">
+        <swiper ref="mySwiper" id="cardsBox" :style="{height:cardsBoxH + 'px'}">
             <!-- slides -->
-            <swiper-slide style="height:310px;" v-for='item in this.bannerArr'>
-                <img style="width:100%;height:310px;" :src="item" alt="">
+            <swiper-slide  v-for='item in this.bannerArr'>
+                <img style="width:100%;height:100%;" :src="item" alt="">
             </swiper-slide>
             <!-- Optional controls -->
             <div class="swiper-pagination"  slot="pagination"></div>
@@ -47,8 +47,7 @@
         <!-- shopDetails str -->
         <div class="shopDetails">
             <h3>商品详情</h3>
-            <div v-html="goods_detail"></div>
-            <!-- <img src="../../../assets/images/shop/banner@1x.png" alt=""> -->
+            <div id="shopDetailsImg" v-html="goods_detail"></div>
         </div>
         <!-- shopDetails end -->
         <!-- buy str -->
@@ -110,6 +109,7 @@ export default {
     },
     data() {
         return {
+            cardsBoxH: "",
             bannerArr:[],               //轮播图数据
             loading: false,              // toast控制开关
             loadingTxt: "数据加载中",    // toast中文案
@@ -321,6 +321,12 @@ export default {
     mounted() {
         this.fetchGoodsDetail();        // 调取商品详情方法
         this.getBannerImg();
+        this.$nextTick(() => {
+            // 由卡片的宽度-->给卡片的高赋值
+            let cardsBox = document.querySelector("#cardsBox");
+            let cardsBoxH = cardsBox.clientWidth;
+            this.cardsBoxH = cardsBoxH;
+        });
     }
 };
 </script>
@@ -340,3 +346,13 @@ export default {
         color:#fff;
     }
 </style>
+<style lang="less">
+    #shopDetailsImg{
+        p{
+            img{
+                width: 100% !important;
+            }
+        }
+    }
+</style>
+

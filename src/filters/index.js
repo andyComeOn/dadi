@@ -1,3 +1,5 @@
+import { baseCpid } from '@/api/api';
+
 //时间格式处理
 export function filterTime(a) {
 	const index = a.indexOf("-");
@@ -190,17 +192,28 @@ export function filterCardType(a) {
 }
 // 过滤会员卡类型
 export function filterCardGradeGetInfo(a) {
-	if (a == 1){
-		return "普卡"
-	} else if (a == 2){
-		return "银卡"
-	} else if (a == 3){
-		return "金卡"
-	} else if (a == 4){
-		return "珀金"
-	} else {
-		return "黑钻"
-	} 
+	// 秋果
+	if (baseCpid == 1) {
+		if (a == 1){
+			return "普卡"
+		} else if (a == 2){
+			return "银卡"
+		} else if (a == 3){
+			return "金卡"
+		} else if (a == 4){
+			return "珀金"
+		} else {
+			return "黑钻"
+		} 
+	} else { // 华驿
+		if (a == 1){
+			return "金卡"
+		} else if (a == 3){
+			return "帝王卡"
+		} else {
+			return ""
+		} 
+	}
 }
 // 商城的type
 export function filterStoreType(a) {
@@ -241,4 +254,14 @@ export function filterScoreType(a) {
 export function filterDelayRoomNum(a) {
 	a = a.replace(/[^0-9]/ig,"");
 	return a;
+}
+// 过滤代金券，cpid为1秋果，2为华驿
+export function filterHotelGroupName(a) {
+	if (a == 1) {
+		return '秋果'
+	} else if (a == 2) {
+		return '华驿'
+	} else {
+		return '其他';
+	}
 }

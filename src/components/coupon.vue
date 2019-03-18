@@ -12,7 +12,7 @@
             <li class="item" v-for="(item,index) in items" :key="index" :class="{itemStatus0:item.status==0,itemStatus1:item.status==1,itemStatus2:item.status==2}">
                 <div class="lf">
                     <!-- （{{item.store_flag|filterCouponStoreflag}}） -->
-                    <div class="name m-ellipsis">秋果酒店代金券</div>
+                    <div class="name m-ellipsis">{{item.cpid|filterHotelGroupName}}酒店代金券</div>
                     <div class="date-area">有效期：{{item.validity_begin_time|filterTimeYTD}}至{{item.validity_end_time|filterTimeYTD}}</div>
                     <div class="desc">满 {{item.min_amount|filterMoneyInt}} 可用</div>
                 </div>

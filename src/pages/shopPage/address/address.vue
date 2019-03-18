@@ -10,7 +10,9 @@
                             <span>{{item.mobile}}</span>
                             <span v-if="item.is_default == 1">默认</span>
                         </h3>
-                        <p>{{item.address_detail}}</p>
+                        <p>
+                            <span>{{item.province + item.city + item.area + item.address_detail}}</span>
+                        </p>
                         <img src="../../../assets/images/shop/dizhi_bianji.png" alt="" @click.stop="editBtn(item.id)">
                     </li>
                 </slip-del>

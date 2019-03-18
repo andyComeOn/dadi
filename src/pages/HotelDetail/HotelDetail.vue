@@ -117,7 +117,7 @@
                         </div>
                         <!-- 右侧预定按钮 -->
                         <div class="rg">
-                            <span class="book" :class="{isHasRoom: item.is==2 ? true : false}" @click.stop="bookFun(item.is, item.store_id,item.id, begin, finish)">
+                            <span class="book" :class="{isHasRoom: item.is==2 ? true : false}" @click.stop="bookFun(item.is, item.store_id,item.id, begin, finish, item.distance_int)">
                                 {{item.is|filterIsHasRoom}}
                             </span>
                         </div>
@@ -331,7 +331,9 @@ export default {
             watchObj: {
                 store_id: "",
                 begin: "",
-                finish: ""
+                finish: "",
+                longitude: getCookie("userLongitude"),
+                latitude: getCookie("userLatitude")
             },
             // 接收http请求返回的数据
             data_room: [],
@@ -380,7 +382,8 @@ export default {
         var routePara = {
             store_id: this.$route.query.store_id,
             begin: this.$route.query.begin,
-            finish: this.$route.query.finish
+            finish: this.$route.query.finish,
+            distance_int: this.$route.query.distance_int
         };
         // 如果从订单列表页的“再次预定”按钮过来只带store_id参数，无begin、finish参数
         if (routePara.begin == undefined || routePara.finish == undefined) {
@@ -542,7 +545,7 @@ export default {
             }
         },
         // 点击预定
-        bookFun(isHasRoom, store_id, room_id, begin, finish) {
+        bookFun(isHasRoom, store_id, room_id, begin, finish, distance_int) {
             let tmp = getCookie("userInfoTel");
             let tmpVipStatus = this.userStatus;
             let tmpOpenid = getCookie("openid");
@@ -574,7 +577,8 @@ export default {
                         store_id: store_id,
                         room_id: room_id,
                         begin: begin,
-                        finish: finish
+                        finish: finish,
+                        distance_int: distance_int
                     }
                 });
             } else {

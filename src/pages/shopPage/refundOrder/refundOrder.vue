@@ -170,27 +170,35 @@
                 this.priceDetailBox = false;
             },
             shopRefund(){           //提交（退款）
-                this.loading = true;            //loading
-                this.$http({
-                    url:shopRefundMoney,
-                    method:"POST",
-                    data:{
-                        order_id:this.orderMsg.id,           //订单id
-                        remark:this.userRemark,                  //用户备注
-                    }
-                }).then((res)=>{
-                    this.loading = false;            //loading
-                    if(res.data.status == 1){
-                        this.refundBox = true;
-                        this.hintBox = true;
-                    }else{
-                        this.delayToast = true;
-                        this.delayToastTxt = res.data.msg;
-                        setTimeout(()=>{
-                            this.delayToast = false;
-                        },1500);
-                    }
-                });
+                if(this.userRemark != ""){
+                    this.loading = true;            //loading
+                    this.$http({
+                        url:shopRefundMoney,
+                        method:"POST",
+                        data:{
+                            order_id:this.orderMsg.id,           //订单id
+                            remark:this.userRemark,               //用户备注
+                        }
+                    }).then((res)=>{
+                        this.loading = false;            //loading
+                        if(res.data.status == 1){
+                            this.refundBox = true;
+                            this.hintBox = true;
+                        }else{
+                            this.delayToast = true;
+                            this.delayToastTxt = res.data.msg;
+                            setTimeout(()=>{
+                                this.delayToast = false;
+                            },1500);
+                        }
+                    });
+                }else{
+                    this.delayToast = true;
+                    this.delayToastTxt = "退款说明不能为空";
+                    setTimeout(()=>{
+                        this.delayToast = false;
+                    },1500);
+                }
             }
         },
         mounted() {

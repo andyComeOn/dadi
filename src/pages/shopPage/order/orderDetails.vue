@@ -8,7 +8,11 @@
                         <img src="../../../assets/images/shop/order-daifukuan.png">
                         <span>物流·待付款</span>
                     </h3>
-                    <p class="typeMsgHint">您的订单已提交成功，等待支付。</p>
+                    <p class="typeMsgHint" v-if="this.orderMsg.logistics_name !=''">
+                        <span>{{this.orderMsg.logistics_name + "：" + this.orderMsg.waybill_number}}</span>
+                        <img src="../../../assets/images/orderNumIcon.png" alt="">
+                    </p>
+                    <p class="typeMsgHint" v-else>您的订单已提交成功，等待支付。</p>
                     <span class="orderTime">{{this.orderMsg.add_time}}</span>
                 </div>
                 <div v-if="this.orderMsg.status == 2">
@@ -16,7 +20,10 @@
                         <img src="../../../assets/images/shop/oder_fahuo.png">
                         <span>物流·待发货</span>
                     </h3>
-                    <p class="typeMsgHint">付款成功，卖家备货中。</p>
+                    <p class="typeMsgHint" v-if="this.orderMsg.logistics_name !=''">
+                        <span>{{this.orderMsg.logistics_name + "：" + this.orderMsg.waybill_number}}</span>               <img src="../../../assets/images/orderNumIcon.png" alt="">
+                    </p>
+                    <p class="typeMsgHint" v-else>付款成功，卖家备货中。</p>
                     <span class="orderTime">{{this.orderMsg.add_time}}</span>
                 </div>
                 <div v-if="this.orderMsg.status == 3">
@@ -24,7 +31,10 @@
                         <img src="../../../assets/images/shop/oder_fahuo.png">
                         <span>物流·待收货</span>
                     </h3>
-                    <p class="typeMsgHint">快件已发出，正在发往目标城市。</p>
+                    <p class="typeMsgHint" v-if="this.orderMsg.logistics_name !=''">
+                        <span>{{this.orderMsg.logistics_name + "：" + this.orderMsg.waybill_number}}</span>               <img src="../../../assets/images/orderNumIcon.png" alt="">
+                    </p>
+                    <p class="typeMsgHint" v-else>快件已发出，正在发往目标城市。</p>
                     <span class="orderTime">{{this.orderMsg.add_time}}</span>
                 </div>
                 <div v-if="this.orderMsg.status == 4">
@@ -32,7 +42,10 @@
                         <!-- <img src="../../../assets/images/shop/.png"> -->
                         <span>物流·已收货</span>
                     </h3>
-                    <p class="typeMsgHint">您的订单已签收。</p>
+                    <p class="typeMsgHint" v-if="this.orderMsg.logistics_name !=''">
+                        <span>{{this.orderMsg.logistics_name + "：" + this.orderMsg.waybill_number}}</span>               <img src="../../../assets/images/orderNumIcon.png" alt="">
+                    </p>
+                    <p class="typeMsgHint" v-else>您的订单已签收。</p>
                     <span class="orderTime">{{this.orderMsg.add_time}}</span>
                 </div>
                 <div v-if="this.orderMsg.status == 5">
@@ -40,7 +53,10 @@
                         <img src="../../../assets/images/shop/order-yiquxiao.png">
                         <span>物流·已取消</span>
                     </h3>
-                    <p class="typeMsgHint">您的订单已提交成功，请尽快支付</p>
+                    <p class="typeMsgHint" v-if="this.orderMsg.logistics_name !=''">
+                        <span>{{this.orderMsg.logistics_name + "：" + this.orderMsg.waybill_number}}</span>               <img src="../../../assets/images/orderNumIcon.png" alt="">
+                    </p>
+                    <p class="typeMsgHint" v-else>您的订单已提交成功，请尽快支付</p>
                     <span class="orderTime">{{this.orderMsg.add_time}}</span>
                 </div>
                 <div v-if="this.orderMsg.status == 6">
@@ -48,6 +64,9 @@
                         <img src="../../../assets/images/shop/order-yiguanbi.png">
                         <span>物流·已关闭</span>
                     </h3>
+                    <p class="typeMsgHint" v-if="this.orderMsg.logistics_name !=''">
+                        <span>{{this.orderMsg.logistics_name + "：" + this.orderMsg.waybill_number}}</span>               <img src="../../../assets/images/orderNumIcon.png" alt="">
+                    </p>
                     <!-- <p class="typeMsgHint">您的订单已提交成功，请尽快支付</p> -->
                     <span class="orderTime">{{this.orderMsg.add_time}}</span>
                 </div>
@@ -56,7 +75,10 @@
                         <img src="../../../assets/images/shop/order-tuikuanzhong.png">
                         <span>物流·退款中</span>
                     </h3>
-                    <p class="typeMsgHint">退款申请提交，等待商家反馈。</p>
+                    <p class="typeMsgHint" v-if="this.orderMsg.logistics_name !=''">
+                        <span>{{this.orderMsg.logistics_name + "：" + this.orderMsg.waybill_number}}</span>               <img src="../../../assets/images/orderNumIcon.png" alt="">
+                    </p>
+                    <p class="typeMsgHint" v-else>退款申请提交，等待商家反馈。</p>
                     <span class="orderTime">{{this.orderMsg.add_time}}</span>
                 </div>
                 <div v-if="this.orderMsg.status == 8">
@@ -64,7 +86,10 @@
                         <img src="../../../assets/images/shop/order-yituikuan.png">
                         <span>物流·已退款</span>
                     </h3>
-                    <p class="typeMsgHint">您的订单已退款成功。</p>
+                    <p class="typeMsgHint" v-if="this.orderMsg.logistics_name !=''">
+                        <span>{{this.orderMsg.logistics_name + "：" + this.orderMsg.waybill_number}}</span>               <img src="../../../assets/images/orderNumIcon.png" alt="">
+                    </p>
+                    <p class="typeMsgHint" v-else>您的订单已退款成功。</p>
                     <span class="orderTime">{{this.orderMsg.add_time}}</span>
                 </div>
                 <div v-if="this.orderMsg.status == 9">
@@ -72,7 +97,10 @@
                         <img src="../../../assets/images/shop/order-jujue.png">
                         <span>物流·退款拒绝</span>
                     </h3>
-                    <p class="typeMsgHint">{{this.orderMsg.postil}}</p>
+                    <p class="typeMsgHint" v-if="this.orderMsg.logistics_name !=''">
+                        <span>{{this.orderMsg.logistics_name + "：" + this.orderMsg.waybill_number}}</span>               <img src="../../../assets/images/orderNumIcon.png" alt="">
+                    </p>
+                    <p class="typeMsgHint" v-else>{{this.orderMsg.postil}}</p>
                     <span class="orderTime">{{this.orderMsg.add_time}}</span>
                 </div>
                 <div v-if="this.orderMsg.status == 10">
@@ -96,7 +124,8 @@
                         <img src="../../../assets/images/shop/oder_fukuan.png">
                         <span>自提·已领取</span>
                     </h3>
-                    <p class="typeMsgHint">商品已领取，欢迎下次光临。</p>
+                    <!-- <p class="typeMsgHint">商品已领取，欢迎下次光临。</p> -->
+                    <p class="typeMsgHint">您的商品已在{{this.orderMsg.pick_store_name}}提取成功。</p>
                     <span class="orderTime">{{this.orderMsg.add_time}}</span>
                 </div>
                 <div v-if="this.orderMsg.status == 13">
@@ -112,7 +141,7 @@
                         <img src="../../../assets/images/shop/order-yiguanbi.png">
                         <span>自提·已关闭</span>
                     </h3>
-                    <!-- <p class="typeMsgHint">您的订单已提交成功，请尽快支付</p> -->
+                    <p class="typeMsgHint">您的商品已在{{this.orderMsg.pick_store_name}}提取成功。</p>
                     <span class="orderTime">{{this.orderMsg.add_time}}</span>
                 </div>
                 <div v-if="this.orderMsg.status == 15">
@@ -136,7 +165,8 @@
                         <img src="../../../assets/images/shop/order-jujue.png">
                         <span>自提·退款拒绝</span>
                     </h3>
-                    <p class="typeMsgHint">{{this.orderMsg.postil}}</p>
+                    <!-- <p class="typeMsgHint">{{this.orderMsg.postil}}</p> -->
+                    <p class="typeMsgHint" v-if="this.orderMsg.pick_status == 2">您的商品已在{{this.orderMsg.pick_store_name}}提取成功。</p>
                     <span class="orderTime">{{this.orderMsg.add_time}}</span>
                 </div>
                 <div v-if="this.orderMsg.status == 18">
@@ -152,7 +182,10 @@
                         <img src="../../../assets/images/shop/order-jujue.png">
                         <span>物流·退款申请</span>
                     </h3>
-                    <p class="typeMsgHint">{{this.orderMsg.postil}}</p>
+                    <p class="typeMsgHint" v-if="this.orderMsg.logistics_name !=''">
+                        <span>{{this.orderMsg.logistics_name + "：" + this.orderMsg.waybill_number}}</span>               <img src="../../../assets/images/orderNumIcon.png" alt="">
+                    </p>
+                    <p class="typeMsgHint" v-else>{{this.orderMsg.postil}}</p>
                     <span class="orderTime">{{this.orderMsg.add_time}}</span>
                 </div>
                 <!-- 收货地址 str -->
@@ -170,9 +203,14 @@
                 <!-- 提货码 str -->
                 <div class="addressMsg addressMsg_code">
                     <div class="pick_Code" v-if="this.orderMsg.pick_type == 2">
-                        <img src="../../../assets/images/shop/order_tihuoma.png" alt="">
-                        <span>提货码</span>
+                        <img class="thmIcon" src="../../../assets/images/shop/order_tihuoma.png" alt="">
+                        <span class="">提货码</span>
                         <i>{{this.orderMsg.pick_code}}</i>
+                        <p class="" @click.stop="storeBtn()">
+                            <span>取货门店</span>
+                            <img class="thmjjh" src="../../../assets/images/jjhred.png" alt="">
+                        </p>
+                        
                     </div>
                 </div>
                 <!-- 提货码 end -->
@@ -184,9 +222,9 @@
                     <img :src="this.orderMsg.goods_img" alt="">
                     <p>{{this.orderMsg.goods_name}}</p>
                     <span style="width:100%;text-overflow:ellipsis; white-space:nowrap; overflow:hidden;">数量:{{this.orderMsg.num}}&nbsp;&nbsp;&nbsp;&nbsp;规格:{{this.orderMsg.specs}}</span>
-                    <h3 v-if="this.orderMsg.payment_type == 1">￥{{this.orderMsg.practical_price}}</h3>
+                    <h3 v-if="this.orderMsg.payment_type == 1">￥{{this.orderMsg.goods_price}}</h3>
                     <h3 v-if="this.orderMsg.payment_type == 2">{{this.orderMsg.goods_integral}}积分</h3>
-                    <h3  v-if="this.orderMsg.payment_type == 3">￥{{this.orderMsg.practical_price}} + {{this.orderMsg.goods_integral}}积分</h3>
+                    <h3  v-if="this.orderMsg.payment_type == 3">￥{{this.orderMsg.goods_price}} + {{this.orderMsg.goods_integral}}积分</h3>
                 </div>
             </div>
             <!-- 商品信息 end -->
@@ -195,9 +233,9 @@
                 <div class="shopPrice">
                     <p>
                         商品金额
-                        <span v-if="this.orderMsg.payment_type == 1">￥{{this.orderMsg.practical_price}}</span>
+                        <span v-if="this.orderMsg.payment_type == 1">￥{{this.orderMsg.goods_total_price}}</span>
                         <span v-if="this.orderMsg.payment_type == 2">{{this.orderMsg.integral}}积分</span>
-                        <span  v-if="this.orderMsg.payment_type == 3">￥{{this.orderMsg.practical_price}} + {{this.orderMsg.integral}}积分</span>
+                        <span  v-if="this.orderMsg.payment_type == 3">￥{{this.orderMsg.goods_total_price}} + {{this.orderMsg.integral}}积分</span>
                     </p>
                     <p v-if="this.orderMsg.pick_type == 1">
                         运费
@@ -260,7 +298,7 @@
                 <router-link :to="{path:'refundOrder',query:{orderId:this.orderMsg.id}}">
                     <span>申请退款</span>
                 </router-link>
-                <span class="orderBtnActive"  @click="changeOrder(3)">确认收货</span>
+                <span v-if="this.orderMsg.pick_type == 1" class="orderBtnActive"  @click="changeOrder(3)">确认收货</span>
                 <router-link :to="{path:'shoppIngDetails',query:{shopId:this.orderMsg.goods_id}}">
                     <span class="orderBtnActive">再次购买</span>
                 </router-link>
@@ -294,6 +332,7 @@
                 </router-link>
             </div>
             <div v-if="this.orderMsg.status == 9 || this.orderMsg.status == 17" class="orderBtn">
+                <span v-if="this.orderMsg.deliver_status == 2 && this.orderMsg.pick_type == 1" class="orderBtnActive"  @click="changeOrder(3)">确认收货</span>
                 <router-link :to="{path:'refundOrder',query:{orderId:this.orderMsg.id}}">
                     <span>申请退款</span>
                 </router-link>
@@ -342,6 +381,20 @@
             </div>
         </div>
         <!-- 放弃支付 end -->
+        <!-- 可提货门店 str -->
+        <div class="boxMask" v-show="storeHide" @click.self="boxMaskBtn()">
+            <div class="tackGoodStore">
+                <p>
+                    <span>可提货门店</span>
+                    <img @click.self="boxMaskBtn()" src="../../../assets/images/icon/ic-close-card.png" alt="">
+                </p>
+                <ul>
+                    <li v-for="item in this.storeArr">{{item}}</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 可提货门店 end -->
     </div>
 </template>
 <style lang='less' scoped>
@@ -356,6 +409,7 @@
         },
         data() {  
             return {
+                storeHide:false,
                 isGiveBoxWrapShow:false,
                 orderMsg:'',        //订单详情信息
                 isTrue:false,
@@ -365,10 +419,17 @@
                 delayToastTxt: "",             //提示信息
                 hintMsg:"",                    //提示信息
                 type_num:"",                   //
-                copyUrl:""
+                copyUrl:"",
+                storeArr:[]
             }
         },
         methods: {
+            boxMaskBtn(){       //可提货门店关闭
+                this.storeHide = false;
+            },
+            storeBtn(){         //可提货门店展示
+                this.storeHide = true;
+            },
             onCopy(e){
                 console.log(e);
                 this.delayToast = true;
@@ -392,6 +453,7 @@
                         console.log(res);
                         this.orderMsg = res.data.data;          //订单详情
                         this.copyUrl = this.orderMsg.order_number;
+                        this.storeArr = res.data.data.store_name.split(',');
                         if(this.orderMsg.pick_type == 1){
                             this.isTrue = false;
                         }else{

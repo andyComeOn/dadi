@@ -141,8 +141,8 @@ export default {
         // 订单socket
         socketMethod() {
             var that = this;
-            let ws = new WebSocket("ws://172.16.0.252:8081"); // 测试地址
-            // let ws = new WebSocket("ws://39.107.102.235:8081"); // 正式地址
+            // let ws = new WebSocket("ws://172.16.0.252:8081"); // 测试地址
+            let ws = new WebSocket("ws://39.107.102.235:8081"); // 正式地址
             ws.onopen = function() {
                 console.log("连接成功");
                 ws.send("uid" + getCookie("userUid"));
@@ -227,11 +227,10 @@ export default {
                     res => {
                         if (res.err_msg == "get_brand_wcpay_request:ok") {
                             _this.paySuccessToast = true;
-                        }
-                        if (res.err_msg == "get_brand_wcpay_request:cancel") {
+                        } else if (res.err_msg == "get_brand_wcpay_request:cancel") {
                             alert("取消支付");
-                            // window.location.reload();
-                        }
+                            window.location.reload();
+                        } else {}
                     }
                 );
             };
@@ -270,7 +269,8 @@ export default {
                     jsApiParameters = JSON.parse(res.data.data);
                     callpay();
                 } else {
-                    _this.alert(res.data.msg);
+                    this.loading = false;
+                    alert(res.data.msg);
                 }
             });
         }

@@ -4,7 +4,11 @@ import { getUrlParam } from '@/utils/util';
 export const baseUrl = 'm.wei.ddyg.cn';
 //cpid
 global.GlobalCpid = getUrlParam('cpid');
-console.log(global.GlobalCpid);
+
+console.log('cpid=' + global.GlobalCpid);
+
+// 把获取到的cpid输出
+export const baseCpid = GlobalCpid;
 
 // Stroe-酒店
 export const store_list = '/api/Store/store_list?cpid=' + GlobalCpid  // 门店列表（查询酒店）   
@@ -92,6 +96,8 @@ export const del_collect = '/api/User/del_collect?cpid=' + GlobalCpid // 删除�
 
 export const integral_detail = '/api/Credit/integral_detail?cpid=' + GlobalCpid;  // 积分明细列表
 
+export const activity_ranking = '/api/Distribution/activity_ranking?cpid=' + GlobalCpid;  // 邀请好友排名榜
+
 export const user_help = '/api/User/user_help' // 帮助中心
 
 export const history_list = '/api/User/history_list' // 浏览历史列表
@@ -99,6 +105,8 @@ export const history_list = '/api/User/history_list' // 浏览历史列表
 export const history_del = '/api/User/history_del' // 删除浏览历史
 
 export const my_comment = '/api/Comment/my_comment' // 我的点评（二期）
+
+
 
 
 

@@ -19,7 +19,7 @@
                 <!-- nav str -->
                 <ul class="navLists clearfix">
                     <li v-for="(item,index) in shopTypeArr" :key="index">
-                        <router-link :to='{path:"shopTypeLists",query:{shopType:item.id}}'>
+                        <router-link :to='{path:"shopTypeLists",query:{shopType:item.id,shopTitle:encodeURIComponent(item.category_name)}}'>
                             <dl>
                                 <dt>
                                     <img :src="item.category_img" alt="">
@@ -36,19 +36,18 @@
                 <h3><span>品牌制造商直供</span></h3>
                 <ul class="brandLists" v-if="this.noShopLists == false">
                     <li v-for="(item, index) in shopListsArr" :key="index">
-                        <router-link :to='{path:"shoppIngDetails",query:{shopId:item.id}}'>
-                            <dl>
-                                <dt>
-                                    <img :src="item.goods_img" alt="">
-                                </dt>
-                                <dd>
-                                    <p class=""><span v-if='item.consume_type == 2 || item.consume_type == 3'>积分</span>{{item.goods_name}}</p>
-                                    <h2 v-if='item.consume_type == 1'><span>￥</span>{{item.goods_price}}</h2>
-                                    <h2 v-if='item.consume_type == 2'>{{item.goods_integral}}<span>积分</span></h2>
-                                    <h2 v-if='item.consume_type == 3'><span>￥</span>{{item.goods_price}}+{{item.goods_integral}}<i>积分</i></h2>
-                                </dd>
-                            </dl>
-                        </router-link>
+                        <dl @click="hrefShopDetail(item.id,item.stock)">
+                            <dt id="cardsBox1" :style="{height:cardsBoxH + 'px'}">
+                                <img  style="width:100%;height:100%;" :src="item.goods_img" alt="">
+                                <img class="cardsBox1_bz" v-if="item.stock == 0" src="../../../assets/images/yishouqin.png" alt="">
+                            </dt>
+                            <dd>
+                                <p class=""><span v-if='item.consume_type == 2 || item.consume_type == 3'>积分</span>{{item.goods_name}}</p>
+                                <h2 v-if='item.consume_type == 1'><span>￥</span>{{item.goods_price}}</h2>
+                                <h2 v-if='item.consume_type == 2'>{{item.goods_integral}}<span>积分</span></h2>
+                                <h2 v-if='item.consume_type == 3'><span>￥</span>{{item.goods_price}}+{{item.goods_integral}}<i>积分</i></h2>
+                            </dd>
+                        </dl>
                     </li>
                 </ul>
                 <div class="noShopLists" v-show="noShopLists">
@@ -103,6 +102,7 @@
         },
         data() {
             return {
+                cardsBoxH:"",
                 shopListsArr: [],           //商品列表数据    
                 shopTypeArr: [],            //商品分类
                 bannerArr:[],               //轮播图数据
@@ -119,20 +119,20 @@
             refresh (done) {                     //刷新是商品列表清空
                 this.shopListsArr.length = 0;
                 this.pageIndex = 1;
-                setTimeout(() => {
+                // setTimeout(() => {
                     this.getShopIndexPage(this.pageIndex);
                     done();
-                }, 1500);
+                // }, 500);
             },
             infinite (done) {                    //加载
                 this.loading = true;            //loading
                 this.pageIndex++;
-                setTimeout(() => {
+                // setTimeout(() => {
                     this.getShopIndexPage(this.pageIndex);
                     done(true);
-                }, 1500);
+                // }, 500);
             },
-            getShopIndexPage(pageIndex){                 //获取首页内容
+            getShopIndexPage(pageIndex){        //获取首页内容
                 this.loading = true;            //loading
                 this.$http({
                     url:shopIndexPage,
@@ -140,7 +140,7 @@
                     data:{
                         type_id:6,          //		轮播图广告位ID		
                         banner_sum:5,       //		轮播图数量		
-                        page:pageIndex,             //		当前页	
+                        page:pageIndex,             //当前页	
                         pagesize:10,        //		每页数量
                     }
                 }).then((res)=>{
@@ -154,6 +154,12 @@
                             }
                         }else if(res.data.data.goodsInfo.length == 0 && this.pageIndex == 1){
                             this.noShopLists = true;
+                            this.$nextTick(() => {
+                                // 由卡片的宽度-->给卡片的高赋值
+                                let cardsBox = document.querySelector("#cardsBox1");
+                                let cardsBoxH = cardsBox.clientWidth;
+                                this.cardsBoxH = cardsBoxH;
+                            });
                         }else{
                             this.delayToast = true;
                             this.delayToastTxt = '没有更多商品了！';
@@ -186,8 +192,20 @@
             　　　　console.log(err);
             　　});
             },
+            hrefShopDetail(shopId,stockNum){
+                if(stockNum != 0){
+                    this.$router.push({path:'shoppIngDetails',query:{shopId:shopId}});
+                }else{
+                    this.delayToast = true;
+                    this.delayToastTxt = '该商品已售罄';
+                    setTimeout(()=>{
+                        this.delayToast = false;  
+                    },1500);
+                }
+            }
         },
         mounted() {
+            
         },
     };
 </script>

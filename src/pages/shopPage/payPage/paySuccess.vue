@@ -34,8 +34,8 @@
                 <li v-for="(item,index) in goodsListsArr" :key="index">
                     <router-link :to='{path:"shoppIngDetails",query:{shopId:item.id}}'>
                         <dl>
-                            <dt>
-                                <img :src="item.goods_img" alt="">
+                            <dt id="cardsBox" :style="{height:cardsBoxH + 'px'}">
+                                <img style="width:100%;height:100%;" :src="item.goods_img" alt="">
                             </dt>
                             <dd>
                                 <p><span v-if='item.consume_type == 2 || item.consume_type == 3'>积分</span>{{item.goods_name}}</p>
@@ -81,6 +81,7 @@
         },
         data() {  
             return {
+                cardsBoxH:"",
                 loading:false,
                 loadingTxt:'加载中...',
                 delayToast:false,
@@ -128,6 +129,12 @@
                             }
                         }else if(res.data.data.goods_info.length == 0 && this.pageIndex == 1){
                             this.noShopLists = true;
+                            this.$nextTick(() => {
+                                // 由卡片的宽度-->给卡片的高赋值
+                                let cardsBox = document.querySelector("#cardsBox");
+                                let cardsBoxH = cardsBox.clientWidth;
+                                this.cardsBoxH = cardsBoxH;
+                            });
                         }else{
                             this.delayToast = true;
                             this.delayToastTxt = res.data.msg;              //错误信息

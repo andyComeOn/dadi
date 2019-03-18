@@ -13,8 +13,8 @@
                 <p>单号<span>{{request_no}}</span></p>
             </li>
             <li>
-                <!-- <p>充值活动<span>{{give_amount}}</span></p> -->
-                <p>充值活动<span>无</span></p>
+                <p>充值活动<span>{{give_amount}}</span></p>
+                <!-- <p>充值活动<span>无</span></p> -->
             </li>
         </ul>
     </div>

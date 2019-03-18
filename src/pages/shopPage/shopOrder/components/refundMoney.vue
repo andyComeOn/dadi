@@ -8,7 +8,7 @@
                         <p class="orderNum">{{item.order_number}}
                             <span v-if="item.status == 1">物流·待付款</span>
                             <span v-if="item.status == 2">物流·待发货</span>
-                            <span v-if="item.status == 3">物流·发货中</span>
+                            <span v-if="item.status == 3">物流·待收货</span>
                             <span v-if="item.status == 4">物流·已收货</span>
                             <span v-if="item.status == 5">物流·已取消</span>
                             <span v-if="item.status == 6">物流·已关闭</span>
@@ -25,7 +25,7 @@
                             <span v-if="item.status == 17">自提·退款拒绝</span>
                             <span v-if="item.status == 18">自提·退款申请</span>
                             <span v-if="item.status == 19">物流·退款申请</span>
-                            <!-- status 物流待付款 1 物流 待发货2 物流 发货中3 物流 已收货(完成)4 物流 已取消5 
+                            <!-- status 物流待付款 1 物流 待发货2 物流 待收货3 物流 已收货(完成)4 物流 已取消5 
                             物流 已关闭 6 物流 退款中 7 物流 已退款 8 物流 退款拒绝9 自提 待付款10 自提 待领取11 自提 已领取12 自提 已取消13 自提 已关闭14 自提退款中15 自提  退款完成 16 自提  退款拒绝  17 -->
                         </p>
                         <div class="shopDetails">
@@ -59,7 +59,7 @@
                         <router-link :to="{path:'refundOrder',query:{orderId:item.id}}">
                             <span>申请退款</span>
                         </router-link>
-                        <span class="orderBtnActive" @click="changeOrder(item.id,3)">确认收货</span>
+                        <span v-if="item.pick_type == 1" class="orderBtnActive" @click="changeOrder(item.id,3)">确认收货</span>
                         <router-link :to="{path:'shoppIngDetails',query:{shopId:item.goods_id}}">
                             <span class="orderBtnActive">再次购买</span>
                         </router-link>
@@ -98,6 +98,7 @@
                         </router-link>
                     </div>
                     <div v-if="item.status == 9 || item.status == 17" class="orderBtn">
+                        <span v-if="item.deliver_status == 2 && item.pick_type == 1" class="orderBtnActive" @click="changeOrder(item.id,3)">确认收货</span>
                         <router-link :to="{path:'refundOrder',query:{orderId:item.id}}">
                             <span>申请退款</span>
                         </router-link>
@@ -178,17 +179,17 @@
             refresh (done) {                     //刷新是清空数据
                 this.shopOrderArr.length = 0;
                 this.pageIndex = 1;
-                setTimeout(() => {
+                // setTimeout(() => {
                     this.shopOrderList(4,this.pageIndex);
                     done();
-                }, 1500);
+                // }, 1500);
             },
             infinite (done) {                    //加载
                 this.pageIndex++;
-                setTimeout(() => {
+                // setTimeout(() => {
                     this.shopOrderList(4,this.pageIndex);
                     done(true);
-                }, 1500);
+                // }, 1500);
             },
             shopOrderList(shopOrderType,pageIndex){           //订单列表
                 this.loading = true;                //loading

@@ -17,7 +17,7 @@
                 </div>
                 <!-- 底部说明 -->
                 <div class="qsPush_logo">
-                    <img class="bottom-logo" src="../../assets/images/distribution/logo.png" />
+                    <img class="bottom-logo" :src="hotelGroupLogo" />
                     <p>都市里的世外桃园</p>
                 </div>
 
@@ -28,7 +28,7 @@
 </template>
 <script>
 import wx from "weixin-js-sdk";
-import { showQsCode, login_test, wxShare } from "../../api/api.js";
+import { showQsCode, login_test, wxShare, baseCpid } from "../../api/api.js";
 import { getCookie } from "@/utils/util";
 export default {
     name: "praise",
@@ -42,7 +42,8 @@ export default {
             signature: "",
             url: "",
             headUrl: "", //头像
-            nickname: "" //昵称
+            nickname: "", //昵称
+            hotelGroupLogo: "", // 集团logo
         };
     },
     computed: {},
@@ -51,6 +52,8 @@ export default {
         this.headUrl = decodeURIComponent(getCookie("avatar"));
         //获取姓名
         this.nickname = decodeURI(decodeURI(getCookie("nickname")));
+        // 拉取bottom-logo
+        this.groupLogo();
         //获取二维码
         this.$http({
             method: "POST",
@@ -83,6 +86,7 @@ export default {
             });
     },
     methods: {
+        // 微信分享
         share(url, shareImg) {
             wx.config({
                 debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -110,7 +114,16 @@ export default {
                 dataUrl: "",
                 success: function() {}
             });
+        },
+        // 根据cpid来判断bottom-logo
+        groupLogo () {
+            if (baseCpid == 1) {
+                this.hotelGroupLogo = require('../../assets/images/distribution/logo.png');
+            } else {
+                this.hotelGroupLogo = require('../../assets/images/distribution/logoHy.png');
+            }
         }
+        
     }
 };
 </script>

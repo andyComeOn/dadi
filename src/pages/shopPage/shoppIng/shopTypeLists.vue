@@ -4,19 +4,19 @@
         <scroller :on-refresh="refresh" :on-infinite="infinite">
             <ul class="brandLists" v-if="this.noShopLists == false">
                 <li v-for="(item,index) in shopTypeListsArr" :key="index">
-                    <router-link :to='{path:"shoppIngDetails",query:{shopId:item.id}}'>
-                        <dl>
-                            <dt>
-                                <img :src="item.goods_img" alt="">
-                            </dt>
-                            <dd>
-                                <p><span v-if='item.consume_type == 2 || item.consume_type == 3'>积分</span>{{item.goods_name}}</p>
-                                <h2 v-if="item.consume_type == 1"><span>￥</span>{{item.goods_price}}</h2>
-                                <h2 v-if="item.consume_type == 2">{{item.goods_integral}}<span>积分</span></h2>
-                                <h2 v-if="item.consume_type == 3"><span>￥</span>{{item.goods_price}}+{{item.goods_integral}}<span>积分</span></h2>
-                            </dd>
-                        </dl>
-                    </router-link>
+                    <!-- <router-link :to='{path:"shoppIngDetails",query:{shopId:item.id}}'> -->
+                    <dl @click="hrefShopDetail(item.id,item.stock)">
+                        <dt id="cardsBox" :style="{height:cardsBoxH + 'px'}">
+                            <img style="width:100%;height:100%;" :src="item.goods_img" alt="">
+                            <img class="cardsBox_bz" v-if="item.stock == 0" src="../../../assets/images/yishouqin.png" alt="">
+                        </dt>
+                        <dd>
+                            <p><span v-if='item.consume_type == 2 || item.consume_type == 3'>积分</span>{{item.goods_name}}</p>
+                            <h2 v-if="item.consume_type == 1"><span>￥</span>{{item.goods_price}}</h2>
+                            <h2 v-if="item.consume_type == 2">{{item.goods_integral}}<span>积分</span></h2>
+                            <h2 v-if="item.consume_type == 3"><span>￥</span>{{item.goods_price}}+{{item.goods_integral}}<span>积分</span></h2>
+                        </dd>
+                    </dl>
                 </li>
             </ul>
             <div class="noShopLists" v-show="noShopLists">
@@ -52,6 +52,7 @@
         components: {},
         data() {
             return {
+                cardsBoxH:"",
                 shopTypeListsArr:[],
                 loading:false,
                 loadingTxt:"加载中...",
@@ -63,34 +64,27 @@
         },
         computed: {},
         created(){
-            if(this.$route.query.shopType == 1){
-                document.title="商品-好睡眠";
-            }else if(this.$route.query.shopType == 2){
-                document.title="商品-驿自营";
-            }else if(this.$route.query.shopType == 3){
-                document.title="商品-唯特产";
-            }else if(this.$route.query.shopType == 4){
-                document.title="商品-积分兑换";
-            }
+            let shopTitle = decodeURIComponent(this.$route.query.shopTitle);
+            document.title = shopTitle;
         },
         mounted() {
-
+            
         },
         methods: {
             refresh (done) {                     //刷新时清空列表
                 this.shopTypeListsArr.length = 0;
                 this.pageIndex = 1;
-                setTimeout(() => {
+                // setTimeout(() => {
                     this.goodsLists(this.pageIndex);
                     done(true);
-                }, 1500);
+                // }, 1500);
             },
             infinite (done) {                    //加载
                 this.pageIndex++;
-                setTimeout(() => {
+                // setTimeout(() => {
                     this.goodsLists(this.pageIndex);
                     done(true);
-                }, 1500);
+                // }, 1500);
             },
             goodsLists(pageIndex){                          //商品分类列表
                 this.loading = true;                        //打开loading
@@ -113,6 +107,12 @@
                             }
                         }else if(res.data.data.length == 0 && this.pageIndex == 1){
                             this.noShopLists = true;
+                            this.$nextTick(() => {
+                                // 由卡片的宽度-->给卡片的高赋值
+                                let cardsBox = document.querySelector("#cardsBox");
+                                let cardsBoxH = cardsBox.clientWidth;
+                                this.cardsBoxH = cardsBoxH;
+                            });
                         }else{
                             this.delayToast = true;
                             this.delayToastTxt = res.data.msg;              //错误信息
@@ -130,6 +130,17 @@
                         return false;
                     }
                 });
+            },
+            hrefShopDetail(shopId,stockNum){
+                if(stockNum != 0){
+                    this.$router.push({path:'shoppIngDetails',query:{shopId:shopId}});
+                }else{
+                    this.delayToast = true;
+                    this.delayToastTxt = '该商品已售罄';
+                    setTimeout(()=>{
+                        this.delayToast = false;  
+                    },1500);
+                }
             }
         }
     };

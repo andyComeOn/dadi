@@ -2,3 +2,24 @@
     font-family: DIN;
     src: url('./DIN-Black.otf');
 }
+
+/* @font-face {
+    font-family: 'SansBold';
+    src: url('./NotoSansCJK-Bold-6.otf');
+}
+
+@font-face {
+    font-family: 'SansBlack';
+    src: url('./NotoSansCJK-Black-7.otf');
+}
+
+
+@font-face {
+    font-family: 'SansRegular';
+    src: url('./NotoSansCJK-Regular-1.otf');
+}
+
+@font-face {
+    font-family: 'SansMedium';
+    src: url('./NotoSansCJK-Medium-5.otf');
+} */

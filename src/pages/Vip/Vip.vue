@@ -5,7 +5,7 @@
             <div class="box" id="cardsBox" v-if='cardList'>
                 <div class="item" v-for="(item, index) in cardList" :key="index" :style="{backgroundImage: 'url('+ item.bgUrl +')', height:cardsBoxH + 'px'}" v-show="item.isCardVisible">
                     <!-- <div class="crown">夏种</div>  产品去掉了 -->
-                    <div class="logo"><img src="../../assets/images/vip/logo.png" alt=""></div>
+                    <div class="logo"><img :src="item.logoSrc" alt=""></div>
                     <div class="type">{{item.type}}</div>
                     <div class="labels">{{item.labels}}</div>
                 </div>
@@ -25,80 +25,82 @@
         </div>
         <!-- 文案展示区 -->
         <div class="desc">
-            <div class="desc-box" v-if="txtList" v-for="(item,index) in txtList" :key="index" v-show="item.isTxtItemVisible">
-                <!-- 开卡权益 -->
-                <div class="card-right">
-                    <div class="title">
-                        <span class="s1"></span>
-                        开卡权益
-                        <span class="s2"></span>
+            <div class="descBoxWrap" v-if="txtList">
+                <div class="descBox" v-for="(item,index) in txtList" :key="index" v-show="item.isTxtItemVisible">
+                    <!-- 开卡权益 -->
+                    <div class="card-right">
+                        <div class="title">
+                            <span class="s1"></span>
+                            开卡权益
+                            <span class="s2"></span>
+                        </div>
+                        <div class="content">
+                            <dl>
+                                <img src="../../assets/images/vip/kaika.png" alt="">
+                                <dt>开卡赠券</dt>
+                                <dd>{{item.coupon_num}}</dd>
+                            </dl>
+                            <dl>
+                                <img src="../../assets/images/vip/yaoqing.png" alt="">
+                                <dt>邀请特权</dt>
+                                <dd>{{item.privilege_num}}</dd>
+                            </dl>
+                            <dl>
+                                <img src="../../assets/images/vip/fangjia.png" alt="">
+                                <dt>房价折扣</dt>
+                                <dd>{{item.promo}}</dd>
+                            </dl>
+                            <dl>
+                                <img src="../../assets/images/vip/xiaofei.png" alt="">
+                                <dt>消费积分</dt>
+                                <dd>{{item.score_rate}}</dd>
+                            </dl>
+                            <dl v-if="item.pre_cancel_time">
+                                <img src="../../assets/images/vip/mianfei.png" alt="">
+                                <dt>免费取消</dt>
+                                <dd>{{item.pre_cancel_time}}</dd>
+                            </dl>
+                        </div>
                     </div>
-                    <div class="content">
-                        <dl>
-                            <img src="../../assets/images/vip/kaika.png" alt="">
-                            <dt>开卡赠券</dt>
-                            <dd>{{item.coupon_num}}</dd>
-                        </dl>
-                        <dl>
-                            <img src="../../assets/images/vip/yaoqing.png" alt="">
-                            <dt>邀请特权</dt>
-                            <dd>{{item.privilege_num}}</dd>
-                        </dl>
-                        <dl>
-                            <img src="../../assets/images/vip/fangjia.png" alt="">
-                            <dt>房价折扣</dt>
-                            <dd>{{item.promo}}</dd>
-                        </dl>
-                        <dl>
-                            <img src="../../assets/images/vip/xiaofei.png" alt="">
-                            <dt>消费积分</dt>
-                            <dd>{{item.score_rate}}</dd>
-                        </dl>
-                        <dl v-if="item.pre_cancel_time">
-                            <img src="../../assets/images/vip/mianfei.png" alt="">
-                            <dt>免费取消</dt>
-                            <dd>{{item.pre_cancel_time}}</dd>
-                        </dl>
-                    </div>
-                </div>
-                <!-- 会员权益 -->
-                <div class="vip-right">
-                    <div class="title">
-                        <span class="s1"></span>
-                        会员权益
-                        <span class="s2"></span>
-                    </div>
-                    <div class="content">
-                        <ul class="ul">
-                            <li v-if="item.catering_discount">
-                                <p class="li-desc">餐饮折扣</p>
-                                <p class="li-intro">{{item.catering_discount}}</p>
-                            </li>
-                            <li v-if="item.enjoy_channel">
-                                <p class="li-desc">优享通道</p>
-                                <p class="li-intro">{{item.enjoy_channel}}</p>
-                            </li>
-                            <li v-if="item.supper">
-                                <p class="li-desc">上门宵夜</p>
-                                <p class="li-intro">{{item.supper}}</p>
-                            </li>
-                            <li v-if="item.delay_room">
-                                <p class="li-desc">延迟退房</p>
-                                <p class="li-intro">{{item.delay_room}}</p>
-                            </li>
-                            <li v-if="item.birthday">
-                                <p class="li-desc">生日礼遇</p>
-                                <p class="li-intro">{{item.birthday}}</p>
-                            </li>
-                            <li v-if="item.equity">
-                                <p class="li-desc">权益共享</p>
-                                <p class="li-intro">{{item.equity}}</p>
-                            </li>
-                            <li v-if="item.user_activity">
-                                <p class="li-desc">收费会员活动</p>
-                                <p class="li-intro">{{item.user_activity}}</p>
-                            </li>
-                        </ul>
+                    <!-- 会员权益 -->
+                    <div class="vip-right">
+                        <div class="title">
+                            <span class="s1"></span>
+                            会员权益
+                            <span class="s2"></span>
+                        </div>
+                        <div class="content">
+                            <ul class="ul">
+                                <li v-if="item.catering_discount">
+                                    <p class="li-desc">餐饮折扣</p>
+                                    <p class="li-intro">{{item.catering_discount}}</p>
+                                </li>
+                                <li v-if="item.enjoy_channel">
+                                    <p class="li-desc">优享通道</p>
+                                    <p class="li-intro">{{item.enjoy_channel}}</p>
+                                </li>
+                                <li v-if="item.supper">
+                                    <p class="li-desc">上门宵夜</p>
+                                    <p class="li-intro">{{item.supper}}</p>
+                                </li>
+                                <li v-if="item.delay_room">
+                                    <p class="li-desc">延迟退房</p>
+                                    <p class="li-intro">{{item.delay_room}}</p>
+                                </li>
+                                <li v-if="item.birthday">
+                                    <p class="li-desc">生日礼遇</p>
+                                    <p class="li-intro">{{item.birthday}}</p>
+                                </li>
+                                <li v-if="item.equity">
+                                    <p class="li-desc">权益共享</p>
+                                    <p class="li-intro">{{item.equity}}</p>
+                                </li>
+                                <li v-if="item.user_activity">
+                                    <p class="li-desc">收费会员活动</p>
+                                    <p class="li-intro">{{item.user_activity}}</p>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -107,7 +109,7 @@
 </template>
 
 <script>
-import { user_card_privilege } from "@/api/api";
+import { user_card_privilege, baseCpid } from "@/api/api";
 export default {
     name: "vip",
     components: {},
@@ -144,7 +146,8 @@ export default {
                                 ".png"),
                             isCardVisible: tmp[i].flag == 1 ? true : false,
                             type: tmp[i].name,
-                            labels: tmp[i].remark
+                            labels: tmp[i].remark,
+                            logoSrc: baseCpid == 1 ? require("../../assets/images/vip/logo.png") :  require("../../assets/images/vip/logoHy.png")
                         });
                         // 封装tab点击数组
                         this.tabList.push({

@@ -23,7 +23,7 @@ export default {
         };
     },
     created() {
-        console.log(this.isVisible)
+        // console.log(this.isVisible)
     },
     methods: {
         Submit(){

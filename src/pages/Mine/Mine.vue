@@ -11,7 +11,7 @@
                     </div>
                     <div class="weui-media-box__bd mine-info-media-box__bd ">
                         <h4 class="weui-media-box__title mine-info-media-box__title">{{userInfoData.nickname}}</h4>
-                        <p class="weui-media-box__desc mine-info-media-box__desc">Lv{{userInfoData.grade}}&nbsp;&nbsp;{{userInfoData.card}}</p>
+                        <p class="weui-media-box__desc mine-info-media-box__desc">Lv{{userInfoData.grade}}&nbsp;&nbsp;{{userInfoData.grade | filterCardGradeGetInfo}}</p>
                     </div>
                     <span class="weui-cell__ft zb-weui-cell__ft"></span>
                 </router-link>
@@ -111,11 +111,11 @@
                             </div>
                             <span class="weui-cell__ft"></span>
                         </router-link>
-                        <!-- 常用信息 -->
+                        <!-- 常用入住人 -->
                         <router-link to="/userInfo" class="weui-cell weui-cell_access">
                             <div class="weui-cell__hd"><img src="../../assets/images/my/lianxiren.png" alt="" style="width:22px;margin-right:5px;display:block"></div>
                             <div class="weui-cell__bd weui-cell_primary">
-                                <p>常用信息</p>
+                                <p>常用入住人</p>
                             </div>
                             <span class="weui-cell__ft"></span>
                         </router-link>

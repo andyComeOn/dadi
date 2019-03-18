@@ -4,10 +4,17 @@
             <!-- 物流地址 str=======    物流信息     ============= -->
             <router-link :to='{path:"address",query:{shopId:this.$route.query.shopId,payShopNum:this.shopNum,deliveryWay:this.deliveryWay}}' v-if="deliveryWay == 1">
                 <div class="logistics">
-                    <h3 v-if="this.siteAddressMsg != ''">{{this.siteAddressMsg.name}}&nbsp;&nbsp;&nbsp;&nbsp;{{this.siteAddressMsg.mobile}}</h3>
-                    <p v-if="this.siteAddressMsg != ''"><i v-if="this.siteAddressMsg.is_default == 1">默认</i>{{this.siteAddressMsg.address_detail}}</p>
+                    <div v-if="this.siteAddressMsg != ''">
+                        <h3>{{this.siteAddressMsg.name}}&nbsp;&nbsp;&nbsp;&nbsp;{{this.siteAddressMsg.mobile}}</h3>
+                        <p>
+                            <i v-if="this.siteAddressMsg.is_default == 1">默认</i>
+                            {{this.siteAddressMsg.province + this.siteAddressMsg.city + this.siteAddressMsg.area + this.siteAddressMsg.address_detail}}
+                            <img src="../../../assets/images/arrows/ic-arrow_10_18.png" alt="">
+                        </p>
+                    </div>
+                    
                     <span v-if="this.siteAddressMsg == ''">请添加收货地址</span>
-                    <img src="../../../assets/images/arrows/ic-arrow_10_18.png" alt="">
+                    
                 </div>
             </router-link>
             <!-- 物流地址 end=========   物流信息     ================== -->

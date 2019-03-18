@@ -10,25 +10,28 @@
         </div>
         <!-- 搜索到的酒店列表 -->
         <ul class="list" v-if="dataList">
-            <li v-for="(item,index) in dataList" :key="index" @click="storeDetail(item.id,item.begin,item.finish)">
+            <li v-for="(item,index) in dataList" :key="index" @click="storeDetail(item.is, item.id,item.begin,item.finish)">
                 <div class="lf">
                     <img :src="item.logo" alt="">
+                    <div class="mask" :class="{isFull: (item.is != 1 ? true : false)}"></div>
                 </div>
                 <div class="rg">
-                    <p class="name m-ellipsis">{{item.name}}</p>
-                    <p class="info m-ellipsis-2">{{item.introduce}}</p>
-                    <p class="location">
-                        <span>{{item.city}}</span>
-                        <span class="wrapper">
-                            -
-                            <span style="color:#30B097;"> {{item.area}}</span> 距离您
-                            <span style="color:#30B097;">{{item.distance}}</span>
-                        </span>
+                    <p class="name m-ellipsis" :class="{isFull: (item.is != 1 ? true : false)}">{{item.name}}</p>
+                    <p class="info m-ellipsis-2" :class="{isFull: (item.is != 1 ? true : false)}">{{item.introduce}}</p>
+                    <p class="location" :class="{isFull: (item.is != 1 ? true : false)}">
+                        {{item.city}} - {{item.area}} 距离您<span class="distance" :class="{isFull: (item.is != 1 ? true : false)}">{{item.distance}}</span>
                     </p>
-                    <div class="price-wrap">
+                    <div class="priceWrap" :class="{isFull: (item.is != 1 ? true : false)}">
                         <span class="yen">&yen;</span>
                         <span class="price">{{item.price}}</span>
-                        起
+                        <span class="txt" :class="{isFull: (item.is != 1 ? true : false)}">起</span>
+                    </div>
+                </div>
+                <div class="watermark" :class="{isFull: (item.is != 1 ? true : false)}">
+                    <div class="circleSolid">
+                        <div class="circleDashed">
+                            <span>已定完</span>
+                        </div>
                     </div>
                 </div>
             </li>
@@ -88,7 +91,10 @@ export default {
             });
         },
         // 门店item的点击事件
-        storeDetail(id, begin, finish) {
+        storeDetail(isHasRoom, id, begin, finish) {
+            if (isHasRoom != 1) {
+                return
+            }
             this.$router.push({
                 path: "/hotelDetail",
                 query: {
@@ -198,40 +204,113 @@ export default {
                 margin-top: -60px;
                 border-radius: 3px;
             }
+            .mask {
+                display: none;
+                width: 100px;
+                height: 120px;
+                background: rgba(255, 255, 255, .5);
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 2;
+                &.isFull {
+                    display: block;
+                }
+            }
         }
         .rg {
             margin-left: 100px;
             padding: 5px 0 0 10px;
             .name {
                 font-size: 16px;
-                color: rgba(51, 51, 51, 1);
+                color: #333;
                 line-height: 22px;
                 margin-bottom: 5px;
+                &.isFull {
+                    color: #999;
+                }
             }
             .info {
                 line-height: 16px;
                 font-size: 12px;
-                color: rgba(102, 102, 102, 1);
+                color: #666;
+                &.isFull {
+                    color: #999;
+                }
             }
             .location {
                 margin-top: 5px;
                 margin-bottom: 10px;
                 line-height: 16px;
                 font-size: 12px;
-                color: rgba(102, 102, 102, 1);
+                color: #666;
+                &.isFull {
+                    color: #999;
+                }
+                .distance {
+                    color:#30B097;
+                    &.isFull {
+                        color: #999;
+                    }
+                }
             }
-            .price-wrap {
+            .priceWrap {
                 line-height: 21px;
                 vertical-align: bottom;
                 font-size: 12px;
-                color: #666;
-                .yen {
-                    color: #ffba56;
+                color: #ffba56;
+                &.isFull {
+                    color: #999;
                 }
                 .price {
                     font-size: 16px;
-                    color: #ffba56;
                     line-height: 1;
+                }
+                .txt {
+                    color: #666;
+                    &.isFull {
+                        color: #999;
+                    }
+                }
+            }
+        }
+        .watermark {
+            display: none;
+            width: 80px;
+            height: 80px;
+            background: #fff;
+            position: absolute;
+            bottom: 5px;
+            right: -2px;
+            z-index: 2;
+            border-radius: 50%; 
+            &.isFull {
+                display: block;
+            }
+            .circleSolid {
+                width: 100%;
+                height: 100%;
+                border: 1px solid #999;
+                padding: 5px;
+                border-radius: 50%; 
+                .circleDashed {
+                    width: 100%;
+                    height: 100%;
+                    border: 1px dashed #999;
+                    border-radius: 50%; 
+                    text-align: center;
+                    line-height: 68px;
+                    span {
+                        display: inline-block;
+                        line-height: 24px;
+                        font-size: 16px;
+                        font-weight: bold;
+                        color: #999;
+                        border: 1px solid #999;
+                        border-left: none;
+                        border-right: none;
+                        transform: rotate(-15deg);
+                    }
                 }
             }
         }
