@@ -1,204 +1,176 @@
-
 <template>
-    <div class="city-wendor m-position-ab">
-        <div class="city-title">
-            <div class="lf" @click="cityTitleBackfun">返回</div>
-            请选择城市
-        </div>
-        <div class="city-content">
-            <!-- <div class="city-head">搜索条</div> -->
-            <div class="city-body">
-                <!-- 定位城市和热门城市 -->
-                <div class="location-hot">
-                    <ul class="location">
-                        <h4>定位城市</h4>
-                        <li>
-                            <span @click="cityItem(cityname, cityid)">{{cityname}}</span>
-                        </li>
-                    </ul>
-                    <ul class="hot">
-                        <h4>热门城市</h4>
-                        <li>
-                            <span v-for="(item,index) in hotCityList" :key="index" @click="cityItem(item.name, item.id)">{{item.name}}</span>
-                        </li>
-                    </ul>
-                </div>
-                <!-- 城市列表 -->
-                <div class="city-lists-box">
-                    <h4>城市列表</h4>
-                    <ul class="list">
-                        <li v-for="(item, index) in cityList" :key="index" @click="cityItem(item.shortname, item.id)">{{item.shortname}}</li>
-                    </ul>
-                </div>
+    <div class="light-test" :style="'min-height:' + setDivHeight + 'px' ">
+        <van-search v-model="cityVal" placeholder="请输入搜索关键词" show-action shape="round" @clear="onClear" @search="onSearch">
+            <div slot="action" @click="onSearch">搜索</div>
+        </van-search>
+        <van-index-bar :index-list="indexList">
+            <van-index-anchor index="当前">当前</van-index-anchor>
+            <div class="cityname">
+                <van-button type="default" size="mini" @click.native="confirmCity(cityname,cityId)">{{cityname}}</van-button>
             </div>
-        </div>
+            <van-index-anchor index="热门">热门</van-index-anchor>
+            <div class="cityname">
+                <van-button class="ma-right30" type="default" size="mini" v-for="(item,index) in hotCityList" :key="index" @click.native="confirmCity(item.shortname,item.id)">{{item.shortname}}</van-button>
+            </div>
+            <div v-for="(item,index) in cityArr" :key="index">
+                <van-index-anchor :index="item.crty">{{item.crty}}</van-index-anchor>
+                <van-cell v-for="(itemVal,ind) in item.letter" :key="ind"  :title="itemVal.shortname"  @click.native="confirmCity(itemVal.shortname,itemVal.id)"/>
+            </div>
+        </van-index-bar>
     </div>
 </template>
 <script>
-import { getStorecity, getCityList, slt_location } from "@/api/api";
-export default {
-    props: ['longitude','latitude'],
-    data() {
-        return {
-            cityList: [], //拉取城市的信息
-            hotCityList: [],
-            myLocation: "",
-            longitudeTmp: this.longitude,
-            latitudeTmp: this.latitude,
-            cityid: "",
-            cityname: ""
-        };
-    },
-    
-    created() {
-        this.getLocation();
-        this.fetchHotCityList();
-        this.fetchCityList();
-    },
-    methods: {
-        // 城市组件点击返回
-        cityTitleBackfun() {
-            this.$emit("cityTitleBackEmit");
+    import { getStorecity, getCityList, slt_location } from "@/api/api";
+    import { getCookie, setCookie } from '@/utils/util';
+    export default {
+        data() {
+            return {
+                cityVal: "",        //
+                cityArr:"",
+                cityname:"定位中...",
+                cityId:"",
+                setDivHeight:"",
+                hotCityList:"",             //热门城市
+                indexList: ['当前','热门']
+            };
         },
-        getLocation() {
-            this.cityname = "定位中...";
-            this.$http({
-                method: "POST",
-                url: slt_location,
-                data: {
-                    longitude: this.longitude, // 经度
-                    latitude: this.latitude //维度
-                }
-            }).then(res => {
-                if (res.data.status == 1) {
-                    let locationTmp = res.data.data;
-                    this.cityname = locationTmp.city;
-                    this.cityid = locationTmp.id;
-                } else {
-                    this.cityname = "定位失败...";
-                    this.cityid = -1;
-                }
-            });
+        created() {
+            this.setDivHeight = document.body.offsetHeight;
         },
-        //热门城市
-        fetchHotCityList() {
-            this.$http({
-                method: "POST",
-                url: getStorecity,
-                data: {}
-            }).then(res => {
-                if (res.data.status == 1) {
-                    this.hotCityList = res.data.data;
-                }
-            });
-        },
-        //城市列表
-        fetchCityList() {
-            this.$http({
-                method: "POST",
-                url: getCityList,
-                data: {}
-            }).then(res => {
-                if (res.data.status == 1) {
-                    this.cityList = res.data.data;
-                }
-            });
-        },
-        // 点击城市item
-        cityItem(name, id) {
-            if (name == "定位失败..." || id == -1) return;
-            this.$emit("cityItemEmit", name, id);
-        }
-    },
-    mounted() {},
-    watch: {}
-};
-</script>
-
-<style lang="less" scoped>
-.city-wendor {
-    padding-top: 44px;
-    .city-title {
-        position: fixed;
-        width: 100%;
-        top: 0;
-        z-index: 2;
-        padding: 0 15px;
-        line-height: 44px;
-        text-align: center;
-        background: #ccc;
-        .lf {
-            position: absolute;
-            line-height: 44px;
-            left: 15px;
-            top: 0;
-        }
-    }
-    .city-content {
-        .city-head {
-            line-height: 28px;
-            padding: 6px 15px;
-            background: #f4f4f4;
-            font-size: 14px;
-            text-align: center;
-        }
-        .city-body {
-            font-size: 14px;
-            .location-hot {
-                padding: 0 15px 10px;
-                color: #666;
-                h4 {
-                    line-height: 16px;
-                    margin: 10px 0;
-                    font-size: 13px;
-                    font-weight: 400;
-                }
-                li {
-                    &::after {
-                        content: "";
-                        display: table;
-                        clear: both;
+        methods: {
+            //获取当前城市
+            getLocation(longitudeTmp,latitudeTmp) {
+                this.$http({
+                    method: "POST",
+                    url: slt_location,
+                    data: {
+                        longitude:longitudeTmp,
+                        latitude:latitudeTmp
+                        // longitude: this.$route.query.longitude, // 经度
+                        // latitude: this.$route.query.latitude //维度
                     }
-                    span {
-                        line-height: 27px;
-                        margin: 0 10px 10px 0;
-                        float: left;
-                        border-radius: 2px;
-                        background: #fff;
-                        padding: 0 20px;
+                }).then(res => {
+                    if (res.data.status == 1) {
+                        this.cityname = res.data.data.city;
+                        this.cityId = res.data.data.id;
+                    } else {
+                        this.cityname = "定位失败";
                     }
-                }
-            }
-            .city-lists-box {
-                h4 {
-                    line-height: 16px;
-                    padding: 10px 15px;
-                    font-size: 13px;
-                    font-weight: 400;
-                }
-                .list {
-                    max-height: 400px;
-                    overflow: auto;
-                    background: #fff;
-                    padding: 0 15px;
-                    li {
-                        line-height: 40px;
-                        color: #333;
-                        position: relative;
-                        &::after {
-                            content: "";
-                            width: 100%;
-                            position: absolute;
-                            height: 1px;
-                            left: 0;
-                            bottom: 0;
-                            background: #e5e5e5;
-                            transform: scaleY(0.5);
+                });
+            },
+            //热门城市
+            fetchHotCityList() {
+                this.$http({
+                    method: "POST",
+                    url: getStorecity,
+                    data: {
+                        type:2
+                    }
+                }).then(res => {
+                    if (res.data.status == 1) {
+                        this.hotCityList = res.data.data;
+                    }else{
+                        this.$toast(res.data.msg);
+                    }
+                });
+            },
+            //城市列表
+            fetchCityList(cityVal) {
+                this.$http({
+                    method: "POST",
+                    url: getCityList,
+                    data: {
+                        shortname:cityVal
+                    }
+                }).then(res => {
+                    if (res.data.status == 1) {
+                        this.cityArr = res.data.data;
+                        this.indexList = ['当前','热门'];
+                        for(var i=0;i<this.cityArr.length;i++){
+                            this.indexList.push(this.cityArr[i].crty);
                         }
+                    }else{
+                        this.$toast(res.data.msg);
                     }
+                });
+            },
+            //搜索城市
+            onSearch(){
+                let reg = /^[\u4e00-\u9fa5]+$/;
+                if(reg.test(this.cityVal) || this.cityVal == ""){
+                    this.fetchCityList(this.cityVal);
+                }else{
+                    this.$toast("没找到相关城市，请试试其他城市");
                 }
+                
+            },
+            //确定城市
+            confirmCity(city_name,city_id){
+                if(this.$route.query.cityInd == 1){
+                    this.$router.push({
+                        path:'/',
+                        query:{
+                            city_name:city_name,
+                            city_id:city_id
+                        }
+                    });
+                }else if(this.$route.query.cityInd == 3){
+                    this.$router.push({
+                        path:'/nearby',
+                        query:{
+                            city_name:city_name,
+                            city_id:city_id
+                        }
+                    });
+                }else{
+                    this.$router.push({
+                        path:'/searchResult',
+                        query:{
+                            city_name:city_name,
+                            city_id:city_id,
+                            liveinYYYY:this.$route.query.liveinYYYY,
+                            liveinMM:this.$route.query.liveinMM,
+                            liveinDD:this.$route.query.liveinDD,
+                            liveoutYYYY:this.$route.query.liveoutYYYY,
+                            liveoutMM:this.$route.query.liveoutMM,
+                            liveoutDD:this.$route.query.liveoutDD,
+                            abstract:this.$route.query.abstract,
+                            is_type:this.$route.query.is_type
+                        }
+                    });
+                }
+            },
+            // 获取城市列表
+            onClear(){
+                this.fetchCityList();
             }
+        },
+        mounted() {
+            let longitudeTmp = getCookie("userLongitude");
+            let latitudeTmp = getCookie("userLatitude");
+            this.getLocation(longitudeTmp,latitudeTmp);             //获取当前城市
+            this.fetchHotCityList();        //获取热门城市
+            this.fetchCityList();           //获取城市列表
         }
+    };
+</script>
+<style lang="less" scoped>
+    .cityname{
+        padding:0px 15px;
     }
-}
+    .ma-right30{
+        margin-right:15px;
+        margin-left: 0px;
+    }
+    .van-button--mini+.van-button--mini{
+        margin-left: 0px;
+        margin-bottom: 5px;
+    }
+    .van-index-bar .van-index-bar__sidebar{
+        position: absolute!important;
+    }
+    .van-field__body{
+        height:100%;
+    }
 </style>
+

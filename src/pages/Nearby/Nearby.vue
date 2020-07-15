@@ -15,10 +15,10 @@
         <!-- tabbar -->
         <mTabbarFa></mTabbarFa>
         <!-- 城市组件dialog -->
-        <mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCityVisible">
+        <!-- <mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCityVisible">
             <City v-on:cityTitleBackEmit="cityTitleBackEmitFun" v-on:cityItemEmit="cityItemEmitFun" :longitude="toRefreshBarObj.longitude" :latitude="toRefreshBarObj.latitude">
             </City>
-        </mu-dialog>
+        </mu-dialog> -->
         <!-- 日历组件dialog -->
         <mu-dialog width="360" transition="slide-right" fullscreen :open.sync="zbCalendarVisible">
             <Calendar ref="Calendar" :markDateMore="zbInitCalendar" @isToday="clickToday" @calendarTitleBackEmit="calendarTitleBackEmitFun">
@@ -100,8 +100,8 @@ export default {
         };
     },
     created() {
-        let longitudeTmp = getCookie("userLongitude");
-        let latitudeTmp = getCookie("userLatitude");
+        // let longitudeTmp = getCookie("userLongitude");
+        // let latitudeTmp = getCookie("userLatitude");
         // 日历初始赋值
         var d = new Date();
         var dd = new Date();
@@ -124,19 +124,25 @@ export default {
         // 把searchbar默认的时间赋值给watchObj
         this.watchObj.begin = f(d).yyyy + "-" + f(d).mm + "-" + f(d).dd;
         this.watchObj.finish = f(dd).yyyy + "-" + f(dd).mm + "-" + f(dd).dd;
-        this.watchObj.longitude = longitudeTmp;
-        this.watchObj.latitude = latitudeTmp;
+        // this.watchObj.longitude = longitudeTmp;
+        // this.watchObj.latitude = latitudeTmp;
         // refreshBar组件赋值
-        this.toRefreshBarObj.longitude = longitudeTmp;
-        this.toRefreshBarObj.latitude = latitudeTmp;
+        // this.toRefreshBarObj.longitude = longitudeTmp;
+        // this.toRefreshBarObj.latitude = latitudeTmp;
     },
     mounted() {
-        // this.getAppInfo();
+        //获取url上面的城市地址和id
+        if(this.$route.query.city_id){
+            this.toSearchbarObj.cityname = this.$route.query.city_name;
+            this.toSearchbarObj.cityid = this.$route.query.city_id;
+            this.watchObj.city = this.$route.query.city_id;
+        }
     },
     methods: {
         // 搜索条组件中城市选择逻辑，子组件emit之后，执行的方法
         triggerCityDialogEmitFun() {
-            this.zbCityVisible = true;
+            this.$router.push({path:'city',query:{longitude: this.longitude,latitude: this.latitude,cityInd:3}});
+            // this.zbCityVisible = true;
         },
         // 城市组件的title通过emit执行的方法
         cityTitleBackEmitFun() {

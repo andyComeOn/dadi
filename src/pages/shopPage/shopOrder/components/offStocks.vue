@@ -29,7 +29,9 @@
                             物流 已关闭 6 物流 退款中 7 物流 已退款 8 物流 退款拒绝9 自提 待付款10 自提 待领取11 自提 已领取12 自提 已取消13 自提 已关闭14 自提退款中15 自提  退款完成 16 自提  退款拒绝  17 -->
                         </p>
                         <div class="shopDetails">
-                            <img :src="item.goods_img" alt="">
+                            <div class="order_lists_bg">
+                                <img :src="item.goods_img" alt="">
+                            </div>
                             <p>{{item.goods_name}}</p>
                             <span>{{item.specs}}</span>
                         </div>
@@ -50,7 +52,7 @@
                         <router-link :to="{path:'refundOrder',query:{orderId:item.id}}">
                             <span>申请退款</span>
                         </router-link>
-                        <router-link :to="{path:'shoppIngDetails',query:{shopId:item.goods_id}}">
+                        <router-link :to="{path:'shoppIngDetails',query:{shopId:item.goods_id,goodsName:encodeURIComponent(item.goods_name)}}">
                             <span class="orderBtnActive">再次购买</span>
                         </router-link>
                     </div>
@@ -60,7 +62,7 @@
                             <span>申请退款</span>
                         </router-link>
                         <span v-if="item.pick_type == 1" class="orderBtnActive" @click="changeOrder(item.id,3)">确认收货</span>
-                        <router-link :to="{path:'shoppIngDetails',query:{shopId:item.goods_id}}">
+                        <router-link :to="{path:'shoppIngDetails',query:{shopId:item.goods_id,goodsName:encodeURIComponent(item.goods_name)}}">
                             <span class="orderBtnActive">再次购买</span>
                         </router-link>
                     </div>
@@ -69,31 +71,31 @@
                         <router-link :to="{path:'refundOrder',query:{orderId:item.id}}">
                             <span>申请退款</span>
                         </router-link>
-                        <router-link :to="{path:'shoppIngDetails',query:{shopId:item.goods_id}}">
+                        <router-link :to="{path:'shoppIngDetails',query:{shopId:item.goods_id,goodsName:encodeURIComponent(item.goods_name)}}">
                             <span class="orderBtnActive">再次购买</span>
                         </router-link>
                     </div>
                     <div v-if="item.status == 5 || item.status == 13" class="orderBtn">
                         <!-- <b>提货码：<i>{{item.pick_code}}</i></b> -->
-                        <router-link :to="{path:'shoppIngDetails',query:{shopId:item.goods_id}}">
+                        <router-link :to="{path:'shoppIngDetails',query:{shopId:item.goods_id,goodsName:encodeURIComponent(item.goods_name)}}">
                             <span class="orderBtnActive">再次购买</span>
                         </router-link>
                     </div>
                     <div v-if="item.status == 6 || item.status == 14" class="orderBtn">
                         <!-- <b>提货码：<i>{{item.pick_code}}</i></b> -->
-                        <router-link :to="{path:'shoppIngDetails',query:{shopId:item.goods_id}}">
+                        <router-link :to="{path:'shoppIngDetails',query:{shopId:item.goods_id,goodsName:encodeURIComponent(item.goods_name)}}">
                             <span class="orderBtnActive">再次购买</span>
                         </router-link>
                     </div>
                     <div v-if="item.status == 7 || item.status == 15" class="orderBtn">
                         <!-- <b>提货码：<i>{{item.pick_code}}</i></b> -->
-                        <router-link :to="{path:'shoppIngDetails',query:{shopId:item.goods_id}}">
+                        <router-link :to="{path:'shoppIngDetails',query:{shopId:item.goods_id,goodsName:encodeURIComponent(item.goods_name)}}">
                             <span class="orderBtnActive">再次购买</span>
                         </router-link>
                     </div>
                     <div v-if="item.status == 8 || item.status == 16" class="orderBtn">
                         <!-- <b>提货码：<i>{{item.pick_code}}</i></b> -->
-                        <router-link :to="{path:'shoppIngDetails',query:{shopId:item.goods_id}}">
+                        <router-link :to="{path:'shoppIngDetails',query:{shopId:item.goods_id,goodsName:encodeURIComponent(item.goods_name)}}">
                             <span class="orderBtnActive">再次购买</span>
                         </router-link>
                     </div>
@@ -104,13 +106,13 @@
                         <router-link :to="{path:'refundOrder',query:{orderId:item.id}}">
                             <span>申请退款</span>
                         </router-link>
-                        <router-link :to="{path:'shoppIngDetails',query:{shopId:item.goods_id}}">
+                        <router-link :to="{path:'shoppIngDetails',query:{shopId:item.goods_id,goodsName:encodeURIComponent(item.goods_name)}}">
                             <span class="orderBtnActive">再次购买</span>
                         </router-link>
                     </div>
                     <div v-if="item.status == 18 || item.status == 19" class="orderBtn">
                         <span class="orderBtnActive" @click="changeOrder(item.id,4)">取消退款申请</span>
-                        <router-link :to="{path:'shoppIngDetails',query:{shopId:item.goods_id}}">
+                        <router-link :to="{path:'shoppIngDetails',query:{shopId:item.goods_id,goodsName:encodeURIComponent(item.goods_name)}}">
                             <span class="orderBtnActive">再次购买</span>
                         </router-link>
                     </div>
@@ -213,11 +215,6 @@
                             }
                         }else if(res.data.data.length == 0 && this.pageIndex == 1){
                             this.noShopLists = true;
-                            this.delayToast = true;
-                            this.delayToastTxt = res.data.msg;
-                            setTimeout(()=>{
-                                this.delayToast = false;
-                            },1500);
                         }
                     }else{
                         this.delayToast = true;

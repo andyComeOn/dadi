@@ -152,13 +152,20 @@
             text-overflow:ellipsis;
             margin-bottom: 8px;
         }
-        img{
+        .shopMsg_img{
             display: inline-block;
             width: 74px;
             height: 74px;
             position: absolute;
             top: 15px;
             left: 15px;
+            background: url(../../../assets/images/shop/bg/order_details_qg.jpg) no-repeat center center;
+            background-size:100% 100%;
+            img{
+                display: inline-block;
+                width: 74px;
+                height: 74px;
+            }
         }
         span{
             font-size: 11px;
@@ -217,9 +224,9 @@
         border-radius: 8px;
         p{
             line-height: 34px;
-            height: 34px;
+            width: 100%;
+            min-height:34px;
             color: #333;
-            font-size: #333;
             span:nth-of-type(1){
                 float: left;
             }

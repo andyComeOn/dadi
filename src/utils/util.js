@@ -3,12 +3,14 @@ import { check_login } from "@/api/api";
 
 // 获取url参数
 export function getUrlParam(name) {
-	var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
-	var r = window.location.search.substr(1).match(reg);
-	if (r != null) return unescape(r[2]);
-	return null;
+	//方法一：截取不到#后面的参数
+	// var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+	// var r = window.location.search.substr(1).match(reg);
+	// if (r != null) return unescape(r[2]);
+	// return null;
+	//方法二：
+	return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.href) || [, ""])[1].replace(/\+/g, '%20')) || null
 }
-
 
 /**
  * @desc 设置cookie

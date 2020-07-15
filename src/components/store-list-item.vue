@@ -9,7 +9,7 @@
             </div>
         </div>
         <!-- 搜索到的酒店列表 -->
-        <ul class="list" v-if="dataList">
+        <ul class="list" v-if="dataList.length > 0">
             <li v-for="(item,index) in dataList" :key="index" @click="storeDetail(item.is, item.id,item.begin,item.finish)">
                 <div class="lf">
                     <img :src="item.logo" alt="">
@@ -25,12 +25,22 @@
                         <span class="yen">&yen;</span>
                         <span class="price">{{item.price}}</span>
                         <span class="txt" :class="{isFull: (item.is != 1 ? true : false)}">起</span>
+                        <template v-if="item.is == 1">
+                            <span v-if="item.integral_status" class="exchange_hint">{{item.integral_status}}</span>
+                            <span v-if="item.is_receive_foreign == 0" class="guests">内宾</span>
+                            <span v-if="item.marketing_type" class="exchange_hint">{{item.marketing_type}}</span>
+                        </template>
+                        <template v-else>
+                            <span v-if="item.integral_status" class="exchange_hint_ccc">{{item.integral_status}}</span>
+                            <span v-if="item.is_receive_foreign == 0" class="guests_ccc">内宾</span>
+                            <span v-if="item.marketing_type" class="exchange_hint_ccc">{{item.marketing_type}}</span>
+                        </template>
                     </div>
                 </div>
                 <div class="watermark" :class="{isFull: (item.is != 1 ? true : false)}">
                     <div class="circleSolid">
                         <div class="circleDashed">
-                            <span>已定完</span>
+                            <span>已订完</span>
                         </div>
                     </div>
                 </div>
@@ -55,40 +65,45 @@ export default {
     watch: {
         condition: {
             handler(newValue, oldValue) {
-                this.fetchData(newValue);
+               this.fetchData(newValue);
             },
             deep: true,
-            immediate: true
+            immediate: true // 若放开该代码，首次进入SearchResult会执行2次，后台说是连续2次请求，他们会出错。
         }
     },
     data() {
         return {
             isShow: false,
-            dataList: "", // 门店list
-            isRoomItemToastVisible: true // 搜索
+            dataList: [], // 门店list
+            isRoomItemToastVisible: true, // 搜索
+            flag: true,
+            globalCpid:''
         };
     },
-    created() {},
-    mounted() {},
+    created() {
+        this.globalCpid = Number(this.condition.cpid);      //cpid 判断价格展示/隐藏   华驿隐藏价格   
+    },
     methods: {
         // 拉取门店item
         fetchData(param) {
-            this.$http({
-                method: "POST",
-                url: store_list,
-                data: param
-            }).then(res => {
-                this.isRoomItemToastVisible = false;
-                if (res.data.status == 1) {
-                    this.dataList = res.data.data;
-                } else if (res.data.status == -1) {
-                    this.dataList = "";
-                    this.fetchCheckLoginPackage();
-                } else if (res.data.status == -2) {
-                    this.dataList = "";
-                    this.isShow = true;
-                } 
-            });
+            this.isRoomItemToastVisible = true;
+            if (this.flag == true) {
+                this.flag = false;
+                this.$http({
+                    method: "POST",
+                    url: store_list,
+                    data: param
+                }).then(res => {
+                    this.isRoomItemToastVisible = false;
+                    this.flag = true;
+                    if (res.data.status == 1) {
+                        this.dataList = res.data.data;
+                    } else {
+                        this.dataList = [];
+                        this.isShow = true;
+                    }
+                });
+            }
         },
         // 门店item的点击事件
         storeDetail(isHasRoom, id, begin, finish) {
@@ -100,7 +115,8 @@ export default {
                 query: {
                     store_id: id,
                     begin: begin,
-                    finish: finish
+                    finish: finish,
+                    is_type:this.$route.query.is_type
                 }
             });
         },
@@ -315,5 +331,29 @@ export default {
             }
         }
     }
+}
+.exchange_hint{
+    padding:3px 6px;
+    font-size: 11px;
+    color: #F78C3E;
+    background: #FFF6EC;
+}
+.exchange_hint_ccc{
+    padding:3px 6px;
+    font-size: 11px;
+    color: #999;
+    background:#eee;
+}
+.guests{
+    padding:3px 6px;
+    font-size: 11px;
+    color: #30B097;
+    background:rgba(48,176,151,0.15);
+}
+.guests_ccc{
+    padding:3px 6px;
+    font-size: 11px;
+    color: #999;
+    background:#eee;
 }
 </style>

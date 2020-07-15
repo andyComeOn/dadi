@@ -1,0 +1,334 @@
+.olinePay_box {
+    // width: 100%;
+    // height: 100%;
+    // position: fixed;
+    // top: 0;
+    // left: 0;
+    // background: #eff1f0;
+    padding-bottom: 85px;
+  }
+  
+  .olinePay_box_time {
+    background: #fff;
+    padding-top: 25px;
+    padding: 25px 15px 0px 15px;
+  }
+  
+  .olinePay_box_time h1 {
+    color: #666;
+    text-align: center;
+    font-size: 18px;
+    height: 24px;
+    line-height: 24px;
+    vertical-align: middle;
+    .icon {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: none;
+      margin: -3px 8px 0 0;
+    }
+  }
+  
+  .olinePay_box_time p {
+    font-size: 13px;
+    line-height: 16px;
+    margin-top: 15px;
+    color: #666;
+    text-align: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f6f6f6;
+    span {
+      color: #F78C3E;
+    }
+  }
+  
+  .olinePay_box_content {
+    padding: 14px 15px 19px 15px;
+    background: #fff;
+    margin-bottom: 8px;
+  }
+  
+  .olinePay_box_content span{
+    color: #999;
+  }
+  
+  .olinePay_box_content .room_introduce .col-666,.olinePay_box_content .calendar .col-666{
+    color: #666;
+  }
+  
+  .store_name {
+    font-size: 15px;
+    line-height: 27px;
+    color: #333;
+  }
+  
+  .room_introduce {
+    line-height: 25px;
+    font-size: 13px;
+    color: #666;
+  }
+  
+  // .room_introduce span:nth-of-type(1) {
+  //   margin-right: 20px;
+  // }
+  
+  .room_introduce img {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+  }
+  
+  .room_introduce * {
+    vertical-align: middle;
+  }
+  
+  .calendar {
+    line-height: 25px;
+    font-size: 13px;
+    color: #666;
+  }
+  
+  // .calendar span:nth-of-type(1) {
+  //   // margin-right: 20px;
+  // }
+  
+  .calendar img {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+  }
+  .calendar_time{
+    color: #333!important;
+  }
+  
+  .calendar * {
+    vertical-align: middle;
+  }
+  
+  .olinePay_box_content .room_money {
+    color: #F78C3E!important;
+    float: right;
+    font-size: 21px;
+  }
+  
+  .room_hint{
+    font-size: 11px;
+    color: #666;
+    float: right;
+  }
+  
+  // wx与钱包支付
+  .payChannel,.mealList {
+    li {
+      height: 50px;
+      background: #fff;
+      padding: 0 15px;
+      display: flex;
+      align-items: center;
+      .hd {
+        width: 18px;
+        margin-right: 15px;
+      }
+  
+      .bd {
+        flex: 1;
+        color: #333;
+        font-size: 14px;
+  
+        span {
+          color: #666;
+        }
+      }
+  
+      .ft {
+        width: 18px;
+        height: 18px;
+  
+      }
+    }
+  }
+  .mealList{
+    margin-bottom: 8px;
+    li{
+      position: relative;
+      padding-left: 15px;
+      p{
+        color: #666!important;
+        span{
+          float:right;
+          color: #333!important;
+        }
+      }
+      &::after{
+        content:"";
+        display: block;
+        width:100%;
+        height: 1px;
+        background: #eee;
+        position: absolute;
+        bottom: 0;
+        left: 15px;
+      }
+    }
+  }
+  
+  
+  
+  /* 支付的点击按钮 */
+  .payCell {
+    position: fixed;
+    height: 70px;
+    background: #fff;
+    left: 0;
+    right: 0;
+    bottom: 0px;
+    padding: 11px 8px;
+  
+    .onlinePay_btn {
+      background: #30b097;
+      color: #fff;
+      font-size: 18px;
+      line-height: 48px;
+      text-align: center;
+      border-radius: 5px;
+      width: 100%;
+      margin: 0 auto;
+  
+      &.payCellBg {
+        background: #F78C3E;
+      }
+  
+      // margin-top: 25px;
+    }
+  
+    .onlinePay_btn_old {
+      background: #ccc;
+      color: #333;
+      font-size: 14px;
+      line-height: 48px;
+      text-align: center;
+      border-radius: 5px;
+      width: 100%;
+      margin: 0 auto;
+      // margin-top: 25px;
+    }
+  }
+  
+  // 钱包支付验证码弹框
+  .walletPayCodeToast {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.5);
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+  
+    .walletPayCodeWrap {
+      position: absolute;
+      width: 100%;
+      bottom: 0;
+      background: #f6f6f6;
+      z-index: 2;
+  
+      h3 {
+        line-height: 50px;
+        color: #333;
+        font-size: 16px;
+        text-align: center;
+        position: relative;
+        box-sizing: border-box;
+        border-bottom: 1px solid #e5e5e5;
+  
+        img {
+          width: 15px;
+          height: 15px;
+          position: absolute;
+          top: 50%;
+          left: 15px;
+          transform: translateY(-50%);
+        }
+      }
+  
+      .tips {
+        color: #999;
+        font-size: 12px;
+        margin: 15px 0px 8px 0px;
+        padding-left: 15px;
+      }
+      .codeBox {
+          padding: 0 15px;
+          height: 50px;
+          display: flex;
+          margin-bottom: 15px;
+          .codeInput {
+              flex: 1;
+              background: #fff;
+              position: relative;
+              border-radius: 25px 0 0 25px;
+              .ipt {
+                  display: block;
+                  width: 80%;
+                  height: 50px;
+                  line-height: 50px;
+                  border: 0;
+                  padding-left: 10px;
+                  border-radius: 25px 0 0 25px;
+                  
+                  
+              }
+              .delBtn {
+                  position: absolute;
+                  width: 15px;
+                  height: 15px;
+                  background: url('../../assets/images/ic-close.png') no-repeat center;
+                  background-size: 100% 100%; 
+                  position: absolute;
+                  top: 50%;
+                  right: 15px;
+                  transform: translateY(-50%);
+              }
+          }
+          .codeBtn {
+              width: 90px;
+              background: #F78C3E;
+              border-radius: 0 25px 25px 0; 
+              text-align: center;
+              line-height: 50px;
+              color: #fff;
+          }
+          .codeMsg{
+            width: 90px;
+            background: #ccc;
+            border-radius: 0 25px 25px 0; 
+            text-align: center;
+            line-height: 50px;
+            color: #fff;
+          }
+      }
+      .payBar {
+          height: 50px;
+          padding: 0 15px;
+          font-size: 14px;
+          color: #fff;
+          margin-bottom: 30px;
+          .payBarTxt {
+              line-height: 50px;
+              border-radius: 25px;
+              text-align: center;
+              font-weight:400;
+              background:linear-gradient(31deg,rgba(247,140,62,1) 0%,rgba(254,163,96,1) 100%);
+          }
+          .payBarTxt_nor {
+            line-height: 50px;
+            border-radius: 25px;
+            text-align: center;
+            font-weight:400;
+            background:#ccc;
+        }
+      }
+    }
+  
+  }
+  

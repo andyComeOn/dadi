@@ -84,7 +84,8 @@ import { setTimeout } from 'timers';
                     query:{
                         shopId:this.$route.query.shopId,
                         payShopNum:this.$route.query.payShopNum,
-                        deliveryWay:this.$route.query.deliveryWay
+                        deliveryWay:this.$route.query.deliveryWay,
+                        spec_id:this.$route.query.spec_id
                     }
                 })
             },
@@ -142,10 +143,10 @@ import { setTimeout } from 'timers';
                 });
             },
             jumpPayOrder(addressId){             //跳转到确定订单页面 
-                this.$router.push({path:'payOrder',query:{shopId:this.$route.query.shopId,payShopNum:this.$route.query.payShopNum,deliveryWay:this.$route.query.deliveryWay,addressId:addressId}})
+                this.$router.push({path:'payOrder',query:{shopId:this.$route.query.shopId,payShopNum:this.$route.query.payShopNum,deliveryWay:this.$route.query.deliveryWay,spec_id:this.$route.query.spec_id,addressId:addressId}})
             },
             editBtn(addressId){
-                this.$router.push({path:'editAddress',query:{shopId:this.$route.query.shopId,payShopNum:this.$route.query.payShopNum,deliveryWay:this.$route.query.deliveryWay,addressId:addressId}})
+                this.$router.push({path:'editAddress',query:{shopId:this.$route.query.shopId,payShopNum:this.$route.query.payShopNum,deliveryWay:this.$route.query.deliveryWay,spec_id:this.$route.query.spec_id,addressId:addressId}})
             }
         },
         mounted() {

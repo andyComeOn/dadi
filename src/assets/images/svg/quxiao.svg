@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 56.3 (81716) - https://sketch.com -->
+    <title>icon/quxiao</title>
+    <desc>Created with Sketch.</desc>
+    <g id="icon/quxiao" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g>
+            <rect id="矩形" fill="#F2D1D1" opacity="0" x="0" y="0" width="32" height="32"></rect>
+            <circle id="椭圆形" stroke="#999999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" cx="16" cy="16" r="12"></circle>
+            <path d="M15.5074463,17 L22.5223389,17" id="直线-4" stroke="#CCCCCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M13.0074463,14.5 L18.0074463,14.5" id="直线-4备份" stroke="#999999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="translate(15.507446, 14.500000) rotate(-90.000000) translate(-15.507446, -14.500000) "></path>
+        </g>
+    </g>
+</svg>

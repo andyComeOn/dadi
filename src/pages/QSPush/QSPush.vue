@@ -71,19 +71,14 @@ export default {
             url: wxShare,
             method: "POST",
             data: dataObj
+        }).then(res => {
+            this.appId = res.data.data.appid;
+            this.timestamp = res.data.data.timestamp;
+            this.nonceStr = res.data.data.noncestr;
+            this.signature = res.data.data.signature;
+            this.url = res.data.data.url;
+            this.share(res.data.data.url, res.data.data.share_img);
         })
-            .then(res => {
-                console.log(res);
-                this.appId = res.data.data.appid;
-                this.timestamp = res.data.data.timestamp;
-                this.nonceStr = res.data.data.noncestr;
-                this.signature = res.data.data.signature;
-                this.url = res.data.data.url;
-                this.share(res.data.data.url, res.data.data.share_img);
-            })
-            .catch(err => {
-                console.log(err);
-            });
     },
     methods: {
         // 微信分享

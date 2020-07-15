@@ -9,10 +9,13 @@
             </div>
         </div>
         <ul v-if="items.length>0">
-            <li class="item" v-for="(item,index) in items" :key="index" :class="{itemStatus0:item.status==0,itemStatus1:item.status==1,itemStatus2:item.status==2}">
+            <li class="item" v-for="(item,index) in items" :key="index" :class="{itemStatus0:item.status==0 || item.status==3,itemStatus1:item.status==1,itemStatus2:item.status==2}">
                 <div class="lf">
-                    <!-- （{{item.store_flag|filterCouponStoreflag}}） -->
-                    <div class="name m-ellipsis">{{item.cpid|filterHotelGroupName}}酒店代金券</div>
+                    <div v-if="item.coupon_range == 0" class="name m-ellipsis">通用代金券</div>
+                    <div v-if="item.coupon_range == 1" class="name m-ellipsis">秋果酒店代金券</div>
+                    <div v-if="item.coupon_range == 2" class="name m-ellipsis">秋果商城代金券</div>
+		            <!-- <div v-if="item.coupon_range == 1" class="name m-ellipsis">{{item.cpid|filterHotelGroupName}}酒店代金券</div>
+                    <div v-if="item.coupon_range == 2" class="name m-ellipsis">{{item.cpid|filterHotelGroupName}}商城代金券</div> -->
                     <div class="date-area">有效期：{{item.validity_begin_time|filterTimeYTD}}至{{item.validity_end_time|filterTimeYTD}}</div>
                     <div class="desc">满 {{item.min_amount|filterMoneyInt}} 可用</div>
                 </div>
@@ -21,7 +24,7 @@
                         &yen;
                         <span>{{item.amount|filterMoneyInt}}</span>
                     </div>
-                    <div class="btn" @click="nowUse(item.status,item.id)">立即使用</div>
+                    <div class="btn" @click="nowUse(item.status,item.id,item.coupon_range)">立即使用</div>
                 </div>
                 <label class="lab" :for="item.id">
                     <img v-if="item.status==1" src="../assets/images/coupon/ic-used.png" alt="">
@@ -50,23 +53,22 @@ export default {
         this.fetchCoupon();
     },
     methods: {
-        nowUse(status, id) {
-            this.$emit("nowUseEmit", status, id);
+        nowUse(status, id,couponRange) {
+            this.$emit("nowUseEmit", status, id,couponRange);
         },
         fetchCoupon() {
             this.$http({
                 method: "POST",
                 url: coupon_list,
                 data: {}
-            })
-                .then(res => {
-                    this.isCouponItemToastVisible = false;
-                    if (res.data.status == 1) {
-                        this.items = res.data.data;
-                    } else {
-                    }
-                })
-                .catch();
+            }).then(res => {
+                this.isCouponItemToastVisible = false;
+                if (res.data.status == 1) {
+                    this.items = res.data.data;
+                } else {
+                    
+                }
+            });
         }
     }
 };

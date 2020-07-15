@@ -32,7 +32,7 @@
             <div class="card-box">
                 <div class="box" id="cardBoxContent">
                     <p class="tixian-title">可提现(元)</p>
-                    <p class="tixian-num din">{{use_amount}}</p>
+                    <p class="tixian-num">{{use_amount}}</p>
                     <ul class="tixian-info">
                         <li class="tixian-get">
                             <span>{{await_amount}}</span>

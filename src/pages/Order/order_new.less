@@ -1,0 +1,170 @@
+.order_head{
+    width:100%;
+    height: 122px;
+    background:url(../../assets/images/bg/bg_order.png) no-repeat center center;
+    background-size: 100% 100%;
+    margin-bottom: 55px;
+    .order_head_box{
+        position: relative;
+        padding:15px 15px 0px 15px;
+        .order_head_details{
+            background: #fff;
+            border-radius: 8px;
+            padding-top: 15px;
+            .store_room_name{
+                color: #333;
+                font-size: 16px;
+                line-height: 16px;
+                padding:0px 15px;
+            }
+            .info_time{
+                color: #333;
+                font-size: 14px;
+                line-height: 14px;
+                margin-top: 8px;
+                padding:0px 15px;
+                i{
+                    display:inline-block;
+                    width:22px;
+                    height: 13px;
+                    background: url(../../assets/images/coupon/order_date.png) no-repeat center center;
+                    background-size: 100% 100%;
+                    margin:0px 8px;
+                }
+                span{
+                    float:right;
+                }
+            }
+            .store_name{
+                color: #666;
+                font-size: 13px;
+                line-height: 13px;
+                margin-top: 15px;
+                padding:0px 15px;
+            }
+            .breakfast{
+                color: #666;
+                font-size: 13px;
+                line-height: 13px;
+                margin-top: 8px;
+                margin-bottom: 15px;
+                padding:0px 15px;
+            }
+            .cancel_time{
+                width: 100%;
+                height: 30px;
+                background: #f9f9f9;
+                padding:0px 15px;
+                line-height: 30px;
+                color: #666;
+                border-radius: 0px 0px 8px 8px;
+            }
+        }
+    }
+}
+.cells_box{
+    padding:0px 15px;
+    .Cells{
+        border-radius: 8px;
+        .info_msg{
+            color: #333;
+            font-size: 16px;
+            font-weight: bold;
+            padding:15px 15px 0px 15px;
+        }
+        li:last-child{
+            &::after{
+                height: 0;
+            }
+        }
+    }
+}
+.expense_msg{
+    padding:0px 15px;
+    background: #fff;
+    padding-bottom: 15px;
+    h3{
+        color: #333333;
+        font-size: 16px;
+        text-align: center;
+        line-height: 45x;
+    }
+    .room_money{
+        padding:15px;
+        background: #F9F9F9;
+        border-radius: 4px;
+        margin-bottom: 8px;
+        h4{
+            font-size: 14px;
+            color: #333;
+            line-height: 16px;
+            margin-bottom: 16px;
+            span{
+                float: right;
+                font-size:16px;
+                i{
+                    font-style: normal;
+                    font-size: 12px;
+                }
+            }
+        }
+        .room_money_coupon{
+            padding-top: 15px;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            border-top: 1px solid #E5E5E5;
+        }
+        p{
+            color: #666;
+            font-size: 13px;
+            line-height: 13px;
+            margin-bottom:8px;
+            span{
+                float: right;
+            }
+        }
+        .sum_discounts{
+            color: #333;
+            font-size: 14px;
+            line-height: 14px;
+            margin-bottom: 15px;
+            position: relative;
+            span{
+                color: #333;
+                font-size: 16px;
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                right: 0;
+                font-weight: bold;
+            }
+        }
+        .sum_money{
+            color: #333;
+            font-size: 14px;
+            line-height: 14px;
+            position: relative;
+            span{
+                color: #F78C3E;
+                font-size: 18px;
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                right: 0;
+                font-weight: bold;
+                i{
+                    font-size: 12px;
+                    font-style: normal;
+                }
+            }
+        }
+    }
+    .room_money_sum{
+        margin-bottom: 45px;
+    }
+}
+.epidemic_hint{
+    p{
+        font-size: 12px;
+    }
+}

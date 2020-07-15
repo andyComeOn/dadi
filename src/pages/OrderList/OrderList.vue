@@ -9,8 +9,7 @@
             </div>
         </div>
         <div class="body">
-            <OrderListItem :condition="watchObj">
-            </OrderListItem>
+            <OrderListItem :condition="watchObj"></OrderListItem>
         </div>
     </div>
 </template>
@@ -35,9 +34,9 @@ export default {
         var that = this;
         let urlPara = this.$route.query.status;
         if (urlPara == "ing") {
-            this.tab(1);
-        } else {
             this.tab(2);
+        } else {
+            this.tab(1);
         }
 
         // this.pushHistory();

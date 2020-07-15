@@ -41,22 +41,20 @@ export default {
                 url: wxShare,
                 method: "POST",
                 data: dataObj
-            })
-                .then(res => {
-                    let appId = res.data.data.appid;
-                    let timestamp = res.data.data.timestamp;
-                    let nonceStr = res.data.data.noncestr;
-                    let signature = res.data.data.signature;
-                    let tmpUrl = res.data.data.url;
-                    this.wxConfigMethod(
-                        appId,
-                        timestamp,
-                        nonceStr,
-                        signature,
-                        tmpUrl
-                    );
-                })
-                .catch(err => {});
+            }).then(res => {
+                let appId = res.data.data.appid;
+                let timestamp = res.data.data.timestamp;
+                let nonceStr = res.data.data.noncestr;
+                let signature = res.data.data.signature;
+                let tmpUrl = res.data.data.url;
+                this.wxConfigMethod(
+                    appId,
+                    timestamp,
+                    nonceStr,
+                    signature,
+                    tmpUrl
+                );
+            });
         },
         // 刷新地理位置需要进行wx.config
         wxConfigMethod(appId, timestamp, nonceStr, signature, tmpUrl) {

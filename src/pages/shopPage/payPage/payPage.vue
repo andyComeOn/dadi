@@ -132,7 +132,7 @@
         methods: {
             paySuccessMethod(){        //支付成功后跳转
                 this.$router.push({path:'paySuccess',query:{orderId:this.$route.query.orderId}});
-            },  
+            },
             payWayBoxBtn(payWayNum) {           //选择支付方式
                 if(this.$route.query.consumeType == 2){
                     // this.delayToastTxt = '不用选择支付方式';
@@ -147,6 +147,7 @@
                 }
             },
             payBtnOk(){                 //确定支付
+                this.loading = true;
                 let _this = this;
                 let jsApiParameters = {};
                 let onBridgeReady = function() {
@@ -210,6 +211,7 @@
                             }
                         });
                     }else if(this.choosePayWayInd == 1){    //钱包支付
+                        this.loading = false;            //loading
                         if(Number(this.avail_amount) < Number(this.$route.query.totalPrices)){
                             this.delayToastTxt = '钱包余额不足';
                             this.delayToast = true;
@@ -221,6 +223,7 @@
                             this.msgCodeBox = true;         //短信验证码弹窗
                         }
                     }else{                                  //选择支付方式提示
+                        this.loading = false;            //loading
                         this.delayToastTxt = '请选择支付方式';
                         this.delayToast = true;
                         setTimeout(() => {
@@ -229,6 +232,7 @@
                         return false;
                     }
                 }else{      //积分支付
+                    this.loading = false;            //loading
                     this.payBox = true;             //遮罩
                     this.msgCodeBox = true;         //短信验证码弹窗
                 }

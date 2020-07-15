@@ -6,9 +6,10 @@
             <div class="banner-box" id="indexBanner" :style="{height: indexBannerH + 'px'}">
                 <swiper class="zb-swiper" :options="swiperIndexOption" ref="mySwiper" @someSwiperEvent="swiperCallback(1)">
                     <swiper-slide v-for="item in bannerList" :key="item.id" @click="swiperSlideFun(item.id)">
-                        <a :href="item.url">
+                        <a v-if="!item.url == ''" :href="item.url">
                             <img :src="item.img" alt="" style="width:100%;">
                         </a>
+                        <img v-else :src="item.img" alt="" style="width:100%;">
                     </swiper-slide>
                     <div class="swiper-pagination" style="line-height:5px;bottom:5px;" slot="pagination"></div>
                 </swiper>
@@ -61,19 +62,35 @@
                         <input type="text" class="txt" v-model="abstract" placeholder="请输入关键词／地址／商圈">
                     </div>
                     <!-- 提交按钮 -->
-                    <div class="submit" @click="submitFun">酒店预订</div>
+                    <template>
+                        <div class="store_reserve_btn">
+                            <div class="submit store_btn" @click="submitFun(0)">酒店预订</div>
+                        </div>
+                    </template>
+                    <!-- str -- 房券使用 -- str -->
+                    <template v-if="this.is_company == 1 || this.is_company == 3">
+                        <div class="store_reserve_btn">
+                            <div class="submit unit_btn" @click="submitFun(1)">单位房券预订</div>
+                        </div>
+                    </template>
+                    <template v-if="this.is_company == 2 || this.is_company == 3">
+                        <div class="store_reserve_btn">
+                            <div class="submit personage_btn" @click="submitFun(2)">个人房券预订</div>
+                        </div>
+                    </template>
+                    <!-- end -- 房券使用 -- end -->
                 </div>
             </div>
         </div>
         <!-- 用户首次进入组件 -->
-        <mUserFirstIn :isVisible="userComeInIsVisible" @userFirstInEmit="userFirstInEmitFun"></mUserFirstIn>
+        <!-- <mUserFirstIn :isVisible="userComeInIsVisible" @userFirstInEmit="userFirstInEmitFun"></mUserFirstIn> -->
         <!-- 引入底部tabbar -->
         <mTabbarFa></mTabbarFa>
         <!-- 城市组件dialog -->
-        <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbCityVisible">
+        <!-- <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbCityVisible">
             <City @cityTitleBackEmit="cityTitleBackEmitFun" @cityItemEmit="cityItemEmitFun" :longitude="longitude" :latitude="latitude">
             </City>
-        </mu-dialog>
+        </mu-dialog> -->
         <!-- 日历组件dialog -->
         <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbCalendarVisible">
             <Calendar ref="Calendar" :markDateMore="zbInitCalendar" @isToday="clickToday" @calendarTitleBackEmit="calendarTitleBackEmitFun">
@@ -107,27 +124,19 @@ export default {
     data() {
         let isYouzan = "";
         if (getCookie("isYouzan") == 0 || getCookie("isYouzan") == undefined || getCookie("isYouzan") == "") {
-            isYouzan = false;        
+            isYouzan = false;
         } else {
             isYouzan = true;
         }
         return {
-            swiperIndexOption: {                
-                // autoplay: true,
-                // speed: 2000,
-                // loop:true,
-                
-                autoplay: false,  // 这个参数是一张轮播照片播完delay 3s之后第二张图片开播
-                speed: 1000,   // 这个参数是一张轮播照片从左边播到右边用时1000毫秒
-                loop: false,   // 这循环指的是->true:如果有三张图片，轮播到第三张直接是平滑的过度（克隆了第一张）；false:如果有三张图片，轮播到第三张直接是把第一张拉到开始的位置轮播（无克隆）
+            swiperIndexOption: {
                 notNextTick: true,
-                preventClicks: true,  // 当swiper在触摸时阻止默认事件（preventDefault），用于防止触摸时触发链接跳转. 默认是true。
-                direction: "horizontal",
-                autoplayDisableOnInteraction: true, // 滑动结束后, 继续轮播
-                grabCursor: true, //设置为true时，鼠标覆盖Swiper时指针会变成手掌形状，拖动时指针会变成抓手形状
-                setWrapperSize: true,
-                autoHeight: false,
-                pagination: ".swiper-pagination",
+                autoplay: 2000,
+                loop:true,
+                grabCursor : true,
+                setWrapperSize :true,
+                autoHeight: true,
+                pagination : '.swiper-pagination',
                 paginationType: "custom",  //自定义-分页器样式类型（前提）
                 paginationCustomRender: function(swiper, current, total) {
                     const activeColor = "#30B097";
@@ -146,10 +155,11 @@ export default {
                     }
                     return html;
                 },
-                paginationClickable: true,
-                mousewheelControl: false,
-                observeParents: true,
-                debugger: true
+                paginationClickable :true,
+                mousewheelControl : true,
+                debugger: true,
+                observer:true,
+                observeParents:true,
             },
             bannerList: "", // 拉取banner信息
             indexBannerH: "",
@@ -168,7 +178,8 @@ export default {
                     yyyy: "",
                     mm: "",
                     dd: ""
-                }
+                },
+                is_type:0
             },
             howManyNight: "", // 入住-离店共几晚
             appId: "", // 必填，公众号的唯一标识
@@ -176,16 +187,16 @@ export default {
             nonceStr: "", // 必填，生成签名的随机串
             signature: "", // 必填，签名
             url: "", //分享之后link的url
-            cityname: "北京市", // 城市名称
-            cityid: "2", // 城市id
+            cityname: "定位中...", // 城市名称
+            cityid: "", // 城市id
             abstract: "", //搜索关键字
-            myLocation: "", // 获取地址
             longitude: "", //116.309408
             latitude: "", //39.966051
             address: "", // 地址精确到街道
             userComeInIsVisible : isYouzan, // 是否是有赞用户
-            isBeforeDawn: false,  // 凌晨定房提示 
+            isBeforeDawn: false,  // 凌晨定房提示
             yesterday: "",
+            is_company:""  // 普通 单位 个人
         };
     },
     created() {
@@ -222,6 +233,13 @@ export default {
         this.setBannerSize();
         // 获取公众号的配置info
         this.getAppInfo();
+        //获取url上面的城市地址和id
+        if(this.$route.query.city_id){
+            this.cityname = this.$route.query.city_name;
+            this.cityid = this.$route.query.city_id;
+        }else{
+            this.fetchLocation();       //获取当前位置
+        }
     },
     methods: {
         // banner方法
@@ -233,7 +251,7 @@ export default {
             }).then(res => {
                 if (res.data.status == 1) {
                     this.bannerList = res.data.data;
-                } else {
+                    this.is_company = res.data.data.is_company;
                 }
             });
         },
@@ -245,11 +263,11 @@ export default {
             this.indexBannerH = indexBannerH;
         },
         // 用户第一次进入子组件emit过来执行的方法
-        userFirstInEmitFun(status){
-            if (status == false) {
-                this.userComeInIsVisible = false;
-            }
-        },
+        // userFirstInEmitFun(status){
+        //     if (status == false) {
+        //         this.userComeInIsVisible = false;
+        //     }
+        // },
         // 获取公众号的配置info
         getAppInfo() {
             var dataObj = {
@@ -259,22 +277,21 @@ export default {
                 url: wxShare,
                 method: "POST",
                 data: dataObj
-            })
-                .then(res => {
-                    if (res.data.status == 1) {
-                        this.appId = res.data.data.appid;
-                        this.timestamp = res.data.data.timestamp;
-                        this.nonceStr = res.data.data.noncestr;
-                        this.signature = res.data.data.signature;
-                        this.url = res.data.data.url;
-                        // wx分享config配置
-                        this.wxConfigMethod(
-                            res.data.data.url,
-                            res.data.data.share_img
-                        );
-                    }
-                })
-                .catch(err => {});
+            }).then(res => {
+                if (res.data.status == 1) {
+                    this.appId = res.data.data.appid;
+                    this.timestamp = res.data.data.timestamp;
+                    this.nonceStr = res.data.data.noncestr;
+                    this.signature = res.data.data.signature;
+                    // this.url = res.data.data.url;
+                    this.url = window.location.href;
+                    // wx分享config配置
+                    this.wxConfigMethod(
+                        res.data.data.url,
+                        res.data.data.share_img
+                    );
+                }
+            });
         },
         // wx分享config配置
         wxConfigMethod(url, shareImg) {
@@ -343,13 +360,14 @@ export default {
                     this.address = locationTmp.address;
                 } else {
                     this.cityname = "北京市";
-                    this.myLocation = "定位失败...";
+                    this.cityid = "2";
                 }
             });
         },
         // city组件显示与否
-        triggerCityDialog() {
-            this.zbCityVisible = true;
+        triggerCityDialog() {       //cityInd  1首页  2酒店列表  3附近酒店
+            // this.zbCityVisible = true;
+            this.$router.push({path:'city',query:{longitude:this.longitude,latitude:this.latitude,cityInd:1}});
         },
         // city组件中titlebar点击返回执行的函数
         cityTitleBackEmitFun() {
@@ -387,21 +405,26 @@ export default {
             this.zbCalendarVisible = false;
         },
         // 提交
-        submitFun() {
+        submitFun(isCompany) {
+            let _strDate = new Date(this.zbInitCalendar.start.yyyy + '/' + this.zbInitCalendar.start.mm + '/' + this.zbInitCalendar.start.dd);
+			let _endDate = new Date(this.zbInitCalendar.end.yyyy + '/' + this.zbInitCalendar.end.mm + '/' + this.zbInitCalendar.end.dd);
+            _strDate.setDate(_strDate.getDate());
+            _endDate.setDate(_endDate.getDate());
             this.$router.push({
                 path: "/searchResult",
                 query: {
                     cityname: this.cityname,
                     cityid: this.cityid,
-                    liveinYYYY: this.zbInitCalendar.start.yyyy,
-                    liveinMM: this.zbInitCalendar.start.mm,
-                    liveinDD: this.zbInitCalendar.start.dd,
-                    liveoutYYYY: this.zbInitCalendar.end.yyyy,
-                    liveoutMM: this.zbInitCalendar.end.mm,
-                    liveoutDD: this.zbInitCalendar.end.dd,
+                    liveinYYYY: f(_strDate).yyyy,
+                    liveinMM: f(_strDate).mm,
+                    liveinDD: f(_strDate).dd,
+                    liveoutYYYY: f(_endDate).yyyy,
+                    liveoutMM: f(_endDate).mm,
+                    liveoutDD: f(_endDate).dd,
                     abstract: this.abstract,
                     longitude: this.longitude,
-                    latitude: this.latitude
+                    latitude: this.latitude,
+                    is_type: isCompany
                 }
             });
         }

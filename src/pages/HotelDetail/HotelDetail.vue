@@ -1,1285 +1,1006 @@
 <template>
-    <div class="hotelDetailPage">
-        <!-- toast(loading=>weui) -->
-        <div v-show="loading">
-            <div class="weui-mask_transparent"></div>
-            <div class="weui-toast">
-                <i class="weui-loading weui-icon_toast"></i>
-                <p class="weui-toast__content">数据加载中</p>
-            </div>
-        </div>
-        <!-- toast（delay=>z） -->
-        <div v-show="delayToast">
-            <div class="z-mask-transparent"></div>
-            <div class="z-toast">
-                <i class="z-toast-icon"></i>
-                <p class="z-toast-content">{{delayToastTxt}}</p>
-            </div>
-        </div>
-        <div class="main" v-if="data_store">
-            <!-- <div class="broadcastWrap" :class="{beforeDawnAddclass: isBeforeDawn}">
-                <myBroadcast></myBroadcast>
-            </div> -->
-            <!-- 广告 -->
-            <div class="banner-box" id="hotelDetailBanner" :style="{height: hotelDetailBannerH + 'px'}">
-                <swiper class="zb-swiper" :options="swiperOption" ref="mySwiper" @someSwiperEvent="swiperCallback(1)">
-                    <swiper-slide v-for="(item,index) in data_store.img_logo" :key="index" @click="swiperSlideFun(index)">
-                        <router-link :to="{path:'hotelDetailBannerLink',query:{store_id:watchObj.store_id}}" class="hotel-detail-banner-link">
-                            <img :src="item" alt="" style="display:block;width:100%;">
-                        </router-link>
-                    </swiper-slide>
-                    <div class="swiper-pagination" style="line-height:5px;bottom:5px;" slot="pagination"></div>
-                </swiper>
-                <div class="z-swiper-intro" v-if="data_store.img_logo">
-                    <img src="../../assets/images/icon/ic-hotel-detail.png" alt="">共{{data_store.img_logo.length}}张
-                </div>
-                <div class="collect" @click="collectCtrl">
-                    <img v-if="is_collect==1" :src="collectIconActive" alt="">
-                    <img v-if="is_collect==0" :src="collectIcon" alt="">
-                </div>
-            </div>
-            <!-- 酒店位置说明 -->
-            <div class="detail">
-                <div class="locationMainInfo">
-                    <p class="storeName m-ellipsis">{{data_store.store_name}}</p>
-                    <p class="storeAddress m-ellipsis">{{data_store.address}}</p>
-                    <p class="storeAddrIntro m-ellipsis">{{data_store.introduce}}</p>
-                </div>
-                <div class="locationViceInfo">
-                    <div class="callWrap">
-                        <a :href="'tel:' + data_store.tel" class="callBtn"><img src="../../assets/images/icon/ic-call.png" class="callIcon" alt=""></a>
-                    </div>
-                    <div class="mapWrap" @click="openMap">
-                        <span class="mapTxt">地图</span> 
-                        <span class="mapArrow"></span> 
-                    </div>
-                </div>
-            </div>
-            <!-- 酒店详情查看更多 -->
-            <div class="detail-more-container">
-                <div class="detail-more-wrapper">
-                    <div class="lf">
-                        <span class="all-hours">24小时前台</span>
-                        <span class="wifi">免费wifi</span>
-                    </div>
-                    <div class="rg">
-                        <router-link :to=" { path: 'hotelLabel', query: { store_id: watchObj.store_id }}" tag="div">
-                            <span class="btn-more">更多</span>
-                        </router-link>
-                    </div>
-                </div>
-            </div>
-            <!-- 入离时间展示 -->
-            <div class="checkInOutWrap">
-                <div class="checkInOut">
-                    <div class="checkIn" @click="triggerCalendar">
-                        <span class="checkInHead" v-show="isRouteBeforeDawn">凌晨入住</span>
-                        <span class="checkInHead" v-show="!isRouteBeforeDawn">入住</span>
-                        <span>{{zbInitCalendar.start.mm}}月{{zbInitCalendar.start.dd}}日</span>
-                    </div>
-                    <span class="total">共{{count}}晚</span>
-                    <div class="checkOut" @click="triggerCalendar">
-                        <span class="checkInHead" v-show="isRouteBeforeDawnAndNoonGo">中午离店</span>
-                        <span class="checkInHead" v-show="!isRouteBeforeDawnAndNoonGo">离店</span>
-                        <span>{{zbInitCalendar.end.mm}}月{{zbInitCalendar.end.dd}}日</span>
-                    </div>
-                </div>
-            </div>
-            <!-- 日历组件dialog -->
-            <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbCalendarVisible">
-                <Calendar ref="Calendar" :markDateMore="zbInitCalendar" @isToday="clickToday" @calendarTitleBackEmit="calendarTitleBackEmitFun">
-                </Calendar>
-            </mu-dialog>
+  	<div class="hotelDetailPage">
+		<!-- loading str -->
+		<div v-show="loading">
+			<div class="weui-mask_transparent"></div>
+			<div class="weui-toast">
+				<i class="weui-loading weui-icon_toast"></i>
+				<p class="weui-toast__content">数据加载中</p>
+			</div>
+		</div>
+    	<!-- loading end -->
+    	<!-- toast str -->
+		<div v-show="delayToast">
+			<div class="z-mask-transparent"></div>
+			<div class="z-toast">
+				<i class="z-toast-icon"></i>
+				<p class="z-toast-content">{{delayToastTxt}}</p>
+			</div>
+		</div>
+    	<!-- toast end -->
+    	<div class="main">
+      		<div class="banner-box" id="hotelDetailBanner" :style="{height: hotelDetailBannerH + 'px'}">
+        		<swiper class="zb-swiper" :options="swiperOption" ref="mySwiper" @someSwiperEvent="swiperCallback(1)">
+					<swiper-slide v-for="(item,index) in data_store.img_logo" :key="index" @click="swiperSlideFun(index)">
+						<router-link :to="{path:'hotelDetailBannerLink',query:{store_id:watchObj.store_id}}" class="hotel-detail-banner-link">
+							<img :src="item" alt style="display:block;width:100%;" />
+						</router-link>
+					</swiper-slide>
+          			<div class="swiper-pagination" style="line-height:5px;bottom:5px;" slot="pagination"></div>
+        		</swiper>
+				<div class="z-swiper-intro" v-if="data_store.img_logo">
+					<img src="../../assets/images/icon/ic-hotel-detail.png" />
+					共{{data_store.img_logo.length}}张
+				</div>
+				<div class="collect" @click="collectCtrl">
+					<img v-if="is_collect==1" :src="collectIconActive" />
+					<img v-if="is_collect==0" :src="collectIcon" />
+				</div>
+      		</div>
+      		<!-- 酒店位置说明 -->
+			<div class="detail">
+				<div class="locationMainInfo">
+					<p class="storeName m-ellipsis">{{data_store.store_name}}</p>
+					<p class="storeAddress m-ellipsis">{{data_store.address}}</p>
+					<p class="storeAddrIntro m-ellipsis">{{data_store.introduce}}</p>
+				</div>
+				<div class="locationViceInfo">
+					<div class="callWrap">
+						<a :href="'tel:' + data_store.tel" class="callBtn">
+							<img src="../../assets/images/icon/detail_telephone.png" class="callIcon" />
+						</a>
+					</div>
+					<div class="mapWrap" @click="openMap">
+						<span class="mapTxt">地图</span>
+					</div>
+				</div>
+			</div>
+			<!-- 酒店详情查看更多 -->
+			<div class="detail-more-container">
+				<div class="detail-more-wrapper">
+					<div class="lf">
+						<span class="all-hours">24小时前台</span>
+						<span class="wifi">免费wifi</span>
+					</div>
+					<div class="rg">
+						<router-link :to="{path: 'hotelLabel', query:{store_id: watchObj.store_id}}" tag="div">
+						<span class="btn-more">更多</span>
+						</router-link>
+					</div>
+				</div>
+			</div>
+			<!-- 疫情期间提示 -->
+			<template v-if="this.epidemicShow == 1">
+				<div class="epidemic_hint">
+					<h3>温馨提示</h3>
+					<p>即日起根据北京市最新政策规定，入住酒店不再要求提供核酸检测阴性证明，凭健康码即可办理入住。</p>
+					<p>境外，湖北，牡丹江，哈尔滨，抚顺等高风险地域客人，依据门店属地接待相关政策执行!</p>
+				</div>
+			</template>
+			<!-- 入离时间展示（全日房、日租房） -->
+			<div class="checkInOutWrap">
+				<div class="checkInOut">
+					<div class="checkIn" @click="triggerCalendar">
+						<span class="checkInHead" v-show="isRouteBeforeDawn">凌晨入住</span>
+						<span class="checkInHead" v-show="!isRouteBeforeDawn">入住</span>
+						<span>{{zbInitCalendar.start.mm}}月{{zbInitCalendar.start.dd}}日</span>
+					</div>
+					<span class="total">共{{count}}晚</span>
+					<div class="checkOut" @click="triggerCalendar">
+						<span class="checkInHead" v-show="isRouteBeforeDawnAndNoonGo">中午离店</span>
+						<span class="checkInHead" v-show="!isRouteBeforeDawnAndNoonGo">离店</span>
+						<span>{{zbInitCalendar.end.mm}}月{{zbInitCalendar.end.dd}}日</span>
+					</div>
+				</div>
+			</div>
+			<div class="coupon_hint" v-if="this.$route.query.is_type != 0">
+				<p>您当前使用电子房券进行预订，需要提前一天。</p>
+			</div>
+			<!-- 日历组件dialog -->
+			<mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbCalendarVisible">
+				<Calendar ref="Calendar" :markDateMore="zbInitCalendar" @isToday="clickToday" @calendarTitleBackEmit="calendarTitleBackEmitFun"></Calendar>
+			</mu-dialog>
+      		<!-- 搜索到list -->
+      		<div class="roomtype-list-wrapper">
+        		<ul class="list">
+					<li v-for="(item,index) in data_room" :key="index">
+						<div class="roomTypeItem">
+							<div class="lf" @click.stop="showToastMethod(item.id)">
+								<img :src="item.room_img" />
+							</div>
+							<div class="md" @click.stop="showPayType(item.id,item.notHide)">
+								<p class="name m-ellipsis">{{item.name}}</p>
+								<div class="labels m-ellipsis" >{{item.area}} 、{{item.bed_type}}、{{item.window}} 、{{item.floor}}层</div>
+								<span v-if="item.integral_status" class="exchange_hint">{{item.integral_status}}</span>
+								<span v-if="item.marketing_type" class="exchange_hint">{{item.marketing_type}}</span>
+							</div>
+							<div class="rg" @click.stop="showPayType(item.id,item.notHide)">
+								<div class="price-new">
+									<span>&yen;</span>
+									<span class="span1">{{item.discount_price}}</span>
+									<span class="span2">起</span>
+									<span class="priceSort">
+										<img src="../../assets/images/price_sort.png" />
+									</span>
+								</div>
+								<div class="price-old">门市价&yen;{{item.market_amount}}</div>
+							</div>
+						</div>
+						<div class="roomTypeFullMask" :class="{ isRoomTypeFull : item.is == 2 ? true : false}">
+							<div class="watermark isFull">
+								<div class="circleSolid">
+									<div class="circleDashed">
+										<span>已订完</span>
+									</div>
+								</div>
+							</div>
+						</div>
+            			<ul class="payType" v-show="item.notHide">
+							<li class="payTypeItem clearflex" v-for="(itemInd,item_index) in item.product_info" :key="item_index">
+								<!-- 预付现付判断  pay_type  0 1 2 -->
+								<template v-if="itemInd.pay_type == 0 || itemInd.pay_type == 2">
+									<template v-if="itemInd.is == 1">
+										<div class="payTypeItemLf">
+											<div class="up">{{itemInd.product_name}}</div>
+											<div class="down">
+												<span>{{itemInd.group_name}}专享价</span>
+												<span class="down_exchange" v-if="itemInd.integral_status">{{itemInd.integral_status}}</span>
+												<span class="down_exchange" v-if="itemInd.marketing_type">{{itemInd.marketing_type}}</span>
+												<i v-if="itemInd.marketing_type">所需免房券*{{itemInd.marketing_num}}</i>
+											</div>
+										</div>
+										<div class="payTypeItemRg">
+											<dl class="priceDing">
+												<dt><i>&yen;</i>{{itemInd.discount_price}}</dt>
+												<dd>日均</dd>
+											</dl>
+											<span class="bookBtn" @click.stop="bookFun(itemInd.is, itemInd.store_id,item.id,itemInd.id, begin, finish, itemInd.distance_int, 2,itemInd.marketing_num,itemInd.marketing_num_all)">
+												<span class="ding">订</span>
+												<span class="onlinePay">在线付</span>
+											</span>
+										</div>
+									</template>
+									<template v-else>
+										<div class="payTypeItemLf_ccc">
+											<div class="up">{{itemInd.product_name}}</div>
+											<div class="down">
+												<span>{{itemInd.group_name}}专享价</span>
+												<span class="down_exchange" v-if="itemInd.integral_status">{{itemInd.integral_status}}</span>
+												<span class="down_exchange" v-if="itemInd.marketing_type">{{itemInd.marketing_type}}</span>
+												<i v-if="itemInd.marketing_type">所需免房券*{{itemInd.marketing_num}}</i>
+											</div>
+										</div>
+										<div class="payTypeItemRg_ccc">
+											<dl class="priceDing">
+												<dt><i>&yen;</i>{{itemInd.discount_price}}</dt>
+												<dd>日均</dd>
+											</dl>
+											<span class="bookBtn">
+												<span class="ding">订</span>
+												<span class="onlinePay">在线付</span>
+											</span>
+										</div>
+									</template>
+								</template>
+								<template v-if="itemInd.pay_type == 0 || itemInd.pay_type == 1">
+									<template v-if="itemInd.is == 1">
+										<div class="payTypeItemLf">
+											<div class="up">{{itemInd.product_name}}</div>
+											<div class="down">
+												<span>{{itemInd.group_name}}专享价</span>
+												<span class="down_exchange" v-if="itemInd.integral_status">{{itemInd.integral_status}}</span>
+												<span class="down_exchange" v-if="itemInd.marketing_type">{{itemInd.marketing_type}}</span>
+												<i v-if="itemInd.marketing_type">所需免房券*{{itemInd.marketing_num}}</i>
+											</div>
+										</div>
+										<div class="payTypeItemRg">
+											<dl class="priceDing">
+												<dt><i>&yen;</i>{{itemInd.discount_price}}</dt>
+												<dd>日均</dd>
+											</dl>
+											<span class="bookBtn" @click.stop="bookFun(itemInd.is, itemInd.store_id,item.id,itemInd.id, begin, finish, itemInd.distance_int, 1,itemInd.marketing_num,itemInd.marketing_num_all)">
+												<span class="ding arriveDing">订</span>
+												<span class="onlinePay arrivePay">到店付</span>
+											</span>
+										</div>
+									</template>
+									<template v-else>
+										<div class="payTypeItemLf_ccc">
+											<div class="up">{{itemInd.product_name}}</div>
+											<div class="down">
+												<span>{{itemInd.group_name}}专享价</span>
+												<span class="down_exchange" v-if="itemInd.integral_status">{{itemInd.integral_status}}</span>
+												<span class="down_exchange" v-if="itemInd.marketing_type">{{itemInd.marketing_type}}</span>
+												<i v-if="itemInd.marketing_type">所需免房券*{{itemInd.marketing_num}}</i>
+											</div>
+										</div>
+										<div class="payTypeItemRg_ccc">
+											<dl class="priceDing">
+												<dt><i>&yen;</i>{{itemInd.discount_price}}</dt>
+												<dd>日均</dd>
+											</dl>
+											<span class="bookBtn">
+												<span class="ding arriveDing">订</span>
+												<span class="onlinePay arrivePay">到店付</span>
+											</span>
+										</div>
+									</template>
+								</template>
 
-            <!-- 预定组件-后来取消引入 -->
-            <!-- <reserveItem :condition="watchObj"></reserveItem> -->
-
-            <!-- 搜索到list -->
-            <div class="roomtype-list-wrapper">
-                <ul class="list">
-                    <li v-for="(item,index) in data_room" :key="index" @click.stop="showToastMethod(item.id)">
-                        <!-- 左边图片展示 -->
-                        <div class="lf"><img :src="item.room_img" alt=""></div>
-                        <!-- 中间 -->
-                        <div class="md">
-                            <!-- 大标题 -->
-                            <p class="name m-ellipsis">{{item.name}}</p>
-                            <!-- 房型主标签展示 -->
-                            <div class="labels m-ellipsis">
-                                {{item.area}} 、{{item.bed_type}}、{{item.window}} 、{{item.floor}}层
-                            </div>
-                            <!-- 价格（新、旧）din -->
-                            <div class="price">
-                                <span class="price-new">&yen;{{item.discount_price}}</span>
-                                <span class="price-old">&yen;{{item.market_amount}}</span>
-                                <!-- <span>{{item.group_name | filterCardType }} {{ item.promo | filterDiscount}}折</span> -->
-                            </div>
-                        </div>
-                        <!-- 右侧预定按钮 -->
-                        <div class="rg">
-                            <span class="book" :class="{isHasRoom: item.is==2 ? true : false}" @click.stop="bookFun(item.is, item.store_id,item.id, begin, finish, item.distance_int)">
-                                {{item.is|filterIsHasRoom}}
-                            </span>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <!-- 每个item点击之后出现toast，展示其详情 -->
-            <div class="item-toast-container">
-                <div class="item-toast" v-for="(item,index) in itemToastArr" :key="index" v-show="item.isShow" >
-                    <!-- ="touchmoveP" @scroll.prevent @touchmove.prevent -->
-                    <div class="item-toast-wrapper">
-                        <div class="item-toast-title">
-                            <div class="item-toast-title-wrapper">
-                                <div class="content">{{item.name}}</div>
-                                <div class="close-btn" @click="closeToast(item.id)"><img class="img" src="../../assets/images/icon/ic-close-toast.png" alt=""></div>
-                            </div>
-                        </div>
-                        <div class="item-toast-banner" id="hotelDetailBanner" :style="{height: hotelDetailBannerH + 'px'}">
-                            <swiper class="zb-swiper" :options="swiperToastOption" ref="mySwiper" @someSwiperEvent="swiperToastCallback(1)">
-                                <swiper-slide v-for="(itemSon,indexSon) in item.roomTypeList" :key="indexSon" @click="swiperToastSlideFun(indexSon)">
-                                    <img :src="itemSon" alt="" style="display:block;width:100%;">
-                                </swiper-slide>
-                                <div class="swiper-pagination" style="line-height:5px;bottom:5px;" slot="pagination"></div>
-                            </swiper>
-                        </div>
-                        <div class="item-toast-info">
-                            <div class="item-toast-tags">
-                                <div class="item-toast-tags-wrapper">
-                                    <span class="tag">面积&nbsp;&nbsp;
-                                        <span class="ftc333">{{item.area}}</span>
-                                    </span>
-                                    <span class="tag">楼层&nbsp;&nbsp;
-                                        <span class="ftc333">{{item.floor}}</span>
-                                    </span>
-                                    <span class="tag">房型&nbsp;&nbsp;
-                                        <span class="ftc333">{{item.name}}</span>
-                                    </span>
-                                    <span class="tag">无烟&nbsp;&nbsp;
-                                        <span class="ftc333">{{item.cigarette}}</span>
-                                    </span>
-                                    <span class="tag">窗户&nbsp;&nbsp;
-                                        <span class="ftc333">{{item.window}}</span>
-                                    </span>
-                                    <span class="tag">宽带&nbsp;&nbsp;
-                                        <span class="ftc333">{{item.broadband}}</span>
-                                    </span>
-                                    <span class="tag">床型&nbsp;&nbsp;
-                                        <span class="ftc333">{{item.bed_type}}</span>
-                                    </span>
-                                    <span class="tag">加床&nbsp;&nbsp;
-                                        <span class="ftc333">{{item.bed}}</span>
-                                    </span>
-                                </div>
-                            </div>
-                            <ul class="item-toast-labels">
-                                <li class="label-item">
-                                    <div class="label-item-head">
-                                        媒体科技
-                                    </div>
-                                    <div class="label-item-body">
-                                        {{item.media}}
-                                    </div>
-                                </li>
-                                <li class="label-item">
-                                    <div class="label-item-head">
-                                        食品饮品
-                                    </div>
-                                    <div class="label-item-body">
-                                        {{item.food}}
-                                    </div>
-                                </li>
-                                <li class="label-item">
-                                    <div class="label-item-head">
-                                        浴室
-                                    </div>
-                                    <div class="label-item-body">
-                                        {{item.bathroom}}
-                                    </div>
-                                </li>
-                                <li class="label-item">
-                                    <div class="label-item-head">
-                                        便利设施
-                                    </div>
-                                    <div class="label-item-body">
-                                        {{item.facility}}
-                                    </div>
-                                </li>
-                                <li class="label-item">
-                                    <div class="label-item-head">
-                                        床品
-                                    </div>
-                                    <div class="label-item-body">
-                                        {{item.bed}}
-                                    </div>
-                                </li>
-                                <li class="label-item">
-                                    <div class="label-item-head">
-                                        其它
-                                    </div>
-                                    <div class="label-item-body">
-                                        {{item.other}}
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- 该门店下架时候展示 -->
-        <div v-else class="no-store">
-            <img src="../../assets/images/404/xiajia.png" alt="">
-            <p>暂无符合条件的酒店</p>
-        </div>
-    </div>
+							</li>
+              				<!-- <li v-if="item.pay_type == 0 || item.pay_type == 2" class="payTypeItem clearflex">
+								<template>
+									<div class="payTypeItemLf">
+										<div class="up">预付价</div>
+										<div class="down">
+											<span>{{item.group_name}}专享价</span>
+										</div>
+									</div>
+								</template>
+								<div class="payTypeItemRg">
+									<span class="priceDing">&yen;{{item.discount_price}}</span>
+									<span class="bookBtn" @click.stop="bookFun(item.is, item.store_id,item.id, begin, finish, item.distance_int, 2)">
+										<span class="ding">订</span>
+										<span class="onlinePay">在线付</span>
+									</span>
+								</div>
+             				</li>
+              				<li v-if="item.pay_type == 0 || item.pay_type == 1" class="payTypeItem clearflex">
+								<template>
+									<div class="payTypeItemLf">
+										<div class="up">现付价</div>
+										<div class="down">
+											<span>{{item.group_name}}专享价</span>
+										</div>
+									</div>
+								</template>
+								<div class="payTypeItemRg">
+									<span class="priceDing">&yen;{{item.discount_price}}</span>
+									<span class="bookBtn" @click.stop="bookFun(item.is, item.store_id,item.id, begin, finish, item.distance_int, 1)">
+										<span class="ding arriveDing">订</span>
+										<span class="onlinePay arrivePay">到店付</span>
+									</span>
+								</div>
+              				</li> -->
+            			</ul>
+          			</li>
+        		</ul>
+      		</div>
+			<!-- 每个item点击之后出现toast，展示其详情 -->
+			<div class="item-toast-container">
+        		<div class="item-toast" v-for="(item,index) in this.data_room" :key="index" v-show="item.isShow">
+					<div class="item-toast-wrapper">
+						<div class="item-toast-title">
+							<div class="item-toast-title-wrapper">
+								<div class="content">{{item.name}}</div>
+								<div class="close-btn" @click="closeToast(item.id)">
+									<img class="img" src="../../assets/images/icon/ic-close-toast.png" />
+								</div>
+							</div>
+						</div>
+						<div class="item-toast-banner" id="hotelDetailBanner" :style="{height: hotelDetailBannerH + 'px'}">
+							<swiper class="zb-swiper" :options="swiperToastOption" ref="mySwiper" @someSwiperEvent="swiperToastCallback(1)">
+								<swiper-slide v-for="(itemSon,indexSon) in item.img_all" :key="indexSon" @click="swiperToastSlideFun(indexSon)">
+									<img :src="itemSon" alt style="display:block;width:100%;" />
+								</swiper-slide>
+								<div class="swiper-pagination" style="line-height:5px;bottom:5px;" slot="pagination"></div>
+							</swiper>
+						</div>
+						<div class="item-toast-info">
+							<div class="item-toast-tags">
+								<div class="item-toast-tags-wrapper">
+									<span class="tag">
+										<span>面积&nbsp;&nbsp;</span>
+										<span class="ftc333">{{item.area}}</span>
+									</span>
+									<span class="tag">
+										楼层&nbsp;&nbsp;
+										<span class="ftc333">{{item.floor}}</span>
+									</span>
+									<span class="tag">
+										房型&nbsp;&nbsp;
+										<span class="ftc333">{{item.name}}</span>
+									</span>
+									<span class="tag">
+										无烟&nbsp;&nbsp;
+										<span class="ftc333">{{item.cigarette}}</span>
+									</span>
+									<span class="tag">
+										窗户&nbsp;&nbsp;
+										<span class="ftc333">{{item.window}}</span>
+									</span>
+									<span class="tag">
+										宽带&nbsp;&nbsp;
+										<span class="ftc333">{{item.broadband}}</span>
+									</span>
+									<span class="tag">
+										床型&nbsp;&nbsp;
+										<span class="ftc333">{{item.bed_type}}</span>
+									</span>
+									<span class="tag">
+										加床&nbsp;&nbsp;
+										<span class="ftc333">{{item.bed}}</span>
+									</span>
+								</div>
+							</div>
+							<ul class="item-toast-labels">
+								<li class="label-item">
+									<div class="label-item-head">媒体科技</div>
+									<div class="label-item-body">{{item.media}}</div>
+								</li>
+								<li class="label-item">
+									<div class="label-item-head">食品饮品</div>
+									<div class="label-item-body">{{item.food}}</div>
+								</li>
+								<li class="label-item">
+									<div class="label-item-head">浴室</div>
+									<div class="label-item-body">{{item.bathroom}}</div>
+								</li>
+								<li class="label-item">
+									<div class="label-item-head">便利设施</div>
+									<div class="label-item-body">{{item.facility}}</div>
+								</li>
+								<li class="label-item">
+									<div class="label-item-head">床品</div>
+									<div class="label-item-body">{{item.bed}}</div>
+								</li>
+								<li class="label-item">
+									<div class="label-item-head">其它</div>
+									<div class="label-item-body">{{item.other}}</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+  	</div>
 </template>
-
 <script>
 import { store_detail, add_collect, del_collect, wxShare } from "@/api/api";
-import { getCookie, fetchCheckLogin } from "@/utils/util";
-import { f, dateEndMinusStart, isBeforeDawn, YTDLf, YTD } from "@/utils/date"; 
+import { getCookie, fetchCheckLogin, getUrlParam } from "@/utils/util";
+import { f, dateEndMinusStart, isBeforeDawn, YTDLf, YTD } from "@/utils/date";
 import Calendar from "@/components/calendar/calendar.vue"; // 引入日历组件
 import { swiper, swiperSlide } from "vue-awesome-swiper"; // 引入swipe组件
 import wx from "weixin-js-sdk";
-import myBroadcast from "@/components/broadcast";
-            
+import { Toast } from 'vant';
 export default {
-    name: "hotelDetailPage",
-    components: {
-        Calendar,
-        swiper,
-        swiperSlide,
-        myBroadcast
-    },
-    data() {
-        return {
-            // 门店详情banner-swiper相关参数
-            swiperOption: {
-                autoplay: 3000,
-                speed: 1000,   // 这个参数是一张轮播照片从左边播到右边用时1000毫秒
-                loop: true, 
-                initialSlide : 1,
-                notNextTick: true,
-                preventClicks: true,
-                direction: "horizontal",
-                grabCursor: true,
-                setWrapperSize: true,
-                autoHeight: true,
-                pagination: ".swiper-pagination",
-                paginationType: "custom",
-                paginationCustomRender: function(swiper, current, total) {
-                    const activeColor = "#30B097";
-                    const normalColor = "rgba(255,255,255,0.5)";
-                    let color = "";
-                    let paginationStyle = "";
-                    let html = "";
-                    for (let i = 1; i <= total; i++) {
-                        if (i === current) {
-                            color = activeColor;
-                        } else {
-                            color = normalColor;
-                        }
-                        paginationStyle = `background:${color};opacity:1;margin-right:4px;width:5px;height:5px;`;
-                        html += `<span class="swiper-pagination-bullet" style=${paginationStyle}></span>`;
-                    }
-                    return html;
-                },
-                paginationClickable: true,
-                mousewheelControl: false,
-                observeParents: true,
-                debugger: true
-            },
-            // 房型toast中bannner-swiper的参数
-            swiperToastOption: {
-                notNextTick: true,
-                autoplay: false,
-                preventClicks: true,
-                direction: "horizontal",
-                grabCursor: true,
-                setWrapperSize: true,
-                autoHeight: true,
-                pagination: ".swiper-pagination",
-                paginationType: "custom",
-                paginationCustomRender: function(swiper, current, total) {
-                    const activeColor = "#30B097";
-                    const normalColor = "rgba(255,255,255,0.5)";
-                    let color = "";
-                    let paginationStyle = "";
-                    let html = "";
-                    for (let i = 1; i <= total; i++) {
-                        if (i === current) {
-                            color = activeColor;
-                        } else {
-                            color = normalColor;
-                        }
-                        paginationStyle = `background:${color};opacity:1;margin-right:4px;width:5px;height:5px;`;
-                        html += `<span class="swiper-pagination-bullet" style=${paginationStyle}></span>`;
-                    }
-                    return html;
-                },
-                paginationClickable: true,
-                mousewheelControl: false,
-                observeParents: true,
-                debugger: true
-            },
-            loading: true,
-            delayToast: false,
-            delayToastTxt: "",
-            itemToast: false, //itemToast是否展示
-            // 请求数据需要传的参数
-            watchObj: {
-                store_id: "",
-                begin: "",
-                finish: "",
-                longitude: getCookie("userLongitude"),
-                latitude: getCookie("userLatitude")
-            },
-            // 接收http请求返回的数据
-            data_room: [],
-            data_store: {},
-            count: "", // 几晚
-            begin: "",
-            finish: "",
-            is_collect: "", //该门店是否被收藏
-            collectId: "", //收藏id
-            collectIcon: require("../../assets/images/collect.png"),
-            collectIconActive: require("../../assets/images/collect-active.png"),
-            // 日历组件dialog是否显示
-            zbCalendarVisible: false,
-            // 初始化日历日期
-            zbInitCalendar: {
-                start: {
-                    yyyy: "",
-                    mm: "",
-                    dd: ""
-                },
-                end: {
-                    yyyy: "",
-                    mm: "",
-                    dd: ""
-                }
-            },
-            appId: "", // 必填，公众号的唯一标识
-            timestamp: "", // 必填，生成签名的时间戳
-            nonceStr: "", // 必填，生成签名的随机串
-            signature: "", // 必填，签名
-            longitude: "",  // 经度
-            latitude: "",   // 维度
+	name: "hotelDetailPage",
+	components: {
+		Calendar,
+		swiper,
+		swiperSlide
+	},
+	data() {
+		return {
+			isType:"",
+			epidemicArr:[10,274,277,281,290,292,293,295,296,9,265,266,267,269,272,273,275,276,285,2,4,3,5,6,7,1,11],
+			epidemicShow:0,
+			swiperOption: {	// 门店详情banner-swiper相关参数
+				autoplay: 3000,
+				speed: 1000, // 这个参数是一张轮播照片从左边播到右边用时1000毫秒
+				loop: true,
+				initialSlide: 1,
+				notNextTick: true,
+				preventClicks: true,
+				direction: "horizontal",
+				grabCursor: true,
+				setWrapperSize: true,
+				autoHeight: true,
+				pagination: ".swiper-pagination",
+				paginationType: "custom",
+				paginationCustomRender: function(swiper, current, total) {
+					const activeColor = "#30B097";
+					const normalColor = "rgba(255,255,255,0.5)";
+					let color = "";
+					let paginationStyle = "";
+					let html = "";
+					for (let i = 1; i <= total; i++) {
+						if (i === current) {
+							color = activeColor;
+						} else {
+							color = normalColor;
+						}
+						paginationStyle = `background:${color};opacity:1;margin-right:4px;width:5px;height:5px;`;
+						html += `<span class="swiper-pagination-bullet" style=${paginationStyle}></span>`;
+					}
+					return html;
+				},
+				paginationClickable: true,
+				mousewheelControl: false,
+				observeParents: true,
+				debugger: true
+			},
+			// 房型toast中bannner-swiper的参数
+			swiperToastOption: {
+				notNextTick: true,
+				autoplay: false,
+				preventClicks: true,
+				direction: "horizontal",
+				grabCursor: true,
+				setWrapperSize: true,
+				autoHeight: true,
+				pagination: ".swiper-pagination",
+				paginationType: "custom",
+				paginationCustomRender: function(swiper, current, total) {
+					const activeColor = "#30B097";
+					const normalColor = "rgba(255,255,255,0.5)";
+					let color = "";
+					let paginationStyle = "";
+					let html = "";
+					for (let i = 1; i <= total; i++) {
+						if (i === current) {
+						color = activeColor;
+						} else {
+						color = normalColor;
+						}
+						paginationStyle = `background:${color};opacity:1;margin-right:4px;width:5px;height:5px;`;
+						html += `<span class="swiper-pagination-bullet" style=${paginationStyle}></span>`;
+					}
+					return html;
+				},
+				paginationClickable: true,
+				mousewheelControl: false,
+				observeParents: true,
+				debugger: true
+			},
+			loading: true,
+			delayToast: false,
+			delayToastTxt: "",
+			itemToast: false, //itemToast是否展示
+			// 请求数据需要传的参数
+			watchObj: {
+				store_id: "",
+				begin: "",
+				finish: "",
+				longitude: getCookie("userLongitude"),
+				latitude: getCookie("userLatitude"),
+				store_type: "1",
+				is_type:this.$route.query.is_type
+			},
+			// 默认把这个设置为全日房
+			store_type: "1",
+			// 接收http请求返回的数据
+			data_room: [],
+			data_store: {},
+			count: "", // 几晚
+			begin: "",
+			finish: "",
+			is_collect: "", //该门店是否被收藏
+			collectId: "", //收藏id
+			collectIcon: require("../../assets/images/collect.png"),
+			collectIconActive: require("../../assets/images/collect-active.png"),
+			// 日历组件dialog是否显示
+			zbCalendarVisible: false,
+			// 初始化日历日期
+			zbInitCalendar: {
+				start: {
+					yyyy: f(this.$route.query.begin).yyyy,
+					mm: f(this.$route.query.begin).mm,
+					dd: f(this.$route.query.begin).dd
+				},
+				end: {
+					yyyy: f(this.$route.query.finish).yyyy,
+					mm: f(this.$route.query.finish).mm,
+					dd: f(this.$route.query.finish).dd
+				},
+				is_type:this.$route.query.is_type
+			},
+			// 日租房日历组件dialog是否显示
+			zbSmallCalendarVisible: false,
+			// 初始化日租房日历日期
+			zbInitSmallCalendar: {
+				start: {
+				yyyy: "",
+				mm: "",
+				dd: ""
+				}
+			},
+			appId: "", // 必填，公众号的唯一标识
+			timestamp: "", // 必填，生成签名的时间戳
+			nonceStr: "", // 必填，生成签名的随机串
+			signature: "", // 必填，签名
+			longitude: "", // 经度
+			latitude: "", // 维度
+			// longitude: getCookie("userLongitude"),
+			// latitude: getCookie("userLatitude"),
+			hotelDetailBannerH: "", //酒店详情banner的高
+			itemToastArr: [],
+			isBeforeDawn: false, // 是否是今天凌晨
+			userStatus: "", // 该会员是否是处于禁用状态
+			isRouteBeforeDawn: false, // 路由带过来今日凌晨入住
+			isRouteBeforeDawnAndNoonGo: false, // 路由带过来今日中午离店
+			flag: true
+		};
+  	},
+	created() {
+		// 获取路由参数
+		var routePara = {
+			store_id: this.$route.query.store_id,
+			begin: this.$route.query.begin,
+			finish: this.$route.query.finish,
+			// 这个是多余的代码，压根路由就没有带过来该参数
+			// distance_int: this.$route.query.distance_int,
+			store_type: this.$route.query.store_type,
+			is_type:this.$route.query.is_type
+		};
+		// 如果从订单列表页的“再次预定”按钮过来只带store_id参数，无begin、finish参数
+		// 在3.27发现注册数据被清，点击预定，跳到/login，也会走这个判断（ios设置时间凌晨发现，isRouteBeforeDawn，isRouteBeforeDawnAndNoonGo都是false）
+		if (routePara.begin == undefined || routePara.finish == undefined) {
+			// 该情况就默认给赋值为全日房1
+			this.store_type = 1;
+			// new Date
+			var d = new Date();
+			var dd = new Date();
+			if(this.$route.query.is_type != 0){
+				d.setDate(d.getDate() + 1);
+				dd.setDate(dd.getDate() + 2);
+			}else{
+				dd.setDate(dd.getDate() + 1);
+			}
+			if(f(d).yyyy == "2020" && f(d).mm == "04" && this.$route.query.is_type != 0){
+				this.watchObj.begin = "2020-05-01";
+				this.watchObj.finish = "2020-05-02";
+				this.zbInitCalendar.start.yyyy = "2020";
+				this.zbInitCalendar.start.mm = "05";
+				this.zbInitCalendar.start.dd = "01";
+				this.zbInitCalendar.end.yyyy = "2020";
+				this.zbInitCalendar.end.mm = "05";
+				this.zbInitCalendar.end.dd = "02";
+			}else{
+				this.watchObj.begin = f(d).yyyy + "-" + f(d).mm + "-" + f(d).dd;
+				this.watchObj.finish = f(dd).yyyy + "-" + f(dd).mm + "-" + f(dd).dd;
+				this.zbInitCalendar.start.yyyy = f(d).yyyy;
+				this.zbInitCalendar.start.mm = f(d).mm;
+				this.zbInitCalendar.start.dd = f(d).dd;
+				this.zbInitCalendar.end.yyyy = f(dd).yyyy;
+				this.zbInitCalendar.end.mm = f(dd).mm;
+				this.zbInitCalendar.end.dd = f(dd).dd;
+			}
+			this.watchObj.store_id = routePara.store_id;
 
-            // longitude: getCookie("userLongitude"),
-            // latitude: getCookie("userLatitude"),
-            hotelDetailBannerH: "", //酒店详情banner的高
-            itemToastArr: [],
-            isBeforeDawn: false, // 是否是今天凌晨
-            userStatus: "", // 该会员是否是处于禁用状态
-            isRouteBeforeDawn: false, // 路由带过来今日凌晨入住
-            isRouteBeforeDawnAndNoonGo: false, // 路由带过来今日中午离店
-        };
-    },
-    created() {
-        // 获取路由参数
-        var routePara = {
-            store_id: this.$route.query.store_id,
-            begin: this.$route.query.begin,
-            finish: this.$route.query.finish,
-            distance_int: this.$route.query.distance_int
-        };
-        // 如果从订单列表页的“再次预定”按钮过来只带store_id参数，无begin、finish参数
-        if (routePara.begin == undefined || routePara.finish == undefined) {
-            var d = new Date();
-            var dd = new Date();
-            dd.setDate(dd.getDate() + 1);
-            this.watchObj.begin = f(d).yyyy + "-" + f(d).mm + "-" + f(d).dd;
-            this.watchObj.finish = f(dd).yyyy + "-" + f(dd).mm + "-" + f(dd).dd;
-            this.watchObj.store_id = routePara.store_id;
-            this.zbInitCalendar.start.yyyy = f(d).yyyy;
-            this.zbInitCalendar.start.mm = f(d).mm;
-            this.zbInitCalendar.start.dd = f(d).dd;
-            this.zbInitCalendar.end.yyyy = f(dd).yyyy;
-            this.zbInitCalendar.end.mm = f(dd).mm;
-            this.zbInitCalendar.end.dd = f(dd).dd;
-            // 满足该情况把routeIsBeforeDawnAndTodayGo设置为false
-            this.isRouteBeforeDawn = false; 
-            this.isRouteBeforeDawnAndNoonGo = false;
-        } else {
-            // 给date()中监听数据进行赋值
-            this.watchObj.store_id = routePara.store_id;
-            this.watchObj.begin = routePara.begin;
-            this.watchObj.finish = routePara.finish;
-            // 初始化日历中的值
-            let beginArr = routePara.begin.split("-");
-            let endArr = routePara.finish.split("-");
-            this.zbInitCalendar.start.yyyy = beginArr[0];
-            this.zbInitCalendar.start.mm = beginArr[1];
-            this.zbInitCalendar.start.dd = beginArr[2];
-            this.zbInitCalendar.end.yyyy = endArr[0];
-            this.zbInitCalendar.end.mm = endArr[1];
-            this.zbInitCalendar.end.dd = endArr[2];
-            // 若路由传过来的是今天凌晨订房，今天中午退房
-            if (routePara.begin == YTDLf().kebab) {
-                this.isRouteBeforeDawn = true;
-            } else {
-                this.isRouteBeforeDawn = false;
-            }
-            if (routePara.finish == YTD().kebab) {
-                this.isRouteBeforeDawnAndNoonGo = true;
-            } else {
-                this.isRouteBeforeDawnAndNoonGo = false;
-            }
-        }
-        // 拉取数据
-        // this.fetchData(this.watchObj);
-        // 凌晨订房提示逻辑
-        if (isBeforeDawn() == true) {
-            this.isBeforeDawn = true;
-        } else {
-            this.isBeforeDawn = false;
-        }
-    },
-    computed: {
-        swiper() {
-            return this.$refs.mySwiper.swiper;
-        }
-    },
-    watch: {
-        watchObj: {
-            handler(newValue, oldValue) {
-                this.fetchData(newValue);
-            },
-            deep: true,
-            immediate: true
-        }
-    },
-    mounted() {
-        // 调取getAppInfo
-        // this.getAppInfo();
-        // 调取banner赋值函数
-        this.setBannerSize();
-        // this.fetchData(this.watchObj);
-    },
-    methods: {
-        // 拉取门店详情
-        fetchData(param) {
-            this.$http({
-                method: "POST",
-                url: store_detail,
-                data: param
-            }).then(res => {
-                this.loading = false;
-                if (res.data.status == 1) {
-                    // 房间类型list
-                    this.data_room = res.data.data.data_room;
-                    let tmpItemToastArr = res.data.data.data_room;
-                    this.ItemToastArrMethod();
-                    // 房间介绍
-                    this.data_store = res.data.data.data_store;
-                    // 该门店经纬度赋值
-                    this.longitude = this.data_store.longitude;
-                    this.latitude = this.data_store.latitude;
-                    // console.log(this.longitude + "--" + this.latitude);
-                    // 入店、离店、共几晚
-                    this.begin = res.data.data.begin;
-                    this.finish = res.data.data.finish;
-                    this.count = res.data.data.count;
-                    // 是否收藏
-                    this.is_collect = res.data.data.is_collect;
-                    // 收藏的id
-                    this.collectId = res.data.data.collect_id;
-                    // 该会员是否是处于禁用状态
-                    this.userStatus = res.data.data.user_status;
-                    // 调取getAppInfo
-                    this.getAppInfo();
-                } else if (res.data.status == -1) {
-                    this.data_store = "";
-                    this.fetchCheckLoginPackage();
-                    
-                }else {
-                    this.data_store = "";
-                }
-            });
-        },
-        fetchCheckLoginPackage() {
-            fetchCheckLogin({tg:"" ,form: encodeURIComponent(window.location.href)}).then(res => {
-                if (res.data.status == 0) {
-                    window.location.href = res.data.data;
-                } else {
-                    setCookie("userInfoTel", res.data.data.mobile);  //手机号
-                    setCookie("userVipStatus", res.data.data.status);  //会员状态（0待审、1正常、2锁定）
-                    setCookie("userUid", res.data.data.uid);
-                    setCookie("userInfoIsRealname", res.data.data.is_realname); //真实姓名
-                    setCookie("userInfoGroupid", res.data.data.group_id);  //会员组id
-                    setCookie("nickname", encodeURI(res.data.data.nickname));		//昵称
-                    setCookie("openid", res.data.data.openid);  
-                    setCookie("avatar", res.data.data.avatar);  //avatar
-                    setCookie('avail_amount',res.data.data.avail_amount);
-                    if (res.data.data.coupon_flag == 0) {
-                        setCookie("isYouzan", 0); // 判断是不是有赞用户 1是(弹系统维护提示) 0不是（不弹）
-                    } else {
-                        setCookie("isYouzan", 1); // 判断是不是有赞用户 1是(弹系统维护提示) 0不是（不弹）
-                    }
-                }
-            })
-        },
-        ItemToastArrMethod() {
-            this.itemToastArr = [];
-            for (let i = 0; i < this.data_room.length; i++) {
-                this.itemToastArr.push({
-                    isShow: false,
-                    id: this.data_room[i].id,
-                    roomTypeList:this.data_room[i].img_all, // 房型图片list
-                    name: this.data_room[i].name, // 房型
-                    area: this.data_room[i].area, // 面积
-                    floor: this.data_room[i].floor, // 楼层
-                    cigarette: this.data_room[i].cigarette, // 无烟
-                    window: this.data_room[i].window, // 有窗
-                    bed_type: this.data_room[i].bed_type, // 床型
-                    broadband: this.data_room[i].broadband, // 宽带
-                    media: this.data_room[i].media, // 媒体科技
-                    food: this.data_room[i].food, //食品饮品
-                    bathroom: this.data_room[i].bathroom, //浴室
-                    facility: this.data_room[i].facility, //便利设施
-                    bed: this.data_room[i].bed, //床品
-                    other: this.data_room[i].other, // 其它
-                });
-            }
-        },
-        // 点击预定
-        bookFun(isHasRoom, store_id, room_id, begin, finish, distance_int) {
-            let tmp = getCookie("userInfoTel");
-            let tmpVipStatus = this.userStatus;
-            let tmpOpenid = getCookie("openid");
-            // 判断该用户否有有手机号
-            if (!tmp) {
-                this.$router.push({
-                    path: "/login",
-                    query: {
-                        loginPage: 1,
-                        openId: tmpOpenid,
-                        store_id: store_id
-                    }
-                });
-                return;
-            }
-            // 判断用户的会员是否为1
-            if (tmpVipStatus != 1) {
-                this.delayToastTxt = "正处于禁用状态，不可预订";
-                this.delayToast = true;
-                setTimeout(() => {
-                    this.delayToast = false;
-                }, 2000);
-                return;
-            }
-            if (isHasRoom == 1) {
-                this.$router.push({
-                    path: "/order",
-                    query: {
-                        store_id: store_id,
-                        room_id: room_id,
-                        begin: begin,
-                        finish: finish,
-                        distance_int: distance_int
-                    }
-                });
-            } else {
-                this.delayToastTxt = "该房型已满房";
-                this.delayToast = true;
-                setTimeout(() => {
-                    this.delayToast = false;
-                }, 2000);
-            }
-        },
-        // 触发日历dialog
-        triggerCalendar() {
-            this.zbCalendarVisible = true;
-        },
-        // 入住-离店
-        clickToday(value) {
-            this.zbCalendarVisible = false;
-            // 入住时间
-            let tmpB = value[0].split("/");
-            this.zbInitCalendar.start.yyyy = tmpB[0];
-            this.zbInitCalendar.start.mm = tmpB[1];
-            this.zbInitCalendar.start.dd = tmpB[2];
-            this.watchObj.begin = tmpB[0] + "-" + tmpB[1] + "-" + tmpB[2];
-            // 加入今日凌晨入住判断逻辑
-            if (tmpB[0] + "-" + tmpB[1] + "-" + tmpB[2] == YTDLf().kebab) {
-                this.isRouteBeforeDawn = true;
-            } else {
-                this.isRouteBeforeDawn = false;
-            }
-            // 离店时间
-            let tmpF = value[1].split("/");
-            this.zbInitCalendar.end.yyyy = tmpF[0];
-            this.zbInitCalendar.end.mm = tmpF[1];
-            this.zbInitCalendar.end.dd = tmpF[2];
-            this.watchObj.finish = tmpF[0] + "-" + tmpF[1] + "-" + tmpF[2];
-            // 加入今日中午离店判断逻辑
-            if (tmpF[0] + "-" + tmpF[1] + "-" + tmpF[2] == YTD().kebab) {
-                this.isRouteBeforeDawnAndNoonGo = true;
-            } else {
-                this.isRouteBeforeDawnAndNoonGo = false;
-            }
-            //共几晚
-            this.count = dateEndMinusStart(value[0], value[1]);
-        },
-        // 日历组件的title-若用户不选取日历，点击返回使日历弹窗消失
-        calendarTitleBackEmitFun() {
-            this.zbCalendarVisible = false;
-        },
-        // swiper回调
-        swiperCallback(val) {
-            console.log(val);
-        },
-        // swiper的toast回调
-        swiperToastCallback(val) {
-            console.log(val);
-        },
-        // swiper-slide的点击
-        swiperSlideFun(val) {
-            console.log(val);
-        },
-        // swiper-slide的toast点击
-        swiperToastSlideFun(val) {
-            console.log(val);
-        },
-        // 点击收藏按钮逻辑
-        collectCtrl() {
-            if (this.is_collect == 0) {
-                this.addCollect();
-            } else {
-                this.delCollect();
-            }
-        },
-        addCollect() {
-            let p = {
-                store_id: this.watchObj.store_id
-            };
-            this.$http({
-                method: "POST",
-                url: add_collect,
-                data: p
-            }).then(res => {
-                if (res.data.status == 1) {
-                    this.delayToastTxt = "已收藏";
-                    this.delayToast = true;
-                    setTimeout(() => {
-                        this.delayToast = false;
-                    }, 2000);
-                    this.fetchData(this.watchObj);
-                }
-            });
-        },
-        delCollect() {
-            this.$http({
-                method: "POST",
-                url: del_collect,
-                data: { collect_id: this.collectId }
-            }).then(res => {
-                if (res.data.status == 1) {
-                    this.delayToastTxt = "已取消";
-                    this.delayToast = true;
-                    setTimeout(() => {
-                        this.delayToast = false;
-                    }, 2000);
-                    this.fetchData(this.watchObj);
-                }
-            });
-        },
-        // 拉取公众号info进行wx.config
-        getAppInfo() {
-            var dataObj = {
-                url: location.href.split("#")[0]
-            };
-            this.$http({
-                url: wxShare,
-                method: "POST",
-                data: dataObj
-            })
-                .then(res => {
-                    let appId = res.data.data.appid;
-                    let timestamp = res.data.data.timestamp;
-                    let nonceStr = res.data.data.noncestr;
-                    let signature = res.data.data.signature;
-                    let tmpUrl = res.data.data.url;
-                    let tmpShareImg = res.data.data.share_img;
-                    this.wxConfigMethod(
-                        appId,
-                        timestamp,
-                        nonceStr,
-                        signature,
-                        tmpUrl,
-                        tmpShareImg
-                    );
-                })
-                .catch(err => {});
-        },
-        // wx.config
-        wxConfigMethod(
-            appId,
-            timestamp,
-            nonceStr,
-            signature,
-            tmpUrl,
-            tmpShareImg
-        ) {
-            wx.config({
-                debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-                appId: appId, // 必填，公众号的唯一标识
-                timestamp: timestamp, // 必填，生成签名的时间戳
-                nonceStr: nonceStr, // 必填，生成签名的随机串
-                signature: signature, // 必填，签名
-                jsApiList: [
-                    "onMenuShareAppMessage",
-                    "onMenuShareTimeline",
-                    "openLocation"
-                ] // 必填，需要使用的JS接口列表
-            });
-            wx.onMenuShareAppMessage({
-                title: "秋果人文精品酒店",
-                desc: "拿奖金，拿奖金，拿奖金，点开拿奖金",
-                link: tmpUrl,
-                imgUrl: tmpShareImg,
-                type: "",
-                dataUrl: "",
-                success: function() {}
-            });
-            wx.onMenuShareTimeline({
-                title: "秋果人文精品酒店",
-                desc: "拿奖金，拿奖金，拿奖金，点开拿奖金",
-                link: tmpUrl,
-                imgUrl: tmpShareImg,
-                type: "",
-                dataUrl: "",
-                success: function() {}
-            });
-        },
-        // 打开wx的map
-        openMap() {
-            // type: 'gcj02',
-            // longitude:  Number('39.9219'), 
-            // latitude:  Number('116.44355') ,  
-            wx.openLocation({
-                // 116.468762,39.963803  燕莎店（百度）
-                // 39.958080,116.461950  燕莎店（腾讯）
-                // 39.9219,116.44355 getLocation 
-                longitude: Number(this.longitude), //经度，浮点数，范围为180 ~ -180。
-                latitude: Number(this.latitude), // 纬度，浮点数，范围为90 ~ -90
-                name: this.data_store.store_name, // 位置名
-                address: this.data_store.address, // 地址详情说明
-                scale: 18, // 地图缩放级别,整形值,范围从1~28。默认为最大
-                infoUrl: "", // 在查看位置界面底部显示的超链接,可点击跳转
-                success: function (res) {
-                    // alert('suc'+ res);
-                    // alert( 'suc' +"--"  + res.errMsg);
-                },
-                fail: function (res) {
-                    // alert( "err"  + "--" + res.errMsg);
-                }
-            });
-        },
-        // banner重置宽高
-        setBannerSize() {
-            let hotelDetailBanner = document.querySelector(
-                "#hotelDetailBanner"
-            );
-            let hotelDetailBannerW = hotelDetailBanner.clientWidth;
-            let hotelDetailBannerH = (hotelDetailBannerW * 320) / 750;
-            this.hotelDetailBannerH = hotelDetailBannerH;
-        },
-        showToastMethod(id) {
-            let tmp = this.itemToastArr;
-            for (let i = 0; i < tmp.length; i++) {
-                tmp[i].isShow = false;
-                if (tmp[i].id == id) {
-                    tmp[i].isShow = true;
-                }
-            }
-        },
-        closeToast(id) {
-            let tmp = this.itemToastArr;
-            for (let i = 0; i < tmp.length; i++) {
-                tmp[i].isShow = false;
-            }
-        }
-    }
+			// 满足该情况把routeIsBeforeDawnAndTodayGo设置为false
+			this.isRouteBeforeDawn = false;
+			this.isRouteBeforeDawnAndNoonGo = false;
+		} else {
+			// 给date()中监听数据进行赋值
+			this.watchObj.store_id = routePara.store_id;
+			this.watchObj.begin = routePara.begin;
+			this.watchObj.finish = routePara.finish;
+			this.watchObj.store_type = routePara.store_type;
+			this.watchObj.is_type = routePara.is_type;
+			// 初始化日历中的值
+			let beginArr = routePara.begin.split("-");
+			let endArr = routePara.finish.split("-");
+			// 判断是全日房还是日租房，用来显示2种日历
+			if (routePara.store_type == 1) {
+				// 全日房日历的显示
+				this.store_type = 1;
+				// 对全日房的日历进行复显
+				this.zbInitCalendar.start.yyyy = beginArr[0];
+				this.zbInitCalendar.start.mm = beginArr[1];
+				this.zbInitCalendar.start.dd = beginArr[2];
+				this.zbInitCalendar.end.yyyy = endArr[0];
+				this.zbInitCalendar.end.mm = endArr[1];
+				this.zbInitCalendar.end.dd = endArr[2];
+				// 若路由传过来的是今天凌晨订房，今天中午退房
+				if (routePara.begin == YTDLf().kebab) {
+				this.isRouteBeforeDawn = true;
+				} else {
+				this.isRouteBeforeDawn = false;
+				}
+				if (routePara.finish == YTD().kebab) {
+				this.isRouteBeforeDawnAndNoonGo = true;
+				} else {
+				this.isRouteBeforeDawnAndNoonGo = false;
+				}
+			} else {
+				// 日租房日历的显示
+				this.store_type = 2;
+				// 初始化日租房日历日期赋值
+				this.zbInitSmallCalendar.start.yyyy = beginArr[0];
+				this.zbInitSmallCalendar.start.mm = beginArr[1];
+				this.zbInitSmallCalendar.start.dd = beginArr[2];
+			}
+		}
+		// 凌晨订房提示逻辑
+		if (isBeforeDawn() == true) {
+			this.isBeforeDawn = true;
+		} else {
+			this.isBeforeDawn = false;
+		}
+	},
+	computed: {
+		swiper() {
+			return this.$refs.mySwiper.swiper;
+		}
+	},
+	watch: {
+		watchObj: {
+			handler(newValue, oldValue) {
+				this.fetchData(newValue);
+			},
+			deep: true,
+			immediate: true
+		}
+	},
+	mounted() {
+		// let beginTime = f(this.$route.query.begin).yyyy + '-' + f(this.$route.query.begin).mm + '-' + f(this.$route.query.begin).dd;
+		// let finishTime = f(this.$route.query.finish).yyyy + '-' + f(this.$route.query.finish).mm + '-' + f(this.$route.query.finish).dd;
+		// this.watchObj.begin = beginTime;
+		// this.watchObj.finish = finishTime;
+		// 调取banner赋值函数
+		this.setBannerSize();
+	},
+	methods: {
+		// 拉取门店详情
+		fetchData(param) {
+			if (this.flag == true) {
+				this.flag = false;
+				this.$http({
+					method: "POST",
+					url: store_detail,
+					data: param
+				}).then(res => {
+					this.flag = true;
+					this.loading = false;
+					if (res.data.status == 1) {
+						//疫情判断 [276,281,11]  //西单  和平里  崇文门 龙潭湖  十里河 望京
+						if(this.epidemicArr.indexOf(res.data.data.data_store.id) != -1){
+							this.epidemicShow = 1
+						}
+						// 房间类型list
+						let _data_room = res.data.data.data_room;
+						for (let i = 0; i < _data_room.length; i++) {
+							if(i == 0){
+								this.$set(_data_room[i], "notHide", true);
+								this.$set(_data_room[i], "isShow", false);
+							}else{
+								this.$set(_data_room[i], "notHide", false);
+								this.$set(_data_room[i], "isShow", false);
+							}
+						}
+						this.data_room = _data_room;
+						// 房间介绍
+						this.data_store = res.data.data.data_store;
+						// 该门店经纬度赋值
+						this.longitude = this.data_store.longitude;
+						this.latitude = this.data_store.latitude;
+						// 入店、离店、共几晚
+						this.begin = res.data.data.begin;
+						this.finish = res.data.data.finish;
+						this.count = res.data.data.count;
+						// 是否收藏
+						this.is_collect = res.data.data.is_collect;
+						// 收藏的id
+						this.collectId = res.data.data.collect_id;
+						// 该会员是否是处于禁用状态
+						this.userStatus = res.data.data.user_status;
+						// 调取getAppInfo
+						this.getAppInfo();
+					} else if (res.data.status == -1) {
+						this.data_store = "";
+						this.fetchCheckLoginPackage();
+					} else {
+						this.data_store = "";
+					}
+				});
+			}
+		},
+		fetchCheckLoginPackage() {
+			fetchCheckLogin({
+				tg: "",
+				form: encodeURIComponent(window.location.href)
+			}).then(res => {
+				if (res.data.status == 0) {
+					window.location.href = res.data.data;
+				} else {
+					setCookie("userInfoTel", res.data.data.mobile); //手机号
+					setCookie("userVipStatus", res.data.data.status); //会员状态（0待审、1正常、2锁定）
+					setCookie("userUid", res.data.data.uid);
+					setCookie("userInfoIsRealname", res.data.data.is_realname); //真实姓名
+					setCookie("userInfoGroupid", res.data.data.group_id); //会员组id
+					setCookie("nickname", encodeURI(res.data.data.nickname)); //昵称
+					setCookie("openid", res.data.data.openid);
+					setCookie("avatar", res.data.data.avatar); //avatar
+					setCookie("avail_amount", res.data.data.avail_amount);
+					if (res.data.data.coupon_flag == 0) {
+						setCookie("isYouzan", 0); // 判断是不是有赞用户 1是(弹系统维护提示) 0不是（不弹）
+					} else {
+						setCookie("isYouzan", 1); // 判断是不是有赞用户 1是(弹系统维护提示) 0不是（不弹）
+					}
+				}
+			});
+		},
+		// 点击预定
+		bookFun(isHasRoom,store_id,room_id,product_id,begin,finish,distance_int,payTypePara,marketingNum,marketingNumAll){
+			if(marketingNum > marketingNumAll){
+				Toast("您拥有的优惠券不足以支付");
+				return false;
+			}
+			let tmp = getCookie("userInfoTel");
+			let tmpVipStatus = this.userStatus;
+			let tmpOpenid = getCookie("openid");
+			// 判断该用户否有有手机号
+			if (!tmp) {
+				this.$router.push({
+					path: "/login",
+					query: {
+						loginPage: 1,
+						openId: tmpOpenid,
+						store_id: store_id
+					}
+				});
+				return;
+			}
+			// 判断用户的会员是否为1
+			if (tmpVipStatus != 1) {
+				this.delayToastTxt = "正处于禁用状态，不可预订";
+				this.delayToast = true;
+				setTimeout(() => {
+					this.delayToast = false;
+				}, 2000);
+				return;
+			}
+			if (isHasRoom == 1) {
+				this.$router.push({
+					path: "/order",
+					query: {
+						store_id: store_id,
+						store_type: this.store_type,
+						payType: payTypePara,
+						room_id: room_id,
+						product_id:product_id,
+						begin: begin,
+						finish: finish,
+						distance_int: distance_int,
+						epidemicShow:this.epidemicShow,
+						is_type:this.$route.query.is_type
+					}
+				});
+			} else {
+				this.delayToastTxt = "该房型已满房";
+				this.delayToast = true;
+				setTimeout(() => {
+					this.delayToast = false;
+				}, 2000);
+			}
+		},
+		// 展示或隐藏现付与预付info提示
+		showPayType(ind, notHide) {
+			let _this = this;
+			for (let i = 0; i < _this.data_room.length; i++) {
+				if (_this.data_room[i].id === ind) {
+					if (_this.data_room[i].notHide) {
+						_this.$set(_this.data_room[i],"notHide",false);
+					} else {
+						_this.$set(_this.data_room[i],"notHide",true);
+					}
+				}
+			}
+		},
+		// 触发日历dialog
+		triggerCalendar() {
+			this.zbCalendarVisible = true;
+		},
+		// 入住-离店
+		clickToday(value) {
+			this.zbCalendarVisible = false;
+			// 入住时间
+			let tmpB = value[0].split("/");
+			this.zbInitCalendar.start.yyyy = tmpB[0];
+			this.zbInitCalendar.start.mm = tmpB[1];
+			this.zbInitCalendar.start.dd = tmpB[2];
+			this.watchObj.begin = tmpB[0] + "-" + tmpB[1] + "-" + tmpB[2];
+			// 加入今日凌晨入住判断逻辑
+			if (tmpB[0] + "-" + tmpB[1] + "-" + tmpB[2] == YTDLf().kebab) {
+				this.isRouteBeforeDawn = true;
+			} else {
+				this.isRouteBeforeDawn = false;
+			}
+			// 离店时间
+			let tmpF = value[1].split("/");
+			this.zbInitCalendar.end.yyyy = tmpF[0];
+			this.zbInitCalendar.end.mm = tmpF[1];
+			this.zbInitCalendar.end.dd = tmpF[2];
+			this.watchObj.finish = tmpF[0] + "-" + tmpF[1] + "-" + tmpF[2];
+			// 加入今日中午离店判断逻辑
+			if (tmpF[0] + "-" + tmpF[1] + "-" + tmpF[2] == YTD().kebab) {
+				this.isRouteBeforeDawnAndNoonGo = true;
+			} else {
+				this.isRouteBeforeDawnAndNoonGo = false;
+			}
+			//共几晚
+			this.count = dateEndMinusStart(value[0], value[1]);
+		},
+		// 日历组件的title-若用户不选取日历，点击返回使日历弹窗消失
+		calendarTitleBackEmitFun() {
+			this.zbCalendarVisible = false;
+		},
+
+		// 触发日租房日历dialog显示
+		triggerSmallCalendar() {
+		this.zbSmallCalendarVisible = true;
+		},
+		// 日租房的“入住-离店”
+		clickSmallToday(value) {
+		this.zbSmallCalendarVisible = false;
+		// 入住时间
+		let tmpStart = value[0].split("/");
+		this.zbInitSmallCalendar.start.yyyy = tmpStart[0];
+		this.zbInitSmallCalendar.start.mm = tmpStart[1];
+		this.zbInitSmallCalendar.start.dd = tmpStart[2];
+		// 日租房也要重新拉取最新数据
+		this.watchObj.begin = tmpStart[0] + "-" + tmpStart[1] + "-" + tmpStart[2];
+		this.watchObj.finish =
+			tmpStart[0] + "-" + tmpStart[1] + "-" + tmpStart[2];
+		},
+		// 日租房日历组件的title-若用户不选取日历，点击返回使日历弹窗消失
+		smallCalendarTitleBackEmitFun() {
+		this.zbSmallCalendarVisible = false;
+		},
+		// swiper回调
+		swiperCallback(val) {
+		console.log(val);
+		},
+		// swiper的toast回调
+		swiperToastCallback(val) {
+		console.log(val);
+		},
+		// swiper-slide的点击
+		swiperSlideFun(val) {
+		console.log(val);
+		},
+		// swiper-slide的toast点击
+		swiperToastSlideFun(val) {
+		console.log(val);
+		},
+		// 点击收藏按钮逻辑
+		collectCtrl() {
+			if (this.is_collect == 0) {
+				this.addCollect();
+			} else {
+				this.delCollect();
+			}
+		},
+		addCollect() {
+			let p = {
+				store_id: this.watchObj.store_id
+			};
+			this.$http({
+				method: "POST",
+				url: add_collect,
+				data: p
+			}).then(res => {
+				if (res.data.status == 1) {
+					this.delayToastTxt = "已收藏";
+					this.delayToast = true;
+					setTimeout(() => {
+						this.delayToast = false;
+					}, 2000);
+					this.fetchData(this.watchObj);
+				}
+			});
+		},
+		delCollect() {
+			this.$http({
+				method: "POST",
+				url: del_collect,
+				data: { collect_id: this.collectId }
+			}).then(res => {
+				if (res.data.status == 1) {
+					this.delayToastTxt = "已取消";
+					this.delayToast = true;
+					setTimeout(() => {
+						this.delayToast = false;
+					}, 2000);
+					this.fetchData(this.watchObj);
+				}
+			});
+		},
+		// 拉取公众号info进行wx.config
+		getAppInfo() {
+			var dataObj = {
+				url: location.href.split("#")[0]
+			};
+			this.$http({
+				url: wxShare,
+				method: "POST",
+				data: dataObj
+			}).then(res => {
+				let appId = res.data.data.appid;
+				let timestamp = res.data.data.timestamp;
+				let nonceStr = res.data.data.noncestr;
+				let signature = res.data.data.signature;
+				let tmpUrl = res.data.data.url;
+				let tmpShareImg = res.data.data.share_img;
+				this.wxConfigMethod(
+					appId,
+					timestamp,
+					nonceStr,
+					signature,
+					tmpUrl,
+					tmpShareImg
+				);
+			});
+		},
+		// wx.config
+		wxConfigMethod(appId, timestamp, nonceStr, signature, tmpUrl, tmpShareImg) {
+			wx.config({
+				debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+				appId: appId, // 必填，公众号的唯一标识
+				timestamp: timestamp, // 必填，生成签名的时间戳
+				nonceStr: nonceStr, // 必填，生成签名的随机串
+				signature: signature, // 必填，签名
+				jsApiList: [
+				"onMenuShareAppMessage",
+				"onMenuShareTimeline",
+				"openLocation"
+				] // 必填，需要使用的JS接口列表
+			});
+			wx.onMenuShareAppMessage({
+				title: "秋果人文精品酒店",
+				desc: "拿奖金，拿奖金，拿奖金，点开拿奖金",
+				link: tmpUrl,
+				imgUrl: tmpShareImg,
+				type: "",
+				dataUrl: "",
+				success: function() {}
+			});
+			wx.onMenuShareTimeline({
+				title: "秋果人文精品酒店",
+				desc: "拿奖金，拿奖金，拿奖金，点开拿奖金",
+				link: tmpUrl,
+				imgUrl: tmpShareImg,
+				type: "",
+				dataUrl: "",
+				success: function() {}
+			});
+		},
+		// 打开wx的map
+		openMap() {
+			wx.openLocation({
+				longitude: Number(this.longitude), //经度，浮点数，范围为180 ~ -180。
+				latitude: Number(this.latitude), // 纬度，浮点数，范围为90 ~ -90
+				name: this.data_store.store_name, // 位置名
+				address: this.data_store.address, // 地址详情说明
+				scale: 18, // 地图缩放级别,整形值,范围从1~28。默认为最大
+				infoUrl: "", // 在查看位置界面底部显示的超链接,可点击跳转
+				success: function(res) {
+
+				},
+				fail: function(res) {
+
+				}
+			});
+		},
+		// banner重置宽高
+		setBannerSize() {
+			let hotelDetailBanner = document.querySelector("#hotelDetailBanner");
+			let hotelDetailBannerW = hotelDetailBanner.clientWidth;
+			let hotelDetailBannerH = (hotelDetailBannerW * 320) / 750;
+			this.hotelDetailBannerH = hotelDetailBannerH;
+		},
+		// 点击每个房型item，弹出toast详情页
+		showToastMethod(id) {
+			let _self = this;
+			for (let i = 0; i < _self.data_room.length; i++) {
+				_self.$set(_self.data_room[i], "isShow", false);
+				if (_self.data_room[i].id === id) {
+				_self.$set(_self.data_room[i], "isShow", true);
+				}
+			}
+		},
+		closeToast(id) {
+			let _self = this;
+			for (let i = 0; i < _self.data_room.length; i++) {
+				_self.$set(_self.data_room[i], "isShow", false);
+			}
+		}
+	}
 };
 </script>
 
 <style lang="less" scoped>
-// 凌晨订房bar提示
-.broadcastWrap {
-    display: none;
-    &.beforeDawnAddclass {
-        display: block;
-    }
-}
-
-// banner
-.banner-box {
-    position: relative;
-    // min-height: 162px;
-    // max-height: 190px;
-    background: url("../../assets/images/default/tupian.jpg") no-repeat center
-        center;
-    background-size: 100% 100%;
-    .zb-swiper {
-        width: 100%;
-        height: 100%;
-        margin: 0 auto;
-    }
-    .collect {
-        width: 32px;
-        height: 32px;
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        z-index: 10;
-        img {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-        }
-    }
-    .z-swiper-intro {
-        position: absolute;
-        line-height: 22px;
-        right: 15px;
-        background: rgba(0, 0, 0, 0.5);
-        color: #fff;
-        font-size: 10px;
-        bottom: 10px;
-        z-index: 10;
-        padding: 0 6px 0 25px;
-        border-radius: 5px;
-        img {
-            width: 14px;
-            height: 12px;
-            position: absolute;
-            top: 50%;
-            margin-top: -6px;
-            left: 6px;
-        }
-    }
-}
-// 酒店的位置
-.detail {
-    // padding: 10px 50px 10px 15px;
-    padding: 15px;
-    background: #fff;
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    &:after {
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        height: 1px;
-        background: #e5e5e5;
-        transform: scaleY(0.5);
-    }
-
-    .locationMainInfo {
-        flex: 1;
-        overflow: hidden;
-        .storeName {
-            height: 16px;
-            line-height: 16px;
-            font-size: 16px;
-            color: #333333;
-            font-weight: 500;
-            margin-bottom: 10px;
-        }
-        .storeAddress {
-            height: 18px;
-            line-height: 18px;
-            font-size: 13px;
-            font-weight:400;
-            color: #666;
-            margin-bottom: 10px;
-        }
-        .storeAddrIntro {
-            height: 12px;
-            line-height: 12px;
-            font-size: 12px;
-            font-weight: 400;
-            color: #666;
-        }
-    }
-    .locationViceInfo {
-        width: 65px;
-        .callWrap {
-            height: 22px;
-            margin-bottom: 32px;
-            text-align: right;
-            .callBtn {
-                display: inline-block;
-                width: 22px;
-                height: 22px;
-                .callIcon {
-                    width: 22px;
-                    height: 22px;
-                    border-radius: 50%;
-                }
-            }
-        }
-        .mapWrap {
-            line-height: 12px;
-            text-align: right;
-            span {
-                display: inline-block;
-            }
-            .mapTxt {
-                color: #30b097;
-            }
-            .mapArrow {
-                margin-left: 10px;
-                width: 6px;
-                height: 10px;
-                background: url("../../assets/images/arrows/ic_map_arrow.png")
-                no-repeat center;
-                background-size: 6px 10px; 
-            }
-        }
-    }
-}
-
-// 查看更多
-.detail-more-container {
-    background: #eff1f0;
-    padding-bottom: 5px;
-    .detail-more-wrapper {
-        height: 40px;
-        padding: 10px 15px;
-        background: #fff;
-        font-size: 14px;
-        color: #666;
-        .lf {
-            height: 20px;
-            float: left;
-            span {
-                display: inline-block;
-                height: 20px;
-                line-height: 20px;
-                padding-left: 26px;
-                margin-right: 12px;
-                &.all-hours {
-                    background: url("../../assets/images/hotel-label/lab8.png")
-                        no-repeat left center;
-                    background-size: 18px 18px;
-                }
-                &.wifi {
-                    background: url("../../assets/images/hotel-label/lab1.png")
-                        no-repeat left center;
-                    background-size: 18px 18px;
-                }
-            }
-        }
-        .rg {
-            height: 20px;
-            float: right;
-            font-size: 12px;
-            span {
-                display: inline-block;
-                line-height: 20px;
-                height: 20px;
-                padding-right: 14px;
-                background: url("../../assets/images/arrows/ic-arrow_10_18.png")
-                    no-repeat right center;
-                background-size: 5px 9px;
-            }
-        }
-    }
-}
-
-// 入离店展示
-.checkInOutWrap {
-    height: 70px;
-    padding-bottom: 5px;
-    background: #e5e5e5;
-    .checkInOut {
-        height: 65px;
-        text-align: center;
-        background: #fff;
-        padding: 0 15px;
-        position: relative;
-        .checkIn,
-        .checkOut {
-            float: left;
-            height: 65px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            color: #333;
-            .checkInHead {
-                color: #999;
-            }
-        }
-        .checkOut {
-            float: right;
-        }
-        .total {
-            padding: 0 5px;
-            line-height: 22px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-    }
-}
-
-// 预定的list
-.roomtype-list-wrapper {
-    .list {
-        padding: 0 15px;
-        background: #fff;
-        li {
-            padding: 10px 0 5px 0;
-            height: 88px;
-            position: relative;
-            display: flex;
-            flex-direction: row;
-            &:after {
-                content: "";
-                position: absolute;
-                left: 0;
-                bottom: 0;
-                right: 0;
-                height: 1px;
-                background: #e5e5e5;
-                transform: scaleY(0.5);
-            }
-            // 左边图片展示
-            .lf {
-                width: 83px;
-                height: 73px;
-                background: url("../../assets/images/default/fangxing.jpg")
-                    no-repeat right center;
-                background-size: 83px 73px;
-                border-radius: 3px; 
-                margin-right: 6px;
-                img {
-                    display: block;
-                    width: 83px;
-                    height: 73px;
-                    border-radius: 3px; 
-                }
-            }
-            // 中间
-            .md {
-                flex: 1;
-                overflow: hidden;
-                height: 73px;
-                padding: 8px 5px 0 0;
-                color: rgba(153, 153, 153, 1);
-                // 酒店名称
-                .name {
-                    // width: 155px;
-                    height: 20px;
-                    font-size: 14px;
-                    color: rgba(51, 51, 51, 1);
-                    line-height: 20px;
-                }
-                // 酒店房间标签
-                .labels {
-                    // width: 155px;
-                    height: 16px;
-                    line-height: 16px;
-                    font-size: 12px;
-                    margin-bottom: 6px;
-                }
-                // 价格
-                .price {
-                    height: 19px;
-                    vertical-align: bottom;
-                    .price-new {
-                        line-height: 19px;
-                        margin-right: 5px;
-                        color: #ffba56;
-                        font-size: 16px;
-                    }
-                    .price-old {
-                        color: #cccccc;
-                        font-size: 10px;
-                        line-height: 14px;
-                        text-decoration: line-through;
-                    }
-                }
-            }
-            // 右侧预定按钮
-            .rg {
-                width: 44px;
-                height: 73px;
-                line-height: 73px;
-                .book {
-                    display: inline-block;
-                    width: 44px;
-                    height: 27px;
-                    line-height: 27px;
-                    text-align: center;
-                    color: rgba(255, 255, 255, 1);
-                    font-size: 14px;
-                    background: rgba(48, 176, 151, 1);
-                    border-radius: 5px;
-                    &.isHasRoom {
-                        background: #cccccc;
-                    }
-                }
-            }
-        }
-    }
-}
-
-// -------------------无酒店--------------------
-.no-store {
-    margin-top: 170px;
-    img {
-        display: block;
-        width: 152px;
-        height: 108px;
-        margin: 0 auto;
-    }
-    p {
-        line-height: 20px;
-        font-size: 14px;
-        color: #666;
-        text-align: center;
-    }
-}
-
-// 酒店list中的item的css
-.item-toast {
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    .item-toast-wrapper {
-        background: #eff1f0;
-        width: 100%;
-        top: 65px;
-        position: absolute;
-        bottom: 0;
-        display: flex;
-        flex-direction: column;
-        .item-toast-title {
-            padding-left: 15px;
-            background: #fff;
-            .item-toast-title-wrapper {
-                position: relative;
-                .content {
-                    line-height: 40px;
-                    font-family: "PingFang SC";
-                    color: #333;
-                    font-size: 16px;
-                }
-                .close-btn {
-                    width: 32px;
-                    height: 32px;
-                    position: absolute;
-                    right: 0;
-                    top: 4px;
-                    .img {
-                        width: 32px;
-                        height: 32px;
-                    }
-                }
-            }
-        }
-        .item-toast-banner {
-            // height: 190px;
-            // background: #ffba56;
-            background: url("../../assets/images/default/tupian.jpg") no-repeat center
-                center;
-            background-size: 100% 100%;
-            overflow: hidden;
-            img {
-                display: block;
-                width: 100%;
-            }
-        }
-        .item-toast-info {
-            flex: 1;
-            overflow: auto;
-            // padding-bottom: 70px;
-        }
-        .item-toast-tags {
-            background: #fff;
-            padding: 15px;
-            margin-bottom: 5px;
-            .item-toast-tags-wrapper {
-                &::after {
-                    display: table;
-                    content: "";
-                    clear: both;
-                }
-                .tag {
-                    width: 50%;
-                    line-height: 19px;
-                    margin-bottom: 8px;
-                    float: left;
-                    color: #666;
-                    &:nth-last-child(1) {
-                        margin-bottom: 0;
-                    }
-                    &:nth-last-child(1) {
-                        margin-bottom: 0;
-                    }
-                }
-            }
-        }
-        .item-toast-labels {
-            background: #fff;
-            padding-left: 15px;
-            .label-item {
-                padding: 10px 0;
-                position: relative;
-                display: flex;
-                &::after {
-                    content: "";
-                    width: 100%;
-                    height: 1px;
-                    background: #e5e5e5;
-                    position: absolute;
-                    bottom: 0;
-                    transform: scaleY(0.5);
-                }
-                .label-item-head {
-                    width: 70px;
-                    margin-right: 15px;
-                    color: #666;
-                    letter-spacing: 1px;
-                }
-                .label-item-body {
-                    flex: 1;
-                    line-height: 20px;
-                    color: #333333;
-                }
-            }
-        }
-        .item-toast-foot {
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-            height: 70px;
-            padding: 10px 15px;
-            background: #fff;
-            box-shadow: 0 0 2px #888888;
-            .item-toast-foot-wrapper {
-                line-height: 50px;
-                border: 1px solid #30b097;
-                font-size: 16px;
-                color: #30b097;
-                text-align: center;
-            }
-        }
-    }
-}
+@import "./HotelDetail";
 </style>

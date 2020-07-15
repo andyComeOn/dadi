@@ -1,0 +1,242 @@
+// 提取标题css
+.title {
+    line-height: 21px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    font-size: 16px;
+    margin-top: 30px;
+    font-weight: 600;
+    span {
+        width: 72px;
+        height: 8px;
+        background: url("../../assets/images/vip/bg-row.png") no-repeat center
+            center;
+        background-size: 100% 100%;
+        &.s1 {
+            margin-right: 10px;
+        }
+        &.s2 {
+            margin-left: 10px;
+        }
+    }
+}
+
+// 卡片
+.cards {
+    padding: 0 12px;
+    .box {
+        &::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        .item {
+            width: 100%;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: 100% 100%;
+            position: relative;
+            padding: 40px 0 0 30px;
+            color: #fff;
+            // .crown {
+            //     position: absolute;
+            //     right: 0;
+            //     width: 49px;
+            //     line-height: 22px;
+            //     padding-right: 4px;
+            //     text-align: right;
+            //     background-image: url("../../assets/images/vip/crown.png");
+            //     background-color: rgb(255, 255, 255);
+            //     background-repeat: no-repeat;
+            //     background-position: 6px center;
+            //     background-size: 14px 11px;
+            //     font-size: 10px;
+            //     color: #f78c3e;
+            //     border-radius: 11px 0 0 11px;
+            // }
+            .logo {
+                height: 22px;
+                margin-bottom: 30px;
+                img {
+                    height: 22px;
+                }
+            }
+            .type {
+                line-height: 25px;
+                font-size: 18px;
+                margin-bottom: 10px;
+            }
+            .labels {
+                line-height: 18px;
+                font-size: 13px;
+            }
+            .upMember{
+                width: 82px;
+                height: 24px;
+                position: absolute;
+                top: 33px;
+                right: 2px;
+                line-height: 24px;
+                background:linear-gradient(57deg,rgba(255,255,255,0.8) 0%,rgba(255,255,255,0.7) 100%);
+                border-radius:13px 0px 0px 13px;
+                text-indent: 12px;
+                font-size: 13px;
+                img{
+                    display: inline-block;
+                    width: 6px;
+                    height:11px;
+                    margin-top: -2px;
+                }
+            }
+            .upMember_pk{
+                color: #374F68;
+            }
+            .upMember_yk{
+                color: #515151;
+            }
+            .upMember_jk{
+                color: #E37E30;
+            }
+        }
+    }
+}
+// tabbar
+.tab {
+    padding: 15px 15px 0px;
+    .ul {
+        &::after {
+            display: table;
+            content: "";
+            clear: both;
+        }
+        li {
+            float: left;
+            text-align: center;
+            color: #999;
+            &.active {
+                color: #333;
+                span {
+                    background: #f78c3e;
+                }
+            }
+            &.flag {
+                color: #333;
+                span {
+                    background: #f78c3e;
+                }
+            }
+            div {
+                height: 20px;
+                margin-bottom: 10px;
+                position: relative;
+                img {
+                    position: absolute;
+                    top: 0;
+                    left: 50%;
+                    margin-left: -10px;
+                    width: 20px;
+                    height: 20px;
+                    z-index: 2;
+                }
+                span {
+                    position: absolute;
+                    width: 100%;
+                    height: 1px;
+                    top: 50%;
+                    left: 0;
+                    background: #cccccc;
+                    z-index: 1;
+                }
+            }
+            .cardType {
+                line-height: 13px;
+                font-size: 13px;
+            }
+            .atCardType{
+                margin-top: 4px;
+                color:#999;
+                font-size: 11px;
+                img{
+                    display: inline-block;
+                    width: 10px;
+                    height: 12px;
+                    margin-top: -2px;
+                }
+                i{
+                    font-style: normal;
+                }
+            }
+        }
+    }
+}
+// 下面的文字描述
+.desc {
+    .card-right {
+        .content {
+            padding: 0 15px;
+            &::after {
+                display: table;
+                content: "";
+                clear: both;
+            }
+            dl {
+                width:20%;
+                float: left;
+                text-align: center;
+                img {
+                    width: 24px;
+                    height: 24px;
+                    display: block;
+                    margin: 15px auto 10px;
+                }
+                dt {
+                    line-height: 19px;
+                    margin-bottom: 5px;
+                    color: #333;
+                    font-size: 13px;
+                }
+                dd {
+                    line-height: 16px;
+                    color: #666;
+                    font-size: 12px;
+                }
+            }
+        }
+    }
+    .vip-right {
+        .content {
+            padding: 15px 15px 15px;
+            .ul {
+                &::after {
+                    content: "";
+                    display: table;
+                    clear: both;
+                }
+                li {
+                    // padding: 20px 30px 0;
+                    padding: 15px 15px 0;
+                    height: 100px;
+                    width: 33.33%;
+                    float: left;
+                    border-bottom: 1px solid #e5e5e5;
+                    .li-desc {
+                        color: #333;
+                        line-height: 19px;
+                        font-size: 13px;
+                        margin-bottom: 8px;
+                        text-align: center;
+                    }
+                    .li-intro {
+                        text-align: center;
+                        color: #666;
+                        line-height: 16px;
+                        font-size: 12px;
+                    }
+                }
+            }
+        }
+    }
+}

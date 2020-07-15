@@ -3,11 +3,18 @@
         <scroller :on-refresh="refresh" :on-infinite="infinite" v-if="this.noShopLists == false">
             <ul class="topUpLists">
                 <li v-for='item in topUopMoneyArr'>
-                    <router-link :to='{path:"billDetails",query:{topUpId:item.id}}'>
-                        <p>余额充值</p>
+                    <template v-if="item.remarks == ''">
+                        <router-link :to='{path:"billDetails",query:{topUpId:item.id}}'>
+                            <p>余额充值</p>
+                            <p>{{item.add_time}}</p>
+                            <span>＋{{item.amount}}</span>
+                        </router-link>
+                    </template>
+                    <template v-else>
+                        <p>{{item.remarks}}</p>
                         <p>{{item.add_time}}</p>
                         <span>＋{{item.amount}}</span>
-                    </router-link>
+                    </template>
                 </li>
             </ul>
         </scroller>
@@ -29,9 +36,9 @@
             </div>
         </div>
         <!-- toast（delay=>z）end -->
-        <div class="noShopLists" v-show="noShopLists">
+        <div class="noShop" v-show="noShopLists">
             <img src="../../../assets/images/shop/dingdan_404.png" alt="">
-            <p>暂无商品</p>
+            <p>暂无数据</p>
         </div> 
     </div>
 </template>
@@ -81,18 +88,21 @@
                         pageSize:10
                     }
                 }).then(res=>{
-                    if(res.data.data.length != 0){
-                        this.noShopLists = false;
-                        for(let i in res.data.data){
-                            this.topUopMoneyArr.push(res.data.data[i]);
+                    if(res.data.status == 1){
+                        if(res.data.data.length != 0){
+                            this.noShopLists = false;
+                            for(let i in res.data.data){
+                                this.topUopMoneyArr.push(res.data.data[i]);
+                            }
+                        }else if(res.data.data.length == 0 && this.pageIndex == 1){
+                            this.noShopLists = true;
+                        }else{
+                            this.delayToast = true;
+                            this.delayToastTxt = res.data.msg;
+                            setTimeout(()=>{
+                                this.delayToast = false;
+                            },1500);
                         }
-                    }else if(res.data.data.length == 0 && this.pageIndex == 1){
-                        this.noShopLists = true;
-                        this.delayToast = true;
-                        this.delayToastTxt = res.data.msg;
-                        setTimeout(()=>{
-                            this.delayToast = false;
-                        },1500);
                     }else{
                         this.delayToast = true;
                         this.delayToastTxt = res.data.msg;
@@ -100,12 +110,6 @@
                             this.delayToast = false;
                         },1500);
                     }
-                }).catch(res=>{
-                    this.delayToast = true;
-                    this.delayToastTxt = res.data.msg;
-                    setTimeout(()=>{
-                        this.delayToast = false;
-                    },1500);
                 });
             }
         },

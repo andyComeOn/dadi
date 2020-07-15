@@ -27,7 +27,7 @@
                     </p>
                     <div class="price-wrap">
                         <span class="yen">&yen;</span>
-                        <span class="price din">{{item.price}}</span>
+                        <span class="price">{{item.price}}</span>
                         起
                     </div>
                 </div>

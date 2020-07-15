@@ -1,6 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+
+// 点餐系统
+import orderMealRouter from './order_meal.js';
+
+//活动页
+import activeRouter from './active.js';
+
 import Index from '../pages/Index/Index'
+import City from '../components/city/city.vue';
 
 
 // Error
@@ -48,8 +56,14 @@ import MyCoupon from '../pages/MyCoupon/MyCoupon'
 import MyPoint from '../pages/MyPoint/MyPoint'
 // 我的收藏
 import MyCollect from '../pages/MyCollect/MyCollect'
+// 评论
+import MyRemark from '../pages/MyRemark/MyRemark'
+// 我的评论列表
+import MyRemarkLists from '../pages/MyRemark/MyRemarkLists'
+
 // 会员特权
 import Vip from '../pages/Vip/Vip'
+import upMember from '../pages/Vip/upMember'
 // 帮助中心
 import HelpCenter from '../pages/HelpCenter/HelpCenter'
 
@@ -69,6 +83,8 @@ import extractMoney from '../pages/extractMoney/extractMoney'
 // import extractCheck from '../pages/extractCheck/extractCheck'
 //在线支付
 import onlinePay from '../pages/onlinePay/onlinePay.vue'
+//预付成功
+import prepayPage from '../pages/onlinePay/prepayPage.vue'
 //秋果注册条款
 import Clause from '../pages/Clause/Clause.vue'
 //用户用联系信息List
@@ -110,23 +126,80 @@ import editAddress from '../pages/shopPage/address/editAddress.vue';
 import payPage from '../pages/shopPage/payPage/payPage.vue';
 //支付成功页面
 import paySuccess from '../pages/shopPage/payPage/paySuccess.vue';
+//发票
+import invoiceLists from '../pages/invoicePage/invoiceLists.vue';
+//添加发票抬头
+import addInvoice from '../pages/invoicePage/addInvoice.vue';
+//发票信息
+import editInvoice from '../pages/invoicePage/editInvoice.vue';
+
+//活动
+//优惠券兑换
+import couponExchange from '../pages/active/coupon_exchange.vue';
+//大转盘
+import big_dial from '../pages/active/big_dial.vue';
+//大转盘奖品活动邮寄地址
+import addressMsg from '../pages/active/address_msg.vue';
 
 
+
+// 返工房
+import reserveIndex from '../pages/rework_index/index'
+import reserveSuccess from '../pages/rework_index/reserve_success.vue';
+import fillInOrder from '../pages/rework_index/fill_in_order.vue';
+import reservePayPage from '../pages/rework_index/pay_page.vue';
 
 
 Vue.use(Router)
 
-export default new Router({
-	// mode:'history',
-	routes: [
+const baseRoutes = [
 		// 首页
 		{
-			path: '/index',
-			name: 'index',
+			path: '/',
+      name: 'index',
 			component: Index,
 			meta: {
-				// title: '秋果酒店'
-				title: GlobalCpid == 1 ? "秋果酒店" : "华驿酒店-如家联盟"
+				title:"秋果酒店"
+			}
+    },
+    {
+			path: '/reserveIndex',
+			name: 'reserveIndex',
+			component: reserveIndex,
+			meta: {
+				title:"安心房预订"
+			}
+    },
+    {
+			path: '/reserveSuccess',
+			name: 'reserveSuccess',
+			component: reserveSuccess,
+			meta: {
+				title:"预订成功"
+			}
+    },
+    {
+			path: '/fillInOrder',
+			name: 'fillInOrder',
+			component: fillInOrder,
+			meta: {
+				title:"填写订单"
+			}
+    },
+    {
+			path: '/reservePayPage',
+			name: 'reservePayPage',
+			component: reservePayPage,
+			meta: {
+				title:"订单支付"
+			}
+    },
+    {
+			path: '/city',
+			name: 'City',
+			component: City,
+			meta: {
+				title: '城市列表'
 			}
 		},
 		// 搜素结果页
@@ -273,6 +346,14 @@ export default new Router({
 			meta: {
 				title: '会员特权'
 			}
+    },
+    {
+			path: '/upMember',
+			name: 'upMember',
+			component: upMember,
+			meta: {
+				title: '会员升级'
+			}
 		},
 		// 帮助中心
 		{
@@ -310,283 +391,368 @@ export default new Router({
 				title: '规则'
 			}
 		},
+    //我的评论
+    {
+      path: "/myRemark",
+      name: "myRemark",
+      component: MyRemark,
+      meta: {
+        title: "评论"
+      }
+    }, //我的评论列表
+    {
+      path: "/myRemarkLists",
+      name: "myRemarkLists",
+      component: MyRemarkLists,
+      meta: {
+        title: "我的评论"
+      }
+    },
+    // 推荐好友-点我推广
+    {
+      path: "/qsPush",
+      name: "qsPush",
+      component: QSPush,
+      meta: {
+        title: "二维码"
+      }
+    },
 
-		// 推荐好友-点我推广
-		{
-			path: '/qsPush',
-			name: 'qsPush',
-			component: QSPush,
-			meta: {
-				title: '二维码'
-			}
-		},
+    // 推荐好友-奖励明细
+    {
+      path: "/praise",
+      name: "praise",
+      component: Praise,
+      meta: {
+        title: "奖励明细"
+      }
+    },
 
-		// 推荐好友-奖励明细
-		{
-			path: '/praise',
-			name: 'praise',
-			component: Praise,
-			meta: {
-				title: '奖励明细'
-			}
-		},
+    // 推荐好友-助力好友
+    {
+      path: "/helpFriend",
+      name: "helpFriend",
+      component: HelpFriend,
+      meta: {
+        title: "助力好友"
+      }
+    },
+    // 推荐好友-提现明细
+    {
+      path: "/pickCash",
+      name: "pickCash",
+      component: PickCash,
+      meta: {
+        title: "提现明细"
+      }
+    },
+    //提现
+    {
+      path: "/extractMoney",
+      name: "extractMoney",
+      component: extractMoney,
+      meta: {
+        title: "奖励提现"
+      }
+    },
+    // //提现审核
+    // {
+    // 	path:'/extractCheck',
+    // 	name:'extractCheck',
+    // 	component:extractCheck,
+    // 	meta:{
+    // 		title:'奖励提现'
+    // 	}
+    // },
+    //在线支付
+    {
+      path: "/onlinePay",
+      name: "onlinePay",
+      component: onlinePay,
+      meta: {
+        title: "在线支付"
+      }
+    },
+    //预订成功
+    {
+      path: "/prepayPage",
+      name: "prepayPage",
+      component: prepayPage,
+      meta: {
+        title: "预订成功"
+      }
+    },
+    // 订单列表页的申请退款按钮-跳的页面
+    {
+      path: "/applyMoney",
+      name: "applyMoney",
+      component: ApplyMoney,
+      meta: {
+        title: "申请退款"
+      }
+    },
+    // 更改原手机号
+    {
+      path: "/oldPhoneNum",
+      name: "oldPhoneNum",
+      component: OldPhoneNum,
+      meta: {
+        title: "手机号"
+      }
+    },
+    // 提交新手机号
+    {
+      path: "/newPhoneNum",
+      name: "newPhoneNum",
+      component: NewPhoneNum,
+      meta: {
+        title: "手机号"
+      }
+    },
+    // 登录
+    {
+      path: "/login",
+      name: "login",
+      component: Login,
+      meta: {
+        title: "登录"
+      }
+    },
+    // 注册条款
+    {
+      path: "/clause",
+      name: "clause",
+      component: Clause,
+      meta: {
+        title: "注册条款"
+      }
+    },
+    // 商城首页
+    {
+      path: "/shoppIng",
+      name: "shoppIng",
+      component: shoppIng,
+      meta: {
+        title: "商城-首页"
+      }
+    },
+    // 商城列表
+    {
+      path: "/shopTypeLists",
+      name: "shopTypeLists",
+      component: shopTypeLists,
+      meta: {
+        title: "商品-分类"
+      }
+    },
+    //商城产品详情
+    {
+      path: "/shoppIngDetails",
+      name: "shoppIngDetails",
+      component: shoppIngDetails,
+      // meta: {
+      //   title: "商城"
+      // }
+    },
+    //收货地址
+    {
+      path: "/address",
+      name: "address",
+      component: address,
+      meta: {
+        title: "收货地址"
+      }
+    },
+    //我的钱包
+    {
+      path: "/myWallet",
+      name: "myWallet",
+      component: myWallet,
+      meta: {
+        title: "我的钱包"
+      }
+    },
+    //商城订单
+    {
+      path: "/shopOrder",
+      name: "shopOrder",
+      component: shopOrder,
+      meta: {
+        title: "商城订单"
+      }
+    },
+    //订单详情
+    {
+      path: "/orderDetails",
+      name: "orderDetails",
+      component: orderDetails,
+      meta: {
+        title: "订单详情"
+      }
+    },
+    //退款订单
+    {
+      path: "/refundOrder",
+      name: "refundOrder",
+      component: refundOrder,
+      meta: {
+        title: "退款订单"
+      }
+    },
+    //配送方式
+    {
+      path: "/deliveryWay",
+      name: "deliveryWay",
+      component: deliveryWay,
+      meta: {
+        title: "配送方式"
+      }
+    },
+    //确认订单
+    {
+      path: "/payOrder",
+      name: "payOrder",
+      component: payOrder,
+      meta: {
+        title: "确认订单"
+      }
+    },
+    //充值详情
+    {
+      path: "/topUpDetails",
+      name: "topUpDetails",
+      component: topUpDetails,
+      meta: {
+        title: "充值详情"
+      }
+    },
+    //充值明细
+    {
+      path: "/topUpLists",
+      name: "topUpLists",
+      component: topUpLists,
+      meta: {
+        title: "充值明细"
+      }
+    },
+    //账单详情
+    {
+      path: "/billDetails",
+      name: "billDetails",
+      component: billDetails,
+      meta: {
+        title: "账单详情"
+      }
+    },
+    //充值规则
+    {
+      path: "/topUpRule",
+      name: "topUpRule",
+      component: topUpRule,
+      meta: {
+        title: "充值规则"
+      }
+    },
+    //编辑收货地址
+    {
+      path: "/editAddress",
+      name: "editAddress",
+      component: editAddress,
+      meta: {
+        title: "编辑收货地址"
+      }
+    },
+    //支付页面
+    {
+      path: "/payPage",
+      name: "payPage",
+      component: payPage,
+      meta: {
+        title: "在线支付"
+      }
+    },
+    //支付成功页面
+    {
+      path: "/paySuccess",
+      name: "paySuccess",
+      component: paySuccess,
+      meta: {
+        title: "支付成功"
+      }
+    },
+    //发票抬头
+    {
+      path: "/invoiceLists",
+      name: "invoiceLists",
+      component: invoiceLists,
+      meta: {
+        title: "发票抬头"
+      }
+    },
+    //添加发票抬头
+    {
+      path: "/addInvoice",
+      name: "addInvoice",
+      component: addInvoice,
+      meta: {
+        title: "添加发票抬头"
+      }
+    },
+    //发票信息
+    {
+      path: "/editInvoice",
+      name: "editInvoice",
+      component: editInvoice,
+      meta: {
+        title: "发票信息"
+      }
+    },
+    //电子房券兑换
+    {
+      path:"/couponExchange",
+      name:"couponExchange",
+      component:couponExchange,
+      meta:{
+        title:"电子房券兑换"
+      }
+    },
+    //大转盘
+    {
+      path:"/big_dial",
+      name:"big_dial",
+      component:big_dial,
+      meta:{
+        title:"大转盘"
+      }
+    },
+    //大转盘奖品邮寄地址
+    {
+      path:"/addressMsg",
+      name:"addressMsg",
+      component:addressMsg,
+      meta:{
+        title:"请填写地址"
+      }
+    },
+    {
+      path: "/error",
+      name: "error",
+      component: Error
+    },
+    // 根
+    // {
+    //   path: "/",
+    //   redirect: "/index"
+    // },
+    // {
+    //   path: "*",
+    //   redirect: "/"
+    // }
+]
 
-		// 推荐好友-助力好友
-		{
-			path: '/helpFriend',
-			name: 'helpFriend',
-			component: HelpFriend,
-			meta: {
-				title: '助力好友'
-			}
-		},
-		// 推荐好友-提现明细
-		{
-			path: '/pickCash',
-			name: 'pickCash',
-			component: PickCash,
-			meta: {
-				title: '提现明细'
-			}
-		},
-		//提现
-		{
-			path: '/extractMoney',
-			name: 'extractMoney',
-			component: extractMoney,
-			meta: {
-				title: '奖励提现'
-			}
-		},
-		// //提现审核
-		// {
-		// 	path:'/extractCheck',
-		// 	name:'extractCheck',
-		// 	component:extractCheck,
-		// 	meta:{
-		// 		title:'奖励提现'
-		// 	}
-		// },
-		//在线支付
-		{
-			path: '/onlinePay',
-			name: 'onlinePay',
-			component: onlinePay,
-			meta: {
-				title: '在线支付'
-			}
-		},
-		// 订单列表页的申请退款按钮-跳的页面
-		{
-			path: '/applyMoney',
-			name: 'applyMoney',
-			component: ApplyMoney,
-			meta: {
-				title: '申请退款'
-			}
-		},
-		// 更改原手机号
-		{
-			path: '/oldPhoneNum',
-			name: 'oldPhoneNum',
-			component: OldPhoneNum,
-			meta: {
-				title: '手机号'
-			}
-		},
-		// 提交新手机号
-		{
-			path: '/newPhoneNum',
-			name: 'newPhoneNum',
-			component: NewPhoneNum,
-			meta: {
-				title: '手机号'
-			}
-		},
-		// 登录
-		{
-			path: '/login',
-			name: 'login',
-			component: Login,
-			meta: {
-				title: '登录'
-			}
-		},
-		// 注册条款
-		{
-			path: '/clause',
-			name: 'clause',
-			component: Clause,
-			meta: {
-				title: '注册条款'
-			}
-		},
-		// 商城首页
-		{
-			path: '/shoppIng',
-			name: 'shoppIng',
-			component: shoppIng,
-			meta:{
-				title:'商城'
-			}
-		},
-		// 商城列表
-		{
-			path: '/shopTypeLists',
-			name: 'shopTypeLists',
-			component: shopTypeLists,
-			meta:{
-				title:'商品-分类'
-			}
-		},
-		//商城产品详情
-		{
-			path: '/shoppIngDetails',
-			name: 'shoppIngDetails',
-			component: shoppIngDetails,
-			meta:{
-				title:'商城'
-			}
-		},
-		//收货地址
-		{
-			path: '/address',
-			name: 'address',
-			component: address,
-			meta:{
-				title:'收货地址'
-			}
-		}, 
-		//我的钱包  
-		{
-			path: '/myWallet',
-			name: 'myWallet',
-			component: myWallet,
-			meta:{
-				title:'我的钱包'
-			}
-		}, 
-		//商城订单  
-		{
-			path: '/shopOrder',
-			name: 'shopOrder',
-			component: shopOrder,
-			meta:{
-				title:'商城订单'
-			}
-		}, 
-		//订单详情  
-		{
-			path: '/orderDetails',
-			name: 'orderDetails',
-			component: orderDetails,
-			meta:{
-				title:'订单详情'
-			}
-		}, 
-		//退款订单  
-		{
-			path: '/refundOrder',
-			name: 'refundOrder',
-			component: refundOrder,
-			meta:{
-				title:'退款订单'
-			}
-		}, 
-		//配送方式  
-		{
-			path: '/deliveryWay',
-			name: 'deliveryWay',
-			component: deliveryWay,
-			meta:{
-				title:'配送方式'
-			}
-		}, 
-		//确认订单  
-		{
-			path: '/payOrder',
-			name: 'payOrder',
-			component: payOrder,
-			meta:{
-				title:'确认订单'
-			}
-		}, 
-		//充值详情  
-		{
-			path: '/topUpDetails',
-			name: 'topUpDetails',
-			component: topUpDetails,
-			meta:{
-				title:'充值详情'
-			}
-		}, 
-		//充值明细  
-		{
-			path: '/topUpLists',
-			name: 'topUpLists',
-			component: topUpLists,
-			meta:{
-				title:'充值明细'
-			}
-		}, 
-		//账单详情  
-		{
-			path: '/billDetails',
-			name: 'billDetails',
-			component: billDetails,
-			meta:{
-				title:'账单详情'
-			}
-		}, 
-		//充值规则
-		{
-			path:'/topUpRule',
-			name:'topUpRule',
-			component:topUpRule,
-			meta:{
-				title:'充值规则'
-			}
-		},
-		//编辑收货地址  
-		{
-			path: '/editAddress',
-			name: 'editAddress',
-			component: editAddress,
-			meta:{
-				title:'编辑收货地址'
-			}
-		}, 
-		//支付页面  
-		{
-			path: '/payPage',
-			name: 'payPage',
-			component: payPage,
-			meta:{
-				title:'在线支付'
-			}
-		}, 
-		//支付成功页面
-		{
-			path:'/paySuccess',
-			name:'paySuccess',
-			component:paySuccess,
-			meta:{
-				title:'支付成功'
-			}
-		},
-		{
-			path: '/error',
-			name: 'error',
-			component: Error
-		},
-		// 根
-		{
-			path: '/',
-			redirect: '/index'
-		},
-		{
-			path: '*',
-			redirect: '/'
-		},
-	]
-})
+const routes = baseRoutes.concat(orderMealRouter,activeRouter);
+
+export default new Router({
+	mode:'history',
+	routes
+});

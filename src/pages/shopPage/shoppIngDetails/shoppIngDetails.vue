@@ -1,7 +1,7 @@
 <template>
     <div class="shoppingDetailPage">
         <!-- 轮播 str -->
-        <swiper ref="mySwiper" id="cardsBox" :style="{height:cardsBoxH + 'px'}">
+        <swiper :options="swiperIndexOption" ref="mySwiper" id="cardsBox" :style="{height:cardsBoxH + 'px'}">
             <!-- slides -->
             <swiper-slide  v-for='item in this.bannerArr'>
                 <img style="width:100%;height:100%;" :src="item" alt="">
@@ -14,6 +14,7 @@
         <div class="product">
             <h3><span v-if='this.consume_type == 2 || this.consume_type == 3'>积分</span>{{shopName}}</h3>
             <p>{{shopDesc}}</p>
+            <p v-if="this.shopMsg.coupon_name" style="color:#E0310D">购买商品赠送"{{shopMsg.coupon_name}}"</p>
             <div class="product_price">
                 <span v-if='this.consume_type == 1'><i>￥</i>{{shopPrice}}</span>
                 <span v-if='this.consume_type == 2'>{{goods_integral}}积分</span>
@@ -39,9 +40,10 @@
         </div>
         <!-- 运费 end -->
         <!-- 规格 str -->
-        <div class="distribution freight">
+        <div class="distribution freight" @click="specsBtn()">
             <span>规格</span>
             <p>{{specs}}</p>
+            <img src="../../../assets/images/arrows/ic-arrow_10_18.png" />
         </div>
         <!-- 规格 end -->
         <!-- shopDetails str -->
@@ -66,9 +68,10 @@
             </div>
         </div>
         <!-- buy end -->
-        <!-- 配送方式 str -->
-        <div class="deliveryList" v-if='shopDetailsBox == true' @click.self="shopDetailsBox = false">
-            <ul class="list">
+        <!-- 遮罩 str -->
+        <div class="deliveryList" v-if='shopDetailsBox == true' @click.self="shopDetailsBoxBtn()">
+            <!-- 配送方式 str -->
+            <ul class="list" v-if="deliveryType == true">
                 <li @click="delivery(2)" v-if="this.logistic_type == 2 || this.logistic_type == 3">
                     <img src="../../../assets/images/shop/peisong_mendian.png" alt="">
                     <p>门店自提</p>
@@ -78,8 +81,35 @@
                     <p>物流配送</p>
                 </li>
             </ul>
+            <!-- 配送方式 end -->
+            <!-- 规格 str -->
+            <div class="speseBox" v-if="speceType == true">
+                <h3>
+                    <span>产品规格</span>
+                    <!-- <img src="" /> -->
+                </h3>
+                <div class="shopMsg">
+                    <img :src="this.shopMsg.goods_img" />
+                    <div class="shopName">
+                        <p style="-webkit-box-orient: vertical">{{this.shopMsg.goods_name}}</p>
+                        <div class="product_price">
+                            <span v-if='this.consume_type == 1'><i>￥</i>{{shopPrice}}</span>
+                            <span v-if='this.consume_type == 2'>{{goods_integral}}积分</span>
+                            <span v-if='this.consume_type == 3'><i>￥</i>{{shopPrice}}+{{goods_integral}}<i>积分</i></span>
+                        </div>
+                    </div>
+                    <!-- <div class="shopName">{{this.shopMsg.desc}}</div> -->
+                </div>
+                <div class="shopSpese">
+                    <p>产品规格</p>
+                    <span :class="{shopSpeseActive:active == item.id}" v-for="(item,index) in this.shopMsg.spesArr" :key='index' @click="speceBtn(item.id,item.specs_name)">{{item.specs_name}}</span>
+                </div>
+                <!-- <div class="submitBtn" @click="buyPayBtn()">确认</div> -->
+            </div>
+            <!-- 规格 end -->
         </div>
-        <!-- 配送方式 end -->
+        <!-- 遮罩 str -->
+        
         <!-- toast(loading=>weui) -->
         <div v-show="loading">
             <div class="weui-mask_transparent"></div>
@@ -100,8 +130,8 @@
 </template>
 <script>
 import { slider } from "vue-concise-slider"; // 引入slider组件
-import { shopDetails,DistributionBanner,goodsPrice } from "../../../api/api.js";
-import { setTimeout } from 'timers';
+import wx from 'weixin-js-sdk';
+import { shopDetails,DistributionBanner,goodsPrice,wxShare } from "../../../api/api.js";
 export default {
     name: "shoppIngDetails",
     components: {
@@ -137,10 +167,109 @@ export default {
             up_status:'',               //是否下架   1上架    2下架
             is_member_consume:"",       //是否享受权益   1是   2否
             goods_detail:"",            //商品详情
+            swiperIndexOption: {  
+                autoplay: 3000,
+                grabCursor : true,
+                loop:true,
+                setWrapperSize :true,
+                autoHeight: true,
+                pagination: '.swiper-pagination',
+                paginationType: 'fraction',
+                paginationClickable :true,
+                mousewheelControl : true,
+                debugger: true,
+                observer:true,
+                observeParents:true,
+            },
+            shopMsg:"",                 //详细信息
+            active:"",
+            speceType:false,
+            deliveryType:false
         };
     },
-    computed: {},
+    created(){
+        let shopTitle = decodeURIComponent(this.$route.query.goodsName);
+        document.title = shopTitle;
+        this.shopName = shopTitle;
+    },
     methods: {
+        //点击规格
+        specsBtn(){
+            this.shopDetailsBox = true;
+            this.speceType = true;
+            this.deliveryType = false;
+        },
+        //点击遮罩
+        shopDetailsBoxBtn(){
+            this.shopDetailsBox = false;
+            this.speceType = false;
+            this.deliveryType = false;
+        },
+        //点击规格
+        speceBtn(id,name){
+            this.active = id;
+            this.specs = name;
+            this.shopDetailsBox = false;
+            this.speceType = false;
+            this.deliveryType = false;
+        },
+        //获取微信分享的参数
+        getShareData(){
+            //获取 微信分享参数
+            var dataObj = {
+                url: location.href
+            };
+            this.$http({
+                url: wxShare,
+                method: "POST",
+                data: dataObj
+            }).then(res => {
+                if(res.data.status == 1){
+                    this.appId = res.data.data.appid;
+                    this.timestamp = res.data.data.timestamp;
+                    this.nonceStr = res.data.data.noncestr;
+                    this.signature = res.data.data.signature;
+                    this.shareUrl = window.location.href;
+                    this.share(this.shopName,this.shopDesc,this.shareUrl, res.data.data.share_img);
+                }else{
+                    this.delayToast = true;
+                    this.delayToastTxt = res.data.msg;
+                    setTimeout(()=>{
+                        this.delayToast = false;
+                    },1500);
+                }
+            });
+        },
+        //微信分享
+        share(shareName,shareDesc,shareUrl,shareImg) {
+            wx.config({
+                debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                appId: this.appId, // 必填，公众号的唯一标识
+                timestamp: this.timestamp, // 必填，生成签名的时间戳
+                nonceStr: this.nonceStr, // 必填，生成签名的随机串
+                signature: this.signature, // 必填，签名
+                jsApiList: ["onMenuShareTimeline", "onMenuShareAppMessage"] // 必填，需要使用的JS接口列表
+            });
+            //获取“分享给朋友”按钮点击状态及自定义分享内容接口
+            wx.onMenuShareAppMessage({
+                title: shareName,  // 分享标题
+                desc: shareDesc, // 分享描述
+                link: shareUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: shareImg, // 分享图标
+                success: function() {
+                }
+            });
+            //获取“分享到朋友圈”按钮点击状态及自定义分享内容接口
+            wx.onMenuShareTimeline({
+                title: shareName,
+                desc: shareDesc,
+                link: shareUrl,
+                imgUrl: shareImg,
+                success: function() {
+                }
+            });
+        },
+        //选择配送方式
         shopDetailsBtn(){
             if(this.logistic_type == 1){
                 this.delayToast = true;
@@ -156,6 +285,8 @@ export default {
                 },1500);
             }else{
                 this.shopDetailsBox = true;
+                this.speceType = false;
+                this.deliveryType = true;
             }
         },
         fetchGoodsDetail() {                // 拉取商品详情
@@ -169,13 +300,12 @@ export default {
             }).then(res => {
                 this.loading = false;                               //loading
                 if (res.data.status == 1) {
+                    this.shopMsg = res.data.data;                   //详细信息
                     this.bannerArr = res.data.data.goods_banner;    //商品banner
-                    this.shopName = res.data.data.goods_name;       //商品名称
                     this.shopDesc = res.data.data.desc;             //商品描述
                     this.shopPrice = res.data.data.goods_price;     //商品价格
                     this.shopOldPrice = res.data.data.lineation_price; //商品划线价格
                     this.freight_money = res.data.data.freight_money; //运费
-                    this.specs = res.data.data.specs;               //规格
                     this.max_num = res.data.data.max_num;           //最大购买量
                     this.logistic_type = res.data.data.logistic_type;           //配送方式 1邮寄  2自提 3邮寄+自提
                     this.deliveryWay = res.data.data.logistic_type;
@@ -191,6 +321,7 @@ export default {
                             this.delayToast = false;
                         },1500);
                     }
+                    this.getShareData();                            //获取微信分享参数
                 } else {
                     this.delayToastTxt = res.data.msg;
                     this.delayToast = true;
@@ -237,60 +368,59 @@ export default {
         },
         buyPayBtn() {               // 立即购买
             if (this.deliveryWay == 1 || this.deliveryWay ==2) {
-                this.loading = true;                //loading
-                this.$http({
-                    url:goodsPrice,
-                    method:"POST",
-                    data:{
-                        id:this.$route.query.shopId,            //商品Id
-                        number:this.payShopNum,                 //购买数量
-                        coupon_id:'',                           //优惠券id
-                    }
-                }).then((res)=>{
-                    this.loading = false;                //loading
-                    if(res.data.status == 1){
-                        console.log(res);
-                        this.$router.push({
-                            path: "payOrder",
-                            query: {
-                                shopId: this.$route.query.shopId,       //商品id
-                                payShopNum: this.payShopNum,            //购买数量
-                                deliveryWay: this.deliveryWay           //配送方式
-                            }
-                        });
-                    }else{
-                        this.delayToast = true;                     //错误提示打开
-                        this.delayToastTxt = res.data.msg;      //错误提示信息
-                        setTimeout(()=>{
-                            this.delayToast = false;                //错误提示关闭
-                        },1500);
-                        return false;
-                    }
-                });
+                if(this.active){
+                    this.loading = true;                //loading
+                    this.$http({
+                        url:goodsPrice,
+                        method:"POST",
+                        data:{
+                            id:this.$route.query.shopId,            //商品Id
+                            number:this.payShopNum,                 //购买数量
+                            coupon_id:'',                           //优惠券id
+                            spec_id:this.active
+                        }
+                    }).then((res)=>{
+                        this.loading = false;                //loading
+                        if(res.data.status == 1){
+                            this.$router.push({
+                                path: "payOrder",
+                                query: {
+                                    shopId: this.$route.query.shopId,       //商品id
+                                    payShopNum: this.payShopNum,            //购买数量
+                                    deliveryWay: this.deliveryWay,          //配送方式
+                                    spec_id:this.active
+                                }
+                            });
+                        }else{
+                            this.delayToast = true;                     //错误提示打开
+                            this.delayToastTxt = res.data.msg;      //错误提示信息
+                            setTimeout(()=>{
+                                this.delayToast = false;                //错误提示关闭
+                            },1500);
+                            return false;
+                        }
+                    });
+                }else{
+                    this.delayToast = true;                     //错误提示打开
+                    this.delayToastTxt = "请选择规格";      //错误提示信息
+                    setTimeout(()=>{
+                        this.delayToast = false;                //错误提示关闭
+                        this.shopDetailsBox = true;
+                        this.speceType = true;
+                        this.deliveryType = false;
+                    },1500);
+                    return false;
+                }
             } else {
                 this.delayToast = true;                     //错误提示打开
                 this.delayToastTxt = '请选择配送方式';      //错误提示信息
                 setTimeout(()=>{
                     this.delayToast = false;                //错误提示关闭
                     this.shopDetailsBox = true;
+                    this.speceType = false;
+                    this.deliveryType = true;
                 },1500);
             }
-        },
-        getBannerImg(){
-            var mySwiper = new Swiper('.swiper-container', { 
-                // notNextTick: true,
-                autoplay: 3000,
-                grabCursor : true,
-                setWrapperSize :true,
-                autoHeight: true,
-                pagination: '.swiper-pagination',
-                paginationType: 'fraction',
-                paginationClickable :true,
-                mousewheelControl : true,
-                debugger: true,
-                observer:true,
-                observeParents:true,
-            });
         },
         goodsPriceMsg(){            //商品价格计算
             this.loading = true;                //loading
@@ -305,24 +435,20 @@ export default {
             }).then((res)=>{
                 this.loading = false;                //loading
                 if(res.data.status == 1){
-                    console.log(res);
-                    return true;
+
                 }else{
                     this.delayToast = true;                     //错误提示打开
                     this.delayToastTxt = res.data.msg;      //错误提示信息
                     setTimeout(()=>{
                         this.delayToast = false;                //错误提示关闭
                     },1500);
-                    return false;
                 }
             });
         }
     },
     mounted() {
         this.fetchGoodsDetail();        // 调取商品详情方法
-        this.getBannerImg();
         this.$nextTick(() => {
-            // 由卡片的宽度-->给卡片的高赋值
             let cardsBox = document.querySelector("#cardsBox");
             let cardsBoxH = cardsBox.clientWidth;
             this.cardsBoxH = cardsBoxH;

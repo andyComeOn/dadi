@@ -1,188 +1,374 @@
 <template>
     <div class="orderPage m-position-ab">
-        <!-- <div class="broadcastWrap" :class="{beforeDawnAddclass: isBeforeDawn}">
-            <myBroadcast></myBroadcast>
-        </div> -->
+
         <!-- 订单信息 -->
-        <div class="orderInfoWrap">
-            <div class="orderInfo" v-if="details">
-                <div class="storeName m-ellipsis">{{details.store_name}}</div>
-                <div class="storeLabels">
-                    <span>{{details.name}}</span>
-                    <span>{{details.introduce}}</span>
-                </div>
-                <div class="checkInOutBar">
-                    <span class="instro" v-show="isBeforeDawnOrder">凌晨入住</span>
-                    <span class="instro" v-show="!isBeforeDawnOrder">入住</span>
-                    <span class="date">{{beginM}}月{{beginD}}日</span>
-                    <span class="instro" v-show="isBeforeDawnOrderAndNoonGo">中午离店</span>
-                    <span class="instro" v-show="!isBeforeDawnOrderAndNoonGo">离店</span>
-                    <span class="date">{{finishM}}月{{finishD}}日</span>
-                    <span class="date" style="margin-right:0;">{{howManyNight}}晚</span>
+        <div class="order_head">
+            <div class="order_head_box">
+                <div class="order_head_details">
+                    <p class="store_room_name">{{details.name}}</p>
+                    <p class="info_time">{{beginM}}月{{beginD}}日<i></i>{{finishM}}月{{finishD}}日<span>{{howManyNight}}晚</span></p>
+                    <p class="store_name">{{details.store_name}}</p>
+                    <template>
+                        <p class="breakfast" v-if="this.is_type == 0">{{privilege.breakfast}}</p>
+                        <p class="breakfast" v-else>活动产品不含早餐</p>
+                    </template>
+                    <p class="breakfast">{{privilege.coupon_name}}</p>
+                    <p class="cancel_time">{{privilege.pre_cancel_time}}前免费取消</p>
                 </div>
             </div>
         </div>
-        <!-- 用户操作区 -->
-        <ul class="Cells">
-            <!-- 房间数 -->
-            <li class="roomCell" :class="{roomCellBorderVoid: isSelectRoom == true}">
-                <label class="label">房间数</label>
-                <div class="roomNum" @click="selectRoom">
-                    {{watchObj.room_sum}}间
-                    <img class="roomNumArrow" src="../../assets/images/arrows/ic_pay_arrow.png" alt="">
-                </div>
-            </li>
-            <!-- 可定房间list -->
-            <div class="roomList" v-show="isSelectRoom">
-                <span v-if="roomNumItems">
-                    <span class="roomItem" v-for="(item,index) in roomNumItems" :key="index">
-                        <i :class="[{default: isActive == item.num }]" @click="selectOrder(item.num)">{{item.num}}</i>
-                    </span>
-                </span>
-                <div v-else class="roomListVoid">您今日可订限额已用完，请明天再来</div>
-            </div>
-            <!-- 入住人姓名 -->
-            <li class="name">
-                <label class="label">入住人姓名</label>
-                <div class="item-rg linkman">
-                    <div class="nameInputWrap">
-                        <input type="text" class="nameInput" id="name" placeholder="请输入姓名" v-model="orderName">
-                    </div>
-                    <div class="linkmanBtn" @click="showLinkmanMask"></div>
-                </div>
-            </li>
 
-            <!-- 手机号 -->
-            <li class="tel">
-                <label class="label">手机号</label>
-                <div class="item-rg">
-                    <div class="telInputWrap">
-                        <!-- @blur="orderTelBlur" -->
-                        <input type="tel" class="telInput" id="tel" placeholder="请输入手机号" v-model="orderTel">
+        <!-- 疫情提示 -->
+        <template v-if="this.epidemicShow == 1">
+            <div class="cells_box">
+                <ul class="Cells">
+                    <p class="info_msg col-red" style="color:red;">温馨提示</p>
+                    <div class="epidemic_hint" style="padding: 5px 15px 15px 15px;text-indent: 2em;color: red;">
+                        <p>即日起根据北京市最新政策规定，入住酒店不再要求提供核酸检测阴性证明，凭健康码即可办理入住。</p>
+                        <p>境外，湖北，牡丹江，哈尔滨，抚顺等高风险地域客人，依据门店属地接待相关政策执行!</p>
                     </div>
+                </ul>
+            </div>
+        </template>
+
+        <!-- 用户操作区 -->
+        <div class="cells_box">
+            <ul class="Cells">
+                <p class="info_msg">入住信息</p>
+                <!-- 房间数 -->
+                <li class="roomCell" :class="{roomCellBorderVoid: isSelectRoom == true}" @click="selectRoom">
+                    <label class="label">房间数</label>
+                    <div class="roomNum">
+                        {{watchObj.room_sum}}间
+                        <img class="roomNumArrow" src="../../assets/images/arrows/ic_pay_arrow.png" />
+                    </div>
+                </li>
+                <!-- 可定房间list -->
+                <div class="roomList" v-show="isSelectRoom">
+                    <span v-if="roomNumItems.length !=0 ">
+                        <span class="roomItem" v-for="(item,index) in roomNumItems" :key="index">
+                            <i :class="[{default: isActive == item.num }]" @click="selectOrder(item.num)">{{item.num}}</i>
+                        </span>
+                    </span>
+                    <div v-else class="roomListVoid">{{hint_text}}</div>
                 </div>
-            </li>
-        </ul>
-        <ul class="Cells">
-            <!-- 优惠券 -->
-            <li class="coupon">
-                <label class="label">优惠券</label>
-                <div class="item-rg">
-                    <div class="coupon-div" @click="showCouponMask">
-                        <div v-show="couponBarShow" style="display:inline-block;">
-                            <span v-if="coupon.length==0">无</span>
-                            <span v-else>{{coupon.length}}张可用</span>
+                <!-- 入住人姓名 -->
+                <li class="name">
+                    <label class="label">入住人姓名</label>
+                    <div class="item-rg linkman">
+                        <div class="nameInputWrap">
+                            <input type="text" class="nameInput" id="name" placeholder="请输入姓名" v-model="orderName">
                         </div>
-                        <div v-show="!couponBarShow" style="display:inline-block;">
-                            已选择1张，抵扣{{initCoupon.amount}}元
+                        <div class="linkmanBtn" @click="fetchLinkman"></div>
+                    </div>
+                </li>
+                <!-- 手机号 -->
+                <li class="tel">
+                    <label class="label">手机号</label>
+                    <div class="item-rg">
+                        <div class="telInputWrap">
+                            <input type="tel" class="telInput" id="tel" placeholder="请输入手机号" v-model="orderTel">
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="cells_box">
+            <ul class="Cells">
+                <p class="info_msg">超值优惠</p>
+
+                <!-- 积分兑换 -->
+                <li class="coupon" v-if="this.privilege.integral_status == 1" @click="exchangeMask">
+                    <label class="label">积分兑换</label>
+                    <div class="item-rg">
+                        <div class="coupon-div">
+                            <div style="display:inline-block;">
+                                <span v-if="this.exchangeType == 0">不使用积分兑换</span>
+                                <span v-if="this.exchangeType == 1">使用积分兑换</span>
+                            </div>
+                            <img src="../../assets/images/arrows/ic-arrow_10_18.png" />
+                        </div>
+                    </div>
+                </li>
+
+                <!-- 优惠券 -->
+                <template v-if="this.is_type == 0">
+                    <li class="coupon" v-if="this.payType == 2 && this.exchangeType == 0" @click="showCouponMask">
+                        <label class="label">优惠券</label>
+                        <div class="item-rg">
+                            <div class="coupon-div">
+                                <div v-show="couponBarShow" style="display:inline-block;">
+                                    <span v-if="coupon.length==0">无可用优惠券</span>
+                                    <span v-else>{{coupon.length}}张优惠券可用</span>
+                                </div>
+                                <div v-show="!couponBarShow" style="display:inline-block;">
+                                    {{initCoupon.name}}
+                                </div>
+                                <img src="../../assets/images/arrows/ic-arrow_10_18.png" alt="">
+                            </div>
+                        </div>
+                    </li>
+                </template>
+
+                <!-- 下面的逻辑是啥意思？ -->
+                <li class="coupon" v-if="this.exchangeType == 0 && (initCoupon.coupon_type == 1 || initCoupon.coupon_type == 2 || initCoupon.coupon_type == 3)">
+                    <div class="item-rg">
+                        <span class="once_reduce">立减<i>&yen;</i><span>{{reduce_money}}</span></span>
+                    </div>
+                </li>
+
+                <!-- 会员卡种特权 -->
+                <li class="cardRight" @click="fetchUserCardRightInfo">
+                    <label class="label" style="width: 90px;">{{group_name | filterCardType}}特权</label>
+                    <div class="cardRightContent">
+                        <div class="cardRightTxt m-ellipsis">
+                            房价折扣{{promo}}折，餐饮折扣{{catering_discount}}，延迟退房{{delayCheckout}}
                         </div>
                         <img src="../../assets/images/arrows/ic-arrow_10_18.png" alt="">
                     </div>
-                </div>
-            </li>
-            <!-- 会员卡种特权 -->
-            <li class="cardRight" @click="showUserCardRightMask">
-                <label class="label" style="width: 90px;">{{group_name | filterCardType}}特权</label>
-                <div class="cardRightContent">
-                    <div class="cardRightTxt m-ellipsis">
-                        房价折扣{{promo}}折，餐饮折扣{{catering_discount}}，延迟退房{{delayCheckout}} 
+                </li>
+
+            </ul>
+        </div>
+
+        <div class="cells_box">
+            <ul class="Cells">
+                <p class="info_msg">其它服务</p>
+
+                <li class="roomCell">
+                    <label class="label">退房规则</label>
+                    <div class="roomNum">延迟退房{{privilege.delay_room}}</div>
+                </li>
+
+                <!-- 发票类型 -->
+                <template v-if="this.is_type != 1">
+                    <li class="ticket" v-if="this.exchangeType == 0 && this.initCoupon == '' || this.initCoupon.coupon_type == 1 || this.initCoupon.coupon_type == 2">
+                        <label class="label">发票类型</label>
+                        <div class="ticketContent tr" @click="showTicketMask">
+                            {{ ticketType | transTicketType}}
+                            <img src="../../assets/images/arrows/ic-arrow_10_18.png" style="width: 5px; height: 9px;" alt="">
+                        </div>
+                    </li>
+                </template>
+
+                <!-- 普票、专票对应的信息收集 -->
+                <div v-if="this.exchangeType == 0 && this.initCoupon == '' || this.initCoupon.coupon_type == 1 || this.initCoupon.coupon_type == 2" class="inputTicket" v-show="isShowInputTicket">
+                    <div class="inputTicketItem">
+                        <label class="ticketLab">单位名称</label>
+                        <div class="ticketContent ticketContentCompany">
+                            <input type="text" v-model="ticketCompany" class="ipt" placeholder="请输入单位名称...">
+                            <img class="invoice_company_icon" src="../../assets/images/invoice-company.png" @click.stop="fetchInvoiceLis">
+                        </div>
                     </div>
-                    <img src="../../assets/images/arrows/ic-arrow_10_18.png" alt="">
-                </div>
-            </li>
-            <!-- 发票 -->
-            <li class="ticket">
-                <label class="label">发票</label>
-                <div class="item-rg" style="color:#666;font-size:14px;line-height:50px;">
-                    酒店开具发票
-                </div>
-            </li>
-        </ul>
-        <!-- 备注 -->
-        <div class="mark">
-            <label class="label">备注</label>
-            <div class="markRg"><textarea name="markName" id="markTextarea" placeholder="选填" v-model="remarks"></textarea></div>
-        </div>
-        <!-- 温馨提示 -->
-        <div class="tips">
-            <p>退订规则：入住当天12点之前均可取消订单</p>
-            <p>温馨提示：1、酒店入住时间14:00以后，离店时间12:00以前。如您在14:00以前未能到达，请以酒店安排为准。2、普卡会员入住当天12：00之前取消订单，不收取费用，逾期扣费。银卡、金卡会员14点前取消订单，不收取费用；铂金卡18点前取消订单，不收取费用。3、普通客户12点之前退房；普卡会员13点退房；银卡会员14点退房；金卡会员15点退房；铂金卡会员延迟到16点退房。联系电话：<a href="tel:400-099-9682">400-099-9682</a> (周一至周五9:00-17:30)</p>
-        </div>
-        <!-- 确认支付bar -->
-        <div class="paybar">
-            <div class="lf">
-                <div class="money">&yen;{{totalPrice}}</div>
-                <div class="discount">省{{discount}}</div>
-                <div class="arrow" @click="showDealDetailMask"><img src="../../assets/images/arrows/ic_pay_arrow.png" alt=""></div>
-            </div>
-            <div class="rg" @click="pay">支付</div>
-        </div>
-        <!-- 优惠券的弹框 -->
-        <div class="coupon-mask-box">
-            <div class="weui-mask zb-weui-mask" @click="hideCouponMask" :class="[{'weui-actionsheet_no_toggle_active':isCouponMask},{'weui-actionsheet_no_toggle':!isCouponMask}]"></div>
-            <div class="weui-actionsheet zb-weui-actionsheet" id="weui-actionsheet" :class="[{'weui-actionsheet_toggle':isCouponMask}]">
-                <!-- 弹框的title -->
-                <div class="weui-actionsheet__title zb-weui-actionsheet__title">
-                    <p class="weui-actionsheet__title-text zb-weui-actionsheet__title-text">优惠券</p>
-                </div>
-                <!-- 弹框的内容 -->
-                <div class="weui-actionsheet__menu" v-if="coupon">
-                    <!-- 循环下面的整体 -->
-                    <div class="zb-actionsheet__bd" v-for="(item,index) in coupon" :key="index">
-                        <div class="weui-cells zb-weui-cells weui-cells_checkbox">
-                            <label class="weui-cell zb-weui-cell weui-check__label" :for="item.id">
-                                <div class="weui-cell__bd div zb-weui-cell__hd">
-                                    <h4>满{{item.min_amount}}元减{{item.amount}}元</h4>
-                                    <p>截止日期：{{item.validity_end_time}}</p>
-                                </div>
-                                <div class="weui-cell__hd div din">
-                                    &yen;{{item.amount}}
-                                    <input type="radio" class="weui-check" :id="item.id" :value="{id:item.id,min_amount:item.min_amount,amount:item.amount}" v-model="initCoupon">
-                                    <i class="weui-icon-checked"></i>
-                                </div>
-                            </label>
+                    <div class="inputTicketItem">
+                        <label class="ticketLab">税号</label>
+                        <div class="ticketContent">
+                            <input type="text" v-model="ticketTaxpayer" class="ipt" placeholder="请输入税号...">
+                        </div>
+                    </div>
+                    <div class="inputTicketItem">
+                        <label class="ticketLab">注册地址</label>
+                        <div class="ticketContent">
+                            <input type="text" v-model="ticketAddress" class="ipt" placeholder="请输入注册地址...">
+                        </div>
+                    </div>
+                    <div class="inputTicketItem">
+                        <label class="ticketLab">注册电话</label>
+                        <div class="ticketContent">
+                            <input type="text" v-model="ticketTel" class="ipt" placeholder="请输入注册电话...">
+                        </div>
+                    </div>
+                    <div class="inputTicketItem">
+                        <label class="ticketLab">开户银行</label>
+                        <div class="ticketContent">
+                            <input type="text" v-model="ticketBank" class="ipt" placeholder="请输入开户银行...">
+                        </div>
+                    </div>
+                    <div class="inputTicketItem">
+                        <label class="ticketLab">银行账号</label>
+                        <div class="ticketContent">
+                            <input type="text" v-model="ticketBankNum" class="ipt" placeholder="请输入银行账号...">
                         </div>
                     </div>
                 </div>
-                <div v-else style="line-height: 55px;background: #fff;font-size:17px;text-align:center;">暂无优惠券可用</div>
+                <div class="mark">
+                    <label class="label">备注</label>
+                    <div class="markRg"><textarea name="markName" id="markTextarea" placeholder="选填" v-model="remarks"></textarea></div>
+                </div>
+            </ul>
+        </div>
+
+        <!-- 温馨提示 -->
+        <div class="tips">
+            <p>联系电话:<a href="tel:400-099-9682">400-099-9682</a></p>
+            <span>周一至周五9:00-17:30</span>
+        </div>
+
+        <!-- 确认支付bar -->
+        <div class="paybar">
+            <div class="lf">
+                <!-- 0钱  1积分 -->
+                <template v-if="this.exchangeType == 0 && this.is_type == 0">
+                    <div class="money">&yen;{{totalPrice}}</div>
+                    <div class="discount">省{{discount}}</div>
+                </template>
+                <template v-else-if="this.is_type == 1 || this.is_type == 2">
+                    <div class="money">&yen;0</div>
+                    <div class="discount">省0</div>
+                </template>
+                <template v-else>
+                    <div class="money">{{this.privilege.integral_amount}}积分</div>
+                </template>
+                <div class="arrow">
+                    <!-- <img src="../../assets/images/arrows/ic_pay_arrow.png" /> -->
+                    <span @click="showDealDetailMask">明细</span>
+                </div>
+            </div>
+            <div class="rg" @click="pay">支付</div>
+        </div>
+
+        <!-- 优惠券的弹框 -->
+        <div class="weui-mask" @click.stop="hideCouponMask" v-show="isCouponMask == true">
+            <div class="couponMaskWrap" id="weui-actionsheet" @click.stop="showCouponMask">
+                <div class="couponTitle">
+                    <span>优惠券</span>
+                    <img @click.stop="hideCouponMask" src="../../assets/images/coupon/popup_close.png" alt="">
+                </div>
+                <!-- 弹框的内容 -->
+                <ul class="weui-actionsheet__menu couponMeun" v-if="coupon.length > 0">
+                    <!-- 循环下面的整体 -->
+                    <li class="zb-actionsheet__bd" v-for="(item,index) in coupon" :key="index">
+                        <div class="weui-cells zb-weui-cells weui-cells_checkbox">
+                            <label class="weui-cell zb-weui-cell weui-check__label" :for="item.id">
+                                <div class="weui-cell__bd div zb-weui-cell__hd">
+                                    <h4>{{item.name}}</h4>
+                                    <p>有效期:{{item.validity_end_time}}</p>
+                                </div>
+                                <div class="weui-cell__hd div">
+                                    <input type="radio" class="weui-check" :id="item.id" :value="{id:item.id,name:item.name,coupon_type:item.coupon_type}" v-model="initCoupon">
+                                    <i class="weui-icon-checked"></i>
+                                </div>
+                            </label>
+                            <template v-if="item.coupon_type == 1">
+                                <dl>
+                                    <dt>&yen;<i>{{item.amount}}</i></dt>
+                                    <dd>代金券</dd>
+                                </dl>
+                            </template>
+                            <template  v-if="item.coupon_type == 2">
+                                <dl>
+                                    <dt><i>{{item.discount}}</i>折</dt>
+                                    <dd>折扣券</dd>
+                                </dl>
+                            </template>
+                            <template  v-if="item.coupon_type == 3">
+                                <p class="free_room_coupon">免房券</p>
+                            </template>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
+
         <!-- 交易明细弹框 -->
         <div class="deal-detail-mask-box">
             <div class="weui-mask zb-weui-mask" id="dealDetailMask" @click="hideDealDetailMask" :class="[{'weui-actionsheet_no_toggle_active':isDealDetailMask},{'weui-actionsheet_no_toggle':!isDealDetailMask}]"></div>
             <div class="weui-actionsheet zb-weui-actionsheet" id="weui-actionsheet" :class="[{'weui-actionsheet_toggle':isDealDetailMask}]">
-                <!-- 交易明细弹框的title -->
-                <div class="weui-actionsheet__title zb-weui-actionsheet__title">
-                    <p class="weui-actionsheet__title-text zb-weui-actionsheet__title-text">费用明细</p>
-                </div>
                 <!-- 交易明细弹框的内容 -->
-                <div class="weui-actionsheet__menu" style="max-height:300px;overflow:auto;">
-                    <!-- 循环下面的整体 -->
+                <div class="expense_msg">
+                    <!-- 交易明细弹框的title -->
+                    <h3>费用明细</h3>
+                    <template v-if="this.exchangeType == 0 && this.is_type == 0">
+                        <div class="room_money">
+                            <h4>房费<span><i>&yen;</i>{{dst_totalPrice}}</span></h4>
+                            <p v-for="(item,index) in price" :key="index">{{item.add_time}}<span>{{watchObj.room_sum}}间*&yen;{{item.unit_price}}</span></p>
+                            <template v-if="initCoupon">
+                                <h4 class="room_money_coupon">优惠券</h4>
+                                <p>{{initCoupon.name}}<span>-&yen;{{reduce_money}}</span></p>
+                            </template>
+                        </div>
+                        <div class="room_money room_money_sum">
+                            <!-- <div class="sum_discounts" v-if="initCoupon">总计优惠:<span>-&yen;{{initCoupon.coupon_amount}}</span></div> -->
+                            <div class="sum_money">实付金额:<span><i>&yen;</i>{{totalPrice}}</span></div>
+                        </div>
+                    </template>
+                    <template v-if="this.exchangeType == 0 && this.is_type != 0">
+                        <div class="room_money">
+                            <h4>房费<span><i>&yen;</i>0</span></h4>
+                            <p v-for="(item,index) in price" :key="index">{{item.add_time}}<span>{{watchObj.room_sum}}间*&yen;0</span></p>
+                            <template v-if="initCoupon">
+                                <h4 class="room_money_coupon">优惠券</h4>
+                                <p>{{initCoupon.name}}<span>-&yen;{{reduce_money}}</span></p>
+                            </template>
+                        </div>
+                        <div class="room_money room_money_sum">
+                            <!-- <div class="sum_discounts" v-if="initCoupon">总计优惠:<span>-&yen;{{initCoupon.coupon_amount}}</span></div> -->
+                            <div class="sum_money">实付金额:<span><i>&yen;</i>0</span></div>
+                        </div>
+                    </template>
+                    <template v-if="this.exchangeType == 1">
+                        <div class="room_money">
+                            <h4>房费<span>{{privilege.integral_amount}}<i>积分</i></span></h4>
+                            <p v-for="(item,index) in integral" :key="index">{{item.add_time}}<span>{{watchObj.room_sum}}间*{{item.integral_amount}}积分</span></p>
+                        </div>
+                        <div class="room_money room_money_sum">
+                            <!-- <div class="sum_discounts" v-if="initCoupon">总计优惠:<span>-&yen;{{initCoupon.coupon_amount}}</span></div> -->
+                            <div class="sum_money">实付金额:<span>{{privilege.integral_amount}}<i>积分</i></span></div>
+                        </div>
+                    </template>
+                </div>
+                <!-- <div class="weui-actionsheet__menu" style="max-height:300px;overflow:auto;">
                     <div class="zb-actionsheet__bd">
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
                             <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
-                                <div class="weui-cell__bd div zb-weui-cell__hd">
-                                    <h4>{{howManyNight}}晚、{{watchObj.room_sum}}间共</h4>
-                                </div>
-                                <div class="weui-cell__hd div">
-                                    &yen;{{totalPrice}}
-                                </div>
+                                <template v-if="this.exchangeType == 0">
+                                    <div class="weui-cell__bd div zb-weui-cell__hd">
+                                        <h4>{{howManyNight}}晚、{{watchObj.room_sum}}间共</h4>
+                                    </div>
+                                    <div class="weui-cell__hd div">
+                                        &yen;{{totalPrice}}
+                                    </div>
+                                </template>
+                                <template v-else>
+                                    <div class="weui-cell__bd div zb-weui-cell__hd">
+                                        <h4>{{howManyNight}}晚、{{watchObj.room_sum}}间共</h4>
+                                    </div>
+                                    <div class="weui-cell__hd div">
+                                        {{this.privilege.integral_amount}}积分
+                                    </div>
+                                </template>
                             </label>
                         </div>
                     </div>
-                    <div class="zb-actionsheet__bd" v-if="price" v-for="(item,index) in price" :key="index">
-                        <div class="weui-cells zb-weui-cells weui-cells_checkbox">
-                            <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
-                                <div class="weui-cell__bd div zb-weui-cell__hd">
-                                    <h4>{{item.add_time}}</h4>
-                                </div>
-                                <div class="weui-cell__hd div">
-                                    <span style="color:#666;">{{watchObj.room_sum}}间 * </span> &yen;{{item.unit_price | Fixto2}}
-                                </div>
-                            </label>
+
+                    <template v-if="this.exchangeType == 0">
+                        <div class="zb-actionsheet__bd" v-if="price" v-for="(item,index) in price" :key="index">
+                            <div class="weui-cells zb-weui-cells weui-cells_checkbox">
+                                <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
+                                    <div class="weui-cell__bd div zb-weui-cell__hd">
+                                        <h4>{{item.add_time}}</h4>
+                                    </div>
+                                    <div class="weui-cell__hd div">
+                                        <span style="color:#666;">{{watchObj.room_sum}}间 * </span> &yen;{{item.unit_price}}
+                                    </div>
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                    <!-- 交易明细优惠券 -->
+                    </template>
+                    <template v-else>
+                        <div class="zb-actionsheet__bd" v-if="integral" v-for="(item,index) in integral" :key="index">
+                            <div class="weui-cells zb-weui-cells weui-cells_checkbox">
+                                <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
+                                    <div class="weui-cell__bd div zb-weui-cell__hd">
+                                        <h4>{{item.add_time}}</h4>
+                                    </div>
+                                    <div class="weui-cell__hd div">
+                                        <span style="color:#666;">{{watchObj.room_sum}}间 * </span> {{item.integral_amount}}积分
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </template>
                     <div class="zb-actionsheet__bd" v-if="initCoupon">
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
                             <label class="weui-cell zb-weui-cell weui-check__label " for="deal1">
@@ -195,7 +381,6 @@
                             </label>
                         </div>
                     </div>
-                    <!-- 交易明细实付 -->
                     <div class="zb-actionsheet__bd">
                         <div class="weui-cells zb-weui-cells weui-cells_checkbox">
                             <label class="weui-cell zb-weui-cell weui-check__label" for="deal1">
@@ -203,18 +388,24 @@
                                     <h4>总计</h4>
                                 </div>
                                 <div class="weui-cell__hd div">
-                                    <span style="color:#666;">实付金额：</span> &yen;{{totalPrice}}
+                                    <template v-if="this.exchangeType == 0">
+                                        <span style="color:#666;">实付金额：</span> &yen;{{totalPrice}}
+                                    </template>
+                                    <template v-else>
+                                        <span style="color:#666;">实付金额：</span> {{this.privilege.integral_amount}}积分
+                                    </template>
                                 </div>
                             </label>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
+
         <!-- 用户所属卡种的权益 -->
         <div id="userCardRightMaskBox">
             <div class="weui-mask zb-weui-mask" @click="hideUserCardRightMask" :class="[{'weui-actionsheet_no_toggle_active':isUserCardRightMask},{'weui-actionsheet_no_toggle':!isUserCardRightMask}]"></div>
-            <div class="weui-actionsheet zb-weui-actionsheet" id="weui-actionsheet" :class="[{'weui-actionsheet_toggle':isUserCardRightMask}]">
+            <div class="weui-actionsheet zb-weui-actionsheet userCardRightActionsheet" id="weui-actionsheet" :class="[{'weui-actionsheet_toggle':isUserCardRightMask}]">
                 <div class="hd">
                     {{group_name | filterCardType}}会员
                     <span class="btn" @click="hideUserCardRightMask"></span>
@@ -255,6 +446,11 @@
                                     <dt>免费取消</dt>
                                     <dd>{{userCardRightInfo.pre_cancel_time}}</dd>
                                 </dl>
+                                <dl v-if="userCardRightInfo.breakfast">
+                                    <img src="../../assets/images/vip/zaocan.png" alt="">
+                                    <dt>免费早餐</dt>
+                                    <dd>{{userCardRightInfo.breakfast}}</dd>
+                                </dl>
                             </div>
                         </div>
                         <!-- 会员权益 -->
@@ -286,10 +482,10 @@
                                         <p class="li-desc">生日礼遇</p>
                                         <p class="li-intro">{{userCardRightInfo.birthday}}</p>
                                     </li>
-                                    <li v-if="userCardRightInfo.equity">
+                                    <!-- <li v-if="userCardRightInfo.equity">
                                         <p class="li-desc">权益共享</p>
                                         <p class="li-intro">{{userCardRightInfo.equity}}</p>
-                                    </li>
+                                    </li> -->
                                     <li v-if="userCardRightInfo.user_activity">
                                         <p class="li-desc">收费会员活动</p>
                                         <p class="li-intro">{{userCardRightInfo.user_activity}}</p>
@@ -301,6 +497,7 @@
                 </div>
             </div>
         </div>
+
         <!-- 快速选择入住联系人 -->
         <div class="linkman-mask-box">
             <div class="weui-mask zb-weui-mask" @click="hideLinkmanMask" :class="[{'weui-actionsheet_no_toggle_active':isLinkmanMask},{'weui-actionsheet_no_toggle':!isLinkmanMask}]"></div>
@@ -313,9 +510,47 @@
                         </li>
                     </ul>
                     <div v-else style="line-height: 44px;font-size:14px;color:#666;text-align:center;">您还没有添加常用入住人信息</div>
-                </div>    
+                </div>
             </div>
         </div>
+
+        <!-- 选取发票类型弹框 -->
+        <div id="ticketMask" class="weui-mask" @click.stop="hideTicketMask" v-show="isTicketMask == true">
+            <div class="ticketMaskWrap">
+                <ul>
+                    <li @click.stop="selectTicket(0)" :class="{ isActive: ticketType == 0 }">不开发票</li>
+                    <!-- <li @click.stop="selectTicket(1)" :class="{ isActive: ticketType == 1 }">增值税专票</li> -->
+                    <li @click.stop="selectTicket(2)" :class="{ isActive: ticketType == 2 }">增值税普票</li>
+                    <p @click.stop="hideTicketMask">取消</p>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 发票列表弹框 -->
+        <div id="invoiceListMask" class="weui-mask" @click.stop="hideInvoiceListMask" v-show="isInvoiceListMask == true">
+            <div class="invoiceListMaskWrap">
+                <ul v-if="invoiceList.length > 0" class="invoice_lists">
+                    <li v-for="(item, index) in invoiceList" @click.stop="selectInvoiceListsItem(item.company_name, item.taxpayer_num, item.address, item.tel, item.bank, item.bank_number)">
+                        <h3>{{item.company_name}}</h3>
+                        <p>纳税识别号：{{item.taxpayer_num}}</p>
+                        <img src="../../assets/images/arrows/list－更多icon@1x.png" />
+                    </li>
+                </ul>
+                <p class="no_invoice" v-else>暂无历史发票信息</p>
+            </div>
+		</div>
+
+        <!-- 积分兑换弹框 -->
+        <div id="ticketMask" class="weui-mask" @click.stop="isExchangeMask = false" v-show="isExchangeMask == true">
+            <div class="ticketMaskWrap">
+                <ul>
+                    <li @click.stop="selectExchange(0)" :class="{ isActive: exchangeType == 0 }">不使用积分兑换</li>
+                    <li @click.stop="selectExchange(1)" :class="{ isActive: exchangeType == 1 }">使用积分兑换</li>
+                    <p @click.stop="isExchangeMask = false">取消</p>
+                </ul>
+            </div>
+        </div>
+
         <!-- toast（delay=>z） -->
         <div v-show="orderDelayToast">
             <div class="z-mask-transparent"></div>
@@ -332,6 +567,7 @@
                 <p class="weui-toast__content">{{loadingTxt}}</p>
             </div>
         </div>
+
         <!-- 若凌晨订房，则出现该toast弹框 -->
         <div v-show="orderBeforeDawnRoomToast">
             <div class="z-mask-transparent-pay"></div>
@@ -340,7 +576,8 @@
                 <p class="z-toast-pay-body beforeDawnAddclass">
                     您的订单为{{beginM}}月{{beginD}}日凌晨入住，
                     请于06:00前办理入住，
-                    {{finishM}}月{{finishD}}日{{delayCheckout|filterDelayRoomNum}}:00前办理退房</p>
+                    {{finishM}}月{{finishD}}日{{delayCheckout|filterDelayRoomNum}}:00前办理退房
+                </p>
                 <p class="z-toast-pay-footer beforeDawnAddclass">
                     <span class="cancelOrder" @click="CancelOrder">取消订单</span>
                     <span class="submitOrder" @click="SubmitOrder">提交订单</span>
@@ -352,14 +589,10 @@
 
 <script>
 import { dateEndMinusStart, YTDLf, YTD, isBeforeDawn } from "@/utils/date"; // 引入封装时间函数
-import {
-    order_form,
-    create_order,
-    user_card_privilege,
-    residentList
-} from "@/api/api";
-import { getCookie } from "@/utils/util";
+import {order_form,create_order,user_card_privilege,residentList, apiInvoiceList} from "@/api/api";
+import { getCookie,getUrlParam } from "@/utils/util";
 import myBroadcast from "@/components/broadcast";
+import { Toast } from 'vant';
 export default {
     name: "orderPage",
     components: {
@@ -367,7 +600,23 @@ export default {
     },
     data() {
         return {
+            is_type:this.$route.query.is_type,      // 0普通 1单位 2个人
+			epidemicShow:0,
+            reduce_money:"",//立减金额
+            payType: getUrlParam('payType'),
             isCouponMask: false,
+            isTicketMask: false, // 发票类型遮罩控制
+            isInvoiceListMask: false, // 发票list遮罩控制
+            invoiceList: "", // 发票list
+            ticketType: 0, // 发票类型
+            exchangeType:0,     //积分兑换类型
+            isShowInputTicket : false,  // 是否展示发票输入div
+            ticketCompany: "",  // 发票中单位名称
+            ticketTaxpayer: "", // 发票中纳税识别号
+            ticketAddress: "", // 发票中单位注册地址
+            ticketTel: "", // 发票中单位注册电话
+            ticketBank: "", // 发票中单位开户行
+            ticketBankNum: "", // 发票中开户行号
             isDealDetailMask: false,
             isSelectRoom: false,
             isUserCardRightMask: false,
@@ -378,10 +627,10 @@ export default {
                 room_id: "",
                 begin: "",
                 finish: "",
+                product_id:"",
                 room_sum: 1, //默认的房间数
-            
             },
-            distance_int: "", // 距离  
+            distance_int: "", // 距离
             beginY: "",
             beginM: "",
             beginD: "",
@@ -395,6 +644,7 @@ export default {
             details: {},
             // 明细-房间单价-包含时间
             price: [],
+            integral:[],
             // 后台返回的该用户是否可订房标志
             isUserCanOrder: true,
             // 订房人预留的姓名、手机号
@@ -402,26 +652,27 @@ export default {
             orderTel: "",
             // 总价
             totalPrice: "",
+            dst_totalPrice: "",
             // 房间的单价
             discount_price: "",
             // 该用户属于哪个会员卡种
             group_name: "",
             // 该用户所属卡种的id
             group_id: "",
-            // 该用户所属会员卡种-餐饮打几折  
+            // 该用户所属会员卡种-餐饮打几折
             catering_discount: "",
             // 该用户所属会员卡种-会员卡折扣
             promo:"",
             // 用户所属卡种-延迟退房时间 -> 13:00，“至14点”
-            delayCheckout :"", 
+            delayCheckout :"",
             // 优惠券
             coupon: [],
             orderDelayToast: false,
             orderDelayToastTxt: "您今日可订限额已用完，请明天再来",
             roomNumItems: "", //循环可定房间
-            quantity: "", //该用户还能再定房间数的上限
+
             isActive: 1,
-            loading: true, 
+            loading: true,
             loadingTxt: "数据加载中",
             couponBarShow: true,
             userCardRightInfo: "", // 用户所属卡种的权益详情
@@ -433,8 +684,15 @@ export default {
             isBeforeDawnOrder: false, // 是否为凌晨订单
             isBeforeDawnOrderAndNoonGo: false, // 是凌晨订单且今天中午离店
             yesterday: "",
-            orderBeforeDawnRoomToast: false, // 点击支付按钮控制凌晨订房toast 
-        };
+            orderBeforeDawnRoomToast: false, // 点击支付按钮控制凌晨订房toast
+            privilege:{},               //全部信息（是指用户具有的权益）
+            hint_text:"",
+            astrict:"",              //限购
+            quantity: "",             //该用户还能再定房间数的上限
+            isExchangeMask:false,   //积分兑换弹窗开关
+            payPassType:true,       //积分不足提示语开关
+            roomSum:1,              //标记房间数
+        }
     },
     created() {
         var routePara = {
@@ -442,16 +700,16 @@ export default {
             room_id: this.$route.query.room_id,
             begin: this.$route.query.begin,
             finish: this.$route.query.finish,
-            distance_int: this.$route.query.distance_int
+            distance_int: this.$route.query.distance_int,
+            product_id: this.$route.query.product_id
         };
         // 初始化数据
         this.watchObj.store_id = routePara.store_id;
         this.watchObj.room_id = routePara.room_id;
         this.watchObj.begin = routePara.begin;
         this.watchObj.finish = routePara.finish;
-
         this.distance_int = routePara.distance_int;
-        
+        this.watchObj.product_id =routePara.product_id;
 
         var beginArr = routePara.begin.split("-");
         this.beginY = beginArr[0];
@@ -485,50 +743,74 @@ export default {
         this.yesterday = YTDLf().kebab;
         // 拉取订单信息接口
         this.fetchOrderForm();
-        // 拉取fetchLinkman的列表
-        this.fetchLinkman();
     },
     watch: {
         initCoupon: {
             handler(newValue, oldValue) {
+                console.log(this.initCoupon);
                 if (newValue != "") {
-                    this.totalPrice = (
-                        Math.round(
-                            (this.discount_price - newValue.amount) * 100
-                        ) / 100
-                    ).toFixed(2);    // 选择优惠券之后最后的价格
-                    let discountTmp =
-                        Math.round((this.original_price - this.discount_price - ( -newValue.amount)) * 100) /
-                        100;  // 选择优惠券之后省了多少钱
-                    this.discount = discountTmp.toFixed(2);
                     this.couponBarShow = false;
                     this.isCouponMask = false; //选取优惠券使其dialog消失
+                    if(newValue.coupon_type == 3){
+                        this.ticketType = 0;
+                        this.isShowInputTicket = false;
+                        this.ticketCompany = '';  // 发票中单位名称
+                        this.ticketTaxpayer = ''; // 发票中纳税识别号
+                        this.ticketAddress = ''; // 发票中单位注册地址
+                        this.ticketTel = ''; // 发票中单位注册电话
+                        this.ticketBank = ''; // 发票中单位开户行
+                        this.ticketBankNum = ''; // 发票中开户行号
+                    }
+                    this.fetchOrderForm();
                 }
             },
             deep: true,
             immediate: true
         }
     },
+    filters: {
+        transTicketType(v) {
+            if (v == 1) {
+                return '增值税专票';
+            } else if (v == 2) {
+                return '增值税普票';
+            } else {return '不开发票'}
+        }
+    },
     methods: {
+        //选择积分类型
+        selectExchange(ind){
+            this.exchangeType = ind;
+            if(ind == 1){
+                this.ticketType = 0         // 0不开发票
+            }
+            if(ind == 0){
+                this.payPassType = true;
+            }
+            this.isExchangeMask = false;
+            this.fetchOrderForm();
+        },
+        //积分兑换弹框
+        exchangeMask(){
+            this.isExchangeMask = true;
+        },
         // 拉取联系人list
         fetchLinkman() {
+            this.loading = true;
             this.$http({
                 method: "POST",
                 url: residentList,
                 data: {}
-            })
-                .then(res => {
-                    if (res.data.status== 1) {
-                        this.linkmanList = res.data.data;
-                    } else {
-                        this.linkmanList = "";
-                    }
-                })
-                .catch(err => {});
-        },
-        // 展示用户所属卡种相关权益遮罩
-        showLinkmanMask() {
-            this.isLinkmanMask = true;
+            }).then(res => {
+                this.loading = false;
+                if (res.data.status == 1) {
+                    this.isLinkmanMask = true;
+                    this.linkmanList = res.data.data;
+                } else {
+                    this.linkmanList = "";
+                    Toast(res.data.msg);
+                }
+            });
         },
         // 隐藏入住联系人遮罩
         hideLinkmanMask() {
@@ -543,21 +825,22 @@ export default {
         },
         // 拉取用户所属卡种的权益
         fetchUserCardRightInfo() {
+            this.loading = true;
             this.$http({
                 method: "POST",
                 url: user_card_privilege,
                 data: {
                     id: this.group_id
                 }
-            })
-                .then(res => {
+            }).then(res => {
+                this.loading = false;
+                if(res.data.status == 1){
+                    this.isUserCardRightMask = true;
                     this.userCardRightInfo = res.data.data;
-                })
-                .catch(err => {});
-        },
-        // 展示用户所属卡种相关权益遮罩
-        showUserCardRightMask() {
-            this.isUserCardRightMask = true;
+                }else{
+                    Toast(res.data.msg);
+                }
+            });
         },
         // 隐藏用户所属卡种相关权益遮罩
         hideUserCardRightMask() {
@@ -565,12 +848,56 @@ export default {
         },
         // 展示优惠券遮罩
         showCouponMask() {
-            this.isCouponMask = true;
+            if(this.coupon.length == 0){
+                Toast('暂无优惠券');
+            }else{
+                this.isCouponMask = true;
+            }
         },
         // 隐藏优惠券遮罩--ui说不需要此交互
         hideCouponMask() {
             this.isCouponMask = false;
         },
+        // 展示选择发票类型遮罩
+        showTicketMask() {
+            this.isTicketMask = true;
+        },
+        // 隐藏选择发票类型遮罩
+        hideTicketMask(){
+            this.isTicketMask = false;
+        },
+        // 隐藏发票列表遮罩
+        hideInvoiceListMask() {
+            this.isInvoiceListMask = false;
+        },
+        // 选取发票列表item
+        selectInvoiceListsItem(name, tax, addr, tel, bank, bank_num) {
+            this.ticketCompany = name;
+            this.ticketTaxpayer = tax;
+            this.ticketAddress = addr;
+            this.ticketTel = tel;
+            this.ticketBank = bank;
+            this.ticketBankNum = bank_num;
+            this.isInvoiceListMask = false;
+        },
+        // 拉取发票列表
+        fetchInvoiceLis() {
+            this.loading = true;
+			this.$http({
+				method: "POST",
+				url: apiInvoiceList,
+				data: {}
+			}).then(res => {
+                this.loading = false;
+				if (res.data.status == 1) {
+                    this.isInvoiceListMask = true;
+                    this.invoiceList = res.data.data;
+                } else {
+                    this.invoiceList = [];
+                    Toast(res.data.msg);
+				}
+			});
+		},
         // 展示交易明细遮罩
         showDealDetailMask() {
             this.isDealDetailMask = true;
@@ -581,69 +908,114 @@ export default {
         },
         // 拉取订单预览数据
         fetchOrderForm() {
-            var para = this.watchObj;
+            let _this = this;
+            _this.loading = true;
             this.$http({
                 method: "POST",
                 url: order_form,
-                data: para
-            })
-                .then(res => {
-                    if (res.data.status == 1) {
-                        this.loading = false;
-                        this.details = res.data.data.details; //给房间详情赋值
-                        this.discount_price = res.data.data.discount_price; //预定房间总价赋值
-                        this.original_price = res.data.data.original_price;  // 普通价   
-                        this.coupon = res.data.data.coupon; //给房间优惠券赋值
-                        this.price = res.data.data.price; // 给明细赋值
-                        this.totalPrice = res.data.data.discount_price;  // 会员价格
-                        this.orderName = res.data.data.resident.username;  // 用户本人的信息：用户名
-                        this.orderTel = res.data.data.resident.mobile;  // 用户本人的信息：手机号
-                        this.discount = (
-                            Math.round(
-                                (res.data.data.original_price -
-                                    res.data.data.discount_price) *
-                                    100
-                            ) / 100
-                        ).toFixed(2);   // 告诉用户省了多少钱，普通价-会员价
-                        this.group_name = res.data.data.group_name; //属于哪个卡种
-                        this.group_id = res.data.data.group_id; // 用户所属卡种的id
-                        this.catering_discount =
-                            res.data.data.catering_discount; // 用户所属卡种-餐饮折扣 -> 95折
-                        this.promo = res.data.data.promo; // 用户所属卡种-会员卡折扣 -> 0.95
-                        this.delayCheckout = res.data.data.delay_room; // 用户所属卡种-延迟退房时间 -> 13:00，后台返回的是“至14点”
-                        this.fetchUserCardRightInfo(); // 拉取用户卡种的权益
-                        let astrict = parseInt(res.data.data.astrict); // 后台配置的最大可选择几间房
-                        let quantity = parseInt(res.data.data.quantity); // 当前用户能定的最大房间数
-                        if (quantity > 0) {
-                            let tmp = [];
-                            for (let i = 1; i <= quantity; i++) {
-                                tmp.push({
-                                    num: i
-                                });
-                            }
-                            this.roomNumItems = tmp;
-                        } else {
-                            this.roomNumItems = "";
-                            this.watchObj.room_sum = 0;
-                        }
-                    } else if (res.data.status == -3) {
-                        // 若按照新的产品思路，这个else if 就不会出现了
-                        this.isUserCanOrder = false;
-                        this.watchObj.room_sum -= 1; //当不能在订房时候，其实已经达到了6，马上减1使其变成5。
+                data: {
+                    store_id:_this.watchObj.store_id,
+                    room_id:_this.watchObj.room_id,
+                    begin:_this.watchObj.begin,
+                    finish:_this.watchObj.finish,
+                    product_id:_this.watchObj.product_id,
+                    room_sum: _this.watchObj.room_sum,
+                    integral_type:_this.exchangeType,          //0不使用积分  1使用积分
+                    coupon_id:_this.initCoupon.id,
+                    is_type:this.$route.query.is_type
+                }
+            }).then(res => {
+                _this.loading = false;
+                if (res.data.status == 1) {
+                    this.epidemicShow = this.$route.query.epidemicShow;
+                    this.privilege = res.data.data;
+                    this.details = res.data.data.details; //给房间详情赋值
+                    this.discount_price = res.data.data.discount_price; //预定房间总价赋值
+                    this.original_price = res.data.data.original_price;  // 普通价
+                    this.coupon = res.data.data.coupon; //给房间优惠券赋值
+                    this.price = res.data.data.price; // 给明细赋值
+                    this.integral = res.data.data.integral;
+                    this.totalPrice = res.data.data.discount_price;  // 会员价格
+                    this.dst_totalPrice = res.data.data.dst_price;
+                    this.orderName = res.data.data.resident.username;  // 用户本人的信息：用户名
+                    this.orderTel = res.data.data.resident.mobile;  // 用户本人的信息：手机号
+                    this.discount = (
+                        Math.round(
+                            (res.data.data.original_price -
+                                res.data.data.discount_price) *
+                                100
+                        ) / 100
+                    ).toFixed(0);   // 告诉用户省了多少钱，普通价-会员价
+                    if(res.data.data.coupon_info){
+                        this.reduce_money = res.data.data.coupon_info.coupon_amount;
                     }
-                })
-                .catch(err => {});
+                    this.group_name = res.data.data.group_name; //属于哪个卡种
+                    this.group_id = res.data.data.group_id; // 用户所属卡种的id
+                    this.catering_discount =
+                        res.data.data.catering_discount; // 用户所属卡种-餐饮折扣 -> 95折
+                    this.promo = res.data.data.promo; // 用户所属卡种-会员卡折扣 -> 0.95
+                    this.delayCheckout = res.data.data.delay_room; // 用户所属卡种-延迟退房时间 -> 13:00，后台返回的是“至14点”
+                    this.astrict = parseInt(res.data.data.astrict); // 后台配置的最大可选择几间房        限制数量
+                    this.quantity = parseInt(res.data.data.quantity); // 当前用户能定的最大房间数        可售出库存
+                    if (this.quantity > 0) {
+                        let tmp = [];
+                        for (let i = 1; i <= this.quantity; i++) {
+                            tmp.push({
+                                num: i
+                            });
+                        }
+                        this.roomNumItems = tmp;
+                    } else {
+                        this.roomNumItems = "";
+                        this.watchObj.room_sum = 0;
+                        this.hint_text = '当前房型已售完，您可以选择其它房型预订';
+                    }
+                    if(this.astrict == 0){
+                        this.hint_text = '您今日可订限额已用完，请明天再来';
+                    }
+                    this.roomSum = this.watchObj.room_sum;
+                    this.isActive = this.watchObj.room_sum;
+                } else if (res.data.status == -3) {
+                    // 若按照新的产品思路，这个else if 就不会出现了
+                    this.isUserCanOrder = false;
+                    this.watchObj.room_sum -= 1; //当不能在订房时候，其实已经达到了6，马上减1使其变成5。
+                }else if(res.data.status == -1016){
+                    Toast(res.data.msg);
+                    this.payPassType = false;
+                    this.watchObj.room_sum = this.roomSum;
+                    this.isActive = this.roomSum;
+                }else{
+                    Toast(res.data.msg);
+                    this.watchObj.room_sum = this.roomSum;
+                    this.isActive = this.roomSum;
+                }
+            });
         },
         // 选择房间折叠与否
         selectRoom() {
             this.isSelectRoom = !this.isSelectRoom;
         },
         // 点击按钮进行订房
-        selectOrder(num, type) {
+        selectOrder(num) {
             this.watchObj.room_sum = num;
-            this.isActive = num;
             this.isSelectRoom = false;
             this.fetchOrderForm();
+        },
+        // 发票类型选取
+        selectTicket(type) {
+            this.ticketType = type;
+            if (type != 0) {
+                this.isShowInputTicket = true;
+            } else {
+                this.isShowInputTicket = false;
+                this.ticketCompany = "";
+                this.ticketTaxpayer = "";
+                this.ticketAddress = "";
+                this.ticketTel = "";
+                this.ticketBank = "";
+                this.ticketBankNum = "";
+            }
+            this.isTicketMask = false;
         },
         // 订房人input姓名失焦
         orderNameBlur() {
@@ -691,6 +1063,94 @@ export default {
                 }
             }
         },
+        // 发票相关验证逻辑
+        invoiceRule() {
+            // 专票
+            var regNum = /^\d*$/;
+            if (this.ticketType == 1) {
+                // 银行卡号最多不超过19位数字（要求）
+                if (!this.ticketCompany.trim() ) {
+                    this.orderDelayToastTxt = "单位名称不能为空";
+                    this.orderDelayToast = true;
+                    setTimeout(() => {
+                        this.orderDelayToast = false;
+                    }, 1500);
+                    return false;
+                } else if (!this.ticketTaxpayer.trim()) {
+                    this.orderDelayToastTxt = "纳税识别号不能为空";
+                    this.orderDelayToast = true;
+                    setTimeout(() => {
+                        this.orderDelayToast = false;
+                    }, 1500);
+                    return false;
+
+                } else if (!this.ticketAddress.trim()) {
+                    this.orderDelayToastTxt = "注册地址不能为空";
+                    this.orderDelayToast = true;
+                    setTimeout(() => {
+                        this.orderDelayToast = false;
+                    }, 1500);
+                    return false;
+                } else if (!this.ticketTel.trim()) {
+                    this.orderDelayToastTxt = "注册电话不能为空";
+                    this.orderDelayToast = true;
+                    setTimeout(() => {
+                        this.orderDelayToast = false;
+                    }, 1500);
+                    return false;
+                } else if (!this.ticketBank.trim()) {
+                    this.orderDelayToastTxt = "开户银行不能为空";
+                    this.orderDelayToast = true;
+                    setTimeout(() => {
+                        this.orderDelayToast = false;
+                    }, 1500);
+                    return false;
+                } else if (!this.ticketBankNum.trim()) {
+                    this.orderDelayToastTxt = "银行账号不能为空";
+                    this.orderDelayToast = true;
+                    setTimeout(() => {
+                        this.orderDelayToast = false;
+                    }, 1500);
+                    return false;
+                } else if (!regNum.test(this.ticketBankNum.trim())) {
+                    this.orderDelayToastTxt = "请输入正确的银行账号";
+                    this.orderDelayToast = true;
+                    setTimeout(() => {
+                        this.orderDelayToast = false;
+                    }, 1500);
+                    return false;
+                } else {
+                    return true
+                }
+                // 普票
+            } else if (this.ticketType == 2) {
+                if (!this.ticketCompany.trim() ) {
+                    this.orderDelayToastTxt = "单位名称不能为空";
+                    this.orderDelayToast = true;
+                    setTimeout(() => {
+                        this.orderDelayToast = false;
+                    }, 1500);
+                    return false;
+                } else if (!this.ticketTaxpayer.trim()) {
+                    this.orderDelayToastTxt = "纳税识别号不能为空";
+                    this.orderDelayToast = true;
+                    setTimeout(() => {
+                        this.orderDelayToast = false;
+                    }, 1500);
+                    return false;
+                } else if (!regNum.test(this.ticketBankNum.trim())) {
+                    this.orderDelayToastTxt = "请输入正确的银行账号";
+                    this.orderDelayToast = true;
+                    setTimeout(() => {
+                        this.orderDelayToast = false;
+                    }, 1500);
+                    return false;
+                } else {
+                    return true;
+                }
+                // 不开发票（无须校验）
+            } else {return true}
+        },
         // 取消订单逻辑
         CancelOrder() {
             this.orderBeforeDawnRoomToast = false;
@@ -701,7 +1161,7 @@ export default {
             // 调用CreateOrder方法
             this.fetchCreateOrder();
         },
-        // 拉取CreateOrder
+        // 生成订单
         fetchCreateOrder() {
             this.loadingTxt = "支付中...";
             this.loading = true;
@@ -713,665 +1173,96 @@ export default {
                     store_id: this.watchObj.store_id,
                     dwell_name: this.orderName.trim(),
                     dewll_mobile: this.orderTel.trim(),
+                    product_id:this.watchObj.product_id,
                     room_sum: this.watchObj.room_sum,
                     begin: this.watchObj.begin,
                     finish: this.watchObj.finish,
                     coupon_id: this.initCoupon.id,
                     remarks: this.remarks,
                     distance_int: this.distance_int,
-                    lat_lon: getCookie("userLatitude")+','+getCookie("userLongitude")
+                    lat_lon: getCookie("userLatitude")+','+getCookie("userLongitude"),
+                    pay_type: getUrlParam("payType"),
+                    invoice_type: this.ticketType,
+                    company_name:  this.ticketCompany,
+                    taxpayer_num: this.ticketTaxpayer,
+                    address:  this.ticketAddress,
+                    tel:  this.ticketTel,
+                    bank:  this.ticketBank,
+                    bank_number: this.ticketBankNum,
+                    integral_status:this.exchangeType,
+                    is_type:this.$route.query.is_type
                 }
-            })
-                .then(res => {
-                    if (res.data.status == 1) {
-                        this.loading = false;
-                        this.orderBeforeDawnRoomToast = false;
+            }).then(res => {
+                if (res.data.status == 1) {
+                    this.loading = false;
+                    this.orderBeforeDawnRoomToast = false;
+                    if(getUrlParam("payType") == 1){
+                        this.$router.push({
+                            path: "prepayPage",
+                            query: {
+                                order_id: res.data.data.order_id,
+                                payType:getUrlParam("payType")
+                            }
+                        });
+                    }else{
                         this.$router.push({
                             path: "onlinePay",
                             query: {
-                                order_id: res.data.data.order_id
+                                order_id: res.data.data.order_id,
+                                payType:getUrlParam("payType")
                             }
                         });
-                    } else {
-                        this.loading = false;
-                        this.orderBeforeDawnRoomToast = false;
-                        this.orderDelayToastTxt = res.data.msg;
-                        // "在您支付过程中，房被小伙伴抢光了";
-                        this.orderDelayToast = true;
-                        this.watchObj.room_sum = 1;
-                        this.fetchOrderForm();
-                        setTimeout(() => {
-                            this.orderDelayToast = false;
-                        }, 1500);
                     }
-                })
-                .catch(err => {
-                    console.log(err);
-                });
+
+                } else {
+                    this.loading = false;
+                    this.orderBeforeDawnRoomToast = false;
+                    this.orderDelayToastTxt = res.data.msg;
+                    // "在您支付过程中，房被小伙伴抢光了";
+                    this.orderDelayToast = true;
+                    this.watchObj.room_sum = 1;
+                    this.fetchOrderForm();
+                    setTimeout(() => {
+                        this.orderDelayToast = false;
+                    }, 1500);
+                }
+            });
         },
         // 支付逻辑
         pay() {
             // 当今日可订限额已用完，禁止提交
-            if (this.watchObj.room_sum == 0) {
+            if (this.astrict == 0) {
                 this.orderDelayToastTxt = "您今日可订限额已用完，请明天再来";
                 this.orderDelayToast = true;
                 setTimeout(() => {
                     this.orderDelayToast = false;
                 }, 1500);
                 return false;
+            }else if(this.quantity == 0){
+                this.orderDelayToastTxt = "当前房型已售完，您可以选择其它房型预订";
+                this.orderDelayToast = true;
+                setTimeout(() => {
+                    this.orderDelayToast = false;
+                }, 1500);
+                return false;
             }
-            if (this.orderNameBlur() && this.orderTelBlur()) {
+
+            if (this.orderNameBlur() && this.orderTelBlur() && this.invoiceRule()) {
                 if (this.isBeforeDawnOrder == true) {
                     this.orderBeforeDawnRoomToast = true;
                 } else {
-                    // 调用CreateOrder方法
-                    this.fetchCreateOrder();
-                } 
+                    if(this.payPassType){
+                        this.fetchCreateOrder();
+                    }else{
+                        Toast('积分不足');
+                    }
+                }
             }
         }
     }
 };
 </script>
-
 <style lang="less" scoped>
-// 重置weui样式
-.zb-weui-mask {
-    background: rgba(0, 0, 0, 0.45);
-}
-// 添加点击之后样式
-.weui-actionsheet_no_toggle {
-    opacity: 0;
-    display: none;
-}
-// 取消点击之后样式
-.weui-actionsheet_no_toggle_active {
-    opacity: 1;
-}
-// 这是弹框的title
-.zb-weui-actionsheet__title {
-    height: auto;
-    background: #fff;
-    .zb-weui-actionsheet__title-text {
-        height: 22px;
-        line-height: 22px;
-        margin: 12px 0;
-        color: #333;
-        font-size: 16px;
-    }
-}
-// 这是弹框的内容
-.zb-actionsheet__bd {
-    height: 55px;
-    padding: 0 15px;
-    background: #fff;
-    .zb-weui-cells {
-        margin-top: 0;
-        .zb-weui-cell {
-            height: 55px;
-            padding: 0;
-            .div {
-                height: 55px;
-                &.weui-cell__bd {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    h4 {
-                        line-height: 20px;
-                        color: #666;
-                        font-size: 14px;
-                        font-weight: normal;
-                        margin-bottom: 4px;
-                    }
-                    p {
-                        line-height: 16px;
-                        color: #999;
-                        font-size: 12px;
-                    }
-                }
-                &.weui-cell__hd {
-                    padding-right: 0;
-                    line-height: 55px;
-                    color: #ffba56;
-                    font-size: 14px;
-                }
-            }
-        }
-    }
-}
-
-// order页的样式
-
-// 凌晨订房bar提示
-.broadcastWrap {
-    display: none;
-    &.beforeDawnAddclass {
-        display: block;
-    }
-}
-
-// 后来添加的会员提示
-.broadcast {
-    line-height: 36px;
-    background: rgba(253, 252, 236, 1);
-    padding: 0 22px 0 34px;
-    position: relative;
-    color: #666;
-    font-size: 14px;
-    font-weight: 400;
-    .broadcast-icon {
-        width: 16px;
-        height: 16px;
-        position: absolute;
-        left: 15px;
-        top: 10px;
-        background: url("../../assets/images/icon/ic-broadcast.png") no-repeat
-            center center;
-        background-size: 100% 100%;
-    }
-    .broadcast-btn {
-        width: 5px;
-        height: 9px;
-        position: absolute;
-        right: 15px;
-        top: 13px;
-        background: url("../../assets/images/arrows/ic-arrow_10_18.png")
-            no-repeat center center;
-        background-size: 100% 100%;
-    }
-}
-
-.orderPage {
-    padding-bottom: 50px;
-    overflow: auto;
-    // 相同的样式提取
-    .label {
-        float: left;
-        height: 50px;
-        line-height: 50px;
-        color: #666;
-        font-size: 15px;
-    }
-    .item-rg {
-        float: right;
-        padding-right: 15px;
-        height: 50px;
-        position: relative;
-        font-size: 15px;
-        color: #333;
-        &.linkman {
-            padding-right: 42px;
-            .linkmanBtn {
-                width: 24px;
-                height: 24px;
-                position: absolute;
-                right: 15px;
-                top: 13px;
-                background: url("../../assets/images/icon/ic-linkman.png")
-                    no-repeat center;
-                background-size: 100% 100%;
-            }
-        }
-        .errTips {
-            position: absolute;
-            top: 30px;
-            right: 15px;
-            color: red;
-            font-size: 8px;
-        }
-    }
-
-    // 酒店详情css
-    .orderInfoWrap {
-        margin-bottom: 10px;
-        background: #eff1f0;
-        .orderInfo {
-            padding: 15px 12px 10px;
-            background: url("../../assets/images/bg/bg_order_page.png") repeat-x
-                center;
-            .storeName {
-                font-size: 16px;
-                color: #333;
-                height: 22px;
-                line-height: 22px;
-                margin-bottom: 6px;
-            }
-            .storeLabels {
-                line-height: 16px;
-                font-size: 12px;
-                margin-bottom: 6px;
-                color: #666;
-                span {
-                    margin-right: 10px;
-                }
-            }
-            .checkInOutBar {
-                line-height: 20px;
-                span {
-                    display: inline-block;
-                }
-                .instro {
-                    color: #999;
-                    font-size: 12px;
-                    margin-right: 4px;
-                }
-                .date {
-                    color: #666;
-                    font-size: 16px;
-                    margin-right: 5px;
-                }
-            }
-        }
-    }
-    // 用户信息操作区
-    .Cells {
-        background: #fff;
-        margin-bottom: 5px;
-        .roomList {
-            background: #eff1f0;
-            padding: 12px 0 0;
-            text-align: center;
-            &::after {
-                display: table;
-                content: "";
-                clear: both;
-            }
-            .roomItem {
-                float: left;
-                width: 20%;
-                padding: 0 12px;
-                font-size: 14px;
-                margin-bottom: 12px;
-                i {
-                    display: inline-block;
-                    width: 100%;
-                    text-align: center;
-                    line-height: 34px;
-                    font-style: normal;
-                    background: #fff;
-                    border-radius: 5px;
-                    color: #666;
-                    &.default {
-                        background: #269882;
-                        color: #fff;
-                    }
-                }
-            }
-            .roomListVoid {
-                line-height: 36px;
-                margin-top: -12px;
-            }
-        }
-        li {
-            height: 50px;
-            padding-left: 15px;
-            position: relative;
-            &::after {
-                content: "";
-                position: absolute;
-                left: 15px;
-                bottom: 0;
-                right: 0;
-                height: 1px;
-                background: #e5e5e5;
-                transform-origin: 0 0;
-                transform: scaleY(0.5);
-            }
-            &:nth-last-of-type(1) {
-                &::after {
-                    height: 0;
-                }
-            }
-            &.roomCell {
-                &.roomCellBorderVoid {
-                    &::after {
-                        height: 0;
-                    }
-                }
-                .roomNum {
-                    float: right;
-                    height: 50px;
-                    line-height: 50px;
-                    padding-right: 15px;
-                    .roomNumArrow {
-                        display: inline-block;
-                        width: 16px;
-                        height: 16px;
-                        margin: -2px 0 0 5px;
-                    }
-                }
-            }
-            &.name {
-                .nameInputWrap {
-                    width: 160px;
-                    height: 50px;
-                    padding: 0;
-                    #name {
-                        display: block;
-                        width: 100%;
-                        line-height: 50px;
-                        border: none;
-                        outline: none;
-                        text-align: right;
-                    }
-                }
-            }
-            &.tel {
-                .telInputWrap {
-                    width: 190px;
-                    height: 50px;
-                    padding: 8px 0;
-                    #tel {
-                        display: block;
-                        width: 100%;
-                        height: 34px;
-                        border: none;
-                        outline: none;
-                        text-align: right;
-                    }
-                }
-            }
-            &.coupon {
-                .coupon-div {
-                    height: 50px;
-                    line-height: 50px;
-                    font-size: 14px;
-                    color: #666;
-                    img {
-                        display: inline-block;
-                        width: 5px;
-                        height: 9px;
-                    }
-                }
-            }
-            &.ticket {
-                .ticket-div {
-                    height: 50px;
-                    line-height: 50px;
-                    font-size: 14px;
-                    color: #666;
-                }
-            }
-            &.cardRight {
-                .cardRightContent {
-                    height: 50px;
-                    line-height: 50px;
-                    padding-right: 22px; 
-                    margin-left: 90px;
-                    position: relative;
-                    color: #333;
-                    font-size: 15px;
-                    img {
-                        position: absolute;
-                        width: 5px;
-                        height: 9px;
-                        right: 15px;
-                        top: 50%;
-                        margin-top: -5px; 
-                    }
-                }
-            }
-        }
-    }
-
-    // 备注input提示
-    .mark {
-        height: 70px;
-        padding: 0 15px;
-        background: #fff;
-        .label {
-            height: 70px;
-            float: left;
-            margin-right: 15px;
-            line-height: 35px;
-        }
-        .markRg {
-            margin-left: 48px;
-            height: 70px;
-            #markTextarea {
-                display: block;
-                outline: none;
-                border: none;
-                width: 100%;
-                height: 100%;
-                padding-top: 6px;
-                font-size: 14px;
-            }
-        }
-    }
-    // 联系人list的遮罩
-    .linkman-mask-box {
-        color: #333;
-        .hd {
-            line-height: 40px;
-            font-size: 16px;
-            color: #333;
-            text-align: center;
-            background: #ffffff;
-        }
-        .bd {
-            padding: 0 15px;
-            background: #ffffff;
-            li {
-                line-height: 44px;
-                font-size: 14px;
-                position: relative;
-                &:after {
-                    content: "";
-                    position: absolute;
-                    left: 0;
-                    right: 0;
-                    height: 1px;
-                    bottom: 0;
-                    background: #e5e5e5;
-                    transform: scaleY(0.5);
-                }
-                .select {
-                    width: 20px;
-                    height: 20px;
-                    position: absolute;
-                    right: 15px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    border-radius: 50%;
-                    background-repeat:no-repeat;
-                    background-position: center;  
-                    background-size: 100% 100%;  
-                    background-image: url("../../assets/images/icon/ic-radio.png");    
-                }
-                &.active {
-                    .select {
-                        background-image: url("../../assets/images/icon/ic-radio-ed.png"); 
-                    }
-                }
-            }
-        }
-    }
-    // 文字小提示
-    .tips {
-        padding: 12px 15px 10px;
-        color: #666;
-        font-size: 12px;
-        h3 {
-            line-height: 16px;
-            margin-bottom: 14px;
-            font-size: 12px;
-        }
-        p {
-            line-height: 17px;
-            margin-bottom: 12px;
-        }
-    }
-    // 支付bar
-    .paybar {
-        display: flex;
-        flex-direction: row;
-        position: fixed;
-        z-index: 9;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        overflow: hidden;
-        height: 49px;
-        background: #fff;
-        font-size: 14px;
-        .lf {
-            flex: 1;
-            padding-left: 15px;
-            .money {
-                color: #ffba56;
-                height: 49px;
-                line-height: 49px;
-                font-size: 16px;
-                font-weight: bold;
-                margin: 0 10px 0 0;
-                float: left;
-            }
-            .discount {
-                text-decoration: line-through;
-                line-height: 49px;
-                color: #cccccc;
-                font-size: 12px;
-                float: left;
-            }
-            .arrow {
-                width: 49px;
-                height: 49px;
-                line-height: 49px;
-                text-align: center;
-                float: right;
-                padding: 0 10px 0 0;
-                font-size: 0;
-                img {
-                    display: inline-block;
-                    width: 16px;
-                    height: 16px;
-                }
-            }
-        }
-        .rg {
-            width: 125px;
-            background: #30b097;
-            color: #fff;
-            height: 49px;
-            line-height: 49px;
-            text-align: center;
-        }
-    }
-    // 广播的toast弹层
-    #userCardRightMaskBox {
-        .hd {
-            line-height: 40px;
-            font-size: 18px;
-            color: #333;
-            text-align: center;
-            position: relative;
-            background: #fff;
-            .btn {
-                width: 24px;
-                height: 24px;
-                position: absolute;
-                top: 9px;
-                right: 9px;
-                background: url("../../assets/images/icon/ic-close-card.png")
-                    no-repeat center center;
-                background-size: 12px 12px;
-            }
-        }
-        .bd {
-            background: #fff;
-            // 弹框公共的title
-            .title {
-                line-height: 21px;
-                text-align: center;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #333;
-                font-size: 16px;
-                padding-top: 25px;
-                font-weight: 400;
-                span {
-                    width: 72px;
-                    height: 8px;
-                    background: url("../../assets/images/vip/bg-row.png")
-                        no-repeat center center;
-                    background-size: 100% 100%;
-                    &.s1 {
-                        margin-right: 10px;
-                    }
-                    &.s2 {
-                        margin-left: 10px;
-                    }
-                }
-            }
-
-            .card-right {
-                .content {
-                    padding: 0 15px;
-                    &::after {
-                        display: table;
-                        content: "";
-                        clear: both;
-                    }
-                    dl {
-                        width: 20%;
-                        float: left;
-                        text-align: center;
-                        img {
-                            width: 24px;
-                            height: 24px;
-                            display: block;
-                            margin: 15px auto 10px;
-                        }
-                        dt {
-                            line-height: 19px;
-                            margin-bottom: 5px;
-                            color: #333;
-                            font-size: 13px;
-                        }
-                        dd {
-                            line-height: 16px;
-                            color: #666;
-                            font-size: 12px;
-                        }
-                    }
-                }
-            }
-            .vip-right {
-                .content {
-                    padding: 15px 15px 15px;
-                    .ul {
-                        &::after {
-                            content: "";
-                            display: table;
-                            clear: both;
-                        }
-                        li {
-                            // padding: 20px 30px 0;
-                            padding: 15px 15px 0;
-                            height: 100px;
-                            width: 33.33%;
-                            float: left;
-                            border-bottom: 1px solid #e5e5e5;
-                            .li-desc {
-                                color: #333;
-                                line-height: 19px;
-                                font-size: 13px;
-                                margin-bottom: 8px;
-                                text-align: center;
-                            }
-                            .li-intro {
-                                text-align: center;
-                                color: #666;
-                                line-height: 16px;
-                                font-size: 12px;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
+    @import "./Order";
+    @import "./order_new";
 </style>

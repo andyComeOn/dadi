@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 56.3 (81716) - https://sketch.com -->
+    <title>icon/tuifang</title>
+    <desc>Created with Sketch.</desc>
+    <g id="icon/tuifang" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g>
+            <rect id="矩形" fill="#F2D1D1" opacity="0" x="0" y="0" width="32" height="32"></rect>
+            <path d="M23,25.7 C23,26.9702549 22.0518971,28 20.8823529,28 L7.11764706,28 C5.94810288,28 5,26.9702549 5,25.7 L5,7.3 C5,6.02974508 5.94810288,5 7.11764706,5 L20.8823529,5 C22.0518971,5 23,6.02974508 23,7.3 L23,16.6735107" id="路径" stroke="#999999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M17,21.6362305 L26.0119629,21.6362305" id="直线-5" stroke="#CCCCCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            <polyline id="路径-2" stroke="#999999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="26.0119629 19 28.2983398 21.6362305 26.0119629 24.1467285"></polyline>
+        </g>
+    </g>
+</svg>

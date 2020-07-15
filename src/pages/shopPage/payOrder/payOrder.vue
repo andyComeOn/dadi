@@ -2,7 +2,7 @@
     <div>
         <div class="payOrderBox">
             <!-- 物流地址 str=======    物流信息     ============= -->
-            <router-link :to='{path:"address",query:{shopId:this.$route.query.shopId,payShopNum:this.shopNum,deliveryWay:this.deliveryWay}}' v-if="deliveryWay == 1">
+            <router-link :to='{path:"address",query:{shopId:this.$route.query.shopId,payShopNum:this.shopNum,deliveryWay:this.deliveryWay,spec_id:this.$route.query.spec_id}}' v-if="deliveryWay == 1">
                 <div class="logistics">
                     <div v-if="this.siteAddressMsg != ''">
                         <h3>{{this.siteAddressMsg.name}}&nbsp;&nbsp;&nbsp;&nbsp;{{this.siteAddressMsg.mobile}}</h3>
@@ -12,16 +12,15 @@
                             <img src="../../../assets/images/arrows/ic-arrow_10_18.png" alt="">
                         </p>
                     </div>
-                    
                     <span v-if="this.siteAddressMsg == ''">请添加收货地址</span>
-                    
                 </div>
             </router-link>
             <!-- 物流地址 end=========   物流信息     ================== -->
-
             <!-- 商品信息 str -->
             <div class="shopDetails">
-                <img :src="this.shopDetailsMsg.goods_img" alt="">
+                <div class="goods_bg">
+                    <img :src="this.shopDetailsMsg.goods_img" alt="">
+                </div>
                 <p class="shopName"><span v-if="this.shopDetailsMsg.consume_type == 2 || this.shopDetailsMsg.consume_type == 3">积分</span>{{this.shopDetailsMsg.goods_name}}</p>
                 <p class="shopSize">规格：{{this.shopDetailsMsg.specs}}</p>
                 <p class="shopNum">X{{shopNum}}</p>
@@ -67,9 +66,13 @@
                         <img src="../../../assets/images/arrows/ic-arrow_10_18.png" alt="">
                     </p>
                 </div>
-                <div class="billMsg">
+                <div class="billMsg billMsg_border">
                     <h3>发票信息</h3>
-                    <textarea v-model="user_remark" name="" rows="6" placeholder="请输入发票信息(选填)"></textarea>
+                    <textarea v-model="user_remark" name="" rows="3" placeholder="请输入发票信息(选填)"></textarea>
+                </div>
+                <div class="billMsg">
+                    <h3>备注</h3>
+                    <textarea v-model="user_comment" name="" rows="3" placeholder="请输入备注信息(选填)"></textarea>
                 </div>
             </div>
             <!-- 优惠券 end -->
@@ -211,18 +214,7 @@
     </div>
 </template>
 <script>
-import {
-    shopDetails,
-    usableCoupon,
-    WxPayGoods,
-    placeOrder,
-    getCookieTest,
-    sendMobile,
-    balancePay,
-    goodsPrice,
-    goodsOrderAddress,
-userInfo
-} from "../../../api/api.js";
+import { shopDetails,usableCoupon,WxPayGoods,placeOrder,getCookieTest,sendMobile,balancePay,goodsPrice,goodsOrderAddress,userInfo} from "../../../api/api.js";
 import { getCookie } from "../../../utils/util.js";
 import { setTimeout } from 'timers';
 export default {
@@ -250,7 +242,6 @@ export default {
             delayToast: false,
             delayToastTxt: "",
             shopPrice: "", //商品价格
-            
             max_num: "", //最大购买量
             deliveryWay: "", //1门店自提  2物流配送
             payBox: false, //弹窗背景
@@ -277,7 +268,8 @@ export default {
             
             couponArr: [], //优惠券
             coupon_id: "", //优惠券
-            user_remark: "", //发票信息
+            user_remark: "", //发票信息,
+            user_comment:"", //用户备注
             avail_amount: "", //钱包余额
             msgCodeBox: false, //钱包支付验证码弹窗
             mobile: "", //手机号
@@ -305,9 +297,20 @@ export default {
                 },1500);
                 this.user_remark = b;
             }
+        },
+        user_comment(a,b){
+            if(a.length > 200){
+                this.delayToast = true;
+                this.delayToastTxt = "超过最长字符(200)";
+                setTimeout(()=>{
+                    this.delayToast = false;
+                },1500);
+                this.user_comment = b;
+            }
         }
     },
     mounted() {
+        let specId = this.$route.query.spec_id;
         this.shopNum = this.$route.query.payShopNum;            //购买数量
         this.avail_amount = getCookie("avail_amount");          //钱包余额
         this.payWayArr[1].payWayName =
@@ -315,17 +318,18 @@ export default {
         this.mobile = getCookie("userInfoTel").substr(0, 3) + "****" + getCookie("userInfoTel").substr(7); //手机号
         this.deliveryWay = this.$route.query.deliveryWay;       //配送方式
         this.goodsPriceMsg();                                   //获取总价格和总积分
-        this.fetchGoodsDetail();                                //获取商品详情
+        this.fetchGoodsDetail(specId);                                //获取商品详情
         // this.goodsAddressSite();                                //获取下单地址
     },
     methods: {               
-        fetchGoodsDetail() {                //获取商品详情
+        fetchGoodsDetail(specId) {                //获取商品详情
             this.loading = true;            //loading
             this.$http({
                 url: shopDetails,
                 method: "POST",
                 data: {
-                    id: this.$route.query.shopId
+                    id: this.$route.query.shopId,
+                    spec_id:specId
                 }
             }).then(res => {
                 console.log(res);
@@ -510,7 +514,9 @@ export default {
                         coupon_id: this.coupon_id,              //优惠券id
                         mobile: getCookie("userInfoTel"),       //手机号
                         user_remark: this.user_remark,          //订单留言
+                        user_comment:this.user_comment,
                         address_id:this.address_id, //地址id
+                        spec_id: this.$route.query.spec_id,           //规格id
                     }
                 }).then(res => {
                     this.loading = false;            //loading
@@ -675,7 +681,6 @@ export default {
             });
         },
         goodsPriceMsg(){            //商品价格计算
-            console.log(this.deliveryWay);//================================
             this.loading = true;            //loading
             this.$http({
                 url:goodsPrice,

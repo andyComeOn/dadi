@@ -72,11 +72,9 @@ app.use(hotMiddleware)
 var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
 app.use(staticPath, express.static('./static'))
 
-// var uri = 'http://localhost:' + port
-// m.test.zhaojin9.com
-var uri = 'm.wei.ddyg.cn:' + port
-
-// var uri = 'm.test.zhaojin9.com:' + port
+// var uri = 'm.crs.ddyg.cn:' + port  // 正式
+var uri = 'm.wei.ddyg.cn:' + port  // 测试
+// var uri = 'm.devtest.ddyg.cn:' + port  // 预上线
 
 devMiddleware.waitUntilValid(function () {
   console.log('> Listening at ' + uri + '\n')

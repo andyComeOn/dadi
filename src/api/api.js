@@ -1,11 +1,10 @@
 //截取url参数方法
-import { getUrlParam } from '@/utils/util';
+// import { getUrlParam } from '@/utils/util';
 //baseUrl
-export const baseUrl = 'm.wei.ddyg.cn';
+// export const baseUrl = 'm.wei.ddyg.cn';
 //cpid
-global.GlobalCpid = getUrlParam('cpid');
-
-console.log('cpid=' + global.GlobalCpid);
+// global.GlobalCpid = getUrlParam('cpid');
+global.GlobalCpid = 1;
 
 // 把获取到的cpid输出
 export const baseCpid = GlobalCpid;
@@ -53,7 +52,9 @@ export const check_login1 = '/api/Accredit/test/?cpid=1';   // 检查登录
 // Public-公共
 export const DistributionBanner = '/api/Banner/DistributionBanner?cpid=' + GlobalCpid;  // 轮播图
 
-export const image_upload = '/api/UploadImg/image_upload'  // 上传图片（数据流图片）
+export const image_upload = '/api/UploadImg/image_upload?cpid=' + GlobalCpid;  // 上传图片（数据流图片）
+
+export const deleteImg = '/api/UploadImg/del_file?cpid=' + GlobalCpid;          //删除图片         
 
 export const sendMobile = '/api/Login/sendMobile?cpid=' + GlobalCpid;  // 发送短信
 
@@ -77,7 +78,15 @@ export const addResident = '/api/User/addResident?cpid=' + GlobalCpid;  //添加
 
 export const deleteDntList = '/api/User/deleteDntList?cpid=' + GlobalCpid;  //del常用联系人
 
+export const apiAddInvoice = '/api/User/add_invoice?cpid=' + GlobalCpid;  //添加发票抬头
 
+export const apiInvoiceDetail = '/api/User/invoice_detail?cpid=' + GlobalCpid;  //发票详情
+
+export const apiInvoiceList = '/api/User/invoice_list?cpid=' + GlobalCpid;  //发票列表
+
+export const apiInvoiceUpdate = '/api/User/invoice_update?cpid=' + GlobalCpid;  //修改发票抬头
+
+export const apiDelInvoice = '/api/User/invoice_del?cpid=' + GlobalCpid;  //删除发票
 
 
 
@@ -143,6 +152,12 @@ export const order_cost_detail = '/api/Order/order_cost_detail?cpid=' + GlobalCp
 
 export const order_preserver = '/api/Order/order_preserver?cpid=' + GlobalCpid;  //维权（申请退款）
 
+export const balance_pay = '/api/Order/balance_pay?cpid=' + GlobalCpid;       //钱包支付（酒店订单）
+
+export const integral_pay = '/api/Order/integral_pay?cpid=' + GlobalCpid;       //积分支付
+
+export const coupon_pay = '/api/Order/activity_coupon?cpid=' + GlobalCpid;      //券支付全民营销
+
 //微信分享
 export const wxShare = '/api/Index/wx_share?cpid=' + GlobalCpid;       //获取参数
 
@@ -203,3 +218,37 @@ export const shopIndexPage = '/api/Goods/mainPage?cpid=' + GlobalCpid;          
 export const delAddress = '/api/User/del_address?cpid=' + GlobalCpid;                   //删除地址
 //支付成功页面
 export const paySuccess = '/api/ShopOrder/pay_success_page?cpid=' + GlobalCpid;         //支付成功页面
+//我的评论列表
+export const myRemarkLists = '/api/Comment/my_comment?cpid=' + GlobalCpid;          //我的评论列表
+//评论标签
+export const remarkTags = '/api/Comment/comment_tag?cpid=' + GlobalCpid;            //评论标签
+//添加评论
+export const addRemark = '/api/Comment/add_comment?cpid=' + GlobalCpid;             //添加评论
+//删除评论接口
+export const deleteRemark = '/api/Comment/del_comment?cpid=' + GlobalCpid;
+//商城首页领取优惠券
+export const getCoupon = '/api/User/send_coupon?cpid=' + GlobalCpid;
+
+
+
+//华驿相关
+//会员卡信息
+export const memberMsg = '/api/CardGroup/card_list?cpid=' + GlobalCpid;             //华驿会员卡信息
+//会员卡升级支付
+export const payMember = '/api/WxPay/card_pay?cpid=' + GlobalCpid;                  //会员卡升级支付
+
+//活动相关
+export const couponExchange = '/api/Coupon/get_code_coupon?cpid=' + GlobalCpid;     //优惠券兑换
+//大转盘奖品
+export const bigDialList = '/api/Prize/prize_list?cpid=' + GlobalCpid;     //大转盘奖品
+//大转盘抽奖  
+export const drawPrize = '/api/Prize/draw_prize?cpid=' + GlobalCpid;     //大转盘抽奖
+//邮寄奖品
+export const getInformation = '/api/Prize/get_information?cpid=' + GlobalCpid;            //邮寄奖品
+
+
+// 返工房
+export const getFillInOrder = '/appact/Store/order_form?cpid=' + GlobalCpid;
+export const getStoreLists = '/appact/Store/store_list?cpid=' + GlobalCpid;
+export const getStoreDetail = '/appact/Store/store_detail?cpid=' + GlobalCpid;
+export const getOrderId = '/appact/Store/create_order?cpid=' + GlobalCpid;

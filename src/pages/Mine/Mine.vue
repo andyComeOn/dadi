@@ -11,14 +11,14 @@
                     </div>
                     <div class="weui-media-box__bd mine-info-media-box__bd ">
                         <h4 class="weui-media-box__title mine-info-media-box__title">{{userInfoData.nickname}}</h4>
-                        <p class="weui-media-box__desc mine-info-media-box__desc">Lv{{userInfoData.grade}}&nbsp;&nbsp;{{userInfoData.grade | filterCardGradeGetInfo}}</p>
+                        <p class="weui-media-box__desc mine-info-media-box__desc">Lv{{userInfoData.grade}}&nbsp;&nbsp;{{userInfoData.group_name}}</p>
                     </div>
                     <span class="weui-cell__ft zb-weui-cell__ft"></span>
                 </router-link>
                 <!-- str -->
                 <ul class="userLists">
                     <li>
-                        <router-link :to=" { path: 'orderList', query: { status: 'ing' }}">
+                        <router-link :to=" { path: 'orderList' }">
                             <dl>
                                 <dt>
                                     <img src="../../assets/images/shop/my_jiudian.png" alt="" />
@@ -68,11 +68,11 @@
         </div> -->
         <!-- 我的问题的list(第二部分) ma-top5 -->
         <div class="weui-panel">
-            <div class="weui-panel__bd">
+            <!-- <div class="weui-panel__bd">
                 <div class="weui-media-box weui-media-box_small-appmsg">
-                    <div class="weui-cells">
+                    <div class="weui-cells"> -->
                         <!-- 推荐好友拿奖金 -->
-                        <div v-if="userInfoData.is_distribution==1" class="weui-cell weui-cell_access" @click="recommendFriend">
+                        <!-- <div v-if="userInfoData.is_distribution==1" class="weui-cell weui-cell_access" @click="recommendFriend">
                             <div class="weui-cell__hd"><img src="../../assets/images/my/my_tuijian.png" alt="" style="width:22px;margin-right:5px;display:block"></div>
                             <div class="weui-cell__bd weui-cell_primary">
                                 <p>推荐好友拿奖金</p>
@@ -81,8 +81,8 @@
                             <span class="weui-cell__ft"></span>
                         </div>
                     </div>
-                </div>
-            </div>
+                </div> -->
+            <!-- </div> -->
             <div class="weui-panel__bd ma-top5">
                 <div class="weui-media-box weui-media-box_small-appmsg">
                     <div class="weui-cells">
@@ -91,6 +91,14 @@
                             <div class="weui-cell__hd"><img src="../../assets/images/my/my_youhuiquan.png" alt="" style="width:22px;margin-right:5px;display:block"></div>
                             <div class="weui-cell__bd weui-cell_primary">
                                 <p>我的优惠券</p>
+                            </div>
+                            <span class="weui-cell__ft"></span>
+                        </router-link>
+                        <!-- 电子房券兑换 -->
+                        <router-link to="/couponExchange" class="weui-cell weui-cell_access">
+                            <div class="weui-cell__hd"><img src="../../assets/images/my/coupon_exchange.png" alt="" style="width:22px;margin-right:5px;display:block"></div>
+                            <div class="weui-cell__bd weui-cell_primary">
+                                <p>电子房券兑换</p>
                             </div>
                             <span class="weui-cell__ft"></span>
                         </router-link>
@@ -111,12 +119,35 @@
                             </div>
                             <span class="weui-cell__ft"></span>
                         </router-link>
+                        <!-- 我的评论 -->
+                        <!-- <router-link to="/myRemarkLists" class="weui-cell weui-cell_access">
+                            <div class="weui-cell__hd"><img src="../../assets/images/my/my_shoucang.png" alt="" style="width:22px;margin-right:5px;display:block"></div>
+                            <div class="weui-cell__bd weui-cell_primary">
+                                <p>我的评论</p>
+                            </div>
+                            <span class="weui-cell__ft"></span>
+                        </router-link> -->
                         <!-- 常用入住人 -->
                         <router-link to="/userInfo" class="weui-cell weui-cell_access">
                             <div class="weui-cell__hd"><img src="../../assets/images/my/lianxiren.png" alt="" style="width:22px;margin-right:5px;display:block"></div>
                             <div class="weui-cell__bd weui-cell_primary">
                                 <p>常用入住人</p>
                             </div>
+                            <span class="weui-cell__ft"></span>
+                        </router-link>
+                        <router-link to="/invoiceLists" class="weui-cell weui-cell_access">
+                            <div class="weui-cell__hd"><img src="../../assets/images/my/fapiao.png" alt="" style="width:22px;margin-right:5px;display:block"></div>
+                            <div class="weui-cell__bd weui-cell_primary">
+                                <p>发票抬头</p>
+                            </div>
+                            <span class="weui-cell__ft"></span>
+                        </router-link>
+                        <router-link :to="{path:'Login',query:{loginPage:4}}" v-if="this.userInfoData.is_binding_mobile == 0" class="weui-cell weui-cell_access">
+                            <div class="weui-cell__hd"><img src="../../assets/images/my/my_phone.png" alt="" style="width:22px;margin-right:5px;display:block"></div>
+                            <div class="weui-cell__bd weui-cell_primary">
+                                <p>绑定手机号</p>
+                            </div>
+                            <span class="score bind_mobile">送<i>200</i>积分</span>
                             <span class="weui-cell__ft"></span>
                         </router-link>
                         <!-- 收货地址 -->
@@ -201,6 +232,7 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-@import "../../assets/less/var.less";
-@import "./mine.less";
+    @import "../../assets/less/var.less";
+    @import "./mine.less";
+    .weui-panel:first-child {margin-top:0!important;}
 </style>

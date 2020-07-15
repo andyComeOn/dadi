@@ -2,19 +2,20 @@
     <div>
         <div class="myWalletBox">
             <!-- 充值金额 str -->
-            <div class="topUp">
+            <!-- <div class="topUp">
                 <p>充值金额</p>
                 <div class="topUpVal">
                     <span>￥</span>
                     <input v-model="topUpAmount" type="number" value="" placeholder="请输入充值金额..." />
                 </div>
-            </div>
+            </div> -->
             <!-- 充值金额 end -->
             <!-- 充值方式 str -->
             <ul class="payWay_package">
-                <li>
+                <!-- <li>
                     <p>支付方式<span>微信支付</span></p>
-                </li>
+                </li> -->
+                <li>&nbsp;</li>
                 <li>
                     <img src="../../../assets/images/shop/qianbao_yue.png" alt="">
                     <p>个人账户余额<span>￥{{this.avail_amount}}</span></p>
@@ -22,9 +23,9 @@
             </ul>
             <!-- 充值方式 end -->
             <!-- 充值按钮 str -->
-            <div class="packAgeBtn">
+            <!-- <div class="packAgeBtn">
                 <p @click="topUpBtn()">充值</p>
-            </div>
+            </div> -->
             <!-- 充值按钮 end -->
             <!-- 充值明细 str -->
             <div class="topUpMsg">

@@ -28,9 +28,16 @@ module.exports = {
 		assetsSubDirectory: 'static',
 		assetsPublicPath: '/',
 		proxyTable: {
+			'/appact': {
+				target: 'http://www.crs.ddyg.cn',
+				changeOrigin: true,
+				// pathRewrite: {
+				// 	'^/api': '/api'
+				// }
+			},
 			'/api': {
+				// target: 'http://www.crs.ddyg.cn',  // 正式
 				target: 'http://www.wei.ddyg.cn',
-				// target: 'http://m.wei.ddyg.cn',
 				changeOrigin: true,
 				// pathRewrite: {
 				// 	'^/api': '/api'

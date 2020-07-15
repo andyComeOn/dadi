@@ -219,7 +219,9 @@
             <!-- 商品信息 str -->
             <div :class="{shopMsgBox:true,shopMsgBox_code:isTrue}">
                 <div class="shopMsg">
-                    <img :src="this.orderMsg.goods_img" alt="">
+                    <div class="shopMsg_img">
+                        <img :src="this.orderMsg.goods_img" alt="">
+                    </div>
                     <p>{{this.orderMsg.goods_name}}</p>
                     <span style="width:100%;text-overflow:ellipsis; white-space:nowrap; overflow:hidden;">数量:{{this.orderMsg.num}}&nbsp;&nbsp;&nbsp;&nbsp;规格:{{this.orderMsg.specs}}</span>
                     <h3 v-if="this.orderMsg.payment_type == 1">￥{{this.orderMsg.goods_price}}</h3>
@@ -278,6 +280,9 @@
                         <span v-if="this.orderMsg.pick_type == 1">配送方式：物流配送</span>
                         <span v-if="this.orderMsg.pick_type == 2">配送方式：门店自取</span>
                     </p>
+                    <p v-if="this.orderMsg.user_comment !=''">
+                        备注：{{this.orderMsg.user_comment}}
+                    </p>
                 </div>
             </div>
             <!-- 订单号 end -->
@@ -290,7 +295,7 @@
                 <router-link :to="{path:'refundOrder',query:{orderId:this.orderMsg.id}}">
                     <span>申请退款</span>
                 </router-link>
-                <router-link :to="{path:'shoppIngDetails',query:{shopId:this.orderMsg.goods_id}}">
+                <router-link :to="{path:'shoppIngDetails',query:{shopId:this.orderMsg.goods_id,goodsName:encodeURIComponent(this.orderMsg.goods_name)}}">
                     <span class="orderBtnActive">再次购买</span>
                 </router-link>
             </div>
@@ -299,7 +304,7 @@
                     <span>申请退款</span>
                 </router-link>
                 <span v-if="this.orderMsg.pick_type == 1" class="orderBtnActive"  @click="changeOrder(3)">确认收货</span>
-                <router-link :to="{path:'shoppIngDetails',query:{shopId:this.orderMsg.goods_id}}">
+                <router-link :to="{path:'shoppIngDetails',query:{shopId:this.orderMsg.goods_id,goodsName:encodeURIComponent(this.orderMsg.goods_name)}}">
                     <span class="orderBtnActive">再次购买</span>
                 </router-link>
             </div>
@@ -307,27 +312,27 @@
                 <router-link :to="{path:'refundOrder',query:{orderId:this.orderMsg.id}}">
                     <span>申请退款</span>
                 </router-link>
-                <router-link :to="{path:'shoppIngDetails',query:{shopId:this.orderMsg.goods_id}}">
+                <router-link :to="{path:'shoppIngDetails',query:{shopId:this.orderMsg.goods_id,goodsName:encodeURIComponent(this.orderMsg.goods_name)}}">
                     <span class="orderBtnActive">再次购买</span>
                 </router-link>
             </div>
             <div v-if="this.orderMsg.status == 5 || this.orderMsg.status == 13" class="orderBtn">
-                <router-link :to="{path:'shoppIngDetails',query:{shopId:this.orderMsg.goods_id}}">
+                <router-link :to="{path:'shoppIngDetails',query:{shopId:this.orderMsg.goods_id,goodsName:encodeURIComponent(this.orderMsg.goods_name)}}">
                     <span class="orderBtnActive">再次购买</span>
                 </router-link>
             </div>
             <div v-if="this.orderMsg.status == 6 || this.orderMsg.status == 14" class="orderBtn">
-                <router-link :to="{path:'shoppIngDetails',query:{shopId:this.orderMsg.goods_id}}">
+                <router-link :to="{path:'shoppIngDetails',query:{shopId:this.orderMsg.goods_id,goodsName:encodeURIComponent(this.orderMsg.goods_name)}}">
                     <span class="orderBtnActive">再次购买</span>
                 </router-link>
             </div>
             <div v-if="this.orderMsg.status == 7 || this.orderMsg.status == 15" class="orderBtn">
-                <router-link :to="{path:'shoppIngDetails',query:{shopId:this.orderMsg.goods_id}}">
+                <router-link :to="{path:'shoppIngDetails',query:{shopId:this.orderMsg.goods_id,goodsName:encodeURIComponent(this.orderMsg.goods_name)}}">
                     <span class="orderBtnActive">再次购买</span>
                 </router-link>
             </div>
             <div v-if="this.orderMsg.status == 8 || this.orderMsg.status == 16" class="orderBtn">
-                <router-link :to="{path:'shoppIngDetails',query:{shopId:this.orderMsg.goods_id}}">
+                <router-link :to="{path:'shoppIngDetails',query:{shopId:this.orderMsg.goods_id,goodsName:encodeURIComponent(this.orderMsg.goods_name)}}">
                     <span class="orderBtnActive">再次购买</span>
                 </router-link>
             </div>
@@ -336,19 +341,19 @@
                 <router-link :to="{path:'refundOrder',query:{orderId:this.orderMsg.id}}">
                     <span>申请退款</span>
                 </router-link>
-                <router-link :to="{path:'shoppIngDetails',query:{shopId:this.orderMsg.goods_id}}">
+                <router-link :to="{path:'shoppIngDetails',query:{shopId:this.orderMsg.goods_id,goodsName:encodeURIComponent(this.orderMsg.goods_name)}}">
                     <span class="orderBtnActive">再次购买</span>
                 </router-link>
             </div>
             <div v-if="this.orderMsg.status == 18" class="orderBtn">
                 <span class="orderBtnActive" @click="changeOrder(4)">取消退款申请</span>
-                <router-link :to="{path:'shoppIngDetails',query:{shopId:this.orderMsg.goods_id}}">
+                <router-link :to="{path:'shoppIngDetails',query:{shopId:this.orderMsg.goods_id,goodsName:encodeURIComponent(this.orderMsg.goods_name)}}">
                     <span class="orderBtnActive">再次购买</span>
                 </router-link>
             </div>
             <div v-if="this.orderMsg.status == 19" class="orderBtn">
                 <span class="orderBtnActive" @click="changeOrder(4)">取消退款申请</span>
-                <router-link :to="{path:'shoppIngDetails',query:{shopId:this.orderMsg.goods_id}}">
+                <router-link :to="{path:'shoppIngDetails',query:{shopId:this.orderMsg.goods_id,goodsName:encodeURIComponent(this.orderMsg.goods_name)}}">
                     <span class="orderBtnActive">再次购买</span>
                 </router-link>
             </div>

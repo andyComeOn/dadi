@@ -34,11 +34,14 @@
                 <li v-for="(item,index) in goodsListsArr" :key="index">
                     <router-link :to='{path:"shoppIngDetails",query:{shopId:item.id}}'>
                         <dl>
-                            <dt id="cardsBox" :style="{height:cardsBoxH + 'px'}">
+                            <dt class="cardsBox" :style="{height:cardsBoxH + 'px'}">
                                 <img style="width:100%;height:100%;" :src="item.goods_img" alt="">
                             </dt>
                             <dd>
-                                <p><span v-if='item.consume_type == 2 || item.consume_type == 3'>积分</span>{{item.goods_name}}</p>
+                                <p>
+                                    <span class="marking_give" v-if='item.is_send_coupon == 1'>赠</span>
+                                    <span class="marking_integral" v-if='item.consume_type == 2 || item.consume_type == 3'>积分</span>{{item.goods_name}}
+                                </p>
                                 <h2 v-if="item.consume_type == 1"><span>￥</span>{{item.goods_price}}</h2>
                                 <h2 v-if="item.consume_type == 2">{{item.goods_integral}}<span>积分</span></h2>
                                 <h2 v-if="item.consume_type == 3"><span>￥</span>{{item.goods_price}}+{{item.goods_integral}}<span>积分</span></h2>
@@ -131,7 +134,7 @@
                             this.noShopLists = true;
                             this.$nextTick(() => {
                                 // 由卡片的宽度-->给卡片的高赋值
-                                let cardsBox = document.querySelector("#cardsBox");
+                                let cardsBox = document.querySelector(".cardsBox");
                                 let cardsBoxH = cardsBox.clientWidth;
                                 this.cardsBoxH = cardsBoxH;
                             });

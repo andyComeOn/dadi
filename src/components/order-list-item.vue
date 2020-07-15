@@ -20,31 +20,83 @@
                         </div>
                         <div class="rg">
                             <p class="order-status" v-html="$options.filters.filterStatus(item.status)"></p>
-                            <p class="order-price">&yen; {{item.amount}}</p>
+                            <!-- str -- 用券 -- str -->
+                            <template v-if="item.is_type == 0">
+                                <div v-if="item.integral_status != 1">
+                                    <p class="order-price">&yen; {{item.amount}}</p>
+                                </div>
+                                <div v-else>
+                                    <p class="order-price">{{item.integral_amount}}积分</p>
+                                </div>
+                            </template>
+                            <template v-else>
+                                <p class="order-price">&yen; 0</p>
+                            </template>
+                            <!-- end -- 用券 -- end -->
+                            <p class="room-type-date type m-ellipsis">{{item.pay_type == 1 ? "到店付" : "在线支付"}}</p>
                         </div>
+                    </div>
+                    <!--  -->
+                    <div class="privilege">
+                        <template>
+                            <p v-if="item.is_type == 0">
+                                <span class="breakfast">早餐:{{item.group.breakfast}}</span>
+                            </p>
+                            <p v-else>
+                                <span class="breakfast">早餐:活动产品不含早餐</span>
+                            </p>  
+                        </template>
+                        
+                        <p>
+                            <span class="cancel_time">{{item.group.pre_cancel_time}}前免费取消</span>
+                        </p>
+                        <p>
+                            <span class="check_out">延迟退房{{item.group.delay_room}}</span>
+                        </p>
                     </div>
                 </router-link>
                 <!-- 可操作按钮 -->
                 <!-- 按钮的名称:删除、再次预定、取消订单、申请退款 -->
-                <div class="ft">
-                    <span class="btn black" v-if="item.status==10" @click="del(item.id)">删除</span>
-                    <span class="btn grey" v-if="item.status==0" @click="cancal(item.id,item.status)">取消订单</span>
-                    <span class="btn mcolor" v-if="item.status==1" @click="applyMoney(item.id)">申请退款</span>
-                    <span class="btn mcolor" v-if="item.status==2" @click="applyMoney(item.id)">申请退款</span>
-                    <span class="btn mcolor" v-if="item.status==3" @click="applyMoney(item.id)">申请退款</span>
-                    <span class="btn mcolor" v-if="item.status==4" @click="applyMoney(item.id)">申请退款</span>
-                    <!-- 这个“申请退款中”按钮不应该展示 -->
-                    <!-- <span class="btn mcolor" v-if="item.status==6" @click="applyMoney(item.id)">申请退款中</span> -->
-                    <span class="btn orange" v-show="!item.status==0" @click="reOrder(item.store_id)">再次预定</span>
-                    <span class="btn mcolor" v-if="item.status==0" @click="payMethod(item.id)">付款</span>
-                </div>
+                <!-- str -- 使用全面营销券 -- str -->
+                <template v-if="this.is_type == 0">
+                    <div class="ft">
+                        <router-link :to="{path:'/hotelDetail', query:{store_id: item.store_id}}">
+                            <span class="btn orange" v-show="!item.status==0">再次预定</span>
+                        </router-link>
+                        <span class="btn mcolor" v-if="item.status==0" @click="payMethod(item.id,item.pay_type)">立即支付</span>
+                        <span class="btn grey" v-if="item.status==0" @click="cancal(item.id,item.status)">取消订单</span>
+                        <span class="btn grey" v-if="item.status==1 && item.mapping_status == 0 && item.pay_type == 1" @click="cancal(item.id,item.status)">取消订单</span>
+                        <span class="btn grey" v-if="item.status==1 && item.mapping_status == 0 && item.pay_type == 2" @click="applyMoney(item.id)">申请退款</span>
+                        <span class="btn grey" v-if="item.status==2 && item.mapping_status == 0 && item.pay_type == 1" @click="cancal(item.id,item.status)">取消订单</span>
+                        <span class="btn grey" v-if="item.status==2 && item.mapping_status == 0 && item.pay_type == 2" @click="applyMoney(item.id)">申请退款</span>
+                        <span class="btn grey" v-if="item.status==2 && item.mapping_status == 1 && item.pay_type == 1" @click="cancal(item.id,item.status)">取消订单</span>
+                        <span class="btn grey" v-if="item.status==2 && item.mapping_status == 1 && item.pay_type == 2" @click="applyMoney(item.id)">申请退款</span>
+                        <span class="btn black" v-if="item.status==10" @click="del(item.id)">删除</span>
+                    </div>     
+                </template>
+                <template v-else>
+                    <div class="ft">
+                        <router-link :to="{path:'/hotelDetail', query:{store_id: item.store_id,is_type:item.is_type}}">
+                            <span class="btn orange" v-show="!item.status==0">再次预定</span>
+                        </router-link>
+                        <span class="btn mcolor" v-if="item.status==0" @click="payMethod(item.id,item.pay_type)">立即支付</span>
+                        <span class="btn grey" v-if="item.status==0" @click="cancal(item.id,item.status)">取消订单</span>
+                        <span class="btn grey" v-if="item.status==1 && item.mapping_status == 0 && item.pay_type == 1" @click="cancal(item.id,item.status)">取消订单</span>
+                        <span class="btn grey" v-if="item.status==1 && item.mapping_status == 0 && item.pay_type == 2" @click="applyMoney(item.id)">申请退款</span>
+                        <span class="btn grey" v-if="item.status==2 && item.mapping_status == 0 && item.pay_type == 1" @click="cancal(item.id,item.status)">取消订单</span>
+                        <span class="btn grey" v-if="item.status==2 && item.mapping_status == 0 && item.pay_type == 2" @click="applyMoney(item.id)">申请退款</span>
+                        <span class="btn grey" v-if="item.status==2 && item.mapping_status == 1 && item.pay_type == 1" @click="cancal(item.id,item.status)">取消订单</span>
+                        <span class="btn grey" v-if="item.status==2 && item.mapping_status == 1 && item.pay_type == 2" @click="applyMoney(item.id)">申请退款</span>
+                        <span class="btn black" v-if="item.status==10" @click="del(item.id)">删除</span>
+                    </div>
+                </template>
+                <!-- end -- 使用全面营销券 -- end -->
             </li>
         </ul>
         <div v-else class="no-order">
             <img src="../assets/images/404/404-no-order.png" alt="">
             <p>{{noOrderStatusTxt}}</p>
         </div>
-
         <!-- toast提示(包含2s延时) -->
         <div v-show="delayToastShow">
             <div class="weui-mask_transparent"></div>
@@ -94,11 +146,12 @@ export default {
             loading: false,
             loadingTxt: "数据加载中",
             delayToastShow: false, //延时toast的开关
-            delayToastTxt: "取消成功", //延时toast的txt提示
+            delayToastTxt: "", //延时toast的txt提示
             paySuccessToast: false,
             routeName: "",
             socketTimer: "",
-            ws: {}
+            ws: {},
+            is_type:""  //券 0普通 1单位 2个人
         };
     },
     created() {
@@ -132,9 +185,11 @@ export default {
                 this.loading = false;
                 if (res.data.status == 1) {
                     this.list = res.data.data;
+                    this.is_type = res.data.data.is_type;
                 } else if (res.data.status == -3) {
                     this.list = [];
                 } else {
+                    
                 }
             });
         },
@@ -172,24 +227,20 @@ export default {
                     order_id: order_id,
                     status: status
                 }
-            })
-                .then(res => {
-                    if (res.data.status == 1) {
-                        this.delayToastShow = true;
-                        setTimeout(() => {
-                            this.delayToastShow = false;
-                        }, 2000);
+            }).then(res => {
+                if (res.data.status == 1) {
+                    this.delayToastShow = true;
+                    this.delayToastTxt = res.data.msg;
+                    setTimeout(() => {
+                        this.delayToastShow = false;
                         this.fetchData(this.condition);
-                    }
-                })
-                .catch();
-        },
-        // 再次预定
-        reOrder(store_id) {
-            this.$router.push({
-                path: "hotelDetail",
-                query: {
-                    store_id: store_id
+                    }, 1500);
+                }else{
+                    this.delayToastShow = true;
+                    this.delayToastTxt = res.data.msg;
+                    setTimeout(() => {
+                        this.delayToastShow = false;
+                    }, 1500);
                 }
             });
         },
@@ -215,64 +266,65 @@ export default {
             this.fetchData(this.condition);
         },
         // 立即支付按钮
-        payMethod(order_id) {
-            this.loadingTxt = "微信支付调取中";
-            this.loading = true;
-            let _this = this;
-            let jsApiParameters = {};
-            let onBridgeReady = function() {
-                WeixinJSBridge.invoke(
-                    "getBrandWCPayRequest",
-                    jsApiParameters,
-                    res => {
-                        if (res.err_msg == "get_brand_wcpay_request:ok") {
-                            _this.paySuccessToast = true;
-                        } else if (res.err_msg == "get_brand_wcpay_request:cancel") {
-                            alert("取消支付");
-                            window.location.reload();
-                        } else {}
-                    }
-                );
-            };
-            let callpay = function() {
-                if (typeof WeixinJSBridge == "undefined") {
-                    if (document.addEventListener) {
-                        document.addEventListener(
-                            "WeixinJSBridgeReady",
-                            onBridgeReady,
-                            false
-                        );
-                    } else if (document.attachEvent) {
-                        document.attachEvent(
-                            "WeixinJSBridgeReady",
-                            onBridgeReady
-                        );
-                        document.attachEvent(
-                            "onWeixinJSBridgeReady",
-                            onBridgeReady
-                        );
-                    }
-                } else {
-                    onBridgeReady();
-                }
-            };
-            // 请求支付接口
-            this.$http({
-                method: "POST",
-                url: wx_pay,
-                data: {
-                    orderid: order_id
-                }
-            }).then(res => {
-                if (res.data.status == 1) {
-                    this.loading = false;
-                    jsApiParameters = JSON.parse(res.data.data);
-                    callpay();
-                } else {
-                    this.loading = false;
-                    alert(res.data.msg);
-                }
-            });
+        payMethod(order_id,pay_type) {
+            this.$router.push({path:'onlinePay',query:{order_id:order_id,payType:pay_type}});
+            // this.loadingTxt = "微信支付调取中";
+            // this.loading = true;
+            // let _this = this;
+            // let jsApiParameters = {};
+            // let onBridgeReady = function() {
+            //     WeixinJSBridge.invoke(
+            //         "getBrandWCPayRequest",
+            //         jsApiParameters,
+            //         res => {
+            //             if (res.err_msg == "get_brand_wcpay_request:ok") {
+            //                 _this.paySuccessToast = true;
+            //             } else if (res.err_msg == "get_brand_wcpay_request:cancel") {
+            //                 alert("取消支付");
+            //                 window.location.reload();
+            //             } else {}
+            //         }
+            //     );
+            // };
+            // let callpay = function() {
+            //     if (typeof WeixinJSBridge == "undefined") {
+            //         if (document.addEventListener) {
+            //             document.addEventListener(
+            //                 "WeixinJSBridgeReady",
+            //                 onBridgeReady,
+            //                 false
+            //             );
+            //         } else if (document.attachEvent) {
+            //             document.attachEvent(
+            //                 "WeixinJSBridgeReady",
+            //                 onBridgeReady
+            //             );
+            //             document.attachEvent(
+            //                 "onWeixinJSBridgeReady",
+            //                 onBridgeReady
+            //             );
+            //         }
+            //     } else {
+            //         onBridgeReady();
+            //     }
+            // };
+            // // 请求支付接口
+            // this.$http({
+            //     method: "POST",
+            //     url: wx_pay,
+            //     data: {
+            //         orderid: order_id
+            //     }
+            // }).then(res => {
+            //     if (res.data.status == 1) {
+            //         this.loading = false;
+            //         jsApiParameters = JSON.parse(res.data.data);
+            //         callpay();
+            //     } else {
+            //         this.loading = false;
+            //         alert(res.data.msg);
+            //     }
+            // });
         }
     }
 };
@@ -288,30 +340,21 @@ export default {
         background: #ffffff;
         .bd {
             width: 100%;
-            height: 80px;
+            // height: 80px;
             display: flex;
             flex-direction: row;
             position: relative;
             margin-bottom: 10px;
-            &:after {
-                content: "";
-                position: absolute;
-                left: 0;
-                bottom: 0;
-                right: 0;
-                height: 1px;
-                background: #e5e5e5;
-                transform: scaleY(0.5);
-            }
             .lf {
                 flex: 1;
                 // max-width: 211px;
-                height: 80px;
+                // height: 80px;
                 color: #666;
                 overflow: hidden;
                 .hotel-name {
-                    color: #999;
+                    color: #333;
                     font-size: 15px;
+                    font-weight: 700;
                     height: 21px;
                     line-height: 21px;
                     margin-bottom: 6px;
@@ -322,7 +365,7 @@ export default {
                     padding-left: 28px;
                     margin-bottom: 5px;
                     &.type {
-                        color: #999;
+                        color: #666;
                         background: url("../assets/images/hotel-label/my_order_hotel_grey.png")
                             no-repeat left center;
                         background-size: 16px 16px;
@@ -335,7 +378,7 @@ export default {
                 }
             }
             .rg {
-                height: 80px;
+                // height: 80px;
                 padding-top: 4px;
                 text-align: right;
                 .order-status {
@@ -346,7 +389,8 @@ export default {
                     padding: 0 2px;
                 }
                 .order-price {
-                    // width: 90px;
+                    width: 90px;
+                    color: #333;
                     height: 20px;
                     line-height: 20px;
                     font-size: 14px;
@@ -399,4 +443,70 @@ export default {
         font-size: 14px;
     }
 }
+.privilege{
+    margin-top: 15px;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    position: relative;
+    &:after {
+        content: "";
+        width:100%;
+        height: 1px;
+        position: absolute;
+        bottom: 0;
+        left:0;
+        border-bottom: 1px dashed #E5E5E5;
+    }
+    p{
+        color: #666;
+        font-size: 13px;
+        line-height: 18px;
+        margin-bottom: 5px;
+        span{
+            &:nth-of-type(1){
+                text-align: left;
+                font-size: 13px;
+                color: #666;
+            }
+            &:nth-of-type(2){
+                float: right;
+                font-size: 13px;
+                color: #666;
+            }
+        }
+    }
+}
+.breakfast,.cancel_time,.check_out{
+    position: relative;
+    margin-left: 20px;
+    &::after{
+        content: "";
+        display: inline-block;
+        width:16px;
+        height:16px;
+        position: absolute;
+        top: 50%;
+        left:-20px;
+        transform: translateY(-50%);
+    }
+}
+.breakfast{
+    &::after{
+        background:url('../assets/images/svg/zaocan.svg') no-repeat center center;
+        background-size: 100% 100%;
+    }
+}
+.cancel_time{
+    &::after{
+        background:url('../assets/images/svg/quxiao.svg') no-repeat center center;
+        background-size: 100% 100%;
+    }
+}
+.check_out{
+    &::after{
+        background:url('../assets/images/svg/tuifang.svg') no-repeat center center;
+        background-size: 100% 100%;
+    }
+}
+
 </style>

@@ -11,13 +11,19 @@
     position: relative;
     padding:15px 15px 15px 131px;
     height:138px;
-    img{
-        display: inline-block;
+    .goods_bg{
         width: 108px;
         height: 108px;
         position: absolute;
         top: 15px;
         left: 15px;
+        background: url(../../../assets/images/shop/bg/order_bg_qg.jpg) no-repeat center center;
+        background-size: 100% 100%;
+        img{
+            display: inline-block;
+            width: 108px;
+            height: 108px;
+        }
     }
     .shopName{
         color: #333;
@@ -164,7 +170,7 @@
         }
     }
     .billMsg{
-        padding-left: 15px;
+        margin-left: 15px;
         padding-right: 15px;
         padding-bottom: 15px;
         h3{
@@ -185,6 +191,9 @@
             outline: none;
             resize: none;
         }
+    }
+    .billMsg_border{
+        border-bottom: 1px solid #eee;
     }
 }
 .payFooter{
@@ -571,7 +580,7 @@
     background: #fff;
     margin-bottom: 8px;
     padding: 15px;
-    // position: relative;
+    position: relative;
     &::after{
         display: inline-block;
         content: '';

@@ -255,11 +255,11 @@ export function filterDelayRoomNum(a) {
 	a = a.replace(/[^0-9]/ig,"");
 	return a;
 }
-// 过滤代金券，cpid为1秋果，2为华驿
+// 过滤代金券，cpid为1秋果，4为华驿
 export function filterHotelGroupName(a) {
 	if (a == 1) {
 		return '秋果'
-	} else if (a == 2) {
+	} else if (a == 4) {
 		return '华驿'
 	} else {
 		return '其他';

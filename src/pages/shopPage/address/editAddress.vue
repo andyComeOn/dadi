@@ -185,7 +185,7 @@
                         this.loading = false;        //loading
                         if(res.data.status == 1){
                             console.log(res);
-                            this.$router.push({path:'address',query:{shopId:this.$route.query.shopId,payShopNum:this.$route.query.payShopNum,deliveryWay:this.$route.query.deliveryWay}})
+                            this.$router.push({path:'address',query:{shopId:this.$route.query.shopId,payShopNum:this.$route.query.payShopNum,spec_id:this.$route.query.spec_id,deliveryWay:this.$route.query.deliveryWay}})
                         }else{
                             this.delayToast = true;
                             this.delayToastTxt = res.data.msg;
@@ -211,7 +211,7 @@
                         this.loading = false;        //loading
                         if(res.data.status == 1){
                             console.log(res);
-                            this.$router.push({path:'address',query:{shopId:this.$route.query.shopId,payShopNum:this.$route.query.payShopNum,deliveryWay:this.$route.query.deliveryWay}})
+                            this.$router.push({path:'address',query:{shopId:this.$route.query.shopId,payShopNum:this.$route.query.payShopNum,spec_id:this.$route.query.spec_id,deliveryWay:this.$route.query.deliveryWay}})
                         }else{
                             this.delayToast = true;
                             this.delayToastTxt = res.data.msg;

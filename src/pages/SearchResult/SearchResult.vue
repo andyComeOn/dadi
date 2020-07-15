@@ -3,7 +3,7 @@
         <!-- 搜索条 -->
         <searchbar @triggerCityDialogEmit="triggerCityDialogEmitFun" @triggerCalendarDialogEmit="triggerCalendarDialogEmitFun" @inputValEmit="inputValEmitFun" :searchbarObj="toSearchbarObj">
         </searchbar>
-
+        <div class="coupon_hint" v-if="this.zbInitCalendar.is_type != 0">您当前使用电子房券进行预订，需要提前一天。</div>
         <!-- @triggerSearchbarInputFocusEmit="triggerSearchbarInputFocusEmitFun" -->
         <!-- searchbar中输入框获焦的emit的函数-暂不使用-注释 -->
 
@@ -18,10 +18,10 @@
         <storeListItem :condition="watchObj"></storeListItem>
 
         <!-- 城市组件dialog -->
-        <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbCityVisible">
+        <!-- <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbCityVisible">
             <City @cityTitleBackEmit="cityTitleBackEmitFun" @cityItemEmit="cityItemEmitFun" :longitude="toRefreshBarObj.longitude" :latitude="toRefreshBarObj.latitude">
             </City>
-        </mu-dialog>
+        </mu-dialog> -->
 
         <!-- 日历组件dialog -->
         <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="zbCalendarVisible">
@@ -47,6 +47,7 @@ import { store_list } from "../../api/api";
 import City from "@/components/city/city.vue"; // 引入城市组件
 import Calendar from "@/components/calendar/calendar.vue"; // 引入日历组件
 import Search from "@/components/search/search.vue"; // 引入搜索弹层组件
+import { f, dateEndMinusStart, YTDLf, isBeforeDawn} from "@/utils/date"; // 引入封装时间函数
 export default {
     name: "searchResultPage",
     components: {
@@ -72,7 +73,9 @@ export default {
                 px_rule: "sort", //排序（价格，距离）
                 name: "", //门店名称
                 begin: "", // 入住时间
-                finish: "" // 离店时间
+                finish: "", // 离店时间
+                cpid:GlobalCpid,
+                is_type:""
             },
             // 城市组件是否显示
             zbCityVisible: false,
@@ -91,24 +94,46 @@ export default {
                     yyyy: "",
                     mm: "",
                     dd: ""
-                }
+                },
+                is_type:this.$route.query.is_type
             }
         };
     },
     created() {
-        var urlPara = {
-            cityname: this.$route.query.cityname,
-            cityid: this.$route.query.cityid,
-            liveinYYYY: this.$route.query.liveinYYYY,
-            liveinMM: this.$route.query.liveinMM,
-            liveinDD: this.$route.query.liveinDD,
-            liveoutYYYY: this.$route.query.liveoutYYYY,
-            liveoutMM: this.$route.query.liveoutMM,
-            liveoutDD: this.$route.query.liveoutDD,
-            abstract: this.$route.query.abstract,
-            longitude: this.$route.query.longitude,
-            latitude: this.$route.query.latitude
-        };
+        var Labour_time = new Date(1588291200000);
+        var current_time= new Date(1588377600000);
+        var urlPara;
+        if(this.$route.query.liveinYYYY == "2020" && this.$route.query.liveinMM == "04" && this.$route.query.is_type != 0){
+            urlPara = {
+                cityname: this.$route.query.cityname,
+                cityid: this.$route.query.cityid,
+                liveinYYYY: f(Labour_time).yyyy,
+                liveinMM: f(Labour_time).mm,
+                liveinDD: f(Labour_time).dd,
+                liveoutYYYY: f(Labour_time).yyyy,
+                liveoutMM: f(Labour_time).mm,
+                liveoutDD: f(current_time).dd,
+                abstract: this.$route.query.abstract,
+                longitude: this.$route.query.longitude,
+                latitude: this.$route.query.latitude,
+                is_type:this.$route.query.is_type
+            };
+        }else{
+            urlPara = {
+                cityname: this.$route.query.cityname,
+                cityid: this.$route.query.cityid,
+                liveinYYYY: this.$route.query.liveinYYYY,
+                liveinMM: this.$route.query.liveinMM,
+                liveinDD: this.$route.query.liveinDD,
+                liveoutYYYY: this.$route.query.liveoutYYYY,
+                liveoutMM: this.$route.query.liveoutMM,
+                liveoutDD: this.$route.query.liveoutDD,
+                abstract: this.$route.query.abstract,
+                longitude: this.$route.query.longitude,
+                latitude: this.$route.query.latitude,
+                is_type:this.$route.query.is_type
+            };
+        }
         // searchbar组件的赋值
         this.toSearchbarObj = urlPara;
         // refreshBar组件赋值-使用cookie了,下面的2句代码是注销的，
@@ -117,35 +142,59 @@ export default {
         this.toRefreshBarObj.longitude = urlPara.longitude;
         this.toRefreshBarObj.latitude = urlPara.latitude;
         // 日历初始赋值
-        this.zbInitCalendar.start.yyyy = urlPara.liveinYYYY;
-        this.zbInitCalendar.start.mm = urlPara.liveinMM;
-        this.zbInitCalendar.start.dd = urlPara.liveinDD;
-        this.zbInitCalendar.end.yyyy = urlPara.liveoutYYYY;
-        this.zbInitCalendar.end.mm = urlPara.liveoutMM;
-        this.zbInitCalendar.end.dd = urlPara.liveoutDD;
+        if(this.$route.query.liveinYYYY == "2020" && this.$route.query.liveinMM == "04" && this.$route.query.is_type != 0){
+            this.zbInitCalendar.start.yyyy = f(Labour_time).yyyy;
+            this.zbInitCalendar.start.mm = f(Labour_time).mm;
+            this.zbInitCalendar.start.dd = f(Labour_time).dd;
+            this.zbInitCalendar.end.yyyy = f(Labour_time).yyyy;
+            this.zbInitCalendar.end.mm = f(Labour_time).mm;
+            this.zbInitCalendar.end.dd = f(current_time).dd;
+        }else{
+            this.zbInitCalendar.start.yyyy = urlPara.liveinYYYY;
+            this.zbInitCalendar.start.mm = urlPara.liveinMM;
+            this.zbInitCalendar.start.dd = urlPara.liveinDD;
+            this.zbInitCalendar.end.yyyy = urlPara.liveoutYYYY;
+            this.zbInitCalendar.end.mm = urlPara.liveoutMM;
+            this.zbInitCalendar.end.dd = urlPara.liveoutDD;
+        }
+
         // 把路由带过来的入店-离店的时间info赋值给watchObj
-        this.watchObj.begin =
-            urlPara.liveinYYYY +
-            "-" +
-            urlPara.liveinMM +
-            "-" +
-            urlPara.liveinDD;
-        this.watchObj.finish =
-            urlPara.liveoutYYYY +
-            "-" +
-            urlPara.liveoutMM +
-            "-" +
-            urlPara.liveoutDD;
+        this.watchObj.begin = urlPara.liveinYYYY + "-" + urlPara.liveinMM + "-" + urlPara.liveinDD;
+        this.watchObj.finish = urlPara.liveoutYYYY + "-" + urlPara.liveoutMM + "-" + urlPara.liveoutDD;
         this.watchObj.city = urlPara.cityid;
         this.watchObj.name = urlPara.abstract;
         this.watchObj.longitude = urlPara.longitude;
         this.watchObj.latitude = urlPara.latitude;
+        this.watchObj.is_type = urlPara.is_type;
     },
-    mounted() {},
+    mounted() {
+        //获取url上面的城市地址和id
+        if(this.$route.query.city_id){
+            this.toSearchbarObj.cityname = this.$route.query.city_name;
+            this.toSearchbarObj.cityid = this.$route.query.city_id;
+            this.watchObj.city = this.$route.query.city_id;
+        }
+    },
     methods: {
         // 搜索条组件中城市选择逻辑，子组件emit之后，执行的方法
         triggerCityDialogEmitFun() {
-            this.zbCityVisible = true;
+            this.$router.push({
+                path:'city',
+                query:{
+                    longitude: this.longitude,
+                    latitude: this.latitude,
+                    cityInd:2,
+                    liveinYYYY:this.$route.query.liveinYYYY,
+                    liveinMM:this.$route.query.liveinMM,
+                    liveinDD:this.$route.query.liveinDD,
+                    liveoutYYYY:this.$route.query.liveoutYYYY,
+                    liveoutMM:this.$route.query.liveoutMM,
+                    liveoutDD:this.$route.query.liveoutDD,
+                    abstract:this.$route.query.abstract,
+                    is_type:this.$route.query.is_type,
+                }
+            });
+            // this.zbCityVisible = true;
         },
         // 城市组件的title通过emit执行的方法
         cityTitleBackEmitFun() {
@@ -235,5 +284,12 @@ export default {
 <style lang="less" scoped>
 .searchResultPage {
     overflow: auto;
+}
+.coupon_hint{
+    background:#fff;
+    color: red;
+    padding:0 15px;
+    line-height: 20px;
+    font-size: 12px;
 }
 </style>

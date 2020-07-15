@@ -40,7 +40,7 @@
 			</li>
 			<li>
 				<span>会员等级</span>
-				<span class='nickName'>{{grade | filterCardGradeGetInfo}} </span>
+				<span class='nickName'>{{gradeName}} </span>
 			</li>
 			<li class="border0 center_li" @click="oldMobile">
 				<span>手机号</span>
@@ -69,7 +69,7 @@ export default {
             nickname: "", //昵称
             sex: "", //性别   1
             card: "", // 什么类型的卡
-            grade: "", // 卡的等级
+            gradeName: "", // 卡的等级
             mobile: "", //手机号
             openId: "", //openId
             roomSum: "", // 用户入住的房晚数量
@@ -203,7 +203,7 @@ export default {
                 this.nickname = res.data.data.nickname; //昵称
                 this.username = res.data.data.username; // 用户名
                 this.card = res.data.data.card;
-                this.grade = res.data.data.grade;
+                this.gradeName = res.data.data.group_name;
                 this.birthdayNum = res.data.data.birthday; //生日
                 this.sex = res.data.data.sex; 
                 this.mobile = res.data.data.mobile;

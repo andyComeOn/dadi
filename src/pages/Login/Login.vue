@@ -297,6 +297,10 @@ export default {
                 this.userTelBlur() &&
                 this.userCodeBlur()
             ) {
+                let loginPageTyp = "";
+                if(this.$route.query.loginPage == 4){
+                    loginPageTyp = 1;
+                }
                 this.$http({
                     method: "POST",
                     url: login,
@@ -304,7 +308,8 @@ export default {
                         mobile: this.userTel,
                         openid: this.openid,
                         code: this.userCode,
-                        realname: this.userName
+                        realname: this.userName,
+                        type:loginPageTyp
                     }
                 }).then(res => {
                     if (res.data.status == 1) {
@@ -321,13 +326,9 @@ export default {
                             });
                         }else if(this.$route.query.loginPage == 3){
                             this.$router.push({path:'shoppIngDetails',query:{shopId:this.$route.query.shopId}})
+                        }else if(this.$route.query.loginPage == 4){
+                            this.$router.push({path:'Mine'})
                         }
-                    } else if (res.data.status == -1) {
-                        this.toastTxt = "检测到您登录信息异常，请再次输入您的手机号进行绑定";
-                        this.isToastShow = true;
-                        setTimeout(() => {
-                            this.isToastShow = false;
-                        }, 2500);
                     } else {
                         this.toastTxt = res.data.msg;
                         this.isToastShow = true;
@@ -340,18 +341,19 @@ export default {
         },
         // 注册过二次提示toast中下面的跳转首页按妞
         hasLoginMethod() {
+            this.hasLoginToast = false;
             if(this.$route.query.loginPage == 3){           //商品详情页面
-                this.hasLoginToast = false;
                 this.$router.push({
                     path: "shoppIngDetails",
                     query: {shopId:this.$route.query.shopId}
                 });
-            }else{
-                this.hasLoginToast = false;
+            }else if(this.$route.query.loginPage == 1){
                 this.$router.push({
-                    path: "index",
-                    query: {}
+                    path: "/hotelDetail",
+                    query: {store_id: this.$route.query.store_id }
                 });
+            } else if (this.$route.query.loginPage == 2) {
+                this.$router.push({ path: "/personalCenter" });
             }
         }
     },

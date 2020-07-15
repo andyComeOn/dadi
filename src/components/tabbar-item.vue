@@ -48,12 +48,12 @@ export default {
     },
     methods: {
         goToRouter() {
-            //this.$parent.$emit('input', this.id)
             if (this.isRouter) {
-                this.$router.push(this.id);
-                // if(this.id == 'mine'){
-
-                // }
+                if(this.id == 'index'){
+                    this.$router.push({path:"/"});
+                }else{
+                    this.$router.push(this.id);
+                }
             }
         }
     }

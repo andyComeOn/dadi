@@ -40,6 +40,7 @@
 <script>
 	import timeUtil from './calendar';
 	import myBroadcast from "@/components/broadcast";
+	import { f, dateEndMinusStart, YTDLf, isBeforeDawn} from "@/utils/date"; // 引入封装时间函数
 	export default {
 		components:{
 			myBroadcast
@@ -104,13 +105,28 @@
 				let arr = timeUtil.getMonthListNoOther(date, pam1, pam2);
 				this.list = arr;
 			},
-
 			// 日历组件的title-若用户不选取日历，点击返回使日历弹窗消失
 			wh_title_back_fun(){
 				this.$emit('calendarTitleBackEmit');
 			}
 		},
 		mounted() {
+			if(this.markDateMore.is_type != 0){
+				//五一零点毫秒数
+				var Labour_time = new Date(1588284001000);
+				var _LabourTime = Labour_time.getTime();
+				var current_time= new Date();
+				var _currentTime = current_time.getTime()
+				if(_currentTime >= _LabourTime){ //当前时间大于五一时间时 给插件传当前时间  否则传五一时间
+					current_time = current_time.setDate(current_time.getDate()+1);
+					current_time = new Date(current_time);
+					this.myDate = new Date(current_time);
+				}else{
+					Labour_time = Labour_time.setDate(Labour_time.getDate());
+					Labour_time = new Date(Labour_time);
+					this.myDate = new Date(Labour_time);
+				}
+			}
 			this.getList(this.myDate, this.markDateMore.start.yyyy + '/' + this.markDateMore.start.mm + '/' + this.markDateMore.start.dd, this.markDateMore.end.yyyy + '/' + this.markDateMore.end.mm + '/' + this.markDateMore.end.dd);
 		},
 		watch: {

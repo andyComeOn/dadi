@@ -2,24 +2,38 @@
     <div>
         <ul class="shopfooter">
             <li>
-                <router-link :to="{path:'index'}">
+                <router-link :to="{path:'/'}">
                     <p>
                         <span></span>
                         <span>订房</span>
                     </p>
                 </router-link>
             </li>
-            <li>
-                <router-link :to="{path:'shoppIng'}">
+            <li @click="shopBtn()">
+                <!--<router-link :to="{path:'shoppIng'}">-->
                     <p>
                         <span></span>
                         <span>购物</span>
                     </p>
-                </router-link>
+                <!-- </router-link>-->
             </li>
         </ul>
     </div>
 </template>
+<script>
+export default {
+    data() {
+        return {
+            
+        }
+    },
+    methods: {
+        shopBtn(){
+            this.$router.push({path:'shoppIng'});
+        }
+    },
+}
+</script>
 <style lang='less' scoped>
 .shopfooter {
     width: 100%;

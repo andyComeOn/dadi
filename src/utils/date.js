@@ -1,6 +1,6 @@
 //时间格式处理
 export function f(para){
-	var d = para;
+	var d = new Date(para);
 	var yyyy = d.getFullYear();
 	var mm = d.getMonth() + 1 < 10 ? '0' + (d.getMonth() + 1): d.getMonth() + 1;
 	var dd = d.getDate() < 10 ? '0' + d.getDate() : d.getDate(); 

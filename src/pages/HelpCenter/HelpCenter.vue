@@ -13,7 +13,7 @@
                 </div>
                 <transition name="fade" mode="out-in">
                     <div class="context-box" v-show="item.showParagraph">
-                        <div class="context">{{item.context}}</div>
+                        <div class="context" v-html="item.context"></div>
                     </div>
                 </transition>
             </div>
@@ -64,7 +64,7 @@ export default {
                     title: "如何使用优惠券？",
                     showParagraph: false,
                     context:
-                        "获得优惠券后，请在规定时间内使用，可直接做现金抵用，每次仅可以使用一张。"
+                        "获得优惠券后，请在规定时间内使用，可直接做现金抵用，每次仅可以使用一张。老会员优惠券有效期2019年12月31日，新会员优惠券有效期为1个月。"
                 },
                 {
                     title: "会员微信上预订房间需要交预付金吗？退全款吗？",
@@ -106,7 +106,7 @@ export default {
                     title: "客人预订使用的是其亲友账号，能否先行入住？",
                     showParagraph: false,
                     context:
-                        "可以入住，入住时报出房间入住人姓名及联系方式即可办理入住。代订入住客户可享受会员账户同等待遇，但会员卡本人账户不享受升级，享受积分。"
+                        "可以入住，入住时请报出房间入住人姓名及联系方式即可办理入住。代订入住客户不享受早餐待遇和延迟退房待遇。"
                 },
                 {
                     title: "本人本卡预订规则",
